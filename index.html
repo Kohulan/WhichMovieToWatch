@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Cinematic - Movie Discovery</title>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+      <style>
+         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+         :root {
+         --background: #0E0E12;
+         --text: #F4F4F5;
+         --accent: #FF4545;
+         --gradient-start: rgba(255, 69, 69, 0.2);
+         --gradient-end: rgba(14, 14, 18, 0.9);
+         --primary: #FFFFED;
+         --secondary: #F4eeee;
+         --card-bg: rgba(17, 24, 39, 0.8);
+         --love: #e11d48;
+         --like: #2563eb;
+         --watched: #475569;
+         --success: #059669;
+         }
+         * {
+         margin: 0;
+         padding: 0;
+         box-sizing: border-box;
+         }
+         body {
+         font-family: 'Space Grotesk', sans-serif;
+         background: var(--background);
+         color: var(--text);
+         min-height: 100vh;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         position: relative;
+         overflow-x: hidden;
+         padding: 2rem 0;
+         }
+         .gradient-background {
+         position: fixed;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: radial-gradient(circle at 30% 50%, var(--gradient-start), transparent 70%);
+         pointer-events: none;
+         z-index: 0;
+         }
+         .container {
+         position: relative;
+         z-index: 1;
+         width: 90%;
+         max-width: 1200px;
+         padding: 2rem;
+         text-align: center;
+         }
+         .title-container {
+         margin-top: 50px;
+         }
+         .header {
+         text-align: center;
+         margin-bottom: 3rem;
+         position: relative;
+         }
+         .header h1 {
+         font-size: 3.5rem;
+         font-weight: 700;
+         margin-bottom: 1rem;
+         color: #f39c12;
+         background: linear-gradient(135deg, var(--primary), var(--secondary));
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+         position: relative;
+         display: inline-block;
+         overflow: hidden; /* Prevents overflow during animation */
+         white-space: nowrap; /* Prevents wrapping of text */
+         }
+         .header h1::after {
+         content: '';
+         position: absolute;
+         bottom: -10px;
+         left: 50%;
+         transform: translateX(-50%);
+         width: 60%;
+         height: 4px;
+         background: linear-gradient(90deg, transparent, var(--primary), transparent);
+         border-radius: 2px;
+         }
+         .title-letter {
+         display: inline-block;
+         background: linear-gradient(90deg, #f39c12, #d35400, #e74c3c, #f39c12);
+         background-size: 200%; /* To create a smooth moving gradient */
+         -webkit-background-clip: text;
+         background-clip: text;
+         color: transparent;
+         animation: subtleGlow 5s ease-in-out infinite; /* Slow and smooth animation */
+         }
+         @keyframes subtleGlow {
+         0% {
+         background-position: 0%;
+         }
+         50% {
+         background-position: 100%;
+         }
+         100% {
+         background-position: 0%;
+         }
+         }
+         .movie-card {
+         background: var(--card-bg);
+         border-radius: 24px;
+         padding: 2.5rem;
+         backdrop-filter: blur(20px);
+         box-shadow: 
+         0 25px 50px -12px rgba(0, 0, 0, 0.5),
+         0 0 0 1px rgba(255, 255, 255, 0.1);
+         transform-style: preserve-3d;
+         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+         }
+         .movie-card:hover {
+         transform: translateY(-8px);
+         box-shadow: 
+         0 30px 60px -12px rgba(0, 0, 0, 0.6),
+         0 0 0 2px rgba(255, 255, 255, 0.15);
+         }
+         .movie-content {
+         display: grid;
+         grid-template-columns: 350px 1fr;
+         gap: 3rem;
+         align-items: start;
+         }
+         @media (max-width: 768px) {
+         .movie-content {
+         grid-template-columns: 1fr;
+         }
+         }
+         .poster {
+         position: relative;
+         border-radius: 16px;
+         overflow: hidden;
+         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+         transition: transform 0.3s ease;
+         }
+         .poster::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: linear-gradient(
+         to bottom,
+         transparent 0%,
+         rgba(0, 0, 0, 0.2) 100%
+         );
+         z-index: 1;
+         }
+         .poster img {
+         width: 100%;
+         height: auto;
+         display: block;
+         transition: transform 0.5s ease;
+         }
+         .poster:hover img {
+         transform: scale(1.05);
+         }
+         .movie-info h2 {
+         font-size: 2.5rem;
+         margin-bottom: 1.5rem;
+         line-height: 1.2;
+         background: linear-gradient(135deg, #fff, #e2e8f0);
+         -webkit-background-clip: text;
+         -webkit-text-fill-color: transparent;
+         }
+         .movie-meta {
+         display: flex;
+         gap: 1.5rem;
+         flex-wrap: wrap;
+         margin-bottom: 2rem;
+         }
+         .meta-item {
+         display: flex;
+         align-items: center;
+         gap: 0.75rem;
+         background: rgba(255, 255, 255, 0.1);
+         padding: 0.75rem 1.5rem;
+         border-radius: 30px;
+         font-size: 1rem;
+         letter-spacing: 0.5px;
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         transition: all 0.3s ease;
+         }
+         .meta-item:hover {
+         background: rgba(255, 255, 255, 0.15);
+         border-color: rgba(255, 255, 255, 0.2);
+         transform: translateY(-2px);
+         }
+         .rating {
+         color: #fbbf24;
+         font-weight: 600;
+         }
+         .overview {
+         font-size: 1.1rem;
+         line-height: 1.8;
+         margin-bottom: 2.5rem;
+         color: rgba(248, 250, 252, 0.9);
+         position: relative;
+         padding-left: 1.5rem;
+         border-left: 3px solid var(--primary);
+         }
+         .genres {
+         display: flex;
+         gap: 0.75rem;
+         flex-wrap: wrap;
+         margin-bottom: 2.5rem;
+         }
+         .genre {
+         background: rgba(109, 40, 217, 0.2);
+         color: #c4b5fd;
+         padding: 0.75rem 1.5rem;
+         border-radius: 30px;
+         font-size: 0.95rem;
+         letter-spacing: 0.5px;
+         border: 1px solid rgba(109, 40, 217, 0.3);
+         transition: all 0.3s ease;
+         }
+         .genre:hover {
+         background: rgba(109, 40, 217, 0.3);
+         border-color: rgba(109, 40, 217, 0.4);
+         transform: translateY(-2px);
+         }
+         .streaming-info {
+         margin-bottom: 2.5rem;
+         padding: 1.5rem;
+         background: rgba(255, 255, 255, 0.05);
+         border-radius: 16px;
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         }
+         .streaming-section {
+         margin-bottom: 1.5rem;
+         }
+         .streaming-section:last-child {
+         margin-bottom: 0;
+         }
+         .streaming-section h3 {
+         font-size: 1.1rem;
+         margin-bottom: 1rem;
+         color: rgba(248, 250, 252, 0.8);
+         }
+         .provider-list {
+         display: flex;
+         gap: 1rem;
+         flex-wrap: wrap;
+         }
+         .provider {
+         width: 40px;
+         height: 40px;
+         border-radius: 8px;
+         overflow: hidden;
+         transition: transform 0.3s ease;
+         }
+         .provider:hover {
+         transform: scale(1.1);
+         }
+         .provider img {
+         width: 100%;
+         height: 100%;
+         object-fit: cover;
+         }
+         .action-buttons {
+         display: grid;
+         grid-template-columns: repeat(4, 1fr);
+         gap: 1rem;
+         margin-top: 2.5rem;
+         }
+         @media (max-width: 768px) {
+         .action-buttons {
+         grid-template-columns: 1fr;
+         }
+         }
+         .btn {
+         padding: 1.25rem;
+         border: none;
+         border-radius: 12px;
+         font-size: 1rem;
+         font-weight: 600;
+         font-family: 'Space Grotesk', sans-serif;
+         cursor: pointer;
+         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         gap: 0.75rem;
+         position: relative;
+         overflow: hidden;
+         }
+         .btn::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: 0;
+         width: 100%;
+         height: 100%;
+         background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+         opacity: 0;
+         transition: opacity 0.3s ease;
+         }
+         .btn:hover::before {
+         opacity: 1;
+         }
+         .btn-next {
+         background: linear-gradient(135deg, #FDC407, #816300);
+         color: white;
+         }
+         .btn-love {
+         background: linear-gradient(135deg, var(--love), #be123c);
+         color: white;
+         }
+         .btn-like {
+         background: linear-gradient(135deg, var(--like), #1d4ed8);
+         color: white;
+         }
+         .btn-watched {
+         background: linear-gradient(135deg, var(--watched), #334155);
+         color: white;
+         }
+         .btn:hover {
+         transform: translateY(-3px);
+         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+         }
+         .btn:active {
+         transform: translateY(-1px);
+         }
+         .recommendations {
+         margin-top: 3rem;
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+         gap: 1.5rem;
+         opacity: 0;
+         transform: translateY(20px);
+         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+         }
+         .recommendations.visible {
+         opacity: 1;
+         transform: translateY(0);
+         }
+         .recommended-movie {
+         background: var(--card-bg);
+         border-radius: 16px;
+         overflow: hidden;
+         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         }
+         .recommended-movie:hover {
+         transform: translateY(-5px) scale(1.02);
+         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+         }
+         .recommended-movie img {
+         width: 100%;
+         height: 330px;
+         object-fit: cover;
+         transition: transform 0.5s ease;
+         }
+         .recommended-movie:hover img {
+         transform: scale(1.05);
+         }
+         .recommended-movie-info {
+         padding: 1.5rem;
+         }
+         .recommended-movie-title {
+         font-size: 1.1rem;
+         font-weight: 600;
+         margin-bottom: 0.75rem;
+         color: rgba(255, 255, 255, 0.95);
+         }
+         .recommended-movie-meta {
+         font-size: 0.9rem;
+         color: rgba(255, 255, 255, 0.7);
+         }
+         .loading {
+         text-align: center;
+         padding: 3rem;
+         }
+         .loading i {
+         font-size: 2.5rem;
+         color: var(--primary);
+         animation: pulse 2s infinite;
+         }
+         @keyframes pulse {
+         0% { opacity: 1; transform: scale(1); }
+         50% { opacity: 0.5; transform: scale(0.95); }
+         100% { opacity: 1; transform: scale(1); }
+         }
+         .error {
+         text-align: center;
+         padding: 3rem;
+         color: #ef4444;
+         }
+         .toast {
+         position: fixed;
+         bottom: 2rem;
+         right: 2rem;
+         background: var(--card-bg);
+         padding: 1rem 2rem;
+         border-radius: 12px;
+         backdrop-filter: blur(10px);
+         transform: translateX(200%);
+         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+         z-index: 1000;
+         border: 1px solid rgba(255, 255, 255, 0.1);
+         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+         font-weight: 500;
+         }
+         .toast.visible {
+         transform: translateX(0);
+         }
+         .no-streaming {
+         text-align: center;
+         color: rgba(248, 250, 252, 0.7);
+         font-style: italic;
+         }
+         .footer {
+         text-align: center;
+         padding: 2rem 0;
+         margin-top: 3rem;
+         color: var(--text);
+         font-size: 1.1rem;
+         position: relative;
+         overflow: hidden;
+         }
+         .footer-content {
+         position: relative;
+         padding: 1.5rem 3rem;
+         background: rgba(17, 24, 39, 0.7);
+         border-radius: 20px;
+         backdrop-filter: blur(10px);
+         box-shadow: 
+         0 10px 30px -5px rgba(0, 0, 0, 0.3),
+         0 0 0 1px rgba(255, 255, 255, 0.1),
+         inset 0 0 20px rgba(99, 102, 241, 0.1);
+         display: inline-block;
+         transform-style: preserve-3d;
+         transition: all 0.3s ease;
+         }
+         .footer-content:hover {
+         transform: translateY(-5px);
+         box-shadow: 
+         0 15px 40px -5px rgba(0, 0, 0, 0.4),
+         0 0 0 1px rgba(255, 255, 255, 0.2),
+         inset 0 0 30px rgba(99, 102, 241, 0.2);
+         }
+         .footer-content::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: 0;
+         right: 0;
+         height: 1px;
+         background: linear-gradient(90deg, 
+         transparent, 
+         rgba(99, 102, 241, 0.3), 
+         rgba(124, 58, 237, 0.5), 
+         rgba(99, 102, 241, 0.3), 
+         transparent
+         );
+         animation: shimmer 2s infinite;
+         }
+         @keyframes shimmer {
+         0% { transform: translateX(-100%); }
+         100% { transform: translateX(100%); }
+         }
+         .footer a {
+         color: #a5b4fc;
+         text-decoration: none;
+         position: relative;
+         padding: 0 4px;
+         font-weight: 600;
+         transition: all 0.3s ease;
+         }
+         .footer a {
+         display: inline-block;
+         position: relative;
+         padding: 0.2em 0.5em;
+         margin: 0 0.2em;
+         text-decoration: none;
+         color: #a5b4fc;
+         font-weight: 600;
+         transition: all 0.3s ease;
+         border-radius: 4px;
+         }
+         .footer a::before,
+         .footer a::after {
+         content: '';
+         position: absolute;
+         width: 100%;
+         height: 2px;
+         background: linear-gradient(90deg, #818cf8, #c084fc);
+         left: 0;
+         transform: scaleX(0);
+         transition: transform 0.3s ease;
+         }
+         .footer a::before {
+         top: 0;
+         transform-origin: left;
+         }
+         .footer a::after {
+         bottom: 0;
+         transform-origin: right;
+         }
+         .footer a:hover {
+         color: #c7d2fe;
+         text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+         background: rgba(99, 102, 241, 0.1);
+         }
+         .footer a:hover::before {
+         transform: scaleX(1);
+         transform-origin: right
+         @keyframes bounce {
+         0%, 100% { transform: translateY(0); }
+         50% { transform: translateY(-4px); }
+         }
+      </style>
+   </head>
+   <body>
+      <div class="gradient-background"></div>
+      <div class="container">
+         <div class="header">
+            <div class="title-container">
+               <h1 data-text="What Movie To Watch!">
+                  <span class="title-letter">🎬 Which Movie To Watch!</span>
+               </h1>
+            </div>
+         </div>
+         <div class="movie-card" id="movieCard">
+            <div class="loading">
+               <i class="fas fa-film"></i>
+               <p>Discovering your next favorite movie...</p>
+            </div>
+         </div>
+         <div class="recommendations" id="recommendationsSection"></div>
+         <div class="footer">
+            <div class="footer-content">
+               Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">Kohulan.R</a>
+            </div>
+         </div>
+      </div>
+      <div class="toast" id="toast"></div>
+      <script>
+         // Function to create provider links
+         function createProviderLink(provider) {
+             const providerUrl = getProviderURL(provider.provider_name);
+             return `
+                 <a href="${providerUrl}" 
+                    class="provider" 
+                    title="${provider.provider_name}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                     <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                          alt="${provider.provider_name}" 
+                          loading="lazy" />
+                 </a>
+             `;
+         }
+         
+         // Function to get streaming provider URLs
+         function getProviderURL(providerName) {
+             // Normalize provider name for matching
+             const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
+             
+             const providers = {
+                 // Streaming Services
+                 'netflix': 'https://www.netflix.com',
+                 'amazonprimevideo': 'https://www.primevideo.com',
+                 'prime': 'https://www.primevideo.com',
+                 'disneyplus': 'https://www.disneyplus.com',
+                 'disney+': 'https://www.disneyplus.com',
+                 'hulu': 'https://www.hulu.com',
+                 'hbomax': 'https://www.max.com',
+                 'max': 'https://www.max.com',
+                 'appletv': 'https://tv.apple.com',
+                 'appletv+': 'https://tv.apple.com',
+                 'appletvplus': 'https://tv.apple.com',
+                 'paramountplus': 'https://www.paramountplus.com',
+                 'paramount+': 'https://www.paramountplus.com',
+                 'peacock': 'https://www.peacocktv.com',
+                 'peacockpremium': 'https://www.peacocktv.com',
+                 'crunchyroll': 'https://www.crunchyroll.com',
+                 'amc+': 'https://www.amcplus.com',
+                 'amcplus': 'https://www.amcplus.com',
+                 'showtime': 'https://www.showtime.com',
+                 'starz': 'https://www.starz.com',
+                 'discovery+': 'https://www.discoveryplus.com',
+                 'discoveryplus': 'https://www.discoveryplus.com',
+                 'mubi': 'https://mubi.com',
+                 'britbox': 'https://www.britbox.com',
+                 'shudder': 'https://www.shudder.com',
+                 'funimation': 'https://www.funimation.com',
+                 'tubi': 'https://tubitv.com',
+                 'plutotv': 'https://pluto.tv',
+                 'kanopy': 'https://www.kanopy.com',
+                 'criterionchannel': 'https://www.criterionchannel.com',
+                 'rakutentv': 'https://www.rakuten.tv',
+                 'nowtv': 'https://www.nowtv.com',
+                 
+                 // Digital Purchase/Rental Services
+                 'googleplay': 'https://play.google.com/store/movies',
+                 'googletv': 'https://play.google.com/store/movies',
+                 'googleplaymovies': 'https://play.google.com/store/movies',
+                 'vudu': 'https://www.vudu.com',
+                 'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
+                 'itunes': 'https://www.apple.com/itunes',
+                 'youtube': 'https://www.youtube.com/movies',
+                 'amazonvideo': 'https://www.amazon.com/video',
+                 
+                 // Regional Services
+                 'stan': 'https://www.stan.com.au',
+                 'crave': 'https://www.crave.ca',
+                 'skygo': 'https://www.sky.com/watch',
+                 'hotstar': 'https://www.hotstar.com',
+                 'zee5': 'https://www.zee5.com',
+                 'iciturbo': 'https://ici.tou.tv',
+                 'viaplay': 'https://viaplay.com',
+                 'skyshowtime': 'https://www.skyshowtime.com',
+                 'wowpresents+': 'https://www.wowpresentsplus.com',
+                 'bbc': 'https://www.bbc.co.uk/iplayer',
+                 'bbciplayer': 'https://www.bbc.co.uk/iplayer'
+             };
+         
+             // Try to match the normalized provider name
+             const providerKey = Object.keys(providers).find(key => 
+                 normalizedName.includes(key.toLowerCase())
+             );
+         
+             return providerKey ? providers[providerKey] : '#';
+             return providers[providerName] || '#';
+         }
+         
+         // Global variables
+         const API_KEY = '__API_KEY__';
+         const BASE_URL = 'https://api.themoviedb.org/3';
+         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+         let userCountry = 'DE';  // Default country
+         
+         // Initialize preferences with localStorage
+         const preferences = {
+             watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
+             likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
+             lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || []
+         };
+         
+         // Detect user's country
+         fetch('https://ipapi.co/json/')
+             .then(response => response.json())
+             .then(data => {
+                 if (data.country_code) {
+                     userCountry = data.country_code;
+                     console.log('Detected country:', userCountry);
+                 }
+             })
+             .catch(error => {
+                 console.error('Error detecting country:', error);
+             });
+         
+         async function fetchRandomMovie() {
+             try {
+                 const loadingAnimation = `
+                     <div class="loading">
+                         <i class="fas fa-film"></i>
+                         <p>Discovering your next favorite movie...</p>
+                     </div>
+                 `;
+                 document.getElementById('movieCard').innerHTML = loadingAnimation;
+         
+                 const randomPage = Math.floor(Math.random() * 500) + 1;
+                 const response = await fetch(
+                     `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=100&include_adult=false`
+                 );
+         
+                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+         
+                 const data = await response.json();
+                 if (!data.results || data.results.length === 0) {
+                     throw new Error('No movies found in response');
+                 }
+         
+                 // Filter out watched movies
+                 const availableMovies = data.results.filter(
+                     movie => !preferences.watchedMovies.includes(movie.id)
+                 );
+         
+                 if (availableMovies.length === 0) {
+                     throw new Error('No unwatched movies found');
+                 }
+         
+                 const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+                 
+                 const movieDetailsResponse = await fetch(
+                     `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers,credits`
+                 );
+         
+                 if (!movieDetailsResponse.ok) {
+                     throw new Error(`HTTP error! status: ${movieDetailsResponse.status}`);
+                 }
+         
+                 const movieData = await movieDetailsResponse.json();
+                 displayMovie(movieData);
+             } catch (error) {
+                 console.error('Error fetching movie:', error);
+                 displayError(error.message);
+             }
+         }
+         
+         function displayMovie(movie) {
+             if (!movie) {
+                 displayError('No movie data available');
+                 return;
+             }
+         
+             const movieCard = document.getElementById('movieCard');
+             const releaseYear = new Date(movie.release_date).getFullYear();
+             const rating = (movie.vote_average * 10).toFixed(1);
+         
+             // Get streaming providers for the detected country
+             const providers = movie['watch/providers']?.results?.[userCountry] || {};
+             const streamingProviders = providers.flatrate || [];
+             const rentProviders = providers.rent || [];
+             const buyProviders = providers.buy || [];
+         
+             // Create streaming providers HTML with enhanced styling
+             const streamingHTML = streamingProviders.length > 0 ? `
+                 <div class="streaming-section">
+                     <h3><i class="fas fa-play-circle"></i> Stream on:</h3>
+                     <div class="provider-list">
+                         ${streamingProviders.map(provider => `
+                             <a href="${getProviderURL(provider.provider_name)}" 
+                                class="provider" 
+                                title="${provider.provider_name}"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                 <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                                      alt="${provider.provider_name}" 
+                                      loading="lazy" />
+                             </a>
+                         `).join('')}
+                     </div>
+                 </div>
+             ` : '';
+         
+             const rentHTML = rentProviders.length > 0 ? `
+                 <div class="streaming-section">
+                     <h3><i class="fas fa-ticket-alt"></i> Rent on:</h3>
+                     <div class="provider-list">
+                         ${rentProviders.map(provider => createProviderLink(provider)).join('')}
+                     </div>
+                 </div>
+             ` : '';
+         
+             const buyHTML = buyProviders.length > 0 ? `
+                 <div class="streaming-section">
+                     <h3><i class="fas fa-shopping-cart"></i> Buy on:</h3>
+                     <div class="provider-list">
+                         ${buyProviders.map(provider => createProviderLink(provider)).join('')}
+                     </div>
+                 </div>
+             ` : '';
+         
+             const availabilityMessage = !streamingProviders.length && !rentProviders.length && !buyProviders.length
+                 ? `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>`
+                 : '';
+         
+             movieCard.innerHTML = `
+                 <div class="movie-content">
+                     <div class="poster">
+                         <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                              alt="${movie.title}"
+                              onerror="this.src='https://via.placeholder.com/350x525?text=No+Poster'" />
+                     </div>
+                     <div class="movie-info">
+                         <h2>${movie.title}</h2>
+                         <div class="movie-meta">
+                             <div class="meta-item">
+                                 <i class="fas fa-calendar"></i>
+                                 ${releaseYear}
+                             </div>
+                             <div class="meta-item">
+                                 <i class="fas fa-clock"></i>
+                                 ${movie.runtime || 'N/A'} min
+                             </div>
+                             <div class="meta-item rating">
+                                 <i class="fas fa-star"></i>
+                                 ${rating}%
+                             </div>
+                         </div>
+                         <div class="genres">
+                             ${movie.genres ? movie.genres.map(genre => `
+                                 <span class="genre">${genre.name}</span>
+                             `).join('') : ''}
+                         </div>
+                         <p class="overview">${movie.overview || 'No overview available.'}</p>
+                         
+                         <div class="streaming-info">
+                             ${streamingHTML}
+                             ${rentHTML}
+                             ${buyHTML}
+                             ${availabilityMessage}
+                         </div>
+         
+                         <div class="action-buttons">
+                             <button class="btn btn-next" onclick="fetchRandomMovie()">
+                                 <i class="fas fa-random"></i>
+                                 Next Movie
+                             </button>
+                             <button class="btn btn-love" onclick="handleLove(${movie.id})">
+                                 <i class="fas fa-heart"></i>
+                                 Love it!
+                             </button>
+                             <button class="btn btn-like" onclick="handleLike(${movie.id})">
+                                 <i class="fas fa-thumbs-up"></i>
+                                 Like it
+                             </button>
+                             <button class="btn btn-watched" onclick="handleWatched(${movie.id})">
+                                 <i class="fas fa-check"></i>
+                                 Watched
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             `;
+         
+             document.getElementById('recommendationsSection').innerHTML = '';
+         }
+         
+         async function handleLove(movieId) {
+             try {
+                 const response = await fetch(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
+                 const data = await response.json();
+                 
+                 if (!preferences.lovedMovies.includes(movieId)) {
+                     preferences.lovedMovies.push(movieId);
+                     localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
+                 }
+         
+                 const unwatchedSimilarMovies = data.results
+                     .filter(movie => !preferences.watchedMovies.includes(movie.id))
+                     .slice(0, 5);
+         
+                 displayRecommendations(unwatchedSimilarMovies, '❤️ Because you loved this movie');
+                 showToast('Great choice! Here are similar movies you might love');
+             } catch (error) {
+                 console.error('Error handling love:', error);
+                 showToast('Failed to fetch similar movies');
+             }
+         }
+         
+         async function handleLike(movieId) {
+             try {
+                 const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+                 const movie = await response.json();
+         
+                 movie.genres.forEach(genre => {
+                     preferences.likedGenres[genre.id] = (preferences.likedGenres[genre.id] || 0) + 1;
+                 });
+                 localStorage.setItem('likedGenres', JSON.stringify(preferences.likedGenres));
+         
+                 const topGenres = Object.entries(preferences.likedGenres)
+                     .sort((a, b) => b[1] - a[1])
+                     .slice(0, 3)
+                     .map(([genreId]) => genreId);
+         
+                 const genreResponse = await fetch(
+                     `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${topGenres.join(',')}`
+                 );
+                 const genreData = await genreResponse.json();
+         
+                 const unwatchedRecommendations = genreData.results
+                     .filter(movie => !preferences.watchedMovies.includes(movie.id))
+                     .slice(0, 5);
+         
+                 displayRecommendations(unwatchedRecommendations, '🎯 Based on genres you like');
+                 showToast('Cool! Here are some movies in similar genres');
+             } catch (error) {
+                 console.error('Error handling like:', error);
+                 showToast('Failed to fetch recommendations');
+             }
+         }
+         
+         function handleWatched(movieId) {
+             if (!preferences.watchedMovies.includes(movieId)) {
+                 preferences.watchedMovies.push(movieId);
+                 localStorage.setItem('watchedMovies', JSON.stringify(preferences.watchedMovies));
+             }
+             showToast('Noted! We won\'t show this movie again');
+             fetchRandomMovie();
+         }
+         
+         function displayRecommendations(movies, title) {
+             const recommendationsSection = document.getElementById('recommendationsSection');
+             if (!movies || movies.length === 0) {
+                 recommendationsSection.innerHTML = `
+                     <h3 style="grid-column: 1/-1; margin-bottom: 1rem;">No recommendations found</h3>
+                 `;
+                 return;
+             }
+         
+             recommendationsSection.innerHTML = `
+                 <h3 style="grid-column: 1/-1; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text);">
+                     ${title}
+                 </h3>
+                 ${movies.map(movie => `
+                     <div class="recommended-movie">
+                         <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                              alt="${movie.title}"
+                              loading="lazy"
+                              onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
+                         <div class="recommended-movie-info">
+                             <div class="recommended-movie-title">${movie.title}</div>
+                             <div class="recommended-movie-meta">
+                                 ${new Date(movie.release_date).getFullYear()} • 
+                                 ${(movie.vote_average * 10).toFixed(1)}%
+                             </div>
+                         </div>
+                     </div>
+                 `).join('')}
+             `;
+             recommendationsSection.classList.add('visible');
+         }
+         
+         function showToast(message) {
+             const toast = document.getElementById('toast');
+             toast.textContent = message;
+             toast.classList.add('visible');
+             setTimeout(() => {
+                 toast.classList.remove('visible');
+             }, 3000);
+         }
+         
+         function displayError(message = 'Something went wrong') {
+             const movieCard = document.getElementById('movieCard');
+             movieCard.innerHTML = `
+                 <div class="error">
+                     <i class="fas fa-exclamation-circle"></i>
+                     <p>Error: ${message}</p>
+                     <button class="btn btn-next" onclick="fetchRandomMovie()">
+                         <i class="fas fa-redo"></i>
+                         Try Again
+                     </button>
+                 </div>
+             `;
+         }
+         
+         // Check API key and start fetching
+         if (!API_KEY || API_KEY === '__API_KEY__') {
+             displayError('Please provide a valid TMDB API key');
+         } else {
+             fetchRandomMovie();
+         }
+      </script>
+   </body>
+</html>
