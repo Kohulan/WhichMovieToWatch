@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinematic - Movie Discovery</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-          <style>
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Cinematic - Movie Discovery</title>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+      <style>
          @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
          :root {
          --background: #0E0E12;
@@ -522,445 +522,464 @@
          50% { transform: translateY(-4px); }
          }
       </style>
-</head>
-<body>
-    <div class="gradient-background"></div>
-    <div class="container">
-        <div class="header">
+   </head>
+   <body>
+      <div class="gradient-background"></div>
+      <div class="container">
+         <div class="header">
             <div class="title-container">
-                <h1 data-text="What Movie To Watch!">
-                    <span class="title-letter">🎬 Which Movie To Watch!</span>
-                </h1>
+               <h1 data-text="What Movie To Watch!">
+                  <span class="title-letter">🎬 Which Movie To Watch!</span>
+               </h1>
             </div>
-        </div>
-        <div class="movie-card" id="movieCard">
+         </div>
+         <div class="movie-card" id="movieCard">
             <div class="loading">
-                <i class="fas fa-film"></i>
-                <p>Discovering your next favorite movie...</p>
+               <i class="fas fa-film"></i>
+               <p>Discovering your next favorite movie...</p>
             </div>
-        </div>
-        <div class="recommendations" id="recommendationsSection"></div>
-        <div class="footer">
+         </div>
+         <div class="recommendations" id="recommendationsSection"></div>
+         <div class="footer">
             <div class="footer-content">
-                Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">Kohulan.R</a>
+               Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">Kohulan.R</a>
             </div>
-        </div>
-    </div>
-    <div class="toast" id="toast"></div>
+         </div>
+      </div>
+      <div class="toast" id="toast"></div>
+      <script>
+         // Function to create provider links
+         function createProviderLink(provider) {
+             const providerUrl = getProviderURL(provider.provider_name);
+             return `
+                 <a href="${providerUrl}" 
+                    class="provider" 
+                    title="${provider.provider_name}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                     <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                          alt="${provider.provider_name}" 
+                          loading="lazy" />
+                 </a>
+             `;
+         }
+         
+         // Function to get streaming provider URLs
+         function getProviderURL(providerName) {
+             // Normalize provider name for matching
+             const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
+             
+             const providers = {
+                 // Streaming Services
+                 'netflix': 'https://www.netflix.com',
+                 'amazonprimevideo': 'https://www.primevideo.com',
+                 'prime': 'https://www.primevideo.com',
+                 'disneyplus': 'https://www.disneyplus.com',
+                 'disney+': 'https://www.disneyplus.com',
+                 'hulu': 'https://www.hulu.com',
+                 'hbomax': 'https://www.max.com',
+                 'max': 'https://www.max.com',
+                 'appletv': 'https://tv.apple.com',
+                 'appletv+': 'https://tv.apple.com',
+                 'appletvplus': 'https://tv.apple.com',
+                 'paramountplus': 'https://www.paramountplus.com',
+                 'paramount+': 'https://www.paramountplus.com',
+                 'peacock': 'https://www.peacocktv.com',
+                 'peacockpremium': 'https://www.peacocktv.com',
+                 'crunchyroll': 'https://www.crunchyroll.com',
+                 'amc+': 'https://www.amcplus.com',
+                 'amcplus': 'https://www.amcplus.com',
+                 'showtime': 'https://www.showtime.com',
+                 'starz': 'https://www.starz.com',
+                 'discovery+': 'https://www.discoveryplus.com',
+                 'discoveryplus': 'https://www.discoveryplus.com',
+                 'mubi': 'https://mubi.com',
+                 'britbox': 'https://www.britbox.com',
+                 'shudder': 'https://www.shudder.com',
+                 'funimation': 'https://www.funimation.com',
+                 'tubi': 'https://tubitv.com',
+                 'plutotv': 'https://pluto.tv',
+                 'kanopy': 'https://www.kanopy.com',
+                 'criterionchannel': 'https://www.criterionchannel.com',
+                 'rakutentv': 'https://www.rakuten.tv',
+                 'nowtv': 'https://www.nowtv.com',
+                 
+                 // Digital Purchase/Rental Services
+                 'googleplay': 'https://play.google.com/store/movies',
+                 'googletv': 'https://play.google.com/store/movies',
+                 'googleplaymovies': 'https://play.google.com/store/movies',
+                 'vudu': 'https://www.vudu.com',
+                 'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
+                 'itunes': 'https://www.apple.com/itunes',
+                 'youtube': 'https://www.youtube.com/movies',
+                 'amazonvideo': 'https://www.amazon.com/video',
+                 
+                 // Regional Services
+                 'stan': 'https://www.stan.com.au',
+                 'crave': 'https://www.crave.ca',
+                 'skygo': 'https://www.sky.com/watch',
+                 'hotstar': 'https://www.hotstar.com',
+                 'zee5': 'https://www.zee5.com',
+                 'iciturbo': 'https://ici.tou.tv',
+                 'viaplay': 'https://viaplay.com',
+                 'skyshowtime': 'https://www.skyshowtime.com',
+                 'wowpresents+': 'https://www.wowpresentsplus.com',
+                 'bbc': 'https://www.bbc.co.uk/iplayer',
+                 'bbciplayer': 'https://www.bbc.co.uk/iplayer'
+             };
+         
+             // Try to match the normalized provider name
+             const providerKey = Object.keys(providers).find(key => 
+                 normalizedName.includes(key.toLowerCase())
+             );
+         
+             return providerKey ? providers[providerKey] : '#';
+             return providers[providerName] || '#';
+         }
+         
+         // Global variables
+         const API_KEY = '__API_KEY__';
+         const BASE_URL = 'https://api.themoviedb.org/3';
+         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+         let userCountry = 'DE';  // Default country
+         
+         // Initialize preferences with localStorage
+         const preferences = {
+             watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
+             likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
+             lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || []
+         };
+         
+         // Detect user's country
+         fetch('https://ipapi.co/json/')
+             .then(response => response.json())
+             .then(data => {
+                 if (data.country_code) {
+                     userCountry = data.country_code;
+                     console.log('Detected country:', userCountry);
+                 }
+             })
+             .catch(error => {
+                 console.error('Error detecting country:', error);
+             });
 
-    <script>
-        // Function to create provider links
-        function createProviderLink(provider) {
-            const providerUrl = getProviderURL(provider.provider_name);
-            return `
-                <a href="${providerUrl}" 
-                   class="provider" 
-                   title="${provider.provider_name}"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
-                         alt="${provider.provider_name}" 
-                         loading="lazy" />
-                </a>
-            `;
-        }
-
-        // Function to get streaming provider URLs
-        function getProviderURL(providerName) {
-            const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
-            
-            const providers = {
-                'netflix': 'https://www.netflix.com',
-                'amazonprimevideo': 'https://www.primevideo.com',
-                'prime': 'https://www.primevideo.com',
-                'disneyplus': 'https://www.disneyplus.com',
-                'disney+': 'https://www.disneyplus.com',
-                'hulu': 'https://www.hulu.com',
-                'hbomax': 'https://www.max.com',
-                'max': 'https://www.max.com',
-                'appletv': 'https://tv.apple.com',
-                'appletv+': 'https://tv.apple.com',
-                'appletvplus': 'https://tv.apple.com',
-                'paramountplus': 'https://www.paramountplus.com',
-                'paramount+': 'https://www.paramountplus.com',
-                'peacock': 'https://www.peacocktv.com',
-                'peacockpremium': 'https://www.peacocktv.com',
-                'crunchyroll': 'https://www.crunchyroll.com',
-                'amc+': 'https://www.amcplus.com',
-                'amcplus': 'https://www.amcplus.com',
-                'showtime': 'https://www.showtime.com',
-                'starz': 'https://www.starz.com',
-                'discovery+': 'https://www.discoveryplus.com',
-                'discoveryplus': 'https://www.discoveryplus.com',
-                'mubi': 'https://mubi.com',
-                'britbox': 'https://www.britbox.com',
-                'shudder': 'https://www.shudder.com',
-                'funimation': 'https://www.funimation.com',
-                'tubi': 'https://tubitv.com',
-                'plutotv': 'https://pluto.tv',
-                'kanopy': 'https://www.kanopy.com',
-                'criterionchannel': 'https://www.criterionchannel.com',
-                'rakutentv': 'https://www.rakuten.tv',
-                'nowtv': 'https://www.nowtv.com',
-                'googleplay': 'https://play.google.com/store/movies',
-                'googletv': 'https://play.google.com/store/movies',
-                'googleplaymovies': 'https://play.google.com/store/movies',
-                'vudu': 'https://www.vudu.com',
-                'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
-                'itunes': 'https://www.apple.com/itunes',
-                'youtube': 'https://www.youtube.com/movies',
-                'amazonvideo': 'https://www.amazon.com/video'
-            };
-
-            const providerKey = Object.keys(providers).find(key => 
-                normalizedName.includes(key.toLowerCase())
-            );
-
-            return providerKey ? providers[providerKey] : '#';
-        }
-
-        // Global variables
-        const API_KEY = '__API_KEY__';
-        const BASE_URL = 'https://api.themoviedb.org/3';
-        const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-        let userCountry = 'DE';  // Default country
-
-        // Initialize preferences with localStorage
-        const preferences = {
-            watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
-            likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
-            lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || []
-        };
-
-        // Add retry mechanism for API key validation
-        async function validateApiKey(retryCount = 0) {
+         async function validateAndFetch() {
             try {
-                const response = await fetch(`${BASE_URL}/configuration?api_key=${API_KEY}`);
-                if (response.ok) {
-                    return true;
-                }
-                throw new Error('Invalid API key');
-            } catch (error) {
-                if (retryCount < 3) {
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-                    return validateApiKey(retryCount + 1);
-                }
-                return false;
-            }
-        }
-
-        // Detect user's country
-        fetch('https://ipapi.co/json/')
-            .then(response => response.json())
-            .then(data => {
-                if (data.country_code) {
-                    userCountry = data.country_code;
-                    console.log('Detected country:', userCountry);
-                }
-            })
-            .catch(error => {
-                console.error('Error detecting country:', error);
-            });
-
-        async function fetchRandomMovie() {
-            try {
-                displayLoading();
-
-                const randomPage = Math.floor(Math.random() * 500) + 1;
-                const response = await fetch(
-                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=100&include_adult=false`
+                const testResponse = await fetch(
+                    `${BASE_URL}/configuration?api_key=${API_KEY}`
                 );
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-                const data = await response.json();
-                if (!data.results || data.results.length === 0) {
-                    throw new Error('No movies found in response');
-                }
-
-                const availableMovies = data.results.filter(
-                    movie => !preferences.watchedMovies.includes(movie.id)
-                );
-
-                if (availableMovies.length === 0) {
-                    throw new Error('No unwatched movies found');
-                }
-
-                const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
                 
-                const movieDetailsResponse = await fetch(
-                    `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers,credits`
-                );
-
-                if (!movieDetailsResponse.ok) {
-                    throw new Error(`HTTP error! status: ${movieDetailsResponse.status}`);
+                if (!testResponse.ok) {
+                    throw new Error('Invalid API key');
                 }
-
-                const movieData = await movieDetailsResponse.json();
-                displayMovie(movieData);
-            } catch (error) {
-                console.error('Error fetching movie:', error);
-                displayError(error.message);
-            }
-        }
-
-        function displayMovie(movie) {
-            if (!movie) {
-                displayError('No movie data available');
-                return;
-            }
-
-            const movieCard = document.getElementById('movieCard');
-            const releaseYear = new Date(movie.release_date).getFullYear();
-            const rating = (movie.vote_average * 10).toFixed(1);
-
-            const providers = movie['watch/providers']?.results?.[userCountry] || {};
-            const streamingProviders = providers.flatrate || [];
-            const rentProviders = providers.rent || [];
-            const buyProviders = providers.buy || [];
-
-            const streamingHTML = streamingProviders.length > 0 ? `
-                <div class="streaming-section">
-                    <h3><i class="fas fa-play-circle"></i> Stream on:</h3>
-                    <div class="provider-list">
-                        ${streamingProviders.map(provider => createProviderLink(provider)).join('')}
-                    </div>
-                </div>
-            ` : '';
-
-            const rentHTML = rentProviders.length > 0 ? `
-                <div class="streaming-section">
-                    <h3><i class="fas fa-ticket-alt"></i> Rent on:</h3>
-                    <div class="provider-list">
-                        ${rentProviders.map(provider => createProviderLink(provider)).join('')}
-                    </div>
-                </div>
-            ` : '';
-
-            const buyHTML = buyProviders.length > 0 ? `
-                <div class="streaming-section">
-                    <h3><i class="fas fa-shopping-cart"></i> Buy on:</h3>
-                    <div class="provider-list">
-                        ${buyProviders.map(provider => createProviderLink(provider)).join('')}
-                    </div>
-                </div>
-            ` : '';
-
-            const availabilityMessage = !streamingProviders.length && !rentProviders.length && !buyProviders.length
-                ? `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>`
-                : '';
-
-            movieCard.innerHTML = `
-                <div class="movie-content">
-                    <div class="poster">
-                        <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
-                             alt="${movie.title}"
-                             onerror="this.src='https://via.placeholder.com/350x525?text=No+Poster'" />
-                    </div>
-                    <div class="movie-info">
-                        <h2>${movie.title}</h2>
-                        <div class="movie-meta">
-                            <div class="meta-item">
-                                <i class="fas fa-calendar"></i>
-                                ${releaseYear}
-                            </div>
-                            <div class="meta-item">
-                                <i class="fas fa-clock"></i>
-                                ${movie.runtime || 'N/A'} min
-                            </div>
-                            <div class="meta-item rating">
-                                <i class="fas fa-star"></i>
-                                ${rating}%
-                            </div>
-                        </div>
-                        <div class="genres">
-                            ${movie.genres ? movie.genres.map(genre => `
-                                <span class="genre">${genre.name}</span>
-                            `).join('') : ''}
-                        </div>
-                        <p class="overview">${movie.overview || 'No overview available.'}</p>
-                        
-                        <div class="streaming-info">
-                            ${streamingHTML}
-                            ${rentHTML}
-                            ${buyHTML}
-                            ${availabilityMessage}
-                        </div>
-
-                        <div class="action-buttons">
-                            <button class="btn btn-next" onclick="fetchRandomMovie()">
-                                <i class="fas fa-random"></i>
-                                Next Movie
-                            </button>
-                            <button class="btn btn-love" onclick="handleLove(${movie.id})">
-                                <i class="fas fa-heart"></i>
-                                Love it!
-                            </button>
-                            <button class="btn btn-like" onclick="handleLike(${movie.id})">
-                                <i class="fas fa-thumbs-up"></i>
-                                Like it
-                            </button>
-                            <button class="btn btn-watched" onclick="handleWatched(${movie.id})">
-                                <i class="fas fa-check"></i>
-                                Watched
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function handleLove(movieId) {
-            try {
-                const response = await fetch(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
-                const data = await response.json();
                 
-                if (!preferences.lovedMovies.includes(movieId)) {
-                    preferences.lovedMovies.push(movieId);
-                    localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
-                }
-
-                const unwatchedSimilarMovies = data.results
-                    .filter(movie => !preferences.watchedMovies.includes(movie.id))
-                    .slice(0, 5);
-
-                displayRecommendations(unwatchedSimilarMovies, '❤️ Because you loved this movie');
-                showToast('Great choice! Here are similar movies you might love');
+                fetchRandomMovie();
+                
             } catch (error) {
-                console.error('Error handling love:', error);
-                showToast('Failed to fetch similar movies');
-            }
-        }
-
-        async function handleLike(movieId) {
-            try {
-                const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
-                const movie = await response.json();
-
-                movie.genres.forEach(genre => {
-                    preferences.likedGenres[genre.id] = (preferences.likedGenres[genre.id] || 0) + 1;
-                });
-                localStorage.setItem('likedGenres', JSON.stringify(preferences.likedGenres));
-
-                const topGenres = Object.entries(preferences.likedGenres)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 3)
-                    .map(([genreId]) => genreId);
-
-                const genreResponse = await fetch(
-                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${topGenres.join(',')}`
-                );
-                const genreData = await genreResponse.json();
-
-                const unwatchedRecommendations = genreData.results
-                    .filter(movie => !preferences.watchedMovies.includes(movie.id))
-                    .slice(0, 5);
-
-                displayRecommendations(unwatchedRecommendations, '🎯 Based on genres you like');
-                showToast('Cool! Here are some movies in similar genres');
-            } catch (error) {
-                console.error('Error handling like:', error);
-                showToast('Failed to fetch recommendations');
-            }
-        }
-
-        function handleWatched(movieId) {
-            if (!preferences.watchedMovies.includes(movieId)) {
-                preferences.watchedMovies.push(movieId);
-                localStorage.setItem('watchedMovies', JSON.stringify(preferences.watchedMovies));
-            }
-            showToast('Noted! We won\'t show this movie again');
-            fetchRandomMovie();
-        }
-
-        function displayRecommendations(movies, title) {
-            const recommendationsSection = document.getElementById('recommendationsSection');
-            if (!movies || movies.length === 0) {
-                recommendationsSection.innerHTML = `
-                    <h3 style="grid-column: 1/-1; margin-bottom: 1rem;">No recommendations found</h3>
+                console.error('API validation failed:', error);
+                const movieCard = document.getElementById('movieCard');
+                movieCard.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Initializing... Please wait.</p>
+                        <button class="btn btn-next" onclick="validateAndFetch()">
+                            <i class="fas fa-redo"></i>
+                            Try Again
+                        </button>
+                    </div>
                 `;
-                return;
+                setTimeout(validateAndFetch, 2000);
             }
-
-            recommendationsSection.innerHTML = `
-                <h3 style="grid-column: 1/-1; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text);">
-                    ${title}
-                </h3>
-                ${movies.map(movie => `
-                    <div class="recommended-movie">
-                        <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
-                             alt="${movie.title}"
-                             loading="lazy"
-                             onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
-                        <div class="recommended-movie-info">
-                            <div class="recommended-movie-title">${movie.title}</div>
-                            <div class="recommended-movie-meta">
-                                ${new Date(movie.release_date).getFullYear()} • 
-                                ${(movie.vote_average * 10).toFixed(1)}%
-                            </div>
-                        </div>
-                    </div>
-                `).join('')}
-            `;
-            recommendationsSection.classList.add('visible');
         }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('visible');
-            setTimeout(() => {
-                toast.classList.remove('visible');
-            }, 3000);
-        }
-
-        function displayLoading(message = 'Discovering your next favorite movie...') {
-            const movieCard = document.getElementById('movieCard');
-            movieCard.innerHTML = `
-                <div class="loading">
-                    <i class="fas fa-film"></i>
-                    <p>${message}</p>
-                </div>
-            `;
-        }
-
-        function displayError(message = 'Something went wrong') {
-            const movieCard = document.getElementById('movieCard');
-            movieCard.innerHTML = `
-                <div class="error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>${message}</p>
-                    <button class="btn btn-next" onclick="initializeApp()">
-                        <i class="fas fa-redo"></i>
-                        Try Again
-                    </button>
-                </div>
-            `;
-        }
-
-        // Modified initialization
-        async function initializeApp() {
-            // Show loading state
-            displayLoading('Initializing...');
-            
-            if (!API_KEY || API_KEY === '__API_KEY__') {
-                displayError('API key not found. Please refresh the page.');
-                return;
-            }
-
-            // Validate API key with retries
-            const isValid = await validateApiKey();
-            if (!isValid) {
-                displayError('Unable to connect to movie service. Please try again.');
-                return;
-            }
-
-            // If we get here, API key is valid - start the app
-            fetchRandomMovie();
-        }
-
-        // Start the application
-        document.addEventListener('DOMContentLoaded', initializeApp);
-    </script>
-</body>
+         
+         async function fetchRandomMovie() {
+             try {
+                 const loadingAnimation = `
+                     <div class="loading">
+                         <i class="fas fa-film"></i>
+                         <p>Discovering your next favorite movie...</p>
+                     </div>
+                 `;
+                 document.getElementById('movieCard').innerHTML = loadingAnimation;
+         
+                 const randomPage = Math.floor(Math.random() * 500) + 1;
+                 const response = await fetch(
+                     `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=100&include_adult=false`
+                 );
+         
+                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+         
+                 const data = await response.json();
+                 if (!data.results || data.results.length === 0) {
+                     throw new Error('No movies found in response');
+                 }
+         
+                 // Filter out watched movies
+                 const availableMovies = data.results.filter(
+                     movie => !preferences.watchedMovies.includes(movie.id)
+                 );
+         
+                 if (availableMovies.length === 0) {
+                     throw new Error('No unwatched movies found');
+                 }
+         
+                 const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+                 
+                 const movieDetailsResponse = await fetch(
+                     `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers,credits`
+                 );
+         
+                 if (!movieDetailsResponse.ok) {
+                     throw new Error(`HTTP error! status: ${movieDetailsResponse.status}`);
+                 }
+         
+                 const movieData = await movieDetailsResponse.json();
+                 displayMovie(movieData);
+             } catch (error) {
+                 console.error('Error fetching movie:', error);
+                 displayError(error.message);
+             }
+         }
+         
+         function displayMovie(movie) {
+             if (!movie) {
+                 displayError('No movie data available');
+                 return;
+             }
+         
+             const movieCard = document.getElementById('movieCard');
+             const releaseYear = new Date(movie.release_date).getFullYear();
+             const rating = (movie.vote_average * 10).toFixed(1);
+         
+             // Get streaming providers for the detected country
+             const providers = movie['watch/providers']?.results?.[userCountry] || {};
+             const streamingProviders = providers.flatrate || [];
+             const rentProviders = providers.rent || [];
+             const buyProviders = providers.buy || [];
+         
+             // Create streaming providers HTML with enhanced styling
+             const streamingHTML = streamingProviders.length > 0 ? `
+                 <div class="streaming-section">
+                     <h3><i class="fas fa-play-circle"></i> Stream on:</h3>
+                     <div class="provider-list">
+                         ${streamingProviders.map(provider => `
+                             <a href="${getProviderURL(provider.provider_name)}" 
+                                class="provider" 
+                                title="${provider.provider_name}"
+                                target="_blank"
+                                rel="noopener noreferrer">
+                                 <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                                      alt="${provider.provider_name}" 
+                                      loading="lazy" />
+                             </a>
+                         `).join('')}
+                     </div>
+                 </div>
+             ` : '';
+         
+             const rentHTML = rentProviders.length > 0 ? `
+                 <div class="streaming-section">
+                     <h3><i class="fas fa-ticket-alt"></i> Rent on:</h3>
+                     <div class="provider-list">
+                         ${rentProviders.map(provider => createProviderLink(provider)).join('')}
+                     </div>
+                 </div>
+             ` : '';
+         
+             const buyHTML = buyProviders.length > 0 ? `
+                 <div class="streaming-section">
+                     <h3><i class="fas fa-shopping-cart"></i> Buy on:</h3>
+                     <div class="provider-list">
+                         ${buyProviders.map(provider => createProviderLink(provider)).join('')}
+                     </div>
+                 </div>
+             ` : '';
+         
+             const availabilityMessage = !streamingProviders.length && !rentProviders.length && !buyProviders.length
+                 ? `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>`
+                 : '';
+         
+             movieCard.innerHTML = `
+                 <div class="movie-content">
+                     <div class="poster">
+                         <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                              alt="${movie.title}"
+                              onerror="this.src='https://via.placeholder.com/350x525?text=No+Poster'" />
+                     </div>
+                     <div class="movie-info">
+                         <h2>${movie.title}</h2>
+                         <div class="movie-meta">
+                             <div class="meta-item">
+                                 <i class="fas fa-calendar"></i>
+                                 ${releaseYear}
+                             </div>
+                             <div class="meta-item">
+                                 <i class="fas fa-clock"></i>
+                                 ${movie.runtime || 'N/A'} min
+                             </div>
+                             <div class="meta-item rating">
+                                 <i class="fas fa-star"></i>
+                                 ${rating}%
+                             </div>
+                         </div>
+                         <div class="genres">
+                             ${movie.genres ? movie.genres.map(genre => `
+                                 <span class="genre">${genre.name}</span>
+                             `).join('') : ''}
+                         </div>
+                         <p class="overview">${movie.overview || 'No overview available.'}</p>
+                         
+                         <div class="streaming-info">
+                             ${streamingHTML}
+                             ${rentHTML}
+                             ${buyHTML}
+                             ${availabilityMessage}
+                         </div>
+         
+                         <div class="action-buttons">
+                             <button class="btn btn-next" onclick="fetchRandomMovie()">
+                                 <i class="fas fa-random"></i>
+                                 Next Movie
+                             </button>
+                             <button class="btn btn-love" onclick="handleLove(${movie.id})">
+                                 <i class="fas fa-heart"></i>
+                                 Love it!
+                             </button>
+                             <button class="btn btn-like" onclick="handleLike(${movie.id})">
+                                 <i class="fas fa-thumbs-up"></i>
+                                 Like it
+                             </button>
+                             <button class="btn btn-watched" onclick="handleWatched(${movie.id})">
+                                 <i class="fas fa-check"></i>
+                                 Watched
+                             </button>
+                         </div>
+                     </div>
+                 </div>
+             `;
+         
+             document.getElementById('recommendationsSection').innerHTML = '';
+         }
+         
+         async function handleLove(movieId) {
+             try {
+                 const response = await fetch(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
+                 const data = await response.json();
+                 
+                 if (!preferences.lovedMovies.includes(movieId)) {
+                     preferences.lovedMovies.push(movieId);
+                     localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
+                 }
+         
+                 const unwatchedSimilarMovies = data.results
+                     .filter(movie => !preferences.watchedMovies.includes(movie.id))
+                     .slice(0, 5);
+         
+                 displayRecommendations(unwatchedSimilarMovies, '❤️ Because you loved this movie');
+                 showToast('Great choice! Here are similar movies you might love');
+             } catch (error) {
+                 console.error('Error handling love:', error);
+                 showToast('Failed to fetch similar movies');
+             }
+         }
+         
+         async function handleLike(movieId) {
+             try {
+                 const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+                 const movie = await response.json();
+         
+                 movie.genres.forEach(genre => {
+                     preferences.likedGenres[genre.id] = (preferences.likedGenres[genre.id] || 0) + 1;
+                 });
+                 localStorage.setItem('likedGenres', JSON.stringify(preferences.likedGenres));
+         
+                 const topGenres = Object.entries(preferences.likedGenres)
+                     .sort((a, b) => b[1] - a[1])
+                     .slice(0, 3)
+                     .map(([genreId]) => genreId);
+         
+                 const genreResponse = await fetch(
+                     `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${topGenres.join(',')}`
+                 );
+                 const genreData = await genreResponse.json();
+         
+                 const unwatchedRecommendations = genreData.results
+                     .filter(movie => !preferences.watchedMovies.includes(movie.id))
+                     .slice(0, 5);
+         
+                 displayRecommendations(unwatchedRecommendations, '🎯 Based on genres you like');
+                 showToast('Cool! Here are some movies in similar genres');
+             } catch (error) {
+                 console.error('Error handling like:', error);
+                 showToast('Failed to fetch recommendations');
+             }
+         }
+         
+         function handleWatched(movieId) {
+             if (!preferences.watchedMovies.includes(movieId)) {
+                 preferences.watchedMovies.push(movieId);
+                 localStorage.setItem('watchedMovies', JSON.stringify(preferences.watchedMovies));
+             }
+             showToast('Noted! We won\'t show this movie again');
+             fetchRandomMovie();
+         }
+         
+         function displayRecommendations(movies, title) {
+             const recommendationsSection = document.getElementById('recommendationsSection');
+             if (!movies || movies.length === 0) {
+                 recommendationsSection.innerHTML = `
+                     <h3 style="grid-column: 1/-1; margin-bottom: 1rem;">No recommendations found</h3>
+                 `;
+                 return;
+             }
+         
+             recommendationsSection.innerHTML = `
+                 <h3 style="grid-column: 1/-1; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text);">
+                     ${title}
+                 </h3>
+                 ${movies.map(movie => `
+                     <div class="recommended-movie">
+                         <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                              alt="${movie.title}"
+                              loading="lazy"
+                              onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
+                         <div class="recommended-movie-info">
+                             <div class="recommended-movie-title">${movie.title}</div>
+                             <div class="recommended-movie-meta">
+                                 ${new Date(movie.release_date).getFullYear()} • 
+                                 ${(movie.vote_average * 10).toFixed(1)}%
+                             </div>
+                         </div>
+                     </div>
+                 `).join('')}
+             `;
+             recommendationsSection.classList.add('visible');
+         }
+         
+         function showToast(message) {
+             const toast = document.getElementById('toast');
+             toast.textContent = message;
+             toast.classList.add('visible');
+             setTimeout(() => {
+                 toast.classList.remove('visible');
+             }, 3000);
+         }
+         
+         function displayError(message = 'Something went wrong') {
+             const movieCard = document.getElementById('movieCard');
+             movieCard.innerHTML = `
+                 <div class="error">
+                     <i class="fas fa-exclamation-circle"></i>
+                     <p>Error: ${message}</p>
+                     <button class="btn btn-next" onclick="fetchRandomMovie()">
+                         <i class="fas fa-redo"></i>
+                         Try Again
+                     </button>
+                 </div>
+             `;
+         }
+         
+         validateAndFetch();
+      </script>
+   </body>
 </html>
