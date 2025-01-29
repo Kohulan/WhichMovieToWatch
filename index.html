@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
-      <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="Content-Security-Policy" content="
-    default-src 'self';
-    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
-    style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-    img-src 'self' https://image.tmdb.org data: https://via.placeholder.com;
-    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-    connect-src 'self' https://api.themoviedb.org https://ipapi.co;
-">
-      <title>Which Movie To Watch!</title>
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        img-src 'self' https://image.tmdb.org data: https://via.placeholder.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io;">
+
+    <title>Which Movie To Watch!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Add your styles here -->
       <style>
          @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
          :root {
@@ -533,160 +534,235 @@
          50% { transform: translateY(-4px); }
          }
       </style>
-   </head>
-   <body>
-      <div class="gradient-background"></div>
-      <div class="container">
-         <div class="header">
+</head>
+<body>
+    <div class="gradient-background"></div>
+    <div class="container">
+        <div class="header">
             <div class="title-container">
-               <h1 data-text="What Movie To Watch!">
-                  <span class="title-letter">🎬 Which Movie To Watch!</span>
-               </h1>
+                <h1 data-text="What Movie To Watch!">
+                    <span class="title-letter">🎬 Which Movie To Watch!</span>
+                </h1>
             </div>
-         </div>
-         <div class="movie-card" id="movieCard">
+        </div>
+        <div class="movie-card" id="movieCard">
             <div class="loading">
-               <i class="fas fa-film"></i>
-               <p>Discovering your next favorite movie...</p>
+                <i class="fas fa-film"></i>
+                <p>Discovering your next favorite movie...</p>
             </div>
-         </div>
-         <div class="recommendations" id="recommendationsSection"></div>
-         <div class="footer">
+        </div>
+        <div class="recommendations" id="recommendationsSection"></div>
+        <div class="footer">
             <div class="footer-content">
-               Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">Kohulan.R</a>
+                Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">Kohulan.R</a>
             </div>
-         </div>
-      </div>
-      <div class="toast" id="toast"></div>
-      <script>
-         // Function to create provider links
-         function createProviderLink(provider) {
-             const providerUrl = getProviderURL(provider.provider_name);
-             return `
-                 <a href="${providerUrl}" 
-                    class="provider" 
-                    title="${provider.provider_name}"
-                    target="_blank"
-                    rel="noopener noreferrer">
-                     <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
-                          alt="${provider.provider_name}" 
-                          loading="lazy" />
-                 </a>
-             `;
-         }
-         
-         // Function to get streaming provider URLs
-         function getProviderURL(providerName) {
-             // Normalize provider name for matching
-             const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
-             
-             const providers = {
-                 // Streaming Services
-                 'netflix': 'https://www.netflix.com',
-                 'amazonprimevideo': 'https://www.primevideo.com',
-                 'prime': 'https://www.primevideo.com',
-                 'disneyplus': 'https://www.disneyplus.com',
-                 'disney+': 'https://www.disneyplus.com',
-                 'hulu': 'https://www.hulu.com',
-                 'hbomax': 'https://www.max.com',
-                 'max': 'https://www.max.com',
-                 'appletv': 'https://tv.apple.com',
-                 'appletv+': 'https://tv.apple.com',
-                 'appletvplus': 'https://tv.apple.com',
-                 'paramountplus': 'https://www.paramountplus.com',
-                 'paramount+': 'https://www.paramountplus.com',
-                 'peacock': 'https://www.peacocktv.com',
-                 'peacockpremium': 'https://www.peacocktv.com',
-                 'crunchyroll': 'https://www.crunchyroll.com',
-                 'amc+': 'https://www.amcplus.com',
-                 'amcplus': 'https://www.amcplus.com',
-                 'showtime': 'https://www.showtime.com',
-                 'starz': 'https://www.starz.com',
-                 'discovery+': 'https://www.discoveryplus.com',
-                 'discoveryplus': 'https://www.discoveryplus.com',
-                 'mubi': 'https://mubi.com',
-                 'britbox': 'https://www.britbox.com',
-                 'shudder': 'https://www.shudder.com',
-                 'funimation': 'https://www.funimation.com',
-                 'tubi': 'https://tubitv.com',
-                 'plutotv': 'https://pluto.tv',
-                 'kanopy': 'https://www.kanopy.com',
-                 'criterionchannel': 'https://www.criterionchannel.com',
-                 'rakutentv': 'https://www.rakuten.tv',
-                 'nowtv': 'https://www.nowtv.com',
-                 
-                 // Digital Purchase/Rental Services
-                 'googleplay': 'https://play.google.com/store/movies',
-                 'googletv': 'https://play.google.com/store/movies',
-                 'googleplaymovies': 'https://play.google.com/store/movies',
-                 'vudu': 'https://www.vudu.com',
-                 'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
-                 'itunes': 'https://www.apple.com/itunes',
-                 'youtube': 'https://www.youtube.com/movies',
-                 'amazonvideo': 'https://www.amazon.com/video',
-                 
-                 // Regional Services
-                 'stan': 'https://www.stan.com.au',
-                 'crave': 'https://www.crave.ca',
-                 'skygo': 'https://www.sky.com/watch',
-                 'hotstar': 'https://www.hotstar.com',
-                 'zee5': 'https://www.zee5.com',
-                 'iciturbo': 'https://ici.tou.tv',
-                 'viaplay': 'https://viaplay.com',
-                 'skyshowtime': 'https://www.skyshowtime.com',
-                 'wowpresents+': 'https://www.wowpresentsplus.com',
-                 'bbc': 'https://www.bbc.co.uk/iplayer',
-                 'bbciplayer': 'https://www.bbc.co.uk/iplayer'
-             };
-         
-             // Try to match the normalized provider name
-             const providerKey = Object.keys(providers).find(key => 
-                 normalizedName.includes(key.toLowerCase())
-             );
-         
-             return providerKey ? providers[providerKey] : '#';
-             return providers[providerName] || '#';
-         }
-         
-         // Global variables
-         const API_KEY = '381b2cb115fa9f1cdd779d03f7627d1a';
-         const BASE_URL = 'https://api.themoviedb.org/3';
-         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-         let userCountry = 'DE';  // Default country
-         
-         // Initialize preferences with localStorage
-         const preferences = {
-             watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
-             likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
-             lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || []
-         };
-         
-         // Detect user's country
-         async function detectCountry() {
-         try {
-         // Try primary service
-         const response = await fetch('https://ipapi.co/json/', {
-            headers: {
-                'Accept': 'application/json'
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Function to create provider links
+        function createProviderLink(provider) {
+            const providerUrl = getProviderURL(provider.provider_name);
+            return `
+                <a href="${providerUrl}" 
+                   class="provider" 
+                   title="${provider.provider_name}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                         alt="${provider.provider_name}" 
+                         loading="lazy" />
+                </a>
+            `;
+        }
+
+        // Function to get streaming provider URLs
+        function getProviderURL(providerName) {
+            // Normalize provider name for matching
+            const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
+            
+            const providers = {
+                // Streaming Services
+                'netflix': 'https://www.netflix.com',
+                'amazonprimevideo': 'https://www.primevideo.com',
+                'prime': 'https://www.primevideo.com',
+                'disneyplus': 'https://www.disneyplus.com',
+                'disney+': 'https://www.disneyplus.com',
+                'hulu': 'https://www.hulu.com',
+                'hbomax': 'https://www.max.com',
+                'max': 'https://www.max.com',
+                'appletv': 'https://tv.apple.com',
+                'appletv+': 'https://tv.apple.com',
+                'appletvplus': 'https://tv.apple.com',
+                'paramountplus': 'https://www.paramountplus.com',
+                'paramount+': 'https://www.paramountplus.com',
+                'peacock': 'https://www.peacocktv.com',
+                'peacockpremium': 'https://www.peacocktv.com',
+                'crunchyroll': 'https://www.crunchyroll.com',
+                'amc+': 'https://www.amcplus.com',
+                'amcplus': 'https://www.amcplus.com',
+                'showtime': 'https://www.showtime.com',
+                'starz': 'https://www.starz.com',
+                'discovery+': 'https://www.discoveryplus.com',
+                'discoveryplus': 'https://www.discoveryplus.com',
+                'mubi': 'https://mubi.com',
+                'britbox': 'https://www.britbox.com',
+                'shudder': 'https://www.shudder.com',
+                'funimation': 'https://www.funimation.com',
+                'tubi': 'https://tubitv.com',
+                'plutotv': 'https://pluto.tv',
+                'wow': 'https://www.wowtv.de',
+                'wowpresentsplus': 'https://www.wowpresentsplus.com',
+                'skyshowtime': 'https://www.skyshowtime.com',
+                
+                // Digital Purchase/Rental Services
+                'googleplay': 'https://play.google.com/store/movies',
+                'googletv': 'https://play.google.com/store/movies',
+                'vudu': 'https://www.vudu.com',
+                'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
+                'itunes': 'https://www.apple.com/itunes',
+                'youtube': 'https://www.youtube.com/movies',
+                'amazonvideo': 'https://www.amazon.com/video'
+            };
+        
+            // Try to match the normalized provider name
+            const providerKey = Object.keys(providers).find(key => 
+                normalizedName.includes(key.toLowerCase())
+            );
+        
+            return providerKey ? providers[providerKey] : '#';
+        }
+        
+        const API_KEY = '381b2cb115fa9f1cdd779d03f7627d1a';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+        let userCountry = 'DE';  // Default country
+
+        // Major streaming services to prioritize
+        const MAJOR_STREAMING_SERVICES = [
+            'Netflix',
+            'Amazon Prime Video',
+            'Disney Plus'
+        ];
+
+        // Initialize preferences with localStorage
+        const preferences = {
+            watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
+            likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
+            lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || []
+        };
+
+        // Modified fetchRandomMovie function to prioritize streaming availability
+async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
+            try {
+                const loadingAnimation = `
+                    <div class="loading">
+                        <i class="fas fa-film"></i>
+                        <p>Discovering your next favorite movie...</p>
+                    </div>
+                `;
+                document.getElementById('movieCard').innerHTML = loadingAnimation;
+
+                const randomPage = Math.floor(Math.random() * 100) + 1; // Reduced pages to focus on more popular movies
+                const response = await fetch(
+                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`
+                );
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                if (!data.results || data.results.length === 0) {
+                    throw new Error('No movies found in response');
+                }
+
+                // Filter out watched movies
+                const availableMovies = data.results.filter(
+                    movie => !preferences.watchedMovies.includes(movie.id)
+                );
+
+                if (availableMovies.length === 0) {
+                    throw new Error('No unwatched movies found');
+                }
+
+                // Check streaming availability and additional quality metrics for each movie
+                for (const movie of availableMovies) {
+                    const movieDetailsResponse = await fetch(
+                        `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers,keywords,credits`
+                    );
+
+                    if (!movieDetailsResponse.ok) continue;
+
+                    const movieData = await movieDetailsResponse.json();
+                    const providers = movieData['watch/providers']?.results?.[userCountry];
+                    
+                    // Only proceed if movie is available on major streaming platforms
+                    if (providers?.flatrate) {
+                        const hasMainProvider = providers.flatrate.some(provider =>
+                            MAJOR_STREAMING_SERVICES.some(service =>
+                                provider.provider_name.toLowerCase().includes(service.toLowerCase())
+                            )
+                        );
+
+                        if (hasMainProvider) {
+                            // Additional quality checks
+                            const hasGoodRating = movieData.vote_average >= 6.5;
+                            const hasEnoughVotes = movieData.vote_count >= 1000;
+                            const hasGoodBudget = movieData.budget > 5000000; // Basic budget threshold
+                            const isRecentEnough = new Date(movieData.release_date).getFullYear() >= 1990;
+                            
+                            // Check if movie has a proper production company
+                            const hasMajorStudio = movieData.production_companies && 
+                                movieData.production_companies.length > 0;
+
+                            if (hasGoodRating && hasEnoughVotes && hasGoodBudget && isRecentEnough && hasMajorStudio) {
+                                displayMovie(movieData);
+                                return;
+                            }
+                        }
+                    }
+                }
+
+                // If no streaming movie found and within retry limit, try again
+                if (retryCount < maxRetries) {
+                    return fetchRandomMovie(retryCount + 1, maxRetries);
+                }
+
+                // If all retries exhausted, display any random movie
+                const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+                const fallbackMovieResponse = await fetch(
+                    `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers,credits`
+                );
+                const fallbackMovieData = await fallbackMovieResponse.json();
+                displayMovie(fallbackMovieData);
+
+            } catch (error) {
+                console.error('Error fetching movie:', error);
+                displayError(error.message);
             }
-         });
-         if (!response.ok) throw new Error('Primary service failed');
-         const data = await response.json();
-         userCountry = data.country_code;
-         console.log('Detected country:', userCountry);
-         } catch (primaryError) {
-         console.warn('Primary country detection failed:', primaryError);
-         try {
-            // Fallback to browser's language setting
-            const browserLang = navigator.language || navigator.userLanguage;
-            userCountry = browserLang.split('-')[1] || 'US';
-            console.log('Using browser language fallback:', userCountry);
-         } catch (fallbackError) {
-            console.error('All country detection failed, using default:', fallbackError);
-            userCountry = 'DE'; // Default fallback
-         }
-         }
-         }
+        }
+
+        // Detect user's country
+         const GEO_API_URL = 'https://ipinfo.io/json';
+
+async function detectCountry() {
+    try {
+        const response = await fetch(GEO_API_URL, {
+            headers: { 'Accept': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error('Primary service failed');
+
+        const data = await response.json();
+        userCountry = data.country || data.country_code; // Adapt field name if needed
+        console.log('Detected country:', userCountry);
+    } catch (error) {
+        console.warn('Primary country detection failed:', error.message);
+        userCountry = (navigator.language.split('-')[1]) || 'US';
+        console.log('Using browser language fallback:', userCountry);
+    }
+}
+
          detectCountry();
          
          async function validateAndFetch() {
@@ -1006,8 +1082,8 @@
                  </div>
              `;
          }
-         
-         validateAndFetch();
-      </script>
-   </body>
+
+        validateAndFetch();
+    </script>
+</body>
 </html>
