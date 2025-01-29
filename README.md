@@ -138,7 +138,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Contact
 
-Your Name - [@Kohulan](https://kohulanr.com)
+[@Kohulan](https://kohulanr.com)
 
 ---
 
