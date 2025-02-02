@@ -1179,6 +1179,38 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
+
+        .free-movie-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .free-movie-actions button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .free-movie-actions button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .free-movie-actions button:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
@@ -2152,10 +2184,52 @@
                     </a>
                     <p class="netflix-note">Click to watch "${movie.title}" on YouTube</p>
                 </div>
+                <div class="free-movie-actions">
+                    <button onclick="getNextFreeMovie()" 
+                            class="free-movie-btn" 
+                            style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
+                        <i class="fas fa-forward"></i>
+                        Next Suggestion
+                    </button>
+                </div>
             </div>
         </div>
     `;
-        }
+            async function getNextFreeMovie() {
+                const loadingAnimation = `
+        <div class="dinner-time-loading">
+            <i class="fas fa-film fa-spin"></i>
+            <p>Finding another free movie...</p>
+        </div>
+    `;
+                document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
+
+                try {
+                    const movies = await loadFreeMovies();
+                    if (!movies || movies.length === 0) {
+                        throw new Error('No movies available');
+                    }
+
+                    const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+                    if (!randomMovie || !randomMovie.title) {
+                        throw new Error('Invalid movie data');
+                    }
+
+                    const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
+                    await displayFreeMovie(randomMovie, tmdbDetails);
+                } catch (error) {
+                    console.error('Error loading next free movie:', error);
+                    document.querySelector('.dinner-time-modal-content').innerHTML = `
+            <div class="dinner-time-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Error loading next movie. Please try again!</p>
+                <button onclick="getNextFreeMovie()" class="dinner-time-retry">
+                    Try Again
+                </button>
+            </div>
+        `;
+                }
+            }
     </script>
 </body>
 
