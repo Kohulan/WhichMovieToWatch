@@ -1284,6 +1284,34 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
         }
+
+        .disclaimer-text {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .service-disclaimer {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .service-disclaimer i {
+            color: rgba(229, 9, 20, 0.8);
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 
@@ -2029,6 +2057,11 @@
                      alt="${movie.title}"
                      loading="lazy"
                      onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'" />
+                     <div class="service-disclaimer">
+            <i class="fas fa-info-circle"></i>
+            Netflix is featured as a personal choice due to its wide availability and convenience. 
+            This is not sponsored by Netflix!
+        </div>
             </div>
             <div class="dinner-time-info">
                 <h2>${movie.title}</h2>
@@ -2264,6 +2297,9 @@
                      alt="${movie.title}"
                      loading="lazy"
                      onerror="this.src='https://via.placeholder.com/500x750?text=Free+Movie'" />
+                <div class="disclaimer-text">
+            Note: Video availability may vary by region due to geographic restrictions. Content access is subject to your local laws and platform terms of service.
+        </div>
             </div>
             <div class="dinner-time-info">
                 <h2>${movie.title}</h2>
