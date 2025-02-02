@@ -736,24 +736,111 @@
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.7);
         }
+
         .dinner-time-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-}
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
 
-.dinner-time-buttons .netflix-button {
-    width: 100%;
-    justify-content: center;
-    margin: 0;
-}
+        .dinner-time-buttons .netflix-button {
+            width: 100%;
+            justify-content: center;
+            margin: 0;
+        }
 
-@media (max-width: 768px) {
-    .dinner-time-buttons {
-        flex-direction: column;
-    }
-}
+        @media (max-width: 768px) {
+            .dinner-time-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Dinner Time Movie Ratings Styles */
+        .dinner-time-movie .ratings-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(17, 24, 39, 0.6);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dinner-time-movie .rating-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(45, 45, 55, 0.9);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dinner-time-movie .rating-item:hover {
+            transform: translateY(-4px);
+            background: rgba(55, 55, 65, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .dinner-time-movie .rating-item i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dinner-time-movie .rating-item .rating-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5rem 0;
+        }
+
+        .dinner-time-movie .rating-item .rating-label {
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .dinner-time-movie .rating-item.imdb i {
+            color: #f5c518;
+        }
+
+        .dinner-time-movie .rating-item.rotten-tomatoes i {
+            color: #fa320a;
+        }
+
+        .dinner-time-movie .rating-item.tmdb i {
+            color: #01b4e4;
+        }
+
+        /* Responsive styles for dinner time ratings */
+        @media (max-width: 1024px) {
+            .dinner-time-movie .ratings-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dinner-time-movie .ratings-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dinner-time-movie .ratings-container {
+                grid-template-columns: 1fr;
+            }
+
+            .dinner-time-movie .rating-item {
+                padding: 1rem 0.5rem;
+            }
+        }
 
         /* Responsive Design */
         @media (max-width: 1024px) {
@@ -2125,25 +2212,52 @@
         }
 
         async function displayFreeMovie(movie, tmdbDetails) {
-    if (!movie || !movie.youtubeId || !movie.title) {
-        throw new Error('Invalid movie data');
-    }
+            if (!movie || !movie.youtubeId || !movie.title) {
+                throw new Error('Invalid movie data');
+            }
 
-    const modalContent = document.querySelector('.dinner-time-modal-content');
-    const youtubeUrl = `https://www.youtube.com/watch?v=${movie.youtubeId}`;
-    const posterPath = tmdbDetails?.poster_path ? 
-        `${IMAGE_BASE_URL}${tmdbDetails.poster_path}` : 
-        'https://via.placeholder.com/500x750?text=Free+Movie';
-    const releaseYear = tmdbDetails?.release_date ? 
-        new Date(tmdbDetails.release_date).getFullYear() : 
-        'N/A';
-    const rating = tmdbDetails?.vote_average ? 
-        (tmdbDetails.vote_average * 10).toFixed(1) : 
-        'N/A';
-    const runtime = tmdbDetails?.runtime || 'N/A';
-    const overview = tmdbDetails?.overview || 'Watch this free movie on YouTube!';
+            // Fetch external ratings
+            let externalRatings = null;
+            if (tmdbDetails && tmdbDetails.id) {
+                externalRatings = await fetchExternalRatings(tmdbDetails.id);
+            }
 
-    modalContent.innerHTML = `
+            const modalContent = document.querySelector('.dinner-time-modal-content');
+            const youtubeUrl = `https://www.youtube.com/watch?v=${movie.youtubeId}`;
+            const posterPath = tmdbDetails?.poster_path ?
+                `${IMAGE_BASE_URL}${tmdbDetails.poster_path}` :
+                'https://via.placeholder.com/500x750?text=Free+Movie';
+            const releaseYear = tmdbDetails?.release_date ?
+                new Date(tmdbDetails.release_date).getFullYear() :
+                'N/A';
+            const rating = tmdbDetails?.vote_average ?
+                (tmdbDetails.vote_average * 10).toFixed(1) :
+                'N/A';
+            const runtime = tmdbDetails?.runtime || 'N/A';
+            const overview = tmdbDetails?.overview || 'Watch this free movie on YouTube!';
+
+            // Create ratings HTML
+            const ratingsHTML = `
+        <div class="ratings-container">
+            <div class="rating-item imdb">
+                <i class="fab fa-imdb"></i>
+                <div class="rating-value">${externalRatings?.imdb || 'N/A'}</div>
+                <div class="rating-label">IMDb Rating</div>
+            </div>
+            <div class="rating-item rotten-tomatoes">
+                <i>🍅</i>
+                <div class="rating-value">${externalRatings?.rottenTomatoes || 'N/A'}</div>
+                <div class="rating-label">Rotten Tomatoes</div>
+            </div>
+            <div class="rating-item tmdb">
+                <i class="fas fa-film"></i>
+                <div class="rating-value">${rating}%</div>
+                <div class="rating-label">TMDB Rating</div>
+            </div>
+        </div>
+    `;
+
+            modalContent.innerHTML = `
         <div class="dinner-time-movie">
             <div class="dinner-time-poster">
                 <img src="${posterPath}" 
@@ -2158,6 +2272,7 @@
                     <span><i class="fas fa-star"></i> ${rating}%</span>
                     <span><i class="fas fa-clock"></i> ${runtime} min</span>
                 </div>
+                ${ratingsHTML}
                 <p class="dinner-time-overview">${overview}</p>
                 <div class="dinner-time-streaming">
                     <div class="dinner-time-buttons">
@@ -2171,7 +2286,7 @@
                         </a>
                         <button onclick="getNextFreeMovie()" 
                                 class="netflix-button" 
-                                style="background: linear-gradient(135deg, #4CAF50, #2E7D32); margin-top: 1rem;">
+                                style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
                             <i class="fas fa-forward"></i>
                             Next Suggestion
                         </button>
@@ -2181,25 +2296,25 @@
             </div>
         </div>
     `;
-}
+        }
 
-async function getNextFreeMovie() {
-    const loadingAnimation = `
+        async function getNextFreeMovie() {
+            const loadingAnimation = `
         <div class="dinner-time-loading">
             <i class="fas fa-film fa-spin"></i>
             <p>Finding another free movie...</p>
         </div>
     `;
-    document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
+            document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
 
-    try {
-        const movies = await loadFreeMovies();
-        const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-        const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
-        await displayFreeMovie(randomMovie, tmdbDetails);
-    } catch (error) {
-        console.error('Error loading next free movie:', error);
-        document.querySelector('.dinner-time-modal-content').innerHTML = `
+            try {
+                const movies = await loadFreeMovies();
+                const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+                const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
+                await displayFreeMovie(randomMovie, tmdbDetails);
+            } catch (error) {
+                console.error('Error loading next free movie:', error);
+                document.querySelector('.dinner-time-modal-content').innerHTML = `
             <div class="dinner-time-error">
                 <i class="fas fa-exclamation-circle"></i>
                 <p>Error loading next movie. Please try again!</p>
@@ -2208,8 +2323,8 @@ async function getNextFreeMovie() {
                 </button>
             </div>
         `;
-    }
-}
+            }
+        }
     </script>
 </body>
 
