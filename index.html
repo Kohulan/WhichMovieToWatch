@@ -7,14 +7,15 @@
     <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy"
-        content="
-         default-src 'self';
-         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
-         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-         img-src 'self' https://image.tmdb.org data: https://via.placeholder.com;
-         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-         connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com;">
+    <meta http-equiv="Content-Security-Policy" content="
+       default-src 'self';
+       script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
+       style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+       img-src 'self' https://image.tmdb.org data: https://via.placeholder.com;
+       font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+       connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com;
+       worker-src 'self';
+       object-src 'none';">
     <title>Which Movie To Watch!</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css" rel="stylesheet">
@@ -1156,6 +1157,28 @@
             align-items: center;
             gap: 0.5rem;
         }
+
+        .free-movie-trigger {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-left: 1rem;
+        }
+
+        .free-movie-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
     </style>
 </head>
 
@@ -1173,6 +1196,10 @@
             <button onclick="openDinnerTimeModal()" class="dinner-time-trigger">
                 <i class="fas fa-utensils"></i>
                 Dinner Time!
+            </button>
+            <button onclick="openFreeMovieModal()" class="free-movie-trigger">
+                <i class="fas fa-film"></i>
+                Free Movie!
             </button>
         </div>
         <div class="movie-card" id="movieCard">
@@ -1978,6 +2005,157 @@
         detectCountry().then(() => {
             validateAndFetch();
         });
+
+        // Cache for movies data
+        let moviesCache = null;
+
+        async function loadFreeMovies() {
+            if (moviesCache) {
+                return moviesCache;
+            }
+
+            try {
+                // Use fetch() instead of window.fs.readFile
+                const response = await fetch('./movies.txt');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch movies.txt: ${response.statusText}`);
+                }
+
+                const text = await response.text();
+                const lines = text.split('\n').slice(1); // Skip header
+
+                moviesCache = lines
+                    .map(line => {
+                        const [youtubeId, ...titleParts] = line.split('\t');
+                        return {
+                            youtubeId: youtubeId ? youtubeId.trim() : '',
+                            title: titleParts.join('\t').trim()
+                        };
+                    })
+                    .filter(movie => movie.youtubeId && movie.title);
+
+                console.log(`Loaded ${moviesCache.length} movies successfully`);
+                return moviesCache;
+            } catch (error) {
+                console.error('Error loading free movies:', error);
+                throw error;
+            }
+        }
+
+
+
+
+        async function fetchFreeMovieDetails(movieTitle) {
+            try {
+                const response = await fetch(
+                    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieTitle)}&page=1`
+                );
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    const movieId = data.results[0].id;
+                    const detailsResponse = await fetch(
+                        `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
+                    );
+                    return await detailsResponse.json();
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching movie details:', error);
+                return null;
+            }
+        }
+
+        async function openFreeMovieModal() {
+            document.getElementById('dinnerTimeModal').style.display = 'flex';
+            const modalContent = document.querySelector('.dinner-time-modal-content');
+
+            modalContent.innerHTML = `
+        <div class="dinner-time-loading">
+            <i class="fas fa-film fa-spin"></i>
+            <p>Loading your free movie...</p>
+        </div>
+    `;
+
+            try {
+                const movies = await loadFreeMovies();
+                if (!movies || movies.length === 0) {
+                    throw new Error('No movies available');
+                }
+
+                const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+                console.log('Selected movie:', randomMovie); // Debug log
+
+                if (!randomMovie || !randomMovie.title) {
+                    throw new Error('Invalid movie data');
+                }
+
+                const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
+                await displayFreeMovie(randomMovie, tmdbDetails);
+            } catch (error) {
+                console.error('Error loading free movie:', error);
+                modalContent.innerHTML = `
+            <div class="dinner-time-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Error loading free movie. Please try again!</p>
+                <p class="error-details" style="font-size: 0.8em; color: #666;">${error.message}</p>
+                <button onclick="openFreeMovieModal()" class="dinner-time-retry">
+                    Try Again
+                </button>
+            </div>
+        `;
+            }
+        }
+
+        async function displayFreeMovie(movie, tmdbDetails) {
+            if (!movie || !movie.youtubeId || !movie.title) {
+                throw new Error('Invalid movie data');
+            }
+
+            const modalContent = document.querySelector('.dinner-time-modal-content');
+            const youtubeUrl = `https://www.youtube.com/watch?v=${movie.youtubeId}`;
+            const posterPath = tmdbDetails?.poster_path ?
+                `${IMAGE_BASE_URL}${tmdbDetails.poster_path}` :
+                'https://via.placeholder.com/500x750?text=Free+Movie';
+            const releaseYear = tmdbDetails?.release_date ?
+                new Date(tmdbDetails.release_date).getFullYear() :
+                'N/A';
+            const rating = tmdbDetails?.vote_average ?
+                (tmdbDetails.vote_average * 10).toFixed(1) :
+                'N/A';
+            const runtime = tmdbDetails?.runtime || 'N/A';
+            const overview = tmdbDetails?.overview || 'Watch this free movie on YouTube!';
+
+            modalContent.innerHTML = `
+        <div class="dinner-time-movie">
+            <div class="dinner-time-poster">
+                <img src="${posterPath}" 
+                     alt="${movie.title}"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/500x750?text=Free+Movie'" />
+            </div>
+            <div class="dinner-time-info">
+                <h2>${movie.title}</h2>
+                <div class="dinner-time-meta">
+                    <span><i class="fas fa-calendar"></i> ${releaseYear}</span>
+                    <span><i class="fas fa-star"></i> ${rating}%</span>
+                    <span><i class="fas fa-clock"></i> ${runtime} min</span>
+                </div>
+                <p class="dinner-time-overview">${overview}</p>
+                <div class="dinner-time-streaming">
+                    <a href="${youtubeUrl}" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="netflix-button" 
+                       style="background: linear-gradient(135deg, #FF0000, #CC0000);">
+                        <i class="fab fa-youtube"></i>
+                        Watch on YouTube
+                    </a>
+                    <p class="netflix-note">Click to watch "${movie.title}" on YouTube</p>
+                </div>
+            </div>
+        </div>
+    `;
+        }
     </script>
 </body>
 
