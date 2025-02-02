@@ -2158,78 +2158,44 @@
             const overview = tmdbDetails?.overview || 'Watch this free movie on YouTube!';
 
             modalContent.innerHTML = `
-        <div class="dinner-time-movie">
-            <div class="dinner-time-poster">
+        <div class="free-movie-display">
+            <div class="free-movie-poster">
                 <img src="${posterPath}" 
                      alt="${movie.title}"
                      loading="lazy"
                      onerror="this.src='https://via.placeholder.com/500x750?text=Free+Movie'" />
             </div>
-            <div class="dinner-time-info">
+            <div class="free-movie-info">
                 <h2>${movie.title}</h2>
-                <div class="dinner-time-meta">
+                <div class="free-movie-meta">
                     <span><i class="fas fa-calendar"></i> ${releaseYear}</span>
                     <span><i class="fas fa-star"></i> ${rating}%</span>
                     <span><i class="fas fa-clock"></i> ${runtime} min</span>
                 </div>
-                <p class="dinner-time-overview">${overview}</p>
-                <div class="dinner-time-streaming">
+                <p class="free-movie-overview">${overview}</p>
+                <div class="free-movie-streaming">
                     <a href="${youtubeUrl}" 
                        target="_blank" 
                        rel="noopener noreferrer" 
-                       class="netflix-button" 
+                       class="youtube-button" 
                        style="background: linear-gradient(135deg, #FF0000, #CC0000);">
                         <i class="fab fa-youtube"></i>
                         Watch on YouTube
                     </a>
-                    <p class="netflix-note">Click to watch "${movie.title}" on YouTube</p>
+                    <p class="youtube-note">Click to watch "${movie.title}" on YouTube</p>
                 </div>
                 <div class="free-movie-actions">
                     <button onclick="getNextFreeMovie()" 
-                            class="free-movie-btn" 
+                            class="next-movie-btn" 
                             style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
                         <i class="fas fa-forward"></i>
-                        Next Suggestion
+                        Next Movie
                     </button>
                 </div>
             </div>
         </div>
     `;
-            async function getNextFreeMovie() {
-                const loadingAnimation = `
-        <div class="dinner-time-loading">
-            <i class="fas fa-film fa-spin"></i>
-            <p>Finding another free movie...</p>
-        </div>
-    `;
-                document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
-
-                try {
-                    const movies = await loadFreeMovies();
-                    if (!movies || movies.length === 0) {
-                        throw new Error('No movies available');
-                    }
-
-                    const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-                    if (!randomMovie || !randomMovie.title) {
-                        throw new Error('Invalid movie data');
-                    }
-
-                    const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
-                    await displayFreeMovie(randomMovie, tmdbDetails);
-                } catch (error) {
-                    console.error('Error loading next free movie:', error);
-                    document.querySelector('.dinner-time-modal-content').innerHTML = `
-            <div class="dinner-time-error">
-                <i class="fas fa-exclamation-circle"></i>
-                <p>Error loading next movie. Please try again!</p>
-                <button onclick="getNextFreeMovie()" class="dinner-time-retry">
-                    Try Again
-                </button>
-            </div>
-        `;
-                }
-            }
+        }
     </script>
 </body>
 
