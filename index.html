@@ -35,25 +35,14 @@
             --like: #2563eb;
             --watched: #475569;
             --success: #059669;
+            --max-width-sm: 640px;
+            --max-width-md: 768px;
+            --max-width-lg: 1024px;
+            --max-width-xl: 1280px;
         }
 
         /* Base Styles */
         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-
-        :root {
-            --background: #0E0E12;
-            --text: #F4F4F5;
-            --accent: #FF4545;
-            --gradient-start: rgba(255, 69, 69, 0.2);
-            --gradient-end: rgba(14, 14, 18, 0.9);
-            --primary: #FFFFED;
-            --secondary: #F4eeee;
-            --card-bg: rgba(17, 24, 39, 0.8);
-            --love: #e11d48;
-            --like: #2563eb;
-            --watched: #475569;
-            --success: #059669;
-        }
 
         /* Reset and Base Styles */
         * {
@@ -93,8 +82,9 @@
             z-index: 1;
             width: 90%;
             max-width: 1200px;
-            padding: 2rem;
+            padding: clamp(1rem, 3vw, 2rem);
             text-align: center;
+            margin: 0 auto;
         }
 
         .header {
@@ -180,8 +170,9 @@
         .movie-content {
             display: grid;
             grid-template-columns: 350px 1fr;
-            gap: 3rem;
+            gap: 1.5rem;
             align-items: start;
+            padding: 1rem;
         }
 
         /* Movie Poster Styles */
@@ -757,6 +748,12 @@
             }
         }
 
+        @media (min-width: 768px) {
+            .movie-content {
+                grid-template-columns: minmax(200px, 300px) 1fr;
+            }
+        }
+
         /* Dinner Time Movie Ratings Styles */
         .dinner-time-movie .ratings-container {
             display: grid;
@@ -862,12 +859,11 @@
         /* Responsive Design */
         @media (max-width: 1024px) {
             .movie-content {
-                grid-template-columns: 300px 1fr;
-                gap: 2rem;
+                grid-template-columns: minmax(200px, 300px) 1fr;
             }
 
             .ratings-container {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
@@ -888,7 +884,7 @@
             }
 
             .header h1 {
-                font-size: 2.5rem;
+                font-size: clamp(1.5rem, 5vw, 2.5rem);
             }
 
             .action-buttons {
@@ -915,7 +911,7 @@
 
         @media (max-width: 480px) {
             .container {
-                padding: 2rem;
+                padding: 1rem;
             }
 
             .movie-meta {
@@ -925,6 +921,40 @@
             .genre {
                 width: 100%;
                 text-align: center;
+            }
+
+            .overview {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .meta-item,
+            .rating-item {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (hover: none) {
+
+            .btn,
+            .genre,
+            .provider,
+            .trailer-link {
+                transition: none;
+            }
+
+            .btn:active,
+            .genre:active,
+            .provider:active,
+            .trailer-link:active {
+                transform: scale(0.98);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
             }
         }
 
