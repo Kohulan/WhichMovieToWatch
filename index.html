@@ -843,6 +843,22 @@
             }
         }
 
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dinner-time-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dinner-time-trigger,
+            .free-movie-trigger,
+            .preference-trigger {
+                width: 100%;
+                max-width: none;
+                padding: 1rem;
+            }
+        }
+
         /* Responsive Design */
         @media (max-width: 1024px) {
             .movie-content {
@@ -992,483 +1008,469 @@
             align-items: center;
             justify-content: center;
             gap: 0.8rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
 
-            b .dinner-time-trigger:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        .dinner-time-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .dinner-time-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .dinner-time-modal-content {
+            background: var(--card-bg);
+            border-radius: 24px;
+            max-width: 1000px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        .dinner-time-movie {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .dinner-time-poster {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .dinner-time-poster img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .dinner-time-info {
+            padding: 1rem;
+        }
+
+        .dinner-time-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dinner-time-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dinner-time-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .dinner-time-overview {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: rgba(248, 250, 252, 0.9);
+        }
+
+        .dinner-time-streaming {
+            margin-bottom: 2rem;
+        }
+
+        .streaming-logos {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .streaming-logos img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .streaming-logos img:hover {
+            transform: scale(1.1);
+        }
+
+        .dinner-time-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dinner-time-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .dinner-time-btn.like {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .dinner-time-btn.dislike {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .dinner-time-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dinner-time-loading {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .dinner-time-loading i {
+            font-size: 3rem;
+            color: #f97316;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
 
-            .dinner-time-trigger i {
-                font-size: 1.4rem;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-            .dinner-time-modal {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                backdrop-filter: blur(8px);
-                z-index: 1000;
-                justify-content: center;
-                align-items: center;
-                padding: 2rem;
-            }
-
-            .dinner-time-modal-content {
-                background: var(--card-bg);
-                border-radius: 24px;
-                max-width: 1000px;
-                width: 90%;
-                max-height: 90vh;
-                overflow-y: auto;
-                position: relative;
-                animation: modalFadeIn 0.5s ease;
-            }
-
+        @media (max-width: 768px) {
             .dinner-time-movie {
-                display: grid;
-                grid-template-columns: 400px 1fr;
-                gap: 2rem;
-                padding: 2rem;
+                grid-template-columns: 1fr;
             }
 
             .dinner-time-poster {
-                position: relative;
-                border-radius: 16px;
-                overflow: hidden;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-            }
-
-            .dinner-time-poster img {
-                width: 100%;
-                height: auto;
-                display: block;
-                transition: transform 0.5s ease;
-            }
-
-            .dinner-time-info {
-                padding: 1rem;
+                max-width: 300px;
+                margin: 0 auto;
             }
 
             .dinner-time-info h2 {
-                font-size: 2.5rem;
-                margin-bottom: 1.5rem;
-                background: linear-gradient(135deg, #fff, #e2e8f0);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
+                font-size: 2rem;
             }
 
             .dinner-time-meta {
-                display: flex;
-                gap: 2rem;
-                margin-bottom: 2rem;
-            }
-
-            .dinner-time-meta span {
-                display: flex;
-                align-items: center;
-                gap: 0.5rem;
-                color: var(--text);
-                font-size: 1.1rem;
-            }
-
-            .dinner-time-overview {
-                font-size: 1.1rem;
-                line-height: 1.8;
-                margin-bottom: 2rem;
-                color: rgba(248, 250, 252, 0.9);
-            }
-
-            .dinner-time-streaming {
-                margin-bottom: 2rem;
-            }
-
-            .streaming-logos {
-                display: flex;
+                flex-wrap: wrap;
                 gap: 1rem;
-                margin-top: 1rem;
-            }
-
-            .streaming-logos img {
-                width: 50px;
-                height: 50px;
-                border-radius: 8px;
-                transition: transform 0.3s ease;
-            }
-
-            .streaming-logos img:hover {
-                transform: scale(1.1);
             }
 
             .dinner-time-actions {
-                display: flex;
-                gap: 1rem;
-            }
-
-            .dinner-time-btn {
-                flex: 1;
-                padding: 1rem;
-                border: none;
-                border-radius: 12px;
-                font-size: 1.1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.75rem;
-            }
-
-            .dinner-time-btn.like {
-                background: linear-gradient(135deg, #22c55e, #16a34a);
-                color: white;
-            }
-
-            .dinner-time-btn.dislike {
-                background: linear-gradient(135deg, #ef4444, #dc2626);
-                color: white;
-            }
-
-            .dinner-time-btn:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            }
-
-            .dinner-time-loading {
-                text-align: center;
-                padding: 4rem;
-            }
-
-            .dinner-time-loading i {
-                font-size: 3rem;
-                color: #f97316;
-                margin-bottom: 1rem;
-            }
-
-            @keyframes modalFadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            @media (max-width: 768px) {
-                .dinner-time-movie {
-                    grid-template-columns: 1fr;
-                }
-
-                .dinner-time-poster {
-                    max-width: 300px;
-                    margin: 0 auto;
-                }
-
-                .dinner-time-info h2 {
-                    font-size: 2rem;
-                }
-
-                .dinner-time-meta {
-                    flex-wrap: wrap;
-                    gap: 1rem;
-                }
-
-                .dinner-time-actions {
-                    flex-direction: column;
-                }
-            }
-
-            .netflix-button {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.75rem;
-                padding: 1rem 2rem;
-                background: linear-gradient(135deg, #E50914, #B20710);
-                color: white;
-                text-decoration: none;
-                border-radius: 12px;
-                font-size: 1.2rem;
-                font-weight: 600;
-                margin-top: 1rem;
-                transition: all 0.3s ease;
-                box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
-            }
-
-            .netflix-button:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
-            }
-
-            .netflix-button i {
-                font-size: 1.4rem;
-            }
-
-            /* Update the dinner time trigger button to match Netflix styling */
-            .dinner-time-trigger {
-                background: linear-gradient(135deg, #E50914, #B20710);
-                color: white;
-            }
-
-
-            .dinner-time-loading {
-                color: #E50914;
-            }
-
-            .dinner-time-error {
-                text-align: center;
-                padding: 3rem;
-                color: var(--text);
-            }
-
-            .dinner-time-error i,
-            .free-movie-trigger i,
-            .preference-trigger i {
-                font-size: 3rem;
-                color: #E50914;
-                margin-bottom: 1rem;
-            }
-
-            .dinner-time-error p {
-                font-size: 1.2rem;
-                margin-bottom: 2rem;
-            }
-
-            .dinner-time-retry {
-                background: linear-gradient(135deg, #E50914, #B20710);
-                color: white;
-                padding: 1rem 2rem;
-                border: none;
-                border-radius: 12px;
-                font-size: 1.1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            .dinner-time-retry:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
-            }
-
-            .netflix-note {
-                margin-top: 0.5rem;
-                font-size: 0.9rem;
-                color: rgba(255, 255, 255, 0.7);
-                text-align: center;
-            }
-
-            .dinner-time-streaming {
-                display: flex;
                 flex-direction: column;
-                align-items: center;
-                gap: 0.5rem;
+            }
+        }
+
+        .netflix-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .netflix-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .netflix-button i {
+            font-size: 1.4rem;
+        }
+
+        /* Update the dinner time trigger button to match Netflix styling */
+        .dinner-time-trigger {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+        }
+
+
+
+        .dinner-time-loading {
+            color: #E50914;
+        }
+
+        .dinner-time-error {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text);
+        }
+
+        .dinner-time-error i {
+            font-size: 3rem;
+            color: #E50914;
+            margin-bottom: 1rem;
+        }
+
+        .dinner-time-error p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dinner-time-retry {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dinner-time-retry:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .netflix-note {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        .dinner-time-streaming {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .free-movie-trigger {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+        }
+
+        .dinner-time-trigger:hover,
+        .free-movie-trigger:hover,
+        .preference-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .dinner-time-trigger i,
+        .free-movie-trigger i,
+        .preference-trigger i {
+            font-size: 1.4rem;
+        }
+
+        .preference-trigger {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+            flex: 1.2;
+            /* Make it slightly wider */
+        }
+
+        .disclaimer-text {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .service-disclaimer {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .service-disclaimer i {
+            color: rgba(229, 9, 20, 0.8);
+            margin-right: 0.5rem;
+        }
+
+        /* Preference Modal Styles */
+        .preference-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .preference-modal-content {
+            position: relative;
+            background: var(--card-bg);
+            margin: 10vh auto;
+            padding: 2rem;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        .preference-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .preference-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .preference-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .preference-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .preference-select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(45, 45, 55, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .preference-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 69, 69, 0.2);
+        }
+
+        .preference-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .preference-button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+        }
+
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .start-button:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .skip-button {
+            background: rgba(45, 45, 55, 0.9);
+            color: var(--text);
+        }
+
+        .skip-button:hover {
+            transform: translateY(-2px);
+            background: rgba(55, 55, 65, 0.9);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
 
-            .free-movie-trigger {
-                background: linear-gradient(135deg, #4CAF50, #2E7D32);
-                color: white;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
+        }
 
-
-            .dinner-time-trigger:hover,
-            .free-movie-trigger:hover,
-            .preference-trigger:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-            }
-
-            .preference-trigger {
-                background: linear-gradient(135deg, #E50914, #B20710);
-                color: white;
-                flex: 1.2;
-                /* Make it slightly wider */
-            }
-
-            /* Responsive adjustments */
-            @media (max-width: 768px) {
-                .dinner-time-container {
-                    flex-direction: column;
-                    gap: 1rem;
-                }
-
-                .dinner-time-trigger,
-                .free-movie-trigger,
-                .preference-trigger {
-                    width: 100%;
-                    max-width: none;
-                    padding: 1rem;
-                }
-            }
-
-            .disclaimer-text {
-                margin-top: 1rem;
-                padding: 0.75rem;
-                background: rgba(255, 193, 7, 0.1);
-                border-left: 3px solid #ffc107;
-                border-radius: 4px;
-                font-size: 0.9rem;
-                color: rgba(255, 255, 255, 0.8);
-                line-height: 1.5;
-            }
-
-            .service-disclaimer {
-                margin-top: 2rem;
-                padding: 1rem;
-                background: rgba(229, 9, 20, 0.1);
-                border: 1px solid rgba(229, 9, 20, 0.2);
-                border-radius: 12px;
-                font-size: 0.9rem;
-                color: rgba(255, 255, 255, 0.7);
-                text-align: center;
-                line-height: 1.5;
-            }
-
-            .service-disclaimer i {
-                color: rgba(229, 9, 20, 0.8);
-                margin-right: 0.5rem;
-            }
-
-            /* Preference Modal Styles */
-            .preference-modal {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                z-index: 1000;
-                backdrop-filter: blur(8px);
-            }
-
+        @media (max-width: 768px) {
             .preference-modal-content {
-                position: relative;
-                background: var(--card-bg);
-                margin: 10vh auto;
-                padding: 2rem;
-                border-radius: 24px;
-                max-width: 500px;
-                width: 90%;
-                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-                animation: modalFadeIn 0.5s ease;
-            }
-
-            .preference-header {
-                text-align: center;
-                margin-bottom: 2rem;
+                margin: 5vh auto;
+                padding: 1.5rem;
             }
 
             .preference-header h2 {
-                font-size: 2rem;
-                color: var(--primary);
-                background: linear-gradient(135deg, #fff, #e2e8f0);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-            }
-
-            .preference-section {
-                margin-bottom: 1.5rem;
-            }
-
-            .preference-section label {
-                display: block;
-                margin-bottom: 0.5rem;
-                font-size: 1.1rem;
-                color: var(--text);
-            }
-
-            .preference-select {
-                width: 100%;
-                padding: 0.75rem;
-                border-radius: 12px;
-                background: rgba(45, 45, 55, 0.9);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: var(--text);
-                font-size: 1rem;
-                transition: all 0.3s ease;
-            }
-
-            .preference-select:focus {
-                outline: none;
-                border-color: var(--accent);
-                box-shadow: 0 0 0 2px rgba(255, 69, 69, 0.2);
+                font-size: 1.75rem;
             }
 
             .preference-actions {
-                display: flex;
-                gap: 1rem;
-                margin-top: 2rem;
+                flex-direction: column;
             }
-
-            .preference-button {
-                flex: 1;
-                padding: 1rem;
-                border: none;
-                border-radius: 12px;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-            }
-
-            .start-button {
-                background: linear-gradient(135deg, #E50914, #B20710);
-                color: white;
-            }
-
-            .start-button:disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-            }
-
-            .start-button:not(:disabled):hover {
-                transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
-            }
-
-            .skip-button {
-                background: rgba(45, 45, 55, 0.9);
-                color: var(--text);
-            }
-
-            .skip-button:hover {
-                transform: translateY(-2px);
-                background: rgba(55, 55, 65, 0.9);
-            }
-
-            @keyframes modalFadeIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(20px);
-                }
-
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-
-            @media (max-width: 768px) {
-                .preference-modal-content {
-                    margin: 5vh auto;
-                    padding: 1.5rem;
-                }
-
-                .preference-header h2 {
-                    font-size: 1.75rem;
-                }
-
-                .preference-actions {
-                    flex-direction: column;
-                }
-            }
+        }
     </style>
 </head>
 
