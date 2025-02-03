@@ -1,2514 +1,2720 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
-      <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="Content-Security-Policy" content="
-         default-src 'self';
-         script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
-         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
-         img-src 'self' https://image.tmdb.org data: https://via.placeholder.com;
-         font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-         connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com;
-         worker-src 'self';
-         object-src 'none';">
-      <title>Which Movie To Watch!</title>
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css" rel="stylesheet">
-      <style>
-         /* Custom Properties and Color Variables */
-         :root {
-         --background: #0E0E12;
-         --text: #F4F4F5;
-         --accent: #FF4545;
-         --gradient-start: rgba(255, 69, 69, 0.2);
-         --gradient-end: rgba(14, 14, 18, 0.9);
-         --primary: #FFFFED;
-         --secondary: #F4eeee;
-         --card-bg: rgba(17, 24, 39, 0.8);
-         --love: #e11d48;
-         --like: #2563eb;
-         --watched: #475569;
-         --success: #059669;
-         --max-width-sm: 640px;
-         --max-width-md: 768px;
-         --max-width-lg: 1024px;
-         --max-width-xl: 1280px;
-         }
-         /* Base Styles */
-         @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-         /* Reset and Base Styles */
-         * {
-         margin: 0;
-         padding: 0;
-         box-sizing: border-box;
-         }
-         body {
-         font-family: 'Space Grotesk', sans-serif;
-         background: var(--background);
-         color: var(--text);
-         min-height: 100vh;
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         position: relative;
-         overflow-x: hidden;
-         padding: 2rem 0;
-         }
-         /* Background Gradient */
-         .gradient-background {
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: radial-gradient(circle at 30% 50%, var(--gradient-start), transparent 70%);
-         pointer-events: none;
-         z-index: 0;
-         }
-         /* Container and Header Styles */
-         .container {
-         position: relative;
-         z-index: 1;
-         width: 90%;
-         max-width: 1200px;
-         padding: clamp(1rem, 3vw, 2rem);
-         text-align: center;
-         margin: 0 auto;
-         }
-         .header {
-         text-align: center;
-         margin-bottom: 3rem;
-         position: relative;
-         }
-         .title-container {
-         margin-top: 20px;
-         }
-         .header h1 {
-         font-size: 3.5rem;
-         font-weight: 700;
-         margin-bottom: 1rem;
-         color: #f39c12;
-         background: linear-gradient(135deg, var(--primary), var(--secondary));
-         -webkit-background-clip: text;
-         -webkit-text-fill-color: transparent;
-         position: relative;
-         display: inline-block;
-         overflow: hidden;
-         white-space: nowrap;
-         }
-         .title-letter {
-         display: inline-block;
-         background: linear-gradient(90deg, #f39c12, #d35400, #e74c3c, #f39c12);
-         background-size: 200%;
-         -webkit-background-clip: text;
-         background-clip: text;
-         color: transparent;
-         animation: subtleGlow 5s ease-in-out infinite;
-         }
-         @keyframes subtleGlow {
-         0% {
-         background-position: 0%;
-         }
-         50% {
-         background-position: 100%;
-         }
-         100% {
-         background-position: 0%;
-         }
-         }
-         .header h1::after {
-         content: '';
-         position: absolute;
-         bottom: -10px;
-         left: 50%;
-         transform: translateX(-50%);
-         width: 60%;
-         height: 4px;
-         background: linear-gradient(90deg, transparent, var(--primary), transparent);
-         border-radius: 2px;
-         }
-         /* Movie Card Styles */
-         .movie-card {
-         background: var(--card-bg);
-         border-radius: 24px;
-         padding: 2.5rem;
-         backdrop-filter: blur(20px);
-         box-shadow:
-         0 25px 50px -12px rgba(0, 0, 0, 0.5),
-         0 0 0 1px rgba(255, 255, 255, 0.1);
-         transform-style: preserve-3d;
-         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-         }
-         .movie-card:hover {
-         transform: translateY(-8px);
-         box-shadow:
-         0 30px 60px -12px rgba(0, 0, 0, 0.6),
-         0 0 0 2px rgba(255, 255, 255, 0.15);
-         }
-         .movie-content {
-         display: grid;
-         grid-template-columns: 350px 1fr;
-         gap: 1.5rem;
-         align-items: start;
-         padding: 1rem;
-         }
-         /* Movie Poster Styles */
-         .poster {
-         position: relative;
-         border-radius: 16px;
-         overflow: hidden;
-         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-         transition: transform 0.3s ease;
-         }
-         .poster::before {
-         content: '';
-         position: absolute;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: linear-gradient(to bottom,
-         transparent 0%,
-         rgba(0, 0, 0, 0.2) 100%);
-         z-index: 1;
-         }
-         .poster img {
-         width: 100%;
-         height: auto;
-         display: block;
-         transition: transform 0.5s ease;
-         }
-         .poster:hover img {
-         transform: scale(1.05);
-         }
-         /* Movie Info Styles */
-         .movie-info h2 {
-         font-size: 2.5rem;
-         margin-bottom: 1.5rem;
-         line-height: 1.2;
-         background: linear-gradient(135deg, #fff, #e2e8f0);
-         -webkit-background-clip: text;
-         -webkit-text-fill-color: transparent;
-         }
-         /* Enhanced Movie Meta Section */
-         .movie-meta {
-         display: flex;
-         flex-wrap: wrap;
-         gap: 1rem;
-         margin: 2rem 0;
-         padding: 1.5rem;
-         background: rgba(17, 24, 39, 0.6);
-         border-radius: 16px;
-         backdrop-filter: blur(10px);
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         }
-         .meta-item {
-         flex: 1;
-         min-width: 120px;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         gap: 0.75rem;
-         padding: 1rem 1.5rem;
-         background: rgba(45, 45, 55, 0.9);
-         border-radius: 12px;
-         font-size: 1.1rem;
-         font-weight: 500;
-         color: var(--text);
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         transition: all 0.3s ease;
-         }
-         .meta-item:hover {
-         transform: translateY(-2px);
-         background: rgba(55, 55, 65, 0.9);
-         border-color: rgba(255, 255, 255, 0.2);
-         }
-         .meta-item i {
-         font-size: 1.2rem;
-         color: var(--accent);
-         }
-         /* Enhanced Ratings Container */
-         .ratings-container {
-         display: grid;
-         grid-template-columns: repeat(3, 1fr);
-         gap: 1rem;
-         position: relative;
-         margin: 1rem 0;
-         padding: 1rem;
-         background: rgba(17, 24, 39, 0.6);
-         border-radius: 16px;
-         backdrop-filter: blur(10px);
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         }
-         .rating-item {
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         justify-content: center;
-         padding: 0.5rem;
-         background: rgba(45, 45, 55, 0.9);
-         border-radius: 10px;
-         transition: all 0.3s ease;
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         gap: 0.5rem;
-         }
-         .rating-item:hover {
-         transform: translateY(-4px);
-         background: rgba(55, 55, 65, 0.9);
-         border-color: rgba(255, 255, 255, 0.2);
-         }
-         .rating-item i {
-         font-size: 2rem;
-         margin-bottom: 0.5rem;
-         }
-         .rating-item .rating-value {
-         font-size: 1rem;
-         font-weight: 500;
-         background: linear-gradient(135deg, var(--primary), var(--secondary));
-         -webkit-background-clip: text;
-         -webkit-text-fill-color: transparent;
-         }
-         .rating-item .rating-label {
-         font-size: 0.9rem;
-         color: var(--text);
-         opacity: 0.8;
-         }
-         /* Rating Type Specific Styles */
-         .rating-item.imdb i {
-         color: #f5c518;
-         }
-         .rating-item.rotten-tomatoes i {
-         color: #fa320a;
-         }
-         .rating-item.tmdb i {
-         color: #01b4e4;
-         }
-         .poster-container {
-         display: flex;
-         flex-direction: column;
-         gap: 1rem;
-         width: 100%;
-         max-width: 350px;
-         }
-         .poster {
-         position: relative;
-         border-radius: 16px;
-         overflow: hidden;
-         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-         width: 100%;
-         }
-         /* Enhanced Trailer Button */
-         .trailer-container {
-         margin: 0;
-         text-align: center;
-         width: 100%;
-         }
-         .trailer-link {
-         display: inline-flex;
-         align-items: center;
-         justify-content: center;
-         gap: 0.75rem;
-         padding: 1rem 2rem;
-         background: linear-gradient(135deg, #ff0000, #cc0000);
-         border-radius: 12px;
-         font-size: 1.1rem;
-         font-weight: 600;
-         color: white;
-         text-decoration: none;
-         border: none;
-         transition: all 0.3s ease;
-         box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
-         width: 100%;
-         }
-         .trailer-link:hover {
-         transform: translateY(-3px);
-         background: linear-gradient(135deg, #ff1a1a, #e60000);
-         box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
-         }
-         .trailer-link i {
-         font-size: 1.8rem;
-         }
-         /* Overview and Genres */
-         .overview {
-         font-size: 1.1rem;
-         line-height: 1.8;
-         margin-bottom: 2.5rem;
-         color: rgba(248, 250, 252, 0.9);
-         position: relative;
-         padding-left: 1.5rem;
-         border-left: 3px solid var(--primary);
-         }
-         .genres {
-         display: flex;
-         gap: 0.75rem;
-         flex-wrap: wrap;
-         margin-bottom: 2.5rem;
-         }
-         .genre {
-         background: rgba(109, 40, 217, 0.2);
-         color: #c4b5fd;
-         padding: 0.75rem 1.5rem;
-         border-radius: 30px;
-         font-size: 0.95rem;
-         letter-spacing: 0.5px;
-         border: 1px solid rgba(109, 40, 217, 0.3);
-         transition: all 0.3s ease;
-         }
-         .genre:hover {
-         background: rgba(109, 40, 217, 0.3);
-         border-color: rgba(109, 40, 217, 0.4);
-         transform: translateY(-2px);
-         }
-         /* Streaming Info Styles */
-         .streaming-info {
-         margin-bottom: 2.5rem;
-         padding: 1.5rem;
-         background: rgba(255, 255, 255, 0.05);
-         border-radius: 16px;
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         }
-         .streaming-section {
-         margin-bottom: 1.5rem;
-         }
-         .streaming-section h3 {
-         font-size: 1.1rem;
-         margin-bottom: 1rem;
-         color: rgba(248, 250, 252, 0.8);
-         }
-         .provider-list {
-         display: flex;
-         gap: 1rem;
-         flex-wrap: wrap;
-         }
-         .provider {
-         width: 40px;
-         height: 40px;
-         border-radius: 8px;
-         overflow: hidden;
-         transition: transform 0.3s ease;
-         }
-         .provider:hover {
-         transform: scale(1.1);
-         }
-         .provider img {
-         width: 100%;
-         height: 100%;
-         object-fit: cover;
-         }
-         .floating-next {
-         position: fixed;
-         bottom: 2rem;
-         right: 2rem;
-         z-index: 1000;
-         background: linear-gradient(135deg, #FDC407, #816300);
-         color: white;
-         padding: 1rem;
-         border-radius: 50%;
-         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-         border: none;
-         cursor: pointer;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         transition: all 0.3s ease;
-         width: 60px;
-         height: 60px;
-         }
-         .floating-next:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
-         }
-         .floating-next i {
-         font-size: 1.5rem;
-         }
-         /* Action Buttons */
-         .action-buttons {
-         display: grid;
-         grid-template-columns: repeat(4, 1fr);
-         gap: 1rem;
-         margin-top: 2.5rem;
-         }
-         .btn {
-         padding: 1.25rem;
-         border: none;
-         border-radius: 12px;
-         font-size: 1rem;
-         font-weight: 600;
-         font-family: 'Space Grotesk', sans-serif;
-         cursor: pointer;
-         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         gap: 0.75rem;
-         position: relative;
-         overflow: hidden;
-         }
-         .btn::before {
-         content: '';
-         position: absolute;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
-         opacity: 0;
-         transition: opacity 0.3s ease;
-         }
-         .btn:hover::before {
-         opacity: 1;
-         }
-         .btn-next {
-         background: linear-gradient(135deg, #FDC407, #816300);
-         color: white;
-         }
-         .btn-love {
-         background: linear-gradient(135deg, var(--love), #be123c);
-         color: white;
-         }
-         .btn-skip {
-         background: linear-gradient(135deg, #64748b, #475569);
-         color: white;
-         }
-         .btn-skip:hover {
-         background: linear-gradient(135deg, #475569, #334155);
-         transform: translateY(-3px);
-         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-         }
-         .btn-like {
-         background: linear-gradient(135deg, var(--like), #1d4ed8);
-         color: white;
-         }
-         .btn-watched {
-         background: linear-gradient(135deg, var(--watched), #334155);
-         color: white;
-         }
-         .btn:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-         }
-         .btn:active {
-         transform: translateY(-1px);
-         }
-         /* Footer Styles */
-         .footer {
-         text-align: center;
-         padding: 2rem 0;
-         margin-top: 3rem;
-         color: var(--text);
-         font-size: 1.1rem;
-         position: relative;
-         overflow: hidden;
-         }
-         .footer-content {
-         position: relative;
-         padding: 1.5rem 3rem;
-         background: rgba(17, 24, 39, 0.7);
-         border-radius: 20px;
-         backdrop-filter: blur(10px);
-         box-shadow:
-         0 10px 30px -5px rgba(0, 0, 0, 0.3),
-         0 0 0 1px rgba(255, 255, 255, 0.1),
-         inset 0 0 20px rgba(99, 102, 241, 0.1);
-         display: inline-block;
-         transform-style: preserve-3d;
-         transition: all 0.3s ease;
-         }
-         .footer-content:hover {
-         transform: translateY(-5px);
-         box-shadow:
-         0 15px 40px -5px rgba(0, 0, 0, 0.4),
-         0 0 0 1px rgba(255, 255, 255, 0.2),
-         inset 0 0 30px rgba(99, 102, 241, 0.2);
-         }
-         .footer a {
-         color: #a5b4fc;
-         text-decoration: none;
-         position: relative;
-         padding: 0.2em 0.5em;
-         margin: 0 0.2em;
-         font-weight: 600;
-         transition: all 0.3s ease;
-         border-radius: 4px;
-         }
-         .footer a::before,
-         .footer a::after {
-         content: '';
-         position: absolute;
-         width: 100%;
-         height: 2px;
-         background: linear-gradient(90deg, #818cf8, #c084fc);
-         left: 0;
-         transform: scaleX(0);
-         transition: transform 0.3s ease;
-         }
-         .footer a::before {
-         top: 0;
-         transform-origin: left;
-         }
-         .footer a::after {
-         bottom: 0;
-         transform-origin: right;
-         }
-         .footer a:hover {
-         color: #c7d2fe;
-         text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
-         background: rgba(99, 102, 241, 0.1);
-         }
-         .footer a:hover::before {
-         transform: scaleX(1);
-         transform-origin: right;
-         }
-         .footer a:hover::after {
-         transform: scaleX(1);
-         transform-origin: left;
-         }
-         /* Loading and Error States */
-         .loading {
-         text-align: center;
-         padding: 3rem;
-         }
-         .loading i {
-         font-size: 2.5rem;
-         color: var(--primary);
-         animation: pulse 2s infinite;
-         }
-         @keyframes pulse {
-         0% {
-         opacity: 1;
-         transform: scale(1);
-         }
-         50% {
-         opacity: 0.5;
-         transform: scale(0.95);
-         }
-         100% {
-         opacity: 1;
-         transform: scale(1);
-         }
-         }
-         .error {
-         text-align: center;
-         padding: 3rem;
-         color: #ef4444;
-         }
-         /* Toast Notifications */
-         .toast {
-         position: fixed;
-         bottom: 2rem;
-         right: 2rem;
-         background: var(--card-bg);
-         padding: 1rem 2rem;
-         border-radius: 12px;
-         backdrop-filter: blur(10px);
-         transform: translateX(200%);
-         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-         z-index: 1000;
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-         font-weight: 500;
-         }
-         .toast.visible {
-         transform: translateX(0);
-         }
-         /* Recommendations Section */
-         .recommendations {
-         margin-top: 3rem;
-         display: grid;
-         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-         gap: 1.5rem;
-         opacity: 0;
-         transform: translateY(20px);
-         transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-         }
-         .recommendations.visible {
-         opacity: 1;
-         transform: translateY(0);
-         }
-         .recommended-movie {
-         background: var(--card-bg);
-         border-radius: 16px;
-         overflow: hidden;
-         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         }
-         .recommended-movie:hover {
-         transform: translateY(-5px) scale(1.02);
-         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-         }
-         .recommended-movie img {
-         width: 100%;
-         height: 330px;
-         object-fit: cover;
-         transition: transform 0.5s ease;
-         }
-         .recommended-movie:hover img {
-         transform: scale(1.05);
-         }
-         .recommended-movie-info {
-         padding: 1.5rem;
-         }
-         .recommended-movie-title {
-         font-size: 1.1rem;
-         font-weight: 600;
-         margin-bottom: 0.75rem;
-         color: rgba(255, 255, 255, 0.95);
-         }
-         .recommended-movie-meta {
-         font-size: 0.9rem;
-         color: rgba(255, 255, 255, 0.7);
-         }
-         .dinner-time-buttons {
-         display: flex;
-         flex-direction: column;
-         gap: 1rem;
-         width: 100%;
-         }
-         .dinner-time-buttons .netflix-button {
-         width: 100%;
-         justify-content: center;
-         margin: 0;
-         }
-         @media (max-width: 768px) {
-         .dinner-time-buttons {
-         flex-direction: column;
-         }
-         }
-         @media (min-width: 768px) {
-         .movie-content {
-         grid-template-columns: minmax(200px, 300px) 1fr;
-         }
-         }
-         /* Dinner Time Movie Ratings Styles */
-         .dinner-time-movie .ratings-container {
-         display: grid;
-         grid-template-columns: repeat(3, 1fr);
-         gap: 1rem;
-         margin: 1.5rem 0;
-         padding: 1.5rem;
-         background: rgba(17, 24, 39, 0.6);
-         border-radius: 16px;
-         backdrop-filter: blur(10px);
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         }
-         .dinner-time-movie .rating-item {
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         justify-content: center;
-         padding: 1rem;
-         background: rgba(45, 45, 55, 0.9);
-         border-radius: 12px;
-         transition: all 0.3s ease;
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         }
-         .dinner-time-movie .rating-item:hover {
-         transform: translateY(-4px);
-         background: rgba(55, 55, 65, 0.9);
-         border-color: rgba(255, 255, 255, 0.2);
-         }
-         .dinner-time-movie .rating-item i {
-         font-size: 2rem;
-         margin-bottom: 0.5rem;
-         }
-         .dinner-time-movie .rating-item .rating-value {
-         font-size: 1.2rem;
-         font-weight: 600;
-         background: linear-gradient(135deg, var(--primary), var(--secondary));
-         -webkit-background-clip: text;
-         -webkit-text-fill-color: transparent;
-         margin: 0.5rem 0;
-         }
-         .dinner-time-movie .rating-item .rating-label {
-         font-size: 0.9rem;
-         color: var(--text);
-         opacity: 0.8;
-         }
-         .dinner-time-movie .rating-item.imdb i {
-         color: #f5c518;
-         }
-         .dinner-time-movie .rating-item.rotten-tomatoes i {
-         color: #fa320a;
-         }
-         .dinner-time-movie .rating-item.tmdb i {
-         color: #01b4e4;
-         }
-         /* Responsive styles for dinner time ratings */
-         @media (max-width: 1024px) {
-         .dinner-time-movie .ratings-container {
-         grid-template-columns: repeat(3, 1fr);
-         }
-         }
-         @media (max-width: 768px) {
-         .dinner-time-movie .ratings-container {
-         grid-template-columns: repeat(2, 1fr);
-         }
-         }
-         @media (max-width: 480px) {
-         .dinner-time-movie .ratings-container {
-         grid-template-columns: 1fr;
-         }
-         .dinner-time-movie .rating-item {
-         padding: 1rem 0.5rem;
-         }
-         }
-         /* Responsive adjustments */
-         @media (max-width: 768px) {
-         .dinner-time-container {
-         flex-direction: column;
-         gap: 1rem;
-         }
-         .dinner-time-trigger,
-         .free-movie-trigger,
-         .preference-trigger {
-         width: 100%;
-         max-width: none;
-         padding: 1rem;
-         }
-         }
-         /* Responsive Design */
-         @media (max-width: 1024px) {
-         .movie-content {
-         grid-template-columns: minmax(200px, 300px) 1fr;
-         }
-         .ratings-container {
-         grid-template-columns: repeat(3, 1fr);
-         }
-         }
-         @media (max-width: 768px) {
-         .poster-section {
-         max-width: 350px;
-         margin: 0 auto;
-         }
-         }
-         @media (max-width: 768px) {
-         .movie-content {
-         grid-template-columns: 1fr;
-         }
-         .movie-card {
-         padding: 1.5rem;
-         }
-         .header h1 {
-         font-size: clamp(1.5rem, 5vw, 2.5rem);
-         }
-         .action-buttons {
-         grid-template-columns: 1fr;
-         }
-         .ratings-container {
-         grid-template-columns: 1fr;
-         padding: 1rem;
-         }
-         .meta-item {
-         width: 100%;
-         }
-         .genres {
-         justify-content: center;
-         }
-         .trailer-link {
-         width: 100%;
-         }
-         }
-         @media (max-width: 480px) {
-         .container {
-         padding: 1rem;
-         }
-         .movie-meta {
-         flex-direction: column;
-         }
-         .genre {
-         width: 100%;
-         text-align: center;
-         }
-         .overview {
-         font-size: 0.95rem;
-         line-height: 1.6;
-         }
-         .meta-item,
-         .rating-item {
-         font-size: 0.9rem;
-         }
-         }
-         @media (hover: none) {
-         .btn,
-         .genre,
-         .provider,
-         .trailer-link {
-         transition: none;
-         }
-         .btn:active,
-         .genre:active,
-         .provider:active,
-         .trailer-link:active {
-         transform: scale(0.98);
-         }
-         }
-         @media (prefers-reduced-motion: reduce) {
-         * {
-         animation: none !important;
-         transition: none !important;
-         }
-         }
-         /* Animations */
-         @keyframes fadeIn {
-         from {
-         opacity: 0;
-         transform: translateY(20px);
-         }
-         to {
-         opacity: 1;
-         transform: translateY(0);
-         }
-         }
-         @keyframes shimmer {
-         0% {
-         transform: translateX(-100%);
-         }
-         100% {
-         transform: translateX(100%);
-         }
-         }
-         /* Accessibility Improvements */
-         .btn:focus,
-         .trailer-link:focus,
-         .provider:focus {
-         outline: 2px solid var(--accent);
-         outline-offset: 2px;
-         }
-         .rating-item:focus-within,
-         .meta-item:focus-within {
-         outline: 2px solid var(--accent);
-         outline-offset: 4px;
-         }
-         /* High Contrast Mode Support */
-         @media (prefers-contrast: high) {
-         :root {
-         --text: #ffffff;
-         --background: #000000;
-         --card-bg: rgba(0, 0, 0, 0.95);
-         }
-         .movie-card,
-         .rating-item,
-         .meta-item {
-         border: 2px solid white;
-         }
-         }
-         .dinner-time-container {
-         display: flex;
-         justify-content: center;
-         align-items: center;
-         gap: 2rem;
-         /* Increased gap between buttons */
-         margin: 3rem auto;
-         /* Add margin above and below */
-         max-width: 1200px;
-         padding: 0 1rem;
-         }
-         .dinner-time-trigger,
-         .free-movie-trigger {
-         flex: 1;
-         max-width: 300px;
-         /* Limit maximum width */
-         padding: 1.2rem 2rem;
-         border: none;
-         border-radius: 15px;
-         font-size: 1.2rem;
-         font-weight: 600;
-         cursor: pointer;
-         transition: all 0.3s ease;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         gap: 0.8rem;
-         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-         }
-         .dinner-time-trigger:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
-         }
-         .dinner-time-modal {
-         display: none;
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: rgba(0, 0, 0, 0.8);
-         backdrop-filter: blur(8px);
-         z-index: 1000;
-         justify-content: center;
-         align-items: center;
-         padding: 2rem;
-         }
-         .dinner-time-modal-content {
-         background: var(--card-bg);
-         border-radius: 24px;
-         max-width: 1000px;
-         width: 90%;
-         max-height: 90vh;
-         overflow-y: auto;
-         position: relative;
-         animation: modalFadeIn 0.5s ease;
-         }
-         .dinner-time-movie {
-         display: grid;
-         grid-template-columns: 400px 1fr;
-         gap: 2rem;
-         padding: 2rem;
-         }
-         .dinner-time-poster {
-         position: relative;
-         border-radius: 16px;
-         overflow: hidden;
-         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-         }
-         .dinner-time-poster img {
-         width: 100%;
-         height: auto;
-         display: block;
-         transition: transform 0.5s ease;
-         }
-         .dinner-time-info {
-         padding: 1rem;
-         }
-         .dinner-time-info h2 {
-         font-size: 2.5rem;
-         margin-bottom: 1.5rem;
-         background: linear-gradient(135deg, #fff, #e2e8f0);
-         -webkit-background-clip: text;
-         -webkit-text-fill-color: transparent;
-         }
-         .dinner-time-meta {
-         display: flex;
-         gap: 2rem;
-         margin-bottom: 2rem;
-         }
-         .dinner-time-meta span {
-         display: flex;
-         align-items: center;
-         gap: 0.5rem;
-         color: var(--text);
-         font-size: 1.1rem;
-         }
-         .dinner-time-overview {
-         font-size: 1.1rem;
-         line-height: 1.8;
-         margin-bottom: 2rem;
-         color: rgba(248, 250, 252, 0.9);
-         }
-         .dinner-time-streaming {
-         margin-bottom: 2rem;
-         }
-         .streaming-logos {
-         display: flex;
-         gap: 1rem;
-         margin-top: 1rem;
-         }
-         .streaming-logos img {
-         width: 50px;
-         height: 50px;
-         border-radius: 8px;
-         transition: transform 0.3s ease;
-         }
-         .streaming-logos img:hover {
-         transform: scale(1.1);
-         }
-         .dinner-time-actions {
-         display: flex;
-         gap: 1rem;
-         }
-         .dinner-time-btn {
-         flex: 1;
-         padding: 1rem;
-         border: none;
-         border-radius: 12px;
-         font-size: 1.1rem;
-         font-weight: 600;
-         cursor: pointer;
-         transition: all 0.3s ease;
-         display: flex;
-         align-items: center;
-         justify-content: center;
-         gap: 0.75rem;
-         }
-         .dinner-time-btn.like {
-         background: linear-gradient(135deg, #22c55e, #16a34a);
-         color: white;
-         }
-         .dinner-time-btn.dislike {
-         background: linear-gradient(135deg, #ef4444, #dc2626);
-         color: white;
-         }
-         .dinner-time-btn:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-         }
-         .dinner-time-loading {
-         text-align: center;
-         padding: 4rem;
-         }
-         .dinner-time-loading i {
-         font-size: 3rem;
-         color: #f97316;
-         margin-bottom: 1rem;
-         }
-         @keyframes modalFadeIn {
-         from {
-         opacity: 0;
-         transform: translateY(20px);
-         }
-         to {
-         opacity: 1;
-         transform: translateY(0);
-         }
-         }
-         @media (max-width: 768px) {
-         .dinner-time-movie {
-         grid-template-columns: 1fr;
-         }
-         .dinner-time-poster {
-         max-width: 300px;
-         margin: 0 auto;
-         }
-         .dinner-time-info h2 {
-         font-size: 2rem;
-         }
-         .dinner-time-meta {
-         flex-wrap: wrap;
-         gap: 1rem;
-         }
-         .dinner-time-actions {
-         flex-direction: column;
-         }
-         }
-         .netflix-button {
-         display: inline-flex;
-         align-items: center;
-         gap: 0.75rem;
-         padding: 1rem 2rem;
-         background: linear-gradient(135deg, #E50914, #B20710);
-         color: white;
-         text-decoration: none;
-         border-radius: 12px;
-         font-size: 1.2rem;
-         font-weight: 600;
-         margin-top: 1rem;
-         transition: all 0.3s ease;
-         box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
-         }
-         .netflix-button:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
-         }
-         .netflix-button i {
-         font-size: 1.4rem;
-         }
-         /* Update the dinner time trigger button to match Netflix styling */
-         .dinner-time-trigger {
-         background: linear-gradient(135deg, #E50914, #B20710);
-         color: white;
-         }
-         .dinner-time-loading {
-         color: #E50914;
-         }
-         .dinner-time-error {
-         text-align: center;
-         padding: 3rem;
-         color: var(--text);
-         }
-         .dinner-time-error i {
-         font-size: 3rem;
-         color: #E50914;
-         margin-bottom: 1rem;
-         }
-         .dinner-time-error p {
-         font-size: 1.2rem;
-         margin-bottom: 2rem;
-         }
-         .dinner-time-retry {
-         background: linear-gradient(135deg, #E50914, #B20710);
-         color: white;
-         padding: 1rem 2rem;
-         border: none;
-         border-radius: 12px;
-         font-size: 1.1rem;
-         font-weight: 600;
-         cursor: pointer;
-         transition: all 0.3s ease;
-         }
-         .dinner-time-retry:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
-         }
-         .netflix-note {
-         margin-top: 0.5rem;
-         font-size: 0.9rem;
-         color: rgba(255, 255, 255, 0.7);
-         text-align: center;
-         }
-         .dinner-time-streaming {
-         display: flex;
-         flex-direction: column;
-         align-items: center;
-         gap: 0.5rem;
-         }
-         .free-movie-trigger {
-         background: linear-gradient(135deg, #4CAF50, #2E7D32);
-         color: white;
-         }
-         .dinner-time-trigger:hover,
-         .free-movie-trigger:hover,
-         .preference-trigger:hover {
-         transform: translateY(-3px);
-         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-         }
-         .dinner-time-trigger i,
-         .free-movie-trigger i,
-         .preference-trigger i {
-         font-size: 1.4rem;
-         }
-         .preference-trigger {
-         background: linear-gradient(135deg, #E50914, #B20710);
-         color: white;
-         flex: 1.2;
-         /* Make it slightly wider */
-         }
-         .disclaimer-text {
-         margin-top: 1rem;
-         padding: 0.75rem;
-         background: rgba(255, 193, 7, 0.1);
-         border-left: 3px solid #ffc107;
-         border-radius: 4px;
-         font-size: 0.9rem;
-         color: rgba(255, 255, 255, 0.8);
-         line-height: 1.5;
-         }
-         .service-disclaimer {
-         margin-top: 2rem;
-         padding: 1rem;
-         background: rgba(229, 9, 20, 0.1);
-         border: 1px solid rgba(229, 9, 20, 0.2);
-         border-radius: 12px;
-         font-size: 0.9rem;
-         color: rgba(255, 255, 255, 0.7);
-         text-align: center;
-         line-height: 1.5;
-         }
-         .service-disclaimer i {
-         color: rgba(229, 9, 20, 0.8);
-         margin-right: 0.5rem;
-         }
-         /* Preference Modal Styles */
-         .preference-modal {
-         display: none;
-         position: fixed;
-         top: 0;
-         left: 0;
-         width: 100%;
-         height: 100%;
-         background: rgba(0, 0, 0, 0.8);
-         z-index: 1000;
-         backdrop-filter: blur(8px);
-         }
-         .preference-modal-content {
-         position: relative;
-         background: var(--card-bg);
-         margin: 10vh auto;
-         padding: 2rem;
-         border-radius: 24px;
-         max-width: 500px;
-         width: 90%;
-         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-         animation: modalFadeIn 0.5s ease;
-         }
-         .preference-header {
-         text-align: center;
-         margin-bottom: 2rem;
-         }
-         .preference-header h2 {
-         font-size: 2rem;
-         color: var(--primary);
-         background: linear-gradient(135deg, #fff, #e2e8f0);
-         -webkit-background-clip: text;
-         -webkit-text-fill-color: transparent;
-         }
-         .preference-section {
-         margin-bottom: 1.5rem;
-         }
-         .preference-section label {
-         display: block;
-         margin-bottom: 0.5rem;
-         font-size: 1.1rem;
-         color: var(--text);
-         }
-         .preference-select {
-         width: 100%;
-         padding: 0.75rem;
-         border-radius: 12px;
-         background: rgba(45, 45, 55, 0.9);
-         border: 1px solid rgba(255, 255, 255, 0.1);
-         color: var(--text);
-         font-size: 1rem;
-         transition: all 0.3s ease;
-         }
-         .preference-select:focus {
-         outline: none;
-         border-color: var(--accent);
-         box-shadow: 0 0 0 2px rgba(255, 69, 69, 0.2);
-         }
-         .preference-actions {
-         display: flex;
-         gap: 1rem;
-         margin-top: 2rem;
-         }
-         .preference-button {
-         flex: 1;
-         padding: 1rem;
-         border: none;
-         border-radius: 12px;
-         font-size: 1rem;
-         font-weight: 600;
-         cursor: pointer;
-         transition: all 0.3s ease;
-         }
-         .start-button {
-         background: linear-gradient(135deg, #E50914, #B20710);
-         color: white;
-         }
-         .start-button:disabled {
-         opacity: 0.5;
-         cursor: not-allowed;
-         }
-         .start-button:not(:disabled):hover {
-         transform: translateY(-2px);
-         box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
-         }
-         .skip-button {
-         background: rgba(45, 45, 55, 0.9);
-         color: var(--text);
-         }
-         .skip-button:hover {
-         transform: translateY(-2px);
-         background: rgba(55, 55, 65, 0.9);
-         }
-         @keyframes modalFadeIn {
-         from {
-         opacity: 0;
-         transform: translateY(20px);
-         }
-         to {
-         opacity: 1;
-         transform: translateY(0);
-         }
-         }
-         @media (max-width: 768px) {
-         .preference-modal-content {
-         margin: 5vh auto;
-         padding: 1.5rem;
-         }
-         .preference-header h2 {
-         font-size: 1.75rem;
-         }
-         .preference-actions {
-         flex-direction: column;
-         }
-         }
-      </style>
-   </head>
-   <body>
-      <div id="preferenceModal" class="preference-modal">
-         <div class="preference-modal-content">
+
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+       default-src 'self';
+       script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com;
+       style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+       img-src 'self' https://image.tmdb.org data: https://via.placeholder.com;
+       font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+       connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com;
+       worker-src 'self';
+       object-src 'none';">
+    <title>Which Movie To Watch!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css" rel="stylesheet">
+
+    <style>
+        /* Custom Properties and Color Variables */
+        :root {
+            --background: #0E0E12;
+            --text: #F4F4F5;
+            --accent: #FF4545;
+            --gradient-start: rgba(255, 69, 69, 0.2);
+            --gradient-end: rgba(14, 14, 18, 0.9);
+            --primary: #FFFFED;
+            --secondary: #F4eeee;
+            --card-bg: rgba(17, 24, 39, 0.8);
+            --love: #e11d48;
+            --like: #2563eb;
+            --watched: #475569;
+            --success: #059669;
+            --max-width-sm: 640px;
+            --max-width-md: 768px;
+            --max-width-lg: 1024px;
+            --max-width-xl: 1280px;
+        }
+
+        /* Base Styles */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+            padding: 2rem 0;
+        }
+
+        /* Background Gradient */
+        .gradient-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, var(--gradient-start), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Container and Header Styles */
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 1200px;
+            padding: clamp(1rem, 3vw, 2rem);
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .title-container {
+            margin-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #f39c12;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .title-letter {
+            display: inline-block;
+            background: linear-gradient(90deg, #f39c12, #d35400, #e74c3c, #f39c12);
+            background-size: 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: subtleGlow 5s ease-in-out infinite;
+        }
+
+        @keyframes subtleGlow {
+            0% {
+                background-position: 0%;
+            }
+
+            50% {
+                background-position: 100%;
+            }
+
+            100% {
+                background-position: 0%;
+            }
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            border-radius: 2px;
+        }
+
+        /* Movie Card Styles */
+        .movie-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .movie-card:hover {
+            transform: translateY(-8px);
+            box-shadow:
+                0 30px 60px -12px rgba(0, 0, 0, 0.6),
+                0 0 0 2px rgba(255, 255, 255, 0.15);
+        }
+
+        .movie-content {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+            padding: 1rem;
+        }
+
+        /* Movie Poster Styles */
+        .poster {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .poster::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom,
+                    transparent 0%,
+                    rgba(0, 0, 0, 0.2) 100%);
+            z-index: 1;
+        }
+
+        .poster img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .poster:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Movie Info Styles */
+        .movie-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Enhanced Movie Meta Section */
+        .movie-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(17, 24, 39, 0.6);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meta-item {
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: rgba(45, 45, 55, 0.9);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .meta-item:hover {
+            transform: translateY(-2px);
+            background: rgba(55, 55, 65, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .meta-item i {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        /* Enhanced Ratings Container */
+        .ratings-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            position: relative;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(17, 24, 39, 0.6);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .rating-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+            background: rgba(45, 45, 55, 0.9);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 0.5rem;
+        }
+
+        .rating-item:hover {
+            transform: translateY(-4px);
+            background: rgba(55, 55, 65, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .rating-item i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating-item .rating-value {
+            font-size: 1rem;
+            font-weight: 500;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .rating-item .rating-label {
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        /* Rating Type Specific Styles */
+        .rating-item.imdb i {
+            color: #f5c518;
+        }
+
+        .rating-item.rotten-tomatoes i {
+            color: #fa320a;
+        }
+
+        .rating-item.tmdb i {
+            color: #01b4e4;
+        }
+
+        .poster-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        .poster {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            width: 100%;
+        }
+
+        /* Enhanced Trailer Button */
+        .trailer-container {
+            margin: 0;
+            text-align: center;
+            width: 100%;
+        }
+
+        .trailer-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #ff0000, #cc0000);
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            text-decoration: none;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+            width: 100%;
+        }
+
+        .trailer-link:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #ff1a1a, #e60000);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .trailer-link i {
+            font-size: 1.8rem;
+        }
+
+        /* Overview and Genres */
+        .overview {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+            color: rgba(248, 250, 252, 0.9);
+            position: relative;
+            padding-left: 1.5rem;
+            border-left: 3px solid var(--primary);
+        }
+
+        .genres {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+        }
+
+        .genre {
+            background: rgba(109, 40, 217, 0.2);
+            color: #c4b5fd;
+            padding: 0.75rem 1.5rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .genre:hover {
+            background: rgba(109, 40, 217, 0.3);
+            border-color: rgba(109, 40, 217, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Streaming Info Styles */
+        .streaming-info {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .streaming-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .streaming-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: rgba(248, 250, 252, 0.8);
+        }
+
+        .provider-list {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .provider {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .provider:hover {
+            transform: scale(1.1);
+        }
+
+        .provider img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    margin: 1rem 0 2rem 0;
+}
+
+        .btn {
+            padding: 1.25rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: 'Space Grotesk', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn:hover::before {
+            opacity: 1;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #FDC407, #816300);
+            color: white;
+        }
+
+        .btn-love {
+            background: linear-gradient(135deg, var(--love), #be123c);
+            color: white;
+        }
+
+        .btn-skip {
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+        }
+
+        .btn-skip:hover {
+            background: linear-gradient(135deg, #475569, #334155);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-like {
+            background: linear-gradient(135deg, var(--like), #1d4ed8);
+            color: white;
+        }
+
+        .btn-watched {
+            background: linear-gradient(135deg, var(--watched), #334155);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* Footer Styles */
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            color: var(--text);
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-content {
+            position: relative;
+            padding: 1.5rem 3rem;
+            background: rgba(17, 24, 39, 0.7);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow:
+                0 10px 30px -5px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 0 20px rgba(99, 102, 241, 0.1);
+            display: inline-block;
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+
+        .footer-content:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                0 15px 40px -5px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.2),
+                inset 0 0 30px rgba(99, 102, 241, 0.2);
+        }
+
+        .footer a {
+            color: #a5b4fc;
+            text-decoration: none;
+            position: relative;
+            padding: 0.2em 0.5em;
+            margin: 0 0.2em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .footer a::before,
+        .footer a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #818cf8, #c084fc);
+            left: 0;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .footer a::before {
+            top: 0;
+            transform-origin: left;
+        }
+
+        .footer a::after {
+            bottom: 0;
+            transform-origin: right;
+        }
+
+        .footer a:hover {
+            color: #c7d2fe;
+            text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .footer a:hover::before {
+            transform: scaleX(1);
+            transform-origin: right;
+        }
+
+        .footer a:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Loading and Error States */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .loading i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.95);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #ef4444;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--card-bg);
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            transform: translateX(200%);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            font-weight: 500;
+        }
+
+        .toast.visible {
+            transform: translateX(0);
+        }
+
+        /* Recommendations Section */
+        .recommendations {
+            margin-top: 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .recommendations.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .recommended-movie {
+            background: var(--card-bg);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .recommended-movie:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .recommended-movie img {
+            width: 100%;
+            height: 330px;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .recommended-movie:hover img {
+            transform: scale(1.05);
+        }
+
+        .recommended-movie-info {
+            padding: 1.5rem;
+        }
+
+        .recommended-movie-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .recommended-movie-meta {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .dinner-time-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .dinner-time-buttons .netflix-button {
+            width: 100%;
+            justify-content: center;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .dinner-time-buttons {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .movie-content {
+                grid-template-columns: minmax(200px, 300px) 1fr;
+            }
+        }
+
+        /* Dinner Time Movie Ratings Styles */
+        .dinner-time-movie .ratings-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: rgba(17, 24, 39, 0.6);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dinner-time-movie .rating-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            background: rgba(45, 45, 55, 0.9);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dinner-time-movie .rating-item:hover {
+            transform: translateY(-4px);
+            background: rgba(55, 55, 65, 0.9);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .dinner-time-movie .rating-item i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .dinner-time-movie .rating-item .rating-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0.5rem 0;
+        }
+
+        .dinner-time-movie .rating-item .rating-label {
+            font-size: 0.9rem;
+            color: var(--text);
+            opacity: 0.8;
+        }
+
+        .dinner-time-movie .rating-item.imdb i {
+            color: #f5c518;
+        }
+
+        .dinner-time-movie .rating-item.rotten-tomatoes i {
+            color: #fa320a;
+        }
+
+        .dinner-time-movie .rating-item.tmdb i {
+            color: #01b4e4;
+        }
+
+        /* Responsive styles for dinner time ratings */
+        @media (max-width: 1024px) {
+            .dinner-time-movie .ratings-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dinner-time-movie .ratings-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dinner-time-movie .ratings-container {
+                grid-template-columns: 1fr;
+            }
+
+            .dinner-time-movie .rating-item {
+                padding: 1rem 0.5rem;
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .dinner-time-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dinner-time-trigger,
+            .free-movie-trigger,
+            .preference-trigger {
+                width: 100%;
+                max-width: none;
+                padding: 1rem;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .movie-content {
+                grid-template-columns: minmax(200px, 300px) 1fr;
+            }
+
+            .ratings-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .poster-section {
+                max-width: 350px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .movie-content {
+                grid-template-columns: 1fr;
+            }
+
+            .movie-card {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: clamp(1.5rem, 5vw, 2.5rem);
+            }
+
+            .action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+
+            .ratings-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+
+            .meta-item {
+                width: 100%;
+            }
+
+            .genres {
+                justify-content: center;
+            }
+
+            .trailer-link {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .movie-meta {
+                flex-direction: column;
+            }
+
+            .genre {
+                width: 100%;
+                text-align: center;
+            }
+            .action-buttons {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+    }
+    
+    .btn {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+
+            .overview {
+                font-size: 0.95rem;
+                line-height: 1.6;
+            }
+
+            .meta-item,
+            .rating-item {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (hover: none) {
+
+            .btn,
+            .genre,
+            .provider,
+            .trailer-link {
+                transition: none;
+            }
+
+            .btn:active,
+            .genre:active,
+            .provider:active,
+            .trailer-link:active {
+                transform: scale(0.98);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Accessibility Improvements */
+        .btn:focus,
+        .trailer-link:focus,
+        .provider:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .rating-item:focus-within,
+        .meta-item:focus-within {
+            outline: 2px solid var(--accent);
+            outline-offset: 4px;
+        }
+
+        /* High Contrast Mode Support */
+        @media (prefers-contrast: high) {
+            :root {
+                --text: #ffffff;
+                --background: #000000;
+                --card-bg: rgba(0, 0, 0, 0.95);
+            }
+
+            .movie-card,
+            .rating-item,
+            .meta-item {
+                border: 2px solid white;
+            }
+        }
+
+        .dinner-time-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            /* Increased gap between buttons */
+            margin: 3rem auto;
+            /* Add margin above and below */
+            max-width: 1200px;
+            padding: 0 1rem;
+        }
+
+        .dinner-time-trigger,
+        .free-movie-trigger {
+            flex: 1;
+            max-width: 300px;
+            /* Limit maximum width */
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .dinner-time-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
+        }
+
+        .dinner-time-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .dinner-time-modal-content {
+            background: var(--card-bg);
+            border-radius: 24px;
+            max-width: 1000px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        .dinner-time-movie {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .dinner-time-poster {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .dinner-time-poster img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .dinner-time-info {
+            padding: 1rem;
+        }
+
+        .dinner-time-info h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .dinner-time-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dinner-time-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text);
+            font-size: 1.1rem;
+        }
+
+        .dinner-time-overview {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            color: rgba(248, 250, 252, 0.9);
+        }
+
+        .dinner-time-streaming {
+            margin-bottom: 2rem;
+        }
+
+        .streaming-logos {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .streaming-logos img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .streaming-logos img:hover {
+            transform: scale(1.1);
+        }
+
+        .dinner-time-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .dinner-time-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .dinner-time-btn.like {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+        }
+
+        .dinner-time-btn.dislike {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .dinner-time-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .dinner-time-loading {
+            text-align: center;
+            padding: 4rem;
+        }
+
+        .dinner-time-loading i {
+            font-size: 3rem;
+            color: #f97316;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dinner-time-movie {
+                grid-template-columns: 1fr;
+            }
+
+            .dinner-time-poster {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            .dinner-time-info h2 {
+                font-size: 2rem;
+            }
+
+            .dinner-time-meta {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .dinner-time-actions {
+                flex-direction: column;
+            }
+        }
+
+        .netflix-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .netflix-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .netflix-button i {
+            font-size: 1.4rem;
+        }
+
+        /* Update the dinner time trigger button to match Netflix styling */
+        .dinner-time-trigger {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+        }
+
+
+
+        .dinner-time-loading {
+            color: #E50914;
+        }
+
+        .dinner-time-error {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text);
+        }
+
+        .dinner-time-error i {
+            font-size: 3rem;
+            color: #E50914;
+            margin-bottom: 1rem;
+        }
+
+        .dinner-time-error p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dinner-time-retry {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dinner-time-retry:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .netflix-note {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+        }
+
+        .dinner-time-streaming {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .free-movie-trigger {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+        }
+
+        .dinner-time-trigger:hover,
+        .free-movie-trigger:hover,
+        .preference-trigger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .dinner-time-trigger i,
+        .free-movie-trigger i,
+        .preference-trigger i {
+            font-size: 1.4rem;
+        }
+
+        .preference-trigger {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+            flex: 1.2;
+            /* Make it slightly wider */
+        }
+
+        .disclaimer-text {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: rgba(255, 193, 7, 0.1);
+            border-left: 3px solid #ffc107;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.5;
+        }
+
+        .service-disclaimer {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.2);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .service-disclaimer i {
+            color: rgba(229, 9, 20, 0.8);
+            margin-right: 0.5rem;
+        }
+
+        /* Preference Modal Styles */
+        .preference-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .preference-modal-content {
+            position: relative;
+            background: var(--card-bg);
+            margin: 10vh auto;
+            padding: 2rem;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        .preference-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .preference-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .preference-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .preference-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .preference-select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(45, 45, 55, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .preference-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 69, 69, 0.2);
+        }
+
+        .preference-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .preference-button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+        }
+
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .start-button:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .skip-button {
+            background: rgba(45, 45, 55, 0.9);
+            color: var(--text);
+        }
+
+        .skip-button:hover {
+            transform: translateY(-2px);
+            background: rgba(55, 55, 65, 0.9);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .preference-modal-content {
+                margin: 5vh auto;
+                padding: 1.5rem;
+            }
+
+            .preference-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .preference-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="preferenceModal" class="preference-modal">
+        <div class="preference-modal-content">
             <div class="preference-header">
-               <h2>Welcome to Which Movie to Watch!</h2>
+                <h2>Welcome to Which Movie to Watch!</h2>
             </div>
             <div class="preference-body">
-               <div class="preference-section">
-                  <label for="streamingProvider">Select your preferred streaming service:</label>
-                  <select id="streamingProvider" class="preference-select">
-                     <option value="">Select a provider</option>
-                     <option value="netflix">Netflix</option>
-                     <option value="disneyplus">Disney+</option>
-                     <option value="amazon">Amazon Prime</option>
-                     <option value="hulu">Hulu</option>
-                     <option value="hbomax">HBO Max</option>
-                     <option value="appletv">Apple TV+</option>
-                     <option value="paramountplus">Paramount+</option>
-                     <option value="peacock">Peacock</option>
-                  </select>
-               </div>
-               <div class="preference-section">
-                  <label for="movieGenre">Select your preferred genre:</label>
-                  <select id="movieGenre" class="preference-select">
-                     <option value="">Select a genre</option>
-                     <option value="any">Any Genre</option>
-                     <option value="28">Action</option>
-                     <option value="12">Adventure</option>
-                     <option value="16">Animation</option>
-                     <option value="35">Comedy</option>
-                     <option value="80">Crime</option>
-                     <option value="99">Documentary</option>
-                     <option value="18">Drama</option>
-                     <option value="10751">Family</option>
-                     <option value="14">Fantasy</option>
-                     <option value="36">History</option>
-                     <option value="27">Horror</option>
-                     <option value="10402">Music</option>
-                     <option value="9648">Mystery</option>
-                     <option value="10749">Romance</option>
-                     <option value="878">Science Fiction</option>
-                     <option value="53">Thriller</option>
-                     <option value="10752">War</option>
-                     <option value="37">Western</option>
-                  </select>
-               </div>
-               <div class="preference-actions">
-                  <button id="startExploring" class="preference-button start-button" disabled>
-                  Start Exploring
-                  </button>
-                  <button id="skipPreferences" class="preference-button skip-button">
-                  Skip for Now
-                  </button>
-               </div>
+                <div class="preference-section">
+                    <label for="streamingProvider">Select your preferred streaming service:</label>
+                    <select id="streamingProvider" class="preference-select">
+                        <option value="">Select a provider</option>
+                        <option value="netflix">Netflix</option>
+                        <option value="disneyplus">Disney+</option>
+                        <option value="amazon">Amazon Prime</option>
+                        <option value="hulu">Hulu</option>
+                        <option value="hbomax">HBO Max</option>
+                        <option value="appletv">Apple TV+</option>
+                        <option value="paramountplus">Paramount+</option>
+                        <option value="peacock">Peacock</option>
+                    </select>
+                </div>
+
+                <div class="preference-section">
+                    <label for="movieGenre">Select your preferred genre:</label>
+                    <select id="movieGenre" class="preference-select">
+                        <option value="">Select a genre</option>
+                        <option value="any">Any Genre</option>
+                        <option value="28">Action</option>
+                        <option value="12">Adventure</option>
+                        <option value="16">Animation</option>
+                        <option value="35">Comedy</option>
+                        <option value="80">Crime</option>
+                        <option value="99">Documentary</option>
+                        <option value="18">Drama</option>
+                        <option value="10751">Family</option>
+                        <option value="14">Fantasy</option>
+                        <option value="36">History</option>
+                        <option value="27">Horror</option>
+                        <option value="10402">Music</option>
+                        <option value="9648">Mystery</option>
+                        <option value="10749">Romance</option>
+                        <option value="878">Science Fiction</option>
+                        <option value="53">Thriller</option>
+                        <option value="10752">War</option>
+                        <option value="37">Western</option>
+                    </select>
+                </div>
+
+                <div class="preference-actions">
+                    <button id="startExploring" class="preference-button start-button" disabled>
+                        Start Exploring
+                    </button>
+                    <button id="skipPreferences" class="preference-button skip-button">
+                        Skip for Now
+                    </button>
+                </div>
             </div>
-         </div>
-      </div>
-      <div class="gradient-background"></div>
-      <div class="container">
-         <div class="header">
+        </div>
+    </div>
+    <div class="gradient-background"></div>
+    <div class="container">
+        <div class="header">
             <div class="title-container">
-               <h1 data-text="What Movie To Watch!">
-                  <span class="title-letter">🎬 Which Movie To Watch!</span>
-               </h1>
+                <h1 data-text="What Movie To Watch!">
+                    <span class="title-letter">🎬 Which Movie To Watch!</span>
+                </h1>
             </div>
-         </div>
-         <div class="dinner-time-container">
+        </div>
+        <div class="dinner-time-container">
             <button onclick="openDinnerTimeModal()" class="dinner-time-trigger">
-            <i class="fas fa-utensils"></i>
-            Dinner Time!
+                <i class="fas fa-utensils"></i>
+                Dinner Time!
             </button>
             <button onclick="openFreeMovieModal()" class="free-movie-trigger">
-            <i class="fas fa-film"></i>
-            Free Movie!
+                <i class="fas fa-film"></i>
+                Free Movie!
             </button>
             <button onclick="showPreferenceModal()" class="dinner-time-trigger preference-trigger">
-            <i class="fas fa-cog"></i>
-            Change Preferences
+                <i class="fas fa-cog"></i>
+                Change Preferences
             </button>
-         </div>
-         <div class="movie-card" id="movieCard">
+        </div>
+        <div class="movie-card" id="movieCard">
             <div class="loading">
-               <i class="fas fa-film"></i>
-               <p>Discovering your next favorite movie...</p>
+                <i class="fas fa-film"></i>
+                <p>Discovering your next favorite movie...</p>
             </div>
-         </div>
-         <div class="recommendations" id="recommendationsSection"></div>
-         <div class="footer">
+        </div>
+        <div class="recommendations" id="recommendationsSection"></div>
+        <div class="footer">
             <div class="footer-content">
-               Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank"
-                  rel="noopener noreferrer">Kohulan.R</a>
+                Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank"
+                    rel="noopener noreferrer">Kohulan.R</a>
             </div>
-         </div>
-      </div>
-      <div class="toast" id="toast"></div>
-      <div id="dinnerTimeModal" class="dinner-time-modal">
-         <div class="dinner-time-modal-content">
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <div id="dinnerTimeModal" class="dinner-time-modal">
+        <div class="dinner-time-modal-content">
             <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+    <script>
+        // API Configuration
+        const API_KEY = '381b2cb115fa9f1cdd779d03f7627d1a'; // Replace with your TMDB API key
+        const OMDB_API_KEY = '3326e18b'; // Replace with your OMDB API key
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+        let userCountry = 'DE';  // Default country
+
+        // Major streaming services to prioritize
+        const MAJOR_STREAMING_SERVICES = [
+            'Netflix',
+            'Amazon Prime Video',
+            'Disney Plus'
+        ];
+
+        // Initialize preferences with localStorage
+        const preferences = {
+            watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
+            likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
+            lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || [],
+            skippedMovies: JSON.parse(localStorage.getItem('skippedMovies')) || [], // Track skipped movies
+            shownMovies: JSON.parse(localStorage.getItem('shownMovies')) || [], // Track all movies shown
+            dinnerTimeLikes: JSON.parse(localStorage.getItem('dinnerTimeLikes')) || [],
+            dinnerTimeDislikes: JSON.parse(localStorage.getItem('dinnerTimeDislikes')) || [],
+            lastUpdate: localStorage.getItem('lastUpdate') || new Date().toISOString()
+        };
+        // Function to check if a movie has been shown before
+        function hasMovieBeenShown(movieId) {
+            return preferences.shownMovies.includes(movieId) ||
+                preferences.watchedMovies.includes(movieId) ||
+                preferences.skippedMovies.includes(movieId);
+        }
+
+        // Function to track shown movie
+        function trackShownMovie(movieId) {
+            if (!preferences.shownMovies.includes(movieId)) {
+                preferences.shownMovies.push(movieId);
+                // Keep only last 1000 shown movies to prevent localStorage from getting too large
+                if (preferences.shownMovies.length > 1000) {
+                    preferences.shownMovies = preferences.shownMovies.slice(-1000);
+                }
+                localStorage.setItem('shownMovies', JSON.stringify(preferences.shownMovies));
+            }
+        }
+
+        function clearOldMovieHistory() {
+            const recentCount = 100;
+            preferences.shownMovies = preferences.shownMovies.slice(-recentCount);
+            preferences.skippedMovies = preferences.skippedMovies.slice(-recentCount);
+
+            localStorage.setItem('shownMovies', JSON.stringify(preferences.shownMovies));
+            localStorage.setItem('skippedMovies', JSON.stringify(preferences.skippedMovies));
+
+            preferences.lastUpdate = new Date().toISOString();
+            localStorage.setItem('lastUpdate', preferences.lastUpdate);
+        }
+
+        // Function to fetch movie trailer
+        async function fetchMovieTrailer(movieId) {
+            try {
+                const response = await fetch(
+                    `${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`
+                );
+                const data = await response.json();
+
+                // Filter for YouTube trailers
+                const trailers = data.results.filter(
+                    video => video.site === 'YouTube' &&
+                        (video.type === 'Trailer' || video.type === 'Teaser')
+                );
+
+                return trailers.length > 0 ? trailers[0] : null;
+            } catch (error) {
+                console.error('Error fetching trailer:', error);
+                return null;
+            }
+        }
+
+        // Function to fetch external ratings
+        async function fetchExternalRatings(movieId) {
+            try {
+                const response = await fetch(
+                    `${BASE_URL}/movie/${movieId}/external_ids?api_key=${API_KEY}`
+                );
+                const data = await response.json();
+
+                if (data.imdb_id) {
+                    const omdbResponse = await fetch(
+                        `https://www.omdbapi.com/?i=${data.imdb_id}&apikey=${OMDB_API_KEY}`
+                    );
+                    const omdbData = await omdbResponse.json();
+
+                    const ratings = {
+                        imdb: 'N/A',
+                        rottenTomatoes: 'N/A'
+                    };
+
+                    if (omdbData.Ratings) {
+                        omdbData.Ratings.forEach(rating => {
+                            if (rating.Source === 'Internet Movie Database') {
+                                ratings.imdb = rating.Value;
+                            } else if (rating.Source === 'Rotten Tomatoes') {
+                                ratings.rottenTomatoes = rating.Value;
+                            }
+                        });
+                    }
+
+                    return ratings;
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching external ratings:', error);
+                return null;
+            }
+        }
+
+        // Function to create provider links
+        function createProviderLink(provider) {
+            const providerUrl = getProviderURL(provider.provider_name);
+            return `
+                 <a href="${providerUrl}" 
+                    class="provider" 
+                    title="${provider.provider_name}"
+                    target="_blank"
+                    rel="noopener noreferrer">
+                     <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
+                          alt="${provider.provider_name}" 
+                          loading="lazy" />
+                 </a>
+             `;
+        }
+
+        // Function to get streaming provider URLs
+        function getProviderURL(providerName) {
+            // Normalize provider name for matching
+            const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
+
+            const providers = {
+                // Streaming Services
+                'netflix': 'https://www.netflix.com',
+                'amazonprimevideo': 'https://www.primevideo.com',
+                'prime': 'https://www.primevideo.com',
+                'disneyplus': 'https://www.disneyplus.com',
+                'disney+': 'https://www.disneyplus.com',
+                'hulu': 'https://www.hulu.com',
+                'hbomax': 'https://www.max.com',
+                'max': 'https://www.max.com',
+                'appletv': 'https://tv.apple.com',
+                'appletv+': 'https://tv.apple.com',
+                'appletvplus': 'https://tv.apple.com',
+                'paramountplus': 'https://www.paramountplus.com',
+                'paramount+': 'https://www.paramountplus.com',
+                'peacock': 'https://www.peacocktv.com',
+                'peacockpremium': 'https://www.peacocktv.com',
+                'crunchyroll': 'https://www.crunchyroll.com',
+                'amc+': 'https://www.amcplus.com',
+                'amcplus': 'https://www.amcplus.com',
+                'showtime': 'https://www.showtime.com',
+                'starz': 'https://www.starz.com',
+                'discovery+': 'https://www.discoveryplus.com',
+                'discoveryplus': 'https://www.discoveryplus.com',
+                'mubi': 'https://mubi.com',
+                'britbox': 'https://www.britbox.com',
+                'shudder': 'https://www.shudder.com',
+                'funimation': 'https://www.funimation.com',
+                'tubi': 'https://tubitv.com',
+                'plutotv': 'https://pluto.tv',
+                'wow': 'https://www.wowtv.de',
+                'wowpresentsplus': 'https://www.wowpresentsplus.com',
+                'skyshowtime': 'https://www.skyshowtime.com',
+
+                // Digital Purchase/Rental Services
+                'googleplay': 'https://play.google.com/store/movies',
+                'googletv': 'https://play.google.com/store/movies',
+                'vudu': 'https://www.vudu.com',
+                'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
+                'itunes': 'https://www.apple.com/itunes',
+                'youtube': 'https://www.youtube.com/movies',
+                'amazonvideo': 'https://www.amazon.com/video'
+            };
+
+            // Try to match the normalized provider name
+            const providerKey = Object.keys(providers).find(key =>
+                normalizedName.includes(key.toLowerCase())
+            );
+
+            return providerKey ? providers[providerKey] : '#';
+        }
+
+        // Detect user's country
+        async function detectCountry() {
+            try {
+                const response = await fetch('https://ipinfo.io/json', {
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error('Primary service failed');
+
+                const data = await response.json();
+                userCountry = data.country || data.country_code;
+                console.log('Detected country:', userCountry);
+            } catch (error) {
+                console.warn('Primary country detection failed:', error.message);
+                userCountry = (navigator.language.split('-')[1]) || 'US';
+                console.log('Using browser language fallback:', userCountry);
+            }
+        }
+
+        // Main movie fetching function
+        async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
+            try {
+                const loadingAnimation = `
+            <div class="loading">
+                <i class="fas fa-film"></i>
+                <p>Discovering your next favorite movie...</p>
+            </div>
+        `;
+                document.getElementById('movieCard').innerHTML = loadingAnimation;
+
+                // Get user preferences
+                const preferredProvider = localStorage.getItem('preferredProvider');
+                const preferredGenre = localStorage.getItem('preferredGenre');
+                const providerId = getProviderId(preferredProvider);
+
+                // Build the API URL with preferences
+                let apiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`;
+
+                // Add genre if specified and not 'any'
+                if (preferredGenre && preferredGenre !== 'any') {
+                    apiUrl += `&with_genres=${preferredGenre}`;
+                }
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                if (!data.results || data.results.length === 0) {
+                    throw new Error('No movies found in response');
+                }
+
+                // Filter out movies that have been shown
+                const availableMovies = data.results.filter(movie => !hasMovieBeenShown(movie.id));
+
+                if (availableMovies.length === 0) {
+                    if (retryCount < maxRetries) {
+                        return fetchRandomMovie(retryCount + 1, maxRetries);
+                    }
+                    clearOldMovieHistory();
+                    return fetchRandomMovie(0, maxRetries);
+                }
+
+                // Check streaming availability if provider is selected
+                if (providerId) {
+                    for (const movie of availableMovies) {
+                        const movieDetailsResponse = await fetch(
+                            `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+                        );
+
+                        if (!movieDetailsResponse.ok) continue;
+
+                        const movieData = await movieDetailsResponse.json();
+                        const providers = movieData['watch/providers']?.results?.[userCountry] || {};
+                        const streamingProviders = providers.flatrate || [];
+
+                        if (streamingProviders.some(provider => provider.provider_id === providerId)) {
+                            trackShownMovie(movieData.id);
+                            await displayMovie(movieData);
+                            return;
+                        }
+                    }
+
+                    // If no movies found with selected provider, try again or show message
+                    if (retryCount < maxRetries) {
+                        return fetchRandomMovie(retryCount + 1, maxRetries);
+                    }
+                    displayError(`No movies found on ${preferredProvider}. Try different preferences!`);
+                    return;
+                }
+
+                // If no provider selected or no matches found, show any available movie
+                const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+                const movieDetailsResponse = await fetch(
+                    `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+                );
+                const movieData = await movieDetailsResponse.json();
+                trackShownMovie(movieData.id);
+                await displayMovie(movieData);
+
+            } catch (error) {
+                console.error('Error fetching movie:', error);
+                displayError(error.message);
+            }
+        }
+
+
+        // Display movie function
+        async function displayMovie(movie) {
+            if (!movie) {
+                displayError('No movie data available');
+                return;
+            }
+
+            try {
+                // Fetch trailer and ratings in parallel
+                const [trailer, externalRatings] = await Promise.all([
+                    fetchMovieTrailer(movie.id),
+                    fetchExternalRatings(movie.id)
+                ]);
+
+                const movieCard = document.getElementById('movieCard');
+                const releaseYear = new Date(movie.release_date).getFullYear();
+                const rating = (movie.vote_average * 10).toFixed(1);
+
+                // Get streaming providers for the detected country
+                const providers = movie['watch/providers']?.results?.[userCountry] || {};
+                const streamingProviders = providers.flatrate || [];
+                const rentProviders = providers.rent || [];
+                const buyProviders = providers.buy || [];
+
+                // Create streaming providers HTML
+                const streamingHTML = streamingProviders.length > 0 ? `
+                     <div class="streaming-section">
+                         <h3><i class="fas fa-play-circle"></i> Stream on:</h3>
+                         <div class="provider-list">
+                             ${streamingProviders.map(provider => createProviderLink(provider)).join('')}
+                         </div>
+                     </div>
+                 ` : '';
+
+                const rentHTML = rentProviders.length > 0 ? `
+                     <div class="streaming-section">
+                         <h3><i class="fas fa-ticket-alt"></i> Rent on:</h3>
+                         <div class="provider-list">
+                             ${rentProviders.map(provider => createProviderLink(provider)).join('')}
+                         </div>
+                     </div>
+                 ` : '';
+
+                const buyHTML = buyProviders.length > 0 ? `
+                     <div class="streaming-section">
+                         <h3><i class="fas fa-shopping-cart"></i> Buy on:</h3>
+                         <div class="provider-list">
+                             ${buyProviders.map(provider => createProviderLink(provider)).join('')}
+                         </div>
+                     </div>
+                 ` : '';
+
+                const availabilityMessage = !streamingProviders.length && !rentProviders.length && !buyProviders.length
+                    ? `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>`
+                    : '';
+
+                const movieMetaHTML = `
+         <div class="movie-meta">
+         <div class="meta-item">
+             <i class="fas fa-calendar"></i>
+             ${releaseYear}
          </div>
-      </div>
-      <script>
-         // API Configuration
-         const API_KEY = '381b2cb115fa9f1cdd779d03f7627d1a'; // Replace with your TMDB API key
-         const OMDB_API_KEY = '3326e18b'; // Replace with your OMDB API key
-         const BASE_URL = 'https://api.themoviedb.org/3';
-         const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
-         let userCountry = 'DE';  // Default country
-         
-         // Major streaming services to prioritize
-         const MAJOR_STREAMING_SERVICES = [
-             'Netflix',
-             'Amazon Prime Video',
-             'Disney Plus'
-         ];
-         
-         // Initialize preferences with localStorage
-         const preferences = {
-             watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
-             likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
-             lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || [],
-             skippedMovies: JSON.parse(localStorage.getItem('skippedMovies')) || [], // Track skipped movies
-             shownMovies: JSON.parse(localStorage.getItem('shownMovies')) || [], // Track all movies shown
-             dinnerTimeLikes: JSON.parse(localStorage.getItem('dinnerTimeLikes')) || [],
-             dinnerTimeDislikes: JSON.parse(localStorage.getItem('dinnerTimeDislikes')) || [],
-             lastUpdate: localStorage.getItem('lastUpdate') || new Date().toISOString()
-         };
-         // Function to check if a movie has been shown before
-         function hasMovieBeenShown(movieId) {
-             return preferences.shownMovies.includes(movieId) ||
-                 preferences.watchedMovies.includes(movieId) ||
-                 preferences.skippedMovies.includes(movieId);
-         }
-         
-         // Function to track shown movie
-         function trackShownMovie(movieId) {
-             if (!preferences.shownMovies.includes(movieId)) {
-                 preferences.shownMovies.push(movieId);
-                 // Keep only last 1000 shown movies to prevent localStorage from getting too large
-                 if (preferences.shownMovies.length > 1000) {
-                     preferences.shownMovies = preferences.shownMovies.slice(-1000);
-                 }
-                 localStorage.setItem('shownMovies', JSON.stringify(preferences.shownMovies));
-             }
-         }
-         
-         function clearOldMovieHistory() {
-             const recentCount = 100;
-             preferences.shownMovies = preferences.shownMovies.slice(-recentCount);
-             preferences.skippedMovies = preferences.skippedMovies.slice(-recentCount);
-         
-             localStorage.setItem('shownMovies', JSON.stringify(preferences.shownMovies));
-             localStorage.setItem('skippedMovies', JSON.stringify(preferences.skippedMovies));
-         
-             preferences.lastUpdate = new Date().toISOString();
-             localStorage.setItem('lastUpdate', preferences.lastUpdate);
-         }
-         
-         // Function to fetch movie trailer
-         async function fetchMovieTrailer(movieId) {
-             try {
-                 const response = await fetch(
-                     `${BASE_URL}/movie/${movieId}/videos?api_key=${API_KEY}`
-                 );
-                 const data = await response.json();
-         
-                 // Filter for YouTube trailers
-                 const trailers = data.results.filter(
-                     video => video.site === 'YouTube' &&
-                         (video.type === 'Trailer' || video.type === 'Teaser')
-                 );
-         
-                 return trailers.length > 0 ? trailers[0] : null;
-             } catch (error) {
-                 console.error('Error fetching trailer:', error);
-                 return null;
-             }
-         }
-         
-         // Function to fetch external ratings
-         async function fetchExternalRatings(movieId) {
-             try {
-                 const response = await fetch(
-                     `${BASE_URL}/movie/${movieId}/external_ids?api_key=${API_KEY}`
-                 );
-                 const data = await response.json();
-         
-                 if (data.imdb_id) {
-                     const omdbResponse = await fetch(
-                         `https://www.omdbapi.com/?i=${data.imdb_id}&apikey=${OMDB_API_KEY}`
-                     );
-                     const omdbData = await omdbResponse.json();
-         
-                     const ratings = {
-                         imdb: 'N/A',
-                         rottenTomatoes: 'N/A'
-                     };
-         
-                     if (omdbData.Ratings) {
-                         omdbData.Ratings.forEach(rating => {
-                             if (rating.Source === 'Internet Movie Database') {
-                                 ratings.imdb = rating.Value;
-                             } else if (rating.Source === 'Rotten Tomatoes') {
-                                 ratings.rottenTomatoes = rating.Value;
-                             }
-                         });
-                     }
-         
-                     return ratings;
-                 }
-                 return null;
-             } catch (error) {
-                 console.error('Error fetching external ratings:', error);
-                 return null;
-             }
-         }
-         
-         // Function to create provider links
-         function createProviderLink(provider) {
-             const providerUrl = getProviderURL(provider.provider_name);
-             return `
-                  <a href="${providerUrl}" 
-                     class="provider" 
-                     title="${provider.provider_name}"
-                     target="_blank"
-                     rel="noopener noreferrer">
-                      <img src="https://image.tmdb.org/t/p/original${provider.logo_path}" 
-                           alt="${provider.provider_name}" 
-                           loading="lazy" />
-                  </a>
-              `;
-         }
-         
-         // Function to get streaming provider URLs
-         function getProviderURL(providerName) {
-             // Normalize provider name for matching
-             const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
-         
-             const providers = {
-                 // Streaming Services
-                 'netflix': 'https://www.netflix.com',
-                 'amazonprimevideo': 'https://www.primevideo.com',
-                 'prime': 'https://www.primevideo.com',
-                 'disneyplus': 'https://www.disneyplus.com',
-                 'disney+': 'https://www.disneyplus.com',
-                 'hulu': 'https://www.hulu.com',
-                 'hbomax': 'https://www.max.com',
-                 'max': 'https://www.max.com',
-                 'appletv': 'https://tv.apple.com',
-                 'appletv+': 'https://tv.apple.com',
-                 'appletvplus': 'https://tv.apple.com',
-                 'paramountplus': 'https://www.paramountplus.com',
-                 'paramount+': 'https://www.paramountplus.com',
-                 'peacock': 'https://www.peacocktv.com',
-                 'peacockpremium': 'https://www.peacocktv.com',
-                 'crunchyroll': 'https://www.crunchyroll.com',
-                 'amc+': 'https://www.amcplus.com',
-                 'amcplus': 'https://www.amcplus.com',
-                 'showtime': 'https://www.showtime.com',
-                 'starz': 'https://www.starz.com',
-                 'discovery+': 'https://www.discoveryplus.com',
-                 'discoveryplus': 'https://www.discoveryplus.com',
-                 'mubi': 'https://mubi.com',
-                 'britbox': 'https://www.britbox.com',
-                 'shudder': 'https://www.shudder.com',
-                 'funimation': 'https://www.funimation.com',
-                 'tubi': 'https://tubitv.com',
-                 'plutotv': 'https://pluto.tv',
-                 'wow': 'https://www.wowtv.de',
-                 'wowpresentsplus': 'https://www.wowpresentsplus.com',
-                 'skyshowtime': 'https://www.skyshowtime.com',
-         
-                 // Digital Purchase/Rental Services
-                 'googleplay': 'https://play.google.com/store/movies',
-                 'googletv': 'https://play.google.com/store/movies',
-                 'vudu': 'https://www.vudu.com',
-                 'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
-                 'itunes': 'https://www.apple.com/itunes',
-                 'youtube': 'https://www.youtube.com/movies',
-                 'amazonvideo': 'https://www.amazon.com/video'
-             };
-         
-             // Try to match the normalized provider name
-             const providerKey = Object.keys(providers).find(key =>
-                 normalizedName.includes(key.toLowerCase())
-             );
-         
-             return providerKey ? providers[providerKey] : '#';
-         }
-         
-         // Detect user's country
-         async function detectCountry() {
-             try {
-                 const response = await fetch('https://ipinfo.io/json', {
-                     headers: { 'Accept': 'application/json' }
-                 });
-         
-                 if (!response.ok) throw new Error('Primary service failed');
-         
-                 const data = await response.json();
-                 userCountry = data.country || data.country_code;
-                 console.log('Detected country:', userCountry);
-             } catch (error) {
-                 console.warn('Primary country detection failed:', error.message);
-                 userCountry = (navigator.language.split('-')[1]) || 'US';
-                 console.log('Using browser language fallback:', userCountry);
-             }
-         }
-         
-         // Main movie fetching function
-         async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
-             try {
-                 const loadingAnimation = `
-             <div class="loading">
-                 <i class="fas fa-film"></i>
-                 <p>Discovering your next favorite movie...</p>
-             </div>
-         `;
-                 document.getElementById('movieCard').innerHTML = loadingAnimation;
-         
-                 // Get user preferences
-                 const preferredProvider = localStorage.getItem('preferredProvider');
-                 const preferredGenre = localStorage.getItem('preferredGenre');
-                 const providerId = getProviderId(preferredProvider);
-         
-                 // Build the API URL with preferences
-                 let apiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`;
-         
-                 // Add genre if specified and not 'any'
-                 if (preferredGenre && preferredGenre !== 'any') {
-                     apiUrl += `&with_genres=${preferredGenre}`;
-                 }
-         
-                 const response = await fetch(apiUrl);
-                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-         
-                 const data = await response.json();
-                 if (!data.results || data.results.length === 0) {
-                     throw new Error('No movies found in response');
-                 }
-         
-                 // Filter out movies that have been shown
-                 const availableMovies = data.results.filter(movie => !hasMovieBeenShown(movie.id));
-         
-                 if (availableMovies.length === 0) {
-                     if (retryCount < maxRetries) {
-                         return fetchRandomMovie(retryCount + 1, maxRetries);
-                     }
-                     clearOldMovieHistory();
-                     return fetchRandomMovie(0, maxRetries);
-                 }
-         
-                 // Check streaming availability if provider is selected
-                 if (providerId) {
-                     for (const movie of availableMovies) {
-                         const movieDetailsResponse = await fetch(
-                             `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
-                         );
-         
-                         if (!movieDetailsResponse.ok) continue;
-         
-                         const movieData = await movieDetailsResponse.json();
-                         const providers = movieData['watch/providers']?.results?.[userCountry] || {};
-                         const streamingProviders = providers.flatrate || [];
-         
-                         if (streamingProviders.some(provider => provider.provider_id === providerId)) {
-                             trackShownMovie(movieData.id);
-                             await displayMovie(movieData);
-                             return;
-                         }
-                     }
-         
-                     // If no movies found with selected provider, try again or show message
-                     if (retryCount < maxRetries) {
-                         return fetchRandomMovie(retryCount + 1, maxRetries);
-                     }
-                     displayError(`No movies found on ${preferredProvider}. Try different preferences!`);
-                     return;
-                 }
-         
-                 // If no provider selected or no matches found, show any available movie
-                 const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
-                 const movieDetailsResponse = await fetch(
-                     `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
-                 );
-                 const movieData = await movieDetailsResponse.json();
-                 trackShownMovie(movieData.id);
-                 await displayMovie(movieData);
-         
-             } catch (error) {
-                 console.error('Error fetching movie:', error);
-                 displayError(error.message);
-             }
-         }
-         
-         
-         // Display movie function
-         async function displayMovie(movie) {
-             if (!movie) {
-                 displayError('No movie data available');
-                 return;
-             }
-         
-             try {
-                 // Fetch trailer and ratings in parallel
-                 const [trailer, externalRatings] = await Promise.all([
-                     fetchMovieTrailer(movie.id),
-                     fetchExternalRatings(movie.id)
-                 ]);
-         
-                 const movieCard = document.getElementById('movieCard');
-                 const releaseYear = new Date(movie.release_date).getFullYear();
-                 const rating = (movie.vote_average * 10).toFixed(1);
-         
-                 // Get streaming providers for the detected country
-                 const providers = movie['watch/providers']?.results?.[userCountry] || {};
-                 const streamingProviders = providers.flatrate || [];
-                 const rentProviders = providers.rent || [];
-                 const buyProviders = providers.buy || [];
-         
-                 // Create streaming providers HTML
-                 const streamingHTML = streamingProviders.length > 0 ? `
-                      <div class="streaming-section">
-                          <h3><i class="fas fa-play-circle"></i> Stream on:</h3>
-                          <div class="provider-list">
-                              ${streamingProviders.map(provider => createProviderLink(provider)).join('')}
-                          </div>
-                      </div>
-                  ` : '';
-         
-                 const rentHTML = rentProviders.length > 0 ? `
-                      <div class="streaming-section">
-                          <h3><i class="fas fa-ticket-alt"></i> Rent on:</h3>
-                          <div class="provider-list">
-                              ${rentProviders.map(provider => createProviderLink(provider)).join('')}
-                          </div>
-                      </div>
-                  ` : '';
-         
-                 const buyHTML = buyProviders.length > 0 ? `
-                      <div class="streaming-section">
-                          <h3><i class="fas fa-shopping-cart"></i> Buy on:</h3>
-                          <div class="provider-list">
-                              ${buyProviders.map(provider => createProviderLink(provider)).join('')}
-                          </div>
-                      </div>
-                  ` : '';
-         
-                 const availabilityMessage = !streamingProviders.length && !rentProviders.length && !buyProviders.length
-                     ? `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>`
-                     : '';
-         
-                 const movieMetaHTML = `
-          <div class="movie-meta">
-          <div class="meta-item">
-              <i class="fas fa-calendar"></i>
-              ${releaseYear}
-          </div>
-          <div class="meta-item">
-              <i class="fas fa-clock"></i>
-              ${movie.runtime || 'N/A'} min
-          </div>
-          <div class="meta-item tmdb-rating">
-              <i class="fas fa-star"></i>
-              ${rating}%
-          </div>
-          </div>
-          `;
-         
-                 const ratingsHTML = externalRatings ? `
-          <div class="ratings-container">
-          <div class="rating-item imdb">
-              <i class="fab fa-imdb"></i>
-              <div class="rating-value">${externalRatings.imdb}</div>
-              <div class="rating-label">IMDb Rating</div>
-          </div>
-          <div class="rating-item rotten-tomatoes">
-          <i>🍅</i>
-          <div class="rating-value">${externalRatings.rottenTomatoes}</div>
-          <div class="rating-label">Rotten Tomatoes</div>
-          </div>
-          
-          <div class="rating-item tmdb">
-              <i class="fas fa-film"></i>
-              <div class="rating-value">${rating}%</div>
-              <div class="rating-label">TMDB Rating</div>
-          </div>
-          </div>
-          ` : '';
-         
-                 const trailerHTML = trailer ? `
-          <div class="trailer-container">
-          <a href="https://www.youtube.com/watch?v=${trailer.key}" 
-             target="_blank" 
-             rel="noopener noreferrer" 
-             class="trailer-link">
-              <i class="fab fa-youtube"></i>
-              Watch Trailer
-          </a>
-          </div>
-          ` : '';
-         
-         
-         
-                 movieCard.innerHTML = `
-                      <div class="movie-content">
-         <div class="poster-container">
-             <div class="poster">
-                 <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
-                     loading="lazy"
-                     decoding="async"
-                     alt="${movie.title}"
-                     onerror="this.src='https://via.placeholder.com/350x525?text=No+Poster'" />
-             </div>
-             ${trailerHTML}
+         <div class="meta-item">
+             <i class="fas fa-clock"></i>
+             ${movie.runtime || 'N/A'} min
          </div>
-                      
-                          <div class="movie-info">
-                              <h2>${movie.title}</h2>
-                              <div class="movie-meta">
-                                  <div class="meta-item">
-                                      <i class="fas fa-calendar"></i>
-                                      ${releaseYear}
-                                  </div>
-                                  <div class="meta-item">
-                                      <i class="fas fa-clock"></i>
-                                      ${movie.runtime || 'N/A'} min
-                                  </div>
-                                  <div class="meta-item rating">
-                                      <i class="fas fa-star"></i>
-                                      ${rating}%
-                                  </div>
-                              </div>
-                              ${ratingsHTML}
-                              <div class="genres">
-                                  ${movie.genres ? movie.genres.map(genre => `
-                                      <span class="genre">${genre.name}</span>
-                                  `).join('') : ''}
-                              </div>
-                              <p class="overview">${movie.overview || 'No overview available.'}</p>
-                              
-                              <div class="streaming-info">
-                                  ${streamingHTML}
-                                  ${rentHTML}
-                                  ${buyHTML}
-                                  ${availabilityMessage}
-                              </div>
-          
-                              <div class="action-buttons">
-         <button class="btn btn-love" onclick="handleLove(${movie.id})">
-         <i class="fas fa-heart"></i>
-         Love it!
-         </button>
-         <button class="btn btn-skip" onclick="handleSkip(${movie.id})">
-         <i class="fas fa-forward"></i>
-         Skip
-         </button>
-         <button class="btn btn-watched" onclick="handleWatched(${movie.id})">
-         <i class="fas fa-check"></i>
-         Watched
-         </button>
+         <div class="meta-item tmdb-rating">
+             <i class="fas fa-star"></i>
+             ${rating}%
          </div>
-         <button class="floating-next" onclick="fetchRandomMovie()" title="Next Movie">
-         <i class="fas fa-random"></i>
-         </button>
-                              </div>
-                          </div>
-                      </div>
-                  `;
-             } catch (error) {
-                 console.error('Error displaying movie:', error);
-                 displayError('Error displaying movie details');
-             }
-         }
-         
-         // Preference Modal Functions
-         function showPreferenceModal() {
-             const modal = document.getElementById('preferenceModal');
-             modal.style.display = 'block';
-         }
-         
-         function hidePreferenceModal() {
-             const modal = document.getElementById('preferenceModal');
-             modal.style.display = 'none';
-         }
-         
-         function validatePreferences() {
-             const provider = document.getElementById('streamingProvider').value;
-             const genre = document.getElementById('movieGenre').value;
-             const startButton = document.getElementById('startExploring');
-             startButton.disabled = !provider || !genre;
-         }
-         
-         function savePreferences() {
-             const provider = document.getElementById('streamingProvider').value;
-             const genre = document.getElementById('movieGenre').value;
-         
-             localStorage.setItem('preferredProvider', provider);
-             localStorage.setItem('preferredGenre', genre);
-             localStorage.setItem('preferencesLastUpdated', new Date().toISOString());
-         
-             hidePreferenceModal();
-             window.location.reload();
-         }
-         
-         function skipPreferences() {
-             hidePreferenceModal();
-             validateAndFetch();
-         }
-         
-         // Initialize preference modal event listeners
-         document.addEventListener('DOMContentLoaded', () => {
-             const preferredProvider = localStorage.getItem('preferredProvider');
-             const preferredGenre = localStorage.getItem('preferredGenre');
-         
-             if (!preferredProvider || !preferredGenre) {
-                 showPreferenceModal();
-             }
-         
-             // Add event listeners
-             document.getElementById('streamingProvider').addEventListener('change', validatePreferences);
-             document.getElementById('movieGenre').addEventListener('change', validatePreferences);
-             document.getElementById('startExploring').addEventListener('click', savePreferences);
-             document.getElementById('skipPreferences').addEventListener('click', skipPreferences);
-         });
-         
-         // Provider ID mapping
-         function getProviderId(providerName) {
-             const providerMap = {
-                 'netflix': 8,
-                 'disneyplus': 337,
-                 'amazon': 9,
-                 'hulu': 15,
-                 'hbomax': 384,
-                 'appletv': 350,
-                 'paramountplus': 531,
-                 'peacock': 386
-             };
-             return providerMap[providerName] || null;
-         }
-         
-         // Validation and initialization function
-         async function validateAndFetch() {
-             try {
-                 const testResponse = await fetch(
-                     `${BASE_URL}/configuration?api_key=${API_KEY}`
-                 );
-         
-                 if (!testResponse.ok) {
-                     throw new Error('Invalid API key');
-                 }
-         
-                 await fetchRandomMovie();
-         
-             } catch (error) {
-                 console.error('API validation failed:', error);
-                 const movieCard = document.getElementById('movieCard');
-                 movieCard.innerHTML = `
-                      <div class="error">
-                          <i class="fas fa-exclamation-circle"></i>
-                          <p>Initializing... Please wait.</p>
-                          <button class="btn btn-next" onclick="validateAndFetch()">
-                              <i class="fas fa-redo"></i>
-                              Try Again
-                          </button>
-                      </div>
-                  `;
-                 setTimeout(validateAndFetch, 2000);
-             }
-         }
-         
-         // Handle love button click
-         async function handleLove(movieId) {
-             try {
-                 const response = await fetch(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
-                 const data = await response.json();
-         
-                 if (!preferences.lovedMovies.includes(movieId)) {
-                     preferences.lovedMovies.push(movieId);
-                     localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
-                 }
-         
-                 const unwatchedSimilarMovies = data.results
-                     .filter(movie => !preferences.watchedMovies.includes(movie.id))
-                     .slice(0, 5);
-         
-                 displayRecommendations(unwatchedSimilarMovies, '❤️ Because you loved this movie');
-                 showToast('Great choice! Here are similar movies you might love');
-             } catch (error) {
-                 console.error('Error handling love:', error);
-                 showToast('Failed to fetch similar movies');
-             }
-         }
-         
-         // Handle like button click
-         async function handleLike(movieId) {
-             try {
-                 const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
-                 const movie = await response.json();
-         
-                 movie.genres.forEach(genre => {
-                     preferences.likedGenres[genre.id] = (preferences.likedGenres[genre.id] || 0) + 1;
-                 });
-                 localStorage.setItem('likedGenres', JSON.stringify(preferences.likedGenres));
-         
-                 const topGenres = Object.entries(preferences.likedGenres)
-                     .sort((a, b) => b[1] - a[1])
-                     .slice(0, 3)
-                     .map(([genreId]) => genreId);
-         
-                 const genreResponse = await fetch(
-                     `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${topGenres.join(',')}`
-                 );
-                 const genreData = await genreResponse.json();
-         
-                 const unwatchedRecommendations = genreData.results
-                     .filter(movie => !preferences.watchedMovies.includes(movie.id))
-                     .slice(0, 5);
-         
-                 displayRecommendations(unwatchedRecommendations, '🎯 Based on genres you like');
-                 showToast('Cool! Here are some movies in similar genres');
-             } catch (error) {
-                 console.error('Error handling like:', error);
-                 showToast('Failed to fetch recommendations');
-             }
-         }
-         
-         // Handle watched button click
-         function handleWatched(movieId) {
-             if (!preferences.watchedMovies.includes(movieId)) {
-                 preferences.watchedMovies.push(movieId);
-                 localStorage.setItem('watchedMovies', JSON.stringify(preferences.watchedMovies));
-             }
-             showToast('Noted! We won\'t show this movie again');
-             fetchRandomMovie();
-         }
-         // Handle skip
-         function handleSkip(movieId) {
-             if (!preferences.skippedMovies.includes(movieId)) {
-                 preferences.skippedMovies.push(movieId);
-                 localStorage.setItem('skippedMovies', JSON.stringify(preferences.skippedMovies));
-             }
-             showToast('Skipped! Finding you a different movie...');
-             fetchRandomMovie();
-         }
-         
-         // Display recommendations
-         function displayRecommendations(movies, title) {
-             const recommendationsSection = document.getElementById('recommendationsSection');
-             if (!movies || movies.length === 0) {
-                 recommendationsSection.innerHTML = `
-                      <h3 style="grid-column: 1/-1; margin-bottom: 1rem;">No recommendations found</h3>
-                  `;
-                 return;
-             }
-         
-             recommendationsSection.innerHTML = `
-                  <h3 style="grid-column: 1/-1; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text);">
-                      ${title}
-                  </h3>
-                  ${movies.map(movie => `
-                      <div class="recommended-movie">
-                          <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
-                               alt="${movie.title}"
-                               loading="lazy"
-                               onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
-                          <div class="recommended-movie-info">
-                              <div class="recommended-movie-title">${movie.title}</div>
-                              <div class="recommended-movie-meta">
-                                  ${new Date(movie.release_date).getFullYear()} • 
-                                  ${(movie.vote_average * 10).toFixed(1)}%
-                              </div>
-                          </div>
-                      </div>
-                  `).join('')}
-              `;
-             recommendationsSection.classList.add('visible');
-         }
-         async function fetchDinnerTimeMovie() {
-             try {
-                 const loadingAnimation = `
-             <div class="dinner-time-loading">
-                 <i class="fas fa-utensils fa-spin"></i>
-                 <p>Finding the perfect Netflix movie for dinner...</p>
-             </div>
-         `;
-                 document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
-         
-                 // First, get popular movies
-                 const randomPage = Math.floor(Math.random() * 20) + 1;
-                 const response = await fetch(
-                     `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=7.0&include_adult=false`
-                 );
-         
-                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-         
-                 const data = await response.json();
-                 if (!data.results || data.results.length === 0) {
-                     throw new Error('No movies found');
-                 }
-         
-                 // Filter out previously shown or disliked movies
-                 const availableMovies = data.results.filter(movie =>
-                     !hasMovieBeenShown(movie.id) &&
-                     !preferences.dinnerTimeDislikes.includes(movie.id)
-                 );
-         
-                 // Check each movie for Netflix availability
-                 for (const movie of availableMovies) {
-                     const movieDetailsResponse = await fetch(
-                         `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
-                     );
-         
-                     if (!movieDetailsResponse.ok) continue;
-         
-                     const movieData = await movieDetailsResponse.json();
-                     const providers = movieData['watch/providers']?.results?.[userCountry] || {};
-                     const streamingProviders = providers.flatrate || [];
-         
-                     // Check if Netflix is among the streaming providers
-                     const hasNetflix = streamingProviders.some(provider =>
-                         provider.provider_id === 8 ||
-                         provider.provider_name.toLowerCase().includes('netflix')
-                     );
-         
-                     if (hasNetflix) {
-                         trackShownMovie(movieData.id);
-                         displayDinnerTimeMovie(movieData, movieData['watch/providers']);
-                         return;
-                     }
-                 }
-         
-                 // If no Netflix movies found in this batch, show a message
-                 document.querySelector('.dinner-time-modal-content').innerHTML = `
-             <div class="dinner-time-error">
-                 <i class="fas fa-exclamation-circle"></i>
-                 <p>No Netflix movies found at the moment. Please try again!</p>
-                 <button onclick="fetchDinnerTimeMovie()" class="dinner-time-retry">
-                     Try Again
-                 </button>
-             </div>
-         `;
-         
-             } catch (error) {
-                 console.error('Error fetching Netflix dinner movie:', error);
-                 document.querySelector('.dinner-time-modal-content').innerHTML = `
-             <div class="dinner-time-error">
-                 <i class="fas fa-exclamation-circle"></i>
-                 <p>Error finding Netflix movies. Please try again!</p>
-                 <button onclick="fetchDinnerTimeMovie()" class="dinner-time-retry">
-                     Try Again
-                 </button>
-             </div>
-         `;
-             }
-         }
-         // Function to handle dinner time preferences
-         function handleDinnerTimePreference(movieId, liked) {
-             if (liked) {
-                 preferences.dinnerTimeLikes.push(movieId);
-                 localStorage.setItem('dinnerTimeLikes', JSON.stringify(preferences.dinnerTimeLikes));
-                 showToast('Great choice! We\'ll recommend similar movies next time');
-             } else {
-                 preferences.dinnerTimeDislikes.push(movieId);
-                 localStorage.setItem('dinnerTimeDislikes', JSON.stringify(preferences.dinnerTimeDislikes));
-                 showToast('Noted! We won\'t recommend similar movies next time');
-             }
-             closeDinnerTimeModal();
-         }
-         
-         // Function to display dinner time movie
-         function displayDinnerTimeMovie(movie, providers) {
-             const modalContent = document.querySelector('.dinner-time-modal-content');
-             const releaseYear = new Date(movie.release_date).getFullYear();
-             const rating = (movie.vote_average * 10).toFixed(1);
-         
-             // Create Netflix search URL with movie title
-             const netflixSearchQuery = encodeURIComponent(movie.title);
-             const netflixSearchUrl = `https://www.netflix.com/search?q=${netflixSearchQuery}`;
-         
-             modalContent.innerHTML = `
-         <div class="dinner-time-movie">
-             <div class="dinner-time-poster">
-                 <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
-                      alt="${movie.title}"
-                      loading="lazy"
-                      onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'" />
-                      <div class="service-disclaimer">
-             <i class="fas fa-info-circle"></i>
-             Netflix is featured as a personal choice due to its wide availability and convenience. 
-             This is not sponsored by Netflix!
-         </div>
-             </div>
-             <div class="dinner-time-info">
-                 <h2>${movie.title}</h2>
-                 <div class="dinner-time-meta">
-                     <span><i class="fas fa-calendar"></i> ${releaseYear}</span>
-                     <span><i class="fas fa-star"></i> ${rating}%</span>
-                     <span><i class="fas fa-clock"></i> ${movie.runtime} min</span>
-                 </div>
-                 <p class="dinner-time-overview">${movie.overview}</p>
-                 <div class="dinner-time-streaming">
-                     <a href="${netflixSearchUrl}" 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        class="netflix-button">
-                         <i class="fab fa-netflix"></i>
-                         Watch on Netflix
-                     </a>
-                     <p class="netflix-note">The link will take you to Netflix search results for "${movie.title}"</p>
-                 </div>
-                 <div class="dinner-time-actions">
-                     <button onclick="handleDinnerTimePreference(${movie.id}, true)" 
-                             class="dinner-time-btn like">
-                         <i class="fas fa-thumbs-up"></i> Love it!
-                     </button>
-                     <button onclick="handleDinnerTimePreference(${movie.id}, false)" 
-                             class="dinner-time-btn dislike">
-                         <i class="fas fa-thumbs-down"></i> Not my taste
-                     </button>
-                 </div>
-             </div>
          </div>
          `;
-         }
-         // Function to open dinner time modal
-         function openDinnerTimeModal() {
-             document.getElementById('dinnerTimeModal').style.display = 'flex';
-             fetchDinnerTimeMovie();
-         }
-         
-         // Function to close dinner time modal
-         function closeDinnerTimeModal() {
-             document.getElementById('dinnerTimeModal').style.display = 'none';
-         }
-         
-         // Close modal when clicking outside
-         window.onclick = function (event) {
-             const modal = document.getElementById('dinnerTimeModal');
-             if (event.target === modal) {
-                 closeDinnerTimeModal();
-             }
-         }
-         
-         // Show toast message
-         function showToast(message) {
-             const toast = document.getElementById('toast');
-             toast.textContent = message;
-             toast.classList.add('visible');
-             setTimeout(() => {
-                 toast.classList.remove('visible');
-             }, 3000);
-         }
-         
-         // Display error message
-         function displayError(message = 'Something went wrong') {
-             const movieCard = document.getElementById('movieCard');
-             movieCard.innerHTML = `
-                  <div class="error">
-                      <i class="fas fa-exclamation-circle"></i>
-                      <p>Error: ${message}</p>
-                      <button class="btn btn-next" onclick="fetchRandomMovie()">
-                          <i class="fas fa-redo"></i>
-                          Try Again
-                      </button>
-                  </div>
-              `;
-         }
-         
-         // Initialize the app
-         detectCountry().then(() => {
-             validateAndFetch();
-         });
-         
-         // Cache for movies data
-         let moviesCache = null;
-         
-         async function loadFreeMovies() {
-             if (moviesCache) {
-                 return moviesCache;
-             }
-         
-             try {
-                 // Use fetch() instead of window.fs.readFile
-                 const response = await fetch('./movies.txt');
-                 if (!response.ok) {
-                     throw new Error(`Failed to fetch movies.txt: ${response.statusText}`);
-                 }
-         
-                 const text = await response.text();
-                 const lines = text.split('\n').slice(1); // Skip header
-         
-                 moviesCache = lines
-                     .map(line => {
-                         const [youtubeId, ...titleParts] = line.split('\t');
-                         return {
-                             youtubeId: youtubeId.trim(),
-                             title: titleParts.join(' ').trim()
-                         };
-                     })
-                     .filter(movie => movie.youtubeId && movie.title);
-         
-                 console.log(`Loaded ${moviesCache.length} movies successfully`);
-                 return moviesCache;
-             } catch (error) {
-                 console.error('Error loading free movies:', error);
-                 throw error;
-             }
-         }
-         
-         
-         
-         
-         async function fetchFreeMovieDetails(movieTitle) {
-             try {
-                 const response = await fetch(
-                     `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieTitle)}&page=1`
-                 );
-                 const data = await response.json();
-                 if (data.results && data.results.length > 0) {
-                     const movieId = data.results[0].id;
-                     const detailsResponse = await fetch(
-                         `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
-                     );
-                     return await detailsResponse.json();
-                 }
-                 return null;
-             } catch (error) {
-                 console.error('Error fetching movie details:', error);
-                 return null;
-             }
-         }
-         
-         async function openFreeMovieModal() {
-             document.getElementById('dinnerTimeModal').style.display = 'flex';
-             const modalContent = document.querySelector('.dinner-time-modal-content');
-         
-             modalContent.innerHTML = `
-         <div class="dinner-time-loading">
-             <i class="fas fa-film fa-spin"></i>
-             <p>Loading your free movie...</p>
-         </div>
-         `;
-         
-             try {
-                 const movies = await loadFreeMovies();
-                 if (!movies || movies.length === 0) {
-                     throw new Error('No movies available');
-                 }
-         
-                 const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-                 console.log('Selected movie:', randomMovie); // Debug log
-         
-                 if (!randomMovie || !randomMovie.title) {
-                     throw new Error('Invalid movie data');
-                 }
-         
-                 const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
-                 await displayFreeMovie(randomMovie, tmdbDetails);
-             } catch (error) {
-                 console.error('Error loading free movie:', error);
-                 modalContent.innerHTML = `
-             <div class="dinner-time-error">
-                 <i class="fas fa-exclamation-circle"></i>
-                 <p>Error loading free movie. Please try again!</p>
-                 <p class="error-details" style="font-size: 0.8em; color: #666;">${error.message}</p>
-                 <button onclick="openFreeMovieModal()" class="dinner-time-retry">
-                     Try Again
-                 </button>
-             </div>
-         `;
-             }
-         }
-         
-         async function displayFreeMovie(movie, tmdbDetails) {
-             if (!movie || !movie.youtubeId || !movie.title) {
-                 throw new Error('Invalid movie data');
-             }
-         
-             // Fetch external ratings
-             let externalRatings = null;
-             if (tmdbDetails && tmdbDetails.id) {
-                 externalRatings = await fetchExternalRatings(tmdbDetails.id);
-             }
-         
-             const modalContent = document.querySelector('.dinner-time-modal-content');
-             const youtubeUrl = `https://www.youtube.com/watch?v=${movie.youtubeId}`;
-             const posterPath = tmdbDetails?.poster_path ?
-                 `${IMAGE_BASE_URL}${tmdbDetails.poster_path}` :
-                 'https://via.placeholder.com/500x750?text=Free+Movie';
-             const releaseYear = tmdbDetails?.release_date ?
-                 new Date(tmdbDetails.release_date).getFullYear() :
-                 'N/A';
-             const rating = tmdbDetails?.vote_average ?
-                 (tmdbDetails.vote_average * 10).toFixed(1) :
-                 'N/A';
-             const runtime = tmdbDetails?.runtime || 'N/A';
-             const overview = tmdbDetails?.overview || 'Watch this free movie on YouTube!';
-         
-             // Create ratings HTML
-             const ratingsHTML = `
+
+                const ratingsHTML = externalRatings ? `
          <div class="ratings-container">
-             <div class="rating-item imdb">
-                 <i class="fab fa-imdb"></i>
-                 <div class="rating-value">${externalRatings?.imdb || 'N/A'}</div>
-                 <div class="rating-label">IMDb Rating</div>
-             </div>
-             <div class="rating-item rotten-tomatoes">
-                 <i>🍅</i>
-                 <div class="rating-value">${externalRatings?.rottenTomatoes || 'N/A'}</div>
-                 <div class="rating-label">Rotten Tomatoes</div>
-             </div>
-             <div class="rating-item tmdb">
-                 <i class="fas fa-film"></i>
-                 <div class="rating-value">${rating}%</div>
-                 <div class="rating-label">TMDB Rating</div>
-             </div>
+         <div class="rating-item imdb">
+             <i class="fab fa-imdb"></i>
+             <div class="rating-value">${externalRatings.imdb}</div>
+             <div class="rating-label">IMDb Rating</div>
          </div>
-         `;
+         <div class="rating-item rotten-tomatoes">
+         <i>🍅</i>
+         <div class="rating-value">${externalRatings.rottenTomatoes}</div>
+         <div class="rating-label">Rotten Tomatoes</div>
+         </div>
          
-             modalContent.innerHTML = `
-         <div class="dinner-time-movie">
-             <div class="dinner-time-poster">
-                 <img src="${posterPath}" 
-                      alt="${movie.title}"
-                      loading="lazy"
-                      onerror="this.src='https://via.placeholder.com/500x750?text=Free+Movie'" />
-                 <div class="disclaimer-text">
-             Note: Video availability may vary by region due to geographic restrictions. Content access is subject to your local laws and platform terms of service.
+         <div class="rating-item tmdb">
+             <i class="fas fa-film"></i>
+             <div class="rating-value">${rating}%</div>
+             <div class="rating-label">TMDB Rating</div>
          </div>
-             </div>
-             <div class="dinner-time-info">
-                 <h2>${movie.title}</h2>
-                 <div class="dinner-time-meta">
-                     <span><i class="fas fa-calendar"></i> ${releaseYear}</span>
-                     <span><i class="fas fa-star"></i> ${rating}%</span>
-                     <span><i class="fas fa-clock"></i> ${runtime} min</span>
-                 </div>
-                 ${ratingsHTML}
-                 <p class="dinner-time-overview">${overview}</p>
-                 <div class="dinner-time-streaming">
-                     <div class="dinner-time-buttons">
-                         <a href="${youtubeUrl}" 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            class="netflix-button" 
-                            style="background: linear-gradient(135deg, #FF0000, #CC0000);">
-                             <i class="fab fa-youtube"></i>
-                             Watch on YouTube
-                         </a>
-                         <button onclick="getNextFreeMovie()" 
-                                 class="netflix-button" 
-                                 style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
-                             <i class="fas fa-forward"></i>
-                             Next Suggestion
+         </div>
+         ` : '';
+
+                const trailerHTML = trailer ? `
+         <div class="trailer-container">
+         <a href="https://www.youtube.com/watch?v=${trailer.key}" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="trailer-link">
+             <i class="fab fa-youtube"></i>
+             Watch Trailer
+         </a>
+         </div>
+         ` : '';
+
+
+
+                movieCard.innerHTML = `
+    <div class="movie-content">
+        <div class="poster-container">
+            <div class="poster">
+                <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                    loading="lazy"
+                    decoding="async"
+                    alt="${movie.title}"
+                    onerror="this.src='https://via.placeholder.com/350x525?text=No+Poster'" />
+            </div>
+            ${trailerHTML}
+        </div>
+        
+        <div class="movie-info">
+            <h2>${movie.title}</h2>
+            
+            <!-- Moved action buttons here -->
+            <div class="action-buttons">
+                <button class="btn btn-next" onclick="fetchRandomMovie()">
+                    <i class="fas fa-random"></i>
+                    Next Movie
+                </button>
+                <button class="btn btn-skip" onclick="handleSkip(${movie.id})">
+                    <i class="fas fa-forward"></i>
+                    Skip
+                </button>
+                <button class="btn btn-love" onclick="handleLove(${movie.id})">
+                    <i class="fas fa-heart"></i>
+                    Love it!
+                </button>
+                <button class="btn btn-watched" onclick="handleWatched(${movie.id})">
+                    <i class="fas fa-check"></i>
+                    Watched
+                </button>
+            </div>
+
+            <div class="movie-meta">
+                <div class="meta-item">
+                    <i class="fas fa-calendar"></i>
+                    ${releaseYear}
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    ${movie.runtime || 'N/A'} min
+                </div>
+                <div class="meta-item rating">
+                    <i class="fas fa-star"></i>
+                    ${rating}%
+                </div>
+            </div>
+            ${ratingsHTML}
+            <div class="genres">
+                ${movie.genres ? movie.genres.map(genre => `
+                    <span class="genre">${genre.name}</span>
+                `).join('') : ''}
+            </div>
+            <p class="overview">${movie.overview || 'No overview available.'}</p>
+            
+            <div class="streaming-info">
+                ${streamingHTML}
+                ${rentHTML}
+                ${buyHTML}
+                ${availabilityMessage}
+            </div>
+        </div>
+    </div>
+`;
+            } catch (error) {
+                console.error('Error displaying movie:', error);
+                displayError('Error displaying movie details');
+            }
+        }
+
+        // Preference Modal Functions
+        function showPreferenceModal() {
+            const modal = document.getElementById('preferenceModal');
+            modal.style.display = 'block';
+        }
+
+        function hidePreferenceModal() {
+            const modal = document.getElementById('preferenceModal');
+            modal.style.display = 'none';
+        }
+
+        function validatePreferences() {
+            const provider = document.getElementById('streamingProvider').value;
+            const genre = document.getElementById('movieGenre').value;
+            const startButton = document.getElementById('startExploring');
+            startButton.disabled = !provider || !genre;
+        }
+
+        function savePreferences() {
+            const provider = document.getElementById('streamingProvider').value;
+            const genre = document.getElementById('movieGenre').value;
+
+            localStorage.setItem('preferredProvider', provider);
+            localStorage.setItem('preferredGenre', genre);
+            localStorage.setItem('preferencesLastUpdated', new Date().toISOString());
+
+            hidePreferenceModal();
+            window.location.reload();
+        }
+
+        function skipPreferences() {
+            hidePreferenceModal();
+            validateAndFetch();
+        }
+
+        // Initialize preference modal event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const preferredProvider = localStorage.getItem('preferredProvider');
+            const preferredGenre = localStorage.getItem('preferredGenre');
+
+            if (!preferredProvider || !preferredGenre) {
+                showPreferenceModal();
+            }
+
+            // Add event listeners
+            document.getElementById('streamingProvider').addEventListener('change', validatePreferences);
+            document.getElementById('movieGenre').addEventListener('change', validatePreferences);
+            document.getElementById('startExploring').addEventListener('click', savePreferences);
+            document.getElementById('skipPreferences').addEventListener('click', skipPreferences);
+        });
+
+        // Provider ID mapping
+        function getProviderId(providerName) {
+            const providerMap = {
+                'netflix': 8,
+                'disneyplus': 337,
+                'amazon': 9,
+                'hulu': 15,
+                'hbomax': 384,
+                'appletv': 350,
+                'paramountplus': 531,
+                'peacock': 386
+            };
+            return providerMap[providerName] || null;
+        }
+
+        // Validation and initialization function
+        async function validateAndFetch() {
+            try {
+                const testResponse = await fetch(
+                    `${BASE_URL}/configuration?api_key=${API_KEY}`
+                );
+
+                if (!testResponse.ok) {
+                    throw new Error('Invalid API key');
+                }
+
+                await fetchRandomMovie();
+
+            } catch (error) {
+                console.error('API validation failed:', error);
+                const movieCard = document.getElementById('movieCard');
+                movieCard.innerHTML = `
+                     <div class="error">
+                         <i class="fas fa-exclamation-circle"></i>
+                         <p>Initializing... Please wait.</p>
+                         <button class="btn btn-next" onclick="validateAndFetch()">
+                             <i class="fas fa-redo"></i>
+                             Try Again
                          </button>
                      </div>
-                     <p class="netflix-note">Click to watch "${movie.title}" on YouTube</p>
+                 `;
+                setTimeout(validateAndFetch, 2000);
+            }
+        }
+
+        // Handle love button click
+        async function handleLove(movieId) {
+            try {
+                const response = await fetch(`${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`);
+                const data = await response.json();
+
+                if (!preferences.lovedMovies.includes(movieId)) {
+                    preferences.lovedMovies.push(movieId);
+                    localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
+                }
+
+                const unwatchedSimilarMovies = data.results
+                    .filter(movie => !preferences.watchedMovies.includes(movie.id))
+                    .slice(0, 5);
+
+                displayRecommendations(unwatchedSimilarMovies, '❤️ Because you loved this movie');
+                showToast('Great choice! Here are similar movies you might love');
+            } catch (error) {
+                console.error('Error handling love:', error);
+                showToast('Failed to fetch similar movies');
+            }
+        }
+
+        // Handle like button click
+        async function handleLike(movieId) {
+            try {
+                const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+                const movie = await response.json();
+
+                movie.genres.forEach(genre => {
+                    preferences.likedGenres[genre.id] = (preferences.likedGenres[genre.id] || 0) + 1;
+                });
+                localStorage.setItem('likedGenres', JSON.stringify(preferences.likedGenres));
+
+                const topGenres = Object.entries(preferences.likedGenres)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 3)
+                    .map(([genreId]) => genreId);
+
+                const genreResponse = await fetch(
+                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_genres=${topGenres.join(',')}`
+                );
+                const genreData = await genreResponse.json();
+
+                const unwatchedRecommendations = genreData.results
+                    .filter(movie => !preferences.watchedMovies.includes(movie.id))
+                    .slice(0, 5);
+
+                displayRecommendations(unwatchedRecommendations, '🎯 Based on genres you like');
+                showToast('Cool! Here are some movies in similar genres');
+            } catch (error) {
+                console.error('Error handling like:', error);
+                showToast('Failed to fetch recommendations');
+            }
+        }
+
+        // Handle watched button click
+        function handleWatched(movieId) {
+            if (!preferences.watchedMovies.includes(movieId)) {
+                preferences.watchedMovies.push(movieId);
+                localStorage.setItem('watchedMovies', JSON.stringify(preferences.watchedMovies));
+            }
+            showToast('Noted! We won\'t show this movie again');
+            fetchRandomMovie();
+        }
+        // Handle skip
+        function handleSkip(movieId) {
+            if (!preferences.skippedMovies.includes(movieId)) {
+                preferences.skippedMovies.push(movieId);
+                localStorage.setItem('skippedMovies', JSON.stringify(preferences.skippedMovies));
+            }
+            showToast('Skipped! Finding you a different movie...');
+            fetchRandomMovie();
+        }
+
+        // Display recommendations
+        function displayRecommendations(movies, title) {
+            const recommendationsSection = document.getElementById('recommendationsSection');
+            if (!movies || movies.length === 0) {
+                recommendationsSection.innerHTML = `
+                     <h3 style="grid-column: 1/-1; margin-bottom: 1rem;">No recommendations found</h3>
+                 `;
+                return;
+            }
+
+            recommendationsSection.innerHTML = `
+                 <h3 style="grid-column: 1/-1; margin-bottom: 1rem; font-size: 1.5rem; color: var(--text);">
+                     ${title}
+                 </h3>
+                 ${movies.map(movie => `
+                     <div class="recommended-movie">
+                         <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                              alt="${movie.title}"
+                              loading="lazy"
+                              onerror="this.src='https://via.placeholder.com/300x450?text=No+Poster'" />
+                         <div class="recommended-movie-info">
+                             <div class="recommended-movie-title">${movie.title}</div>
+                             <div class="recommended-movie-meta">
+                                 ${new Date(movie.release_date).getFullYear()} • 
+                                 ${(movie.vote_average * 10).toFixed(1)}%
+                             </div>
+                         </div>
+                     </div>
+                 `).join('')}
+             `;
+            recommendationsSection.classList.add('visible');
+        }
+        async function fetchDinnerTimeMovie() {
+            try {
+                const loadingAnimation = `
+            <div class="dinner-time-loading">
+                <i class="fas fa-utensils fa-spin"></i>
+                <p>Finding the perfect Netflix movie for dinner...</p>
+            </div>
+        `;
+                document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
+
+                // First, get popular movies
+                const randomPage = Math.floor(Math.random() * 20) + 1;
+                const response = await fetch(
+                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=7.0&include_adult=false`
+                );
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                const data = await response.json();
+                if (!data.results || data.results.length === 0) {
+                    throw new Error('No movies found');
+                }
+
+                // Filter out previously shown or disliked movies
+                const availableMovies = data.results.filter(movie =>
+                    !hasMovieBeenShown(movie.id) &&
+                    !preferences.dinnerTimeDislikes.includes(movie.id)
+                );
+
+                // Check each movie for Netflix availability
+                for (const movie of availableMovies) {
+                    const movieDetailsResponse = await fetch(
+                        `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+                    );
+
+                    if (!movieDetailsResponse.ok) continue;
+
+                    const movieData = await movieDetailsResponse.json();
+                    const providers = movieData['watch/providers']?.results?.[userCountry] || {};
+                    const streamingProviders = providers.flatrate || [];
+
+                    // Check if Netflix is among the streaming providers
+                    const hasNetflix = streamingProviders.some(provider =>
+                        provider.provider_id === 8 ||
+                        provider.provider_name.toLowerCase().includes('netflix')
+                    );
+
+                    if (hasNetflix) {
+                        trackShownMovie(movieData.id);
+                        displayDinnerTimeMovie(movieData, movieData['watch/providers']);
+                        return;
+                    }
+                }
+
+                // If no Netflix movies found in this batch, show a message
+                document.querySelector('.dinner-time-modal-content').innerHTML = `
+            <div class="dinner-time-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>No Netflix movies found at the moment. Please try again!</p>
+                <button onclick="fetchDinnerTimeMovie()" class="dinner-time-retry">
+                    Try Again
+                </button>
+            </div>
+        `;
+
+            } catch (error) {
+                console.error('Error fetching Netflix dinner movie:', error);
+                document.querySelector('.dinner-time-modal-content').innerHTML = `
+            <div class="dinner-time-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Error finding Netflix movies. Please try again!</p>
+                <button onclick="fetchDinnerTimeMovie()" class="dinner-time-retry">
+                    Try Again
+                </button>
+            </div>
+        `;
+            }
+        }
+        // Function to handle dinner time preferences
+        function handleDinnerTimePreference(movieId, liked) {
+            if (liked) {
+                preferences.dinnerTimeLikes.push(movieId);
+                localStorage.setItem('dinnerTimeLikes', JSON.stringify(preferences.dinnerTimeLikes));
+                showToast('Great choice! We\'ll recommend similar movies next time');
+            } else {
+                preferences.dinnerTimeDislikes.push(movieId);
+                localStorage.setItem('dinnerTimeDislikes', JSON.stringify(preferences.dinnerTimeDislikes));
+                showToast('Noted! We won\'t recommend similar movies next time');
+            }
+            closeDinnerTimeModal();
+        }
+
+        // Function to display dinner time movie
+        function displayDinnerTimeMovie(movie, providers) {
+            const modalContent = document.querySelector('.dinner-time-modal-content');
+            const releaseYear = new Date(movie.release_date).getFullYear();
+            const rating = (movie.vote_average * 10).toFixed(1);
+
+            // Create Netflix search URL with movie title
+            const netflixSearchQuery = encodeURIComponent(movie.title);
+            const netflixSearchUrl = `https://www.netflix.com/search?q=${netflixSearchQuery}`;
+
+            modalContent.innerHTML = `
+        <div class="dinner-time-movie">
+            <div class="dinner-time-poster">
+                <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
+                     alt="${movie.title}"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/500x750?text=No+Poster'" />
+                     <div class="service-disclaimer">
+            <i class="fas fa-info-circle"></i>
+            Netflix is featured as a personal choice due to its wide availability and convenience. 
+            This is not sponsored by Netflix!
+        </div>
+            </div>
+            <div class="dinner-time-info">
+                <h2>${movie.title}</h2>
+                <div class="dinner-time-meta">
+                    <span><i class="fas fa-calendar"></i> ${releaseYear}</span>
+                    <span><i class="fas fa-star"></i> ${rating}%</span>
+                    <span><i class="fas fa-clock"></i> ${movie.runtime} min</span>
+                </div>
+                <p class="dinner-time-overview">${movie.overview}</p>
+                <div class="dinner-time-streaming">
+                    <a href="${netflixSearchUrl}" 
+                       target="_blank" 
+                       rel="noopener noreferrer" 
+                       class="netflix-button">
+                        <i class="fab fa-netflix"></i>
+                        Watch on Netflix
+                    </a>
+                    <p class="netflix-note">The link will take you to Netflix search results for "${movie.title}"</p>
+                </div>
+                <div class="dinner-time-actions">
+                    <button onclick="handleDinnerTimePreference(${movie.id}, true)" 
+                            class="dinner-time-btn like">
+                        <i class="fas fa-thumbs-up"></i> Love it!
+                    </button>
+                    <button onclick="handleDinnerTimePreference(${movie.id}, false)" 
+                            class="dinner-time-btn dislike">
+                        <i class="fas fa-thumbs-down"></i> Not my taste
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+        }
+        // Function to open dinner time modal
+        function openDinnerTimeModal() {
+            document.getElementById('dinnerTimeModal').style.display = 'flex';
+            fetchDinnerTimeMovie();
+        }
+
+        // Function to close dinner time modal
+        function closeDinnerTimeModal() {
+            document.getElementById('dinnerTimeModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('dinnerTimeModal');
+            if (event.target === modal) {
+                closeDinnerTimeModal();
+            }
+        }
+
+        // Show toast message
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('visible');
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+
+        // Display error message
+        function displayError(message = 'Something went wrong') {
+            const movieCard = document.getElementById('movieCard');
+            movieCard.innerHTML = `
+                 <div class="error">
+                     <i class="fas fa-exclamation-circle"></i>
+                     <p>Error: ${message}</p>
+                     <button class="btn btn-next" onclick="fetchRandomMovie()">
+                         <i class="fas fa-redo"></i>
+                         Try Again
+                     </button>
                  </div>
-             </div>
-         </div>
-         `;
-         }
-         
-         async function getNextFreeMovie() {
-             const loadingAnimation = `
-         <div class="dinner-time-loading">
-             <i class="fas fa-film fa-spin"></i>
-             <p>Finding another free movie...</p>
-         </div>
-         `;
-             document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
-         
-             try {
-                 const movies = await loadFreeMovies();
-                 const randomMovie = movies[Math.floor(Math.random() * movies.length)];
-                 const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
-                 await displayFreeMovie(randomMovie, tmdbDetails);
-             } catch (error) {
-                 console.error('Error loading next free movie:', error);
-                 document.querySelector('.dinner-time-modal-content').innerHTML = `
-             <div class="dinner-time-error">
-                 <i class="fas fa-exclamation-circle"></i>
-                 <p>Error loading next movie. Please try again!</p>
-                 <button onclick="getNextFreeMovie()" class="dinner-time-retry">
-                     Try Again
-                 </button>
-             </div>
-         `;
-             }
-         }
-      </script>
-      <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ySM3OCPXKQsVLXL4GVLtc8WkMDt1zkaXhWgAGc7_uHs&cl=ffffff&w=a"></script>
-   </body>
+             `;
+        }
+
+        // Initialize the app
+        detectCountry().then(() => {
+            validateAndFetch();
+        });
+
+        // Cache for movies data
+        let moviesCache = null;
+
+        async function loadFreeMovies() {
+            if (moviesCache) {
+                return moviesCache;
+            }
+
+            try {
+                // Use fetch() instead of window.fs.readFile
+                const response = await fetch('./movies.txt');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch movies.txt: ${response.statusText}`);
+                }
+
+                const text = await response.text();
+                const lines = text.split('\n').slice(1); // Skip header
+
+                moviesCache = lines
+                    .map(line => {
+                        const [youtubeId, ...titleParts] = line.split('\t');
+                        return {
+                            youtubeId: youtubeId.trim(),
+                            title: titleParts.join(' ').trim()
+                        };
+                    })
+                    .filter(movie => movie.youtubeId && movie.title);
+
+                console.log(`Loaded ${moviesCache.length} movies successfully`);
+                return moviesCache;
+            } catch (error) {
+                console.error('Error loading free movies:', error);
+                throw error;
+            }
+        }
+
+
+
+
+        async function fetchFreeMovieDetails(movieTitle) {
+            try {
+                const response = await fetch(
+                    `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(movieTitle)}&page=1`
+                );
+                const data = await response.json();
+                if (data.results && data.results.length > 0) {
+                    const movieId = data.results[0].id;
+                    const detailsResponse = await fetch(
+                        `${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`
+                    );
+                    return await detailsResponse.json();
+                }
+                return null;
+            } catch (error) {
+                console.error('Error fetching movie details:', error);
+                return null;
+            }
+        }
+
+        async function openFreeMovieModal() {
+            document.getElementById('dinnerTimeModal').style.display = 'flex';
+            const modalContent = document.querySelector('.dinner-time-modal-content');
+
+            modalContent.innerHTML = `
+        <div class="dinner-time-loading">
+            <i class="fas fa-film fa-spin"></i>
+            <p>Loading your free movie...</p>
+        </div>
+    `;
+
+            try {
+                const movies = await loadFreeMovies();
+                if (!movies || movies.length === 0) {
+                    throw new Error('No movies available');
+                }
+
+                const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+                console.log('Selected movie:', randomMovie); // Debug log
+
+                if (!randomMovie || !randomMovie.title) {
+                    throw new Error('Invalid movie data');
+                }
+
+                const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
+                await displayFreeMovie(randomMovie, tmdbDetails);
+            } catch (error) {
+                console.error('Error loading free movie:', error);
+                modalContent.innerHTML = `
+            <div class="dinner-time-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Error loading free movie. Please try again!</p>
+                <p class="error-details" style="font-size: 0.8em; color: #666;">${error.message}</p>
+                <button onclick="openFreeMovieModal()" class="dinner-time-retry">
+                    Try Again
+                </button>
+            </div>
+        `;
+            }
+        }
+
+        async function displayFreeMovie(movie, tmdbDetails) {
+            if (!movie || !movie.youtubeId || !movie.title) {
+                throw new Error('Invalid movie data');
+            }
+
+            // Fetch external ratings
+            let externalRatings = null;
+            if (tmdbDetails && tmdbDetails.id) {
+                externalRatings = await fetchExternalRatings(tmdbDetails.id);
+            }
+
+            const modalContent = document.querySelector('.dinner-time-modal-content');
+            const youtubeUrl = `https://www.youtube.com/watch?v=${movie.youtubeId}`;
+            const posterPath = tmdbDetails?.poster_path ?
+                `${IMAGE_BASE_URL}${tmdbDetails.poster_path}` :
+                'https://via.placeholder.com/500x750?text=Free+Movie';
+            const releaseYear = tmdbDetails?.release_date ?
+                new Date(tmdbDetails.release_date).getFullYear() :
+                'N/A';
+            const rating = tmdbDetails?.vote_average ?
+                (tmdbDetails.vote_average * 10).toFixed(1) :
+                'N/A';
+            const runtime = tmdbDetails?.runtime || 'N/A';
+            const overview = tmdbDetails?.overview || 'Watch this free movie on YouTube!';
+
+            // Create ratings HTML
+            const ratingsHTML = `
+        <div class="ratings-container">
+            <div class="rating-item imdb">
+                <i class="fab fa-imdb"></i>
+                <div class="rating-value">${externalRatings?.imdb || 'N/A'}</div>
+                <div class="rating-label">IMDb Rating</div>
+            </div>
+            <div class="rating-item rotten-tomatoes">
+                <i>🍅</i>
+                <div class="rating-value">${externalRatings?.rottenTomatoes || 'N/A'}</div>
+                <div class="rating-label">Rotten Tomatoes</div>
+            </div>
+            <div class="rating-item tmdb">
+                <i class="fas fa-film"></i>
+                <div class="rating-value">${rating}%</div>
+                <div class="rating-label">TMDB Rating</div>
+            </div>
+        </div>
+    `;
+
+            modalContent.innerHTML = `
+        <div class="dinner-time-movie">
+            <div class="dinner-time-poster">
+                <img src="${posterPath}" 
+                     alt="${movie.title}"
+                     loading="lazy"
+                     onerror="this.src='https://via.placeholder.com/500x750?text=Free+Movie'" />
+                <div class="disclaimer-text">
+            Note: Video availability may vary by region due to geographic restrictions. Content access is subject to your local laws and platform terms of service.
+        </div>
+            </div>
+            <div class="dinner-time-info">
+                <h2>${movie.title}</h2>
+                <div class="dinner-time-meta">
+                    <span><i class="fas fa-calendar"></i> ${releaseYear}</span>
+                    <span><i class="fas fa-star"></i> ${rating}%</span>
+                    <span><i class="fas fa-clock"></i> ${runtime} min</span>
+                </div>
+                ${ratingsHTML}
+                <p class="dinner-time-overview">${overview}</p>
+                <div class="dinner-time-streaming">
+                    <div class="dinner-time-buttons">
+                        <a href="${youtubeUrl}" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="netflix-button" 
+                           style="background: linear-gradient(135deg, #FF0000, #CC0000);">
+                            <i class="fab fa-youtube"></i>
+                            Watch on YouTube
+                        </a>
+                        <button onclick="getNextFreeMovie()" 
+                                class="netflix-button" 
+                                style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
+                            <i class="fas fa-forward"></i>
+                            Next Suggestion
+                        </button>
+                    </div>
+                    <p class="netflix-note">Click to watch "${movie.title}" on YouTube</p>
+                </div>
+            </div>
+        </div>
+    `;
+        }
+
+        async function getNextFreeMovie() {
+            const loadingAnimation = `
+        <div class="dinner-time-loading">
+            <i class="fas fa-film fa-spin"></i>
+            <p>Finding another free movie...</p>
+        </div>
+    `;
+            document.querySelector('.dinner-time-modal-content').innerHTML = loadingAnimation;
+
+            try {
+                const movies = await loadFreeMovies();
+                const randomMovie = movies[Math.floor(Math.random() * movies.length)];
+                const tmdbDetails = await fetchFreeMovieDetails(randomMovie.title);
+                await displayFreeMovie(randomMovie, tmdbDetails);
+            } catch (error) {
+                console.error('Error loading next free movie:', error);
+                document.querySelector('.dinner-time-modal-content').innerHTML = `
+            <div class="dinner-time-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Error loading next movie. Please try again!</p>
+                <button onclick="getNextFreeMovie()" class="dinner-time-retry">
+                    Try Again
+                </button>
+            </div>
+        `;
+            }
+        }
+    </script>
+    <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=ySM3OCPXKQsVLXL4GVLtc8WkMDt1zkaXhWgAGc7_uHs&cl=ffffff&w=a"></script>
+</body>
+
 </html>
