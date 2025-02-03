@@ -19,6 +19,7 @@
     <title>Which Movie To Watch!</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css" rel="stylesheet">
+
     <style>
         /* Custom Properties and Color Variables */
         :root {
@@ -1312,10 +1313,203 @@
             color: rgba(229, 9, 20, 0.8);
             margin-right: 0.5rem;
         }
+
+        /* Preference Modal Styles */
+        .preference-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+        }
+
+        .preference-modal-content {
+            position: relative;
+            background: var(--card-bg);
+            margin: 10vh auto;
+            padding: 2rem;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        .preference-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .preference-header h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .preference-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .preference-section label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text);
+        }
+
+        .preference-select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: rgba(45, 45, 55, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .preference-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(255, 69, 69, 0.2);
+        }
+
+        .preference-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .preference-button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-button {
+            background: linear-gradient(135deg, #E50914, #B20710);
+            color: white;
+        }
+
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .start-button:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .skip-button {
+            background: rgba(45, 45, 55, 0.9);
+            color: var(--text);
+        }
+
+        .skip-button:hover {
+            transform: translateY(-2px);
+            background: rgba(55, 55, 65, 0.9);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .preference-modal-content {
+                margin: 5vh auto;
+                padding: 1.5rem;
+            }
+
+            .preference-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .preference-actions {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 
 <body>
+    <div id="preferenceModal" class="preference-modal">
+        <div class="preference-modal-content">
+            <div class="preference-header">
+                <h2>Welcome to Movie Picker!</h2>
+            </div>
+            <div class="preference-body">
+                <div class="preference-section">
+                    <label for="streamingProvider">Select your preferred streaming service:</label>
+                    <select id="streamingProvider" class="preference-select">
+                        <option value="">Select a provider</option>
+                        <option value="netflix">Netflix</option>
+                        <option value="disneyplus">Disney+</option>
+                        <option value="amazon">Amazon Prime</option>
+                        <option value="hulu">Hulu</option>
+                        <option value="hbomax">HBO Max</option>
+                        <option value="appletv">Apple TV+</option>
+                        <option value="paramountplus">Paramount+</option>
+                        <option value="peacock">Peacock</option>
+                    </select>
+                </div>
+
+                <div class="preference-section">
+                    <label for="movieGenre">Select your preferred genre:</label>
+                    <select id="movieGenre" class="preference-select">
+                        <option value="">Select a genre</option>
+                        <option value="any">Any Genre</option>
+                        <option value="28">Action</option>
+                        <option value="12">Adventure</option>
+                        <option value="16">Animation</option>
+                        <option value="35">Comedy</option>
+                        <option value="80">Crime</option>
+                        <option value="99">Documentary</option>
+                        <option value="18">Drama</option>
+                        <option value="10751">Family</option>
+                        <option value="14">Fantasy</option>
+                        <option value="36">History</option>
+                        <option value="27">Horror</option>
+                        <option value="10402">Music</option>
+                        <option value="9648">Mystery</option>
+                        <option value="10749">Romance</option>
+                        <option value="878">Science Fiction</option>
+                        <option value="53">Thriller</option>
+                        <option value="10752">War</option>
+                        <option value="37">Western</option>
+                    </select>
+                </div>
+
+                <div class="preference-actions">
+                    <button id="startExploring" class="preference-button start-button" disabled>
+                        Start Exploring
+                    </button>
+                    <button id="skipPreferences" class="preference-button skip-button">
+                        Skip for Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="gradient-background"></div>
     <div class="container">
         <div class="header">
@@ -1333,6 +1527,10 @@
             <button onclick="openFreeMovieModal()" class="free-movie-trigger">
                 <i class="fas fa-film"></i>
                 Free Movie!
+            </button>
+            <button onclick="showPreferenceModal()" class="dinner-time-trigger">
+                <i class="fas fa-cog"></i>
+                Change Preferences
             </button>
         </div>
         <div class="movie-card" id="movieCard">
@@ -1574,11 +1772,20 @@
         `;
                 document.getElementById('movieCard').innerHTML = loadingAnimation;
 
-                const randomPage = Math.floor(Math.random() * 100) + 1;
-                const response = await fetch(
-                    `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${randomPage}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`
-                );
+                // Get user preferences
+                const preferredProvider = localStorage.getItem('preferredProvider');
+                const preferredGenre = localStorage.getItem('preferredGenre');
+                const providerId = getProviderId(preferredProvider);
 
+                // Build the API URL with preferences
+                let apiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`;
+
+                // Add genre if specified and not 'any'
+                if (preferredGenre && preferredGenre !== 'any') {
+                    apiUrl += `&with_genres=${preferredGenre}`;
+                }
+
+                const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
                 const data = await response.json();
@@ -1586,7 +1793,7 @@
                     throw new Error('No movies found in response');
                 }
 
-                // Filter out movies that have been shown, watched, or skipped
+                // Filter out movies that have been shown
                 const availableMovies = data.results.filter(movie => !hasMovieBeenShown(movie.id));
 
                 if (availableMovies.length === 0) {
@@ -1597,33 +1804,42 @@
                     return fetchRandomMovie(0, maxRetries);
                 }
 
-                // Check streaming availability and additional quality metrics for each movie
-                for (const movie of availableMovies) {
-                    const movieDetailsResponse = await fetch(
-                        `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers,keywords,credits`
-                    );
+                // Check streaming availability if provider is selected
+                if (providerId) {
+                    for (const movie of availableMovies) {
+                        const movieDetailsResponse = await fetch(
+                            `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+                        );
 
-                    if (!movieDetailsResponse.ok) continue;
+                        if (!movieDetailsResponse.ok) continue;
 
-                    const movieData = await movieDetailsResponse.json();
-                    trackShownMovie(movieData.id); // Track that this movie has been shown
-                    await displayMovie(movieData);
+                        const movieData = await movieDetailsResponse.json();
+                        const providers = movieData['watch/providers']?.results?.[userCountry] || {};
+                        const streamingProviders = providers.flatrate || [];
+
+                        if (streamingProviders.some(provider => provider.provider_id === providerId)) {
+                            trackShownMovie(movieData.id);
+                            await displayMovie(movieData);
+                            return;
+                        }
+                    }
+
+                    // If no movies found with selected provider, try again or show message
+                    if (retryCount < maxRetries) {
+                        return fetchRandomMovie(retryCount + 1, maxRetries);
+                    }
+                    displayError(`No movies found on ${preferredProvider}. Try different preferences!`);
                     return;
                 }
 
-                // If no streaming movie found and within retry limit, try again
-                if (retryCount < maxRetries) {
-                    return fetchRandomMovie(retryCount + 1, maxRetries);
-                }
-
-                // If all retries exhausted, display any random movie
+                // If no provider selected or no matches found, show any available movie
                 const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
-                const fallbackMovieResponse = await fetch(
-                    `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers,credits`
+                const movieDetailsResponse = await fetch(
+                    `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
                 );
-                const fallbackMovieData = await fallbackMovieResponse.json();
-                trackShownMovie(fallbackMovieData.id); // Track that this movie has been shown
-                await displayMovie(fallbackMovieData);
+                const movieData = await movieDetailsResponse.json();
+                trackShownMovie(movieData.id);
+                await displayMovie(movieData);
 
             } catch (error) {
                 console.error('Error fetching movie:', error);
@@ -1810,6 +2026,93 @@
                 displayError('Error displaying movie details');
             }
         }
+
+        // Preference Modal Functions
+        function showPreferenceModal() {
+            const modal = document.getElementById('preferenceModal');
+            modal.style.display = 'block';
+        }
+
+        function hidePreferenceModal() {
+            const modal = document.getElementById('preferenceModal');
+            modal.style.display = 'none';
+        }
+
+        function validatePreferences() {
+            const provider = document.getElementById('streamingProvider').value;
+            const genre = document.getElementById('movieGenre').value;
+            const startButton = document.getElementById('startExploring');
+            startButton.disabled = !provider || !genre;
+        }
+
+        function savePreferences() {
+            const provider = document.getElementById('streamingProvider').value;
+            const genre = document.getElementById('movieGenre').value;
+
+            localStorage.setItem('preferredProvider', provider);
+            localStorage.setItem('preferredGenre', genre);
+            localStorage.setItem('preferencesLastUpdated', new Date().toISOString());
+
+            hidePreferenceModal();
+            window.location.reload();
+        }
+
+        function skipPreferences() {
+            hidePreferenceModal();
+            validateAndFetch();
+        }
+
+        // Initialize preference modal event listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            const preferredProvider = localStorage.getItem('preferredProvider');
+            const preferredGenre = localStorage.getItem('preferredGenre');
+
+            if (!preferredProvider || !preferredGenre) {
+                showPreferenceModal();
+            }
+
+            // Add event listeners
+            document.getElementById('streamingProvider').addEventListener('change', validatePreferences);
+            document.getElementById('movieGenre').addEventListener('change', validatePreferences);
+            document.getElementById('startExploring').addEventListener('click', savePreferences);
+            document.getElementById('skipPreferences').addEventListener('click', skipPreferences);
+        });
+
+        // Provider ID mapping
+        function getProviderId(providerName) {
+            const providerMap = {
+                'netflix': 8,
+                'disneyplus': 337,
+                'amazon': 9,
+                'hulu': 15,
+                'hbomax': 384,
+                'appletv': 350,
+                'paramountplus': 531,
+                'peacock': 386
+            };
+            return providerMap[providerName] || null;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const headerDiv = document.querySelector('.header');
+            const titleContainer = headerDiv.querySelector('.title-container');
+
+            const preferencesButton = document.createElement('button');
+            preferencesButton.className = 'dinner-time-trigger';
+            preferencesButton.style.marginLeft = '1rem';
+            preferencesButton.innerHTML = '<i class="fas fa-cog"></i> Change Preferences';
+            preferencesButton.onclick = showPreferenceModal;
+
+            titleContainer.appendChild(preferencesButton);
+
+            // Check for preferences
+            const preferredProvider = localStorage.getItem('preferredProvider');
+            const preferredGenre = localStorage.getItem('preferredGenre');
+
+            if (!preferredProvider || !preferredGenre) {
+                showPreferenceModal();
+            }
+        });
 
         // Validation and initialization function
         async function validateAndFetch() {
