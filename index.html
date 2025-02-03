@@ -1455,7 +1455,7 @@
     <div id="preferenceModal" class="preference-modal">
         <div class="preference-modal-content">
             <div class="preference-header">
-                <h2>Welcome to Movie Picker!</h2>
+                <h2>Welcome to Which Movie to Watch!</h2>
             </div>
             <div class="preference-body">
                 <div class="preference-section">
@@ -2092,27 +2092,6 @@
             };
             return providerMap[providerName] || null;
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const headerDiv = document.querySelector('.header');
-            const titleContainer = headerDiv.querySelector('.title-container');
-
-            const preferencesButton = document.createElement('button');
-            preferencesButton.className = 'dinner-time-trigger';
-            preferencesButton.style.marginLeft = '1rem';
-            preferencesButton.innerHTML = '<i class="fas fa-cog"></i> Change Preferences';
-            preferencesButton.onclick = showPreferenceModal;
-
-            titleContainer.appendChild(preferencesButton);
-
-            // Check for preferences
-            const preferredProvider = localStorage.getItem('preferredProvider');
-            const preferredGenre = localStorage.getItem('preferredGenre');
-
-            if (!preferredProvider || !preferredGenre) {
-                showPreferenceModal();
-            }
-        });
 
         // Validation and initialization function
         async function validateAndFetch() {
