@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://code.jquery.com https://scripts.simpleanalyticscdn.com;
+        style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
+        img-src 'self' https://image.tmdb.org data: https://via.placeholder.com https://*.simpleanalyticscdn.com;
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com;
+        worker-src 'self';
+        object-src 'none';">
+    <title>Privacy Policy - Which Movie to Watch!</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Reuse existing CSS variables */
+        :root {
+            --background: #0E0E12;
+            --text: #F4F4F5;
+            --accent: #FF4545;
+            --gradient-start: rgba(255, 69, 69, 0.2);
+            --gradient-end: rgba(14, 14, 18, 0.9);
+            --primary: #FFFFED;
+            --secondary: #F4eeee;
+            --card-bg: rgba(17, 24, 39, 0.8);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 2rem 0;
+        }
+
+        .gradient-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, var(--gradient-start), transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--card-bg);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .content h2 {
+            color: var(--accent);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .content p {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .content ul {
+            margin-bottom: 1rem;
+            padding-left: 2rem;
+        }
+
+        .content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-background"></div>
+    <div class="container">
+        <div class="header">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: February 4, 2025</p>
+        </div>
+        
+        <div class="content">
+            <h2>Introduction</h2>
+            <p>Welcome to Which Movie to Watch ("we," "our," or "us"). We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle information when you use our website.</p>
+
+            <h2>Information We Collect</h2>
+            <h3>Automatically Collected Information</h3>
+            <ul>
+                <li><strong>Analytics Data</strong>: We use SimpleAnalytics, a privacy-friendly analytics service that doesn't use cookies and doesn't track individual users.</li>
+                <li><strong>Location Data</strong>: We detect your country to show relevant streaming services. This information is not stored on our servers.</li>
+                <li><strong>Browser Information</strong>: Basic browser capabilities are detected to ensure proper website functionality.</li>
+            </ul>
+
+            <h3>Local Storage</h3>
+            <p>We use your browser's localStorage to store:</p>
+            <ul>
+                <li>Movie preferences (liked genres, watched movies)</li>
+                <li>User interface preferences</li>
+                <li>Streaming service preferences</li>
+            </ul>
+            <p>This data remains on your device and is not transmitted to our servers.</p>
+
+            <h2>How We Use Information</h2>
+            <ul>
+                <li>To provide movie recommendations based on your preferences</li>
+                <li>To show relevant streaming services for your region</li>
+                <li>To improve our website functionality</li>
+                <li>To analyze general usage patterns (via privacy-friendly analytics)</li>
+            </ul>
+
+            <h2>Third-Party Services</h2>
+            <p>We integrate with the following services:</p>
+            <ul>
+                <li>The Movie Database (TMDB) API</li>
+                <li>Open Movie Database (OMDB) API</li>
+                <li>YouTube (for trailers and free movies)</li>
+                <li>Various streaming service links (Netflix, Amazon Prime, etc.)</li>
+            </ul>
+
+            <h2>Data Security</h2>
+            <p>Your preferences are stored locally on your device. We don't maintain user accounts or store personal information on our servers.</p>
+
+            <h2>Your Rights</h2>
+            <p>You can:</p>
+            <ul>
+                <li>Clear your local storage through your browser settings</li>
+                <li>Opt out of analytics by using browser privacy features</li>
+                <li>Choose not to share your location when prompted</li>
+            </ul>
+
+            <h2>Children's Privacy</h2>
+            <p>Our service is not intended for children under 13. We do not knowingly collect data from children under 13.</p>
+
+            <h2>Changes to This Policy</h2>
+            <p>We may update this privacy policy from time to time. We will notify you of any changes by posting the new policy on this page.</p>
+
+            <h2>Contact Us</h2>
+            <p>If you have questions about this privacy policy, please contact us via <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">our website</a>.</p>
+
+            <h2>Cookie Policy</h2>
+            <p>We do not use cookies. We store preferences using localStorage, which stays on your device and is not transmitted to our servers.</p>
+        </div>
+
+        <div class="footer">
+            <p>Back to <a href="/">Which Movie to Watch!</a></p>
+        </div>
+    </div>
+
+    <!-- 100% privacy-first analytics -->
+    <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
+</body>
+</html>
