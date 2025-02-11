@@ -1,4 +1,4 @@
-MIT License
+MIT License with Commons Clause
 
 Copyright (c) 2025 Kohulan Rajan
 
@@ -19,3 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+**Commons Clause** Restriction:  
+The Software and modifications thereof may not be used for commercial purposes  
+without prior written permission from the copyright holder.  
+
+For more details, see [https://commonsclause.com/](https://commonsclause.com/).
