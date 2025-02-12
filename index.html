@@ -1,43 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_io/favicon-16x16.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Primary Meta Tags -->
     <meta name="title" content="Which Movie To Watch - Find Your Next Movie">
-    <meta name="description" content="Discover your next favorite movie! Get personalized movie recommendations based on your streaming services and preferences. Free and paid movie suggestions available.">
-    <meta name="keywords" content="movie recommendations, what to watch, movie finder, streaming movies, free movies, movie suggestions">
+    <meta name="description"
+        content="Discover your next favorite movie! Get personalized movie recommendations based on your streaming services and preferences. Free and paid movie suggestions available.">
+    <meta name="keywords"
+        content="movie recommendations, what to watch, movie finder, streaming movies, free movies, movie suggestions">
     <meta name="author" content="Kohulan.R">
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://whichmovietowatch.com/">
     <meta property="og:title" content="Which Movie To Watch - Find Your Next Movie">
-    <meta property="og:description" content="Discover your next favorite movie! Get personalized movie recommendations based on your streaming services and preferences. Free and paid movie suggestions available.">
+    <meta property="og:description"
+        content="Discover your next favorite movie! Get personalized movie recommendations based on your streaming services and preferences. Free and paid movie suggestions available.">
     <meta property="og:image" content="https://www.whichmovieto.watch/assets/images/preview.png">
     <meta property="og:site_name" content="Which Movie To Watch">
-    
+
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://whichmovietowatch.com/">
     <meta property="twitter:title" content="Which Movie To Watch - Find Your Next Movie">
-    <meta property="twitter:description" content="Discover your next favorite movie! Get personalized movie recommendations based on your streaming services and preferences. Free and paid movie suggestions available.">
+    <meta property="twitter:description"
+        content="Discover your next favorite movie! Get personalized movie recommendations based on your streaming services and preferences. Free and paid movie suggestions available.">
     <meta property="twitter:image" content="https://www.whichmovieto.watch/assets/images/preview.png">
-    
+
     <!-- Favicon -->
     <link rel="canonical" href="https://whichmovietowatch.com/">
-    <link rel="icon" type="image/x-icon" href="favicon_io/favicon.ico">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon_io/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon_io/favicon-16x16.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="favicon_io/apple-touch-icon.png">
+    <link rel="icon" type="image/x-icon" href="assets/favicon_io/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_io/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_io/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon_io/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    
+
     <!-- Security Headers -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -52,7 +57,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
-    
+
     <!-- Structured Data -->
     <script type="application/ld+json">
     {
@@ -83,11 +88,12 @@
         ]
     }
     </script>
-    
+
     <!-- SEO verification tags (add your verification codes) -->
     <meta name="google-site-verification" content="your-google-verification-code">
     <meta name="msvalidate.01" content="your-bing-verification-code">
 </head>
+
 <body>
     <div id="preferenceModal" class="preference-modal">
         <div class="preference-modal-content">
@@ -164,6 +170,10 @@
                 <i class="fas fa-film"></i>
                 Free Movie!
             </button>
+            <button onclick="openSearchModal()" class="search-movie-trigger">
+                <i class="fas fa-search"></i>
+                Search Movies
+            </button>
             <button onclick="showPreferenceModal()" class="dinner-time-trigger preference-trigger">
                 <i class="fas fa-cog"></i>
                 Change Preferences
@@ -178,7 +188,8 @@
         <div class="recommendations" id="recommendationsSection"></div>
         <div class="footer">
             <div class="footer-content">
-                Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank" rel="noopener noreferrer">Kohulan.R</a> • <a href="/privacy.html">Privacy Policy</a>
+                Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank"
+                    rel="noopener noreferrer">Kohulan.R</a> • <a href="/privacy.html">Privacy Policy</a>
             </div>
         </div>
     </div>
@@ -190,13 +201,30 @@
         </div>
     </div>
 
+    <div id="searchModal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-container">
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="movieSearch" placeholder="Search for a movie" />
+                    <i class="fas fa-microphone voice-icon"></i>
+                </div>
+                <div id="searchResults" class="search-results-grid"></div>
+            </div>
+        </div>
+    </div>
+    </div>
+
     <!-- Scripts -->
     <script src="scripts/api.js"></script>
+    <script src="scripts/search.js"></script>
     <script src="scripts/utils.js"></script>
     <script src="scripts/preferences.js"></script>
     <script src="scripts/ui.js"></script>
     <script src="scripts/app.js"></script>
+
     <!-- Analytics -->
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
 </body>
+
 </html>
