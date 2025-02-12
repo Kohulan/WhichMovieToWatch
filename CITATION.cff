@@ -1,12 +1,11 @@
 cff-version: 1.2.0
 message: "If you use this project, please cite it as follows:"
 authors:
-  - family-names: "Rajan"
-    given-names: "Kohulan"
-    orcid: "https://orcid.org/0000-0003-1066-7792"
+- family-names: "Rajan"
+  given-names: "Kohulan"
+  orcid: "https://orcid.org/0000-0003-1066-7792"
 title: "Which Movie To Watch!"
-version: "1.0.0"
-doi: "10.XXXX/zenodo.XXXXXX"
-date-released: "2025-02-12"
-repository-code: "https://github.com/Kohulan/WhichMovieToWatch"
-license: "LicenseRef-MIT-with-Commons-Clause"
+version: 1.0.0
+doi: 10.XXXX/zenodo.XXXXXX
+date-released: 2025-02-12
+url: https://github.com/Kohulan/WhichMovieToWatch
