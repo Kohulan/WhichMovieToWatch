@@ -3,7 +3,7 @@ const preferences = {
    watchedMovies: JSON.parse(localStorage.getItem('watchedMovies')) || [],
    likedGenres: JSON.parse(localStorage.getItem('likedGenres')) || {},
    lovedMovies: JSON.parse(localStorage.getItem('lovedMovies')) || [],
-   skippedMovies: JSON.parse(localStorage.getItem('skippedMovies')) || [],
+   notInterestedMovies: JSON.parse(localStorage.getItem('notInterestedMovies')) || [],
    shownMovies: JSON.parse(localStorage.getItem('shownMovies')) || [],
    dinnerTimeLikes: JSON.parse(localStorage.getItem('dinnerTimeLikes')) || [],
    dinnerTimeDislikes: JSON.parse(localStorage.getItem('dinnerTimeDislikes')) || [],
@@ -14,7 +14,7 @@ const preferences = {
 function hasMovieBeenShown(movieId) {
    return preferences.shownMovies.includes(movieId) ||
       preferences.watchedMovies.includes(movieId) ||
-      preferences.skippedMovies.includes(movieId);
+      preferences.notInterestedMovies.includes(movieId);
 }
 
 function trackShownMovie(movieId) {
@@ -29,12 +29,12 @@ function trackShownMovie(movieId) {
 }
 
 function clearOldMovieHistory() {
-   const recentCount = 100;
+   const recentCount = 1000;
    preferences.shownMovies = preferences.shownMovies.slice(-recentCount);
-   preferences.skippedMovies = preferences.skippedMovies.slice(-recentCount);
+   preferences.notInterestedMovies = preferences.notInterestedMovies.slice(-recentCount);
 
    localStorage.setItem('shownMovies', JSON.stringify(preferences.shownMovies));
-   localStorage.setItem('skippedMovies', JSON.stringify(preferences.skippedMovies));
+   localStorage.setItem('notInterestedMovies', JSON.stringify(preferences.notInterestedMovies));
 
    preferences.lastUpdate = new Date().toISOString();
    localStorage.setItem('lastUpdate', preferences.lastUpdate);
@@ -106,14 +106,16 @@ function handleWatched(movieId) {
    fetchRandomMovie();
 }
 
-function handleSkip(movieId) {
-   if (!preferences.skippedMovies.includes(movieId)) {
-      preferences.skippedMovies.push(movieId);
-      localStorage.setItem('skippedMovies', JSON.stringify(preferences.skippedMovies));
+function handleNotInterested(movieId) {
+   if (!preferences.notInterestedMovies.includes(movieId)) {
+      preferences.notInterestedMovies.push(movieId);
+      localStorage.setItem('notInterestedMovies', JSON.stringify(preferences.notInterestedMovies));
    }
-   showToast('Skipped! Finding you a different movie...');
+   showToast('Got it! We won\'t recommend similar movies');
    fetchRandomMovie();
 }
+
+window.handleNotInterested = handleNotInterested;
 
 // Genre preference handling
 function updateGenrePreferences(movieId) {

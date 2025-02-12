@@ -4,7 +4,7 @@ function getProviderURL(providerName) {
    const normalizedName = providerName.toLowerCase().replace(/\s+/g, '');
 
    const providers = {
-      // Streaming Services
+      // Subscription-Based Streaming Services
       'netflix': 'https://www.netflix.com',
       'amazonprimevideo': 'https://www.primevideo.com',
       'prime': 'https://www.primevideo.com',
@@ -36,6 +36,16 @@ function getProviderURL(providerName) {
       'wow': 'https://www.wowtv.de',
       'wowpresentsplus': 'https://www.wowpresentsplus.com',
       'skyshowtime': 'https://www.skyshowtime.com',
+      'rtlplus': 'https://www.rtlplus.de',
+      'joyn': 'https://www.joyn.de',
+      'magenta': 'https://www.magentatv.de',
+      'dazn': 'https://www.dazn.com',
+      'rakutentv': 'https://rakuten.tv',
+      'maxdome': 'https://www.maxdome.de',
+      'arte': 'https://www.arte.tv',
+      'ard': 'https://www.ardmediathek.de',
+      'zdf': 'https://www.zdf.de',
+      '3sat': 'https://www.3sat.de',
 
       // Digital Purchase/Rental Services
       'googleplay': 'https://play.google.com/store/movies',
@@ -44,8 +54,16 @@ function getProviderURL(providerName) {
       'microsoftstore': 'https://www.microsoft.com/en-us/store/movies-and-tv',
       'itunes': 'https://www.apple.com/itunes',
       'youtube': 'https://www.youtube.com/movies',
-      'amazonvideo': 'https://www.amazon.com/video'
+      'amazonvideo': 'https://www.amazon.com/video',
+      'skystore': 'https://store.sky.com',
+      'rakutentv': 'https://rakuten.tv',
+      'chili': 'https://www.chili.com',
+      'cineplexstore': 'https://store.cineplex.com',
+      'pantaflix': 'https://www.pantaflix.com',
+      'videobuster': 'https://www.videobuster.de',
+      'maxdome': 'https://www.maxdome.de'
    };
+
 
    // Try to match the normalized provider name
    const providerKey = Object.keys(providers).find(key =>

@@ -1,4 +1,3 @@
-// Main Application Class
 class MovieApp {
    constructor() {
       // Cache frequently used elements

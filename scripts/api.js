@@ -170,7 +170,7 @@ async function fetchMovieTrailer(movieId) {
       // Filter for YouTube trailers
       const trailers = data.results.filter(
          video => video.site === 'YouTube' &&
-         (video.type === 'Trailer' || video.type === 'Teaser')
+            (video.type === 'Trailer' || video.type === 'Teaser')
       );
 
       return trailers.length > 0 ? trailers[0] : null;
@@ -310,17 +310,17 @@ async function fetchDinnerTimeMovie(retryCount = 0, maxRetries = 3) {
 
       // Define streaming services to try in order
       const streamingServices = [{
-            id: 8,
-            name: 'Netflix'
-         },
-         {
-            id: 9,
-            name: 'Prime Video'
-         },
-         {
-            id: 337,
-            name: 'Disney+'
-         }
+         id: 8,
+         name: 'Netflix'
+      },
+      {
+         id: 9,
+         name: 'Prime Video'
+      },
+      {
+         id: 337,
+         name: 'Disney+'
+      }
       ];
 
       // First, get popular movies
@@ -359,9 +359,9 @@ async function fetchDinnerTimeMovie(retryCount = 0, maxRetries = 3) {
             const streamingProviders = providers.flatrate || [];
 
             if (streamingProviders.some(provider =>
-                  provider.provider_id === service.id ||
-                  provider.provider_name.toLowerCase().includes(service.name.toLowerCase())
-               )) {
+               provider.provider_id === service.id ||
+               provider.provider_name.toLowerCase().includes(service.name.toLowerCase())
+            )) {
                trackShownMovie(movieData.id);
                await displayDinnerTimeMovie(movieData, movieData['watch/providers'], service);
                return;
