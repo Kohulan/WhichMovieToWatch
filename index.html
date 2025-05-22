@@ -95,6 +95,10 @@
 </head>
 
 <body>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div id="preferenceModal" class="preference-modal">
         <div class="preference-modal-content">
             <div class="preference-header">
@@ -188,8 +192,12 @@
         <div class="recommendations" id="recommendationsSection"></div>
         <div class="footer">
             <div class="footer-content">
-                Made with <span class="coffee-emoji">☕</span> by <a href="https://kohulanr.com" target="_blank"
-                    rel="noopener noreferrer">Kohulan.R</a> • <a href="/privacy.html">Privacy Policy</a>
+                Made with <i class="fas fa-mug-hot coffee-icon"></i> by <a href="https://kohulanr.com" target="_blank"
+                    rel="noopener noreferrer">Kohulan.R</a> • <a href="/privacy.html">Privacy Policy</a> •
+                <a href="https://github.com/Kohulan/WhichMovieToWatch" target="_blank" rel="noopener noreferrer"
+                    class="github-link">
+                    <i class="fab fa-github"></i> GitHub
+                </a>
             </div>
         </div>
     </div>
@@ -222,6 +230,7 @@
     <script src="scripts/preferences.js"></script>
     <script src="scripts/ui.js"></script>
     <script src="scripts/app.js"></script>
+    <script src="scripts/theme.js"></script>
 
     <!-- Analytics -->
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
