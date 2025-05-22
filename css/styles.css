@@ -8,6 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 :root {
+	/* Dark theme (default) */
 	--background: #0E0E12;
 	--text: #F4F4F5;
 	--accent: #FF4545;
@@ -24,6 +25,68 @@
 	--max-width-md: 768px;
 	--max-width-lg: 1024px;
 	--max-width-xl: 1280px;
+	--button-bg: rgba(45, 45, 55, 0.8);
+	--button-hover: rgba(55, 55, 65, 0.9);
+	--border-color: rgba(255, 255, 255, 0.1);
+	--border-color-hover: rgba(255, 255, 255, 0.2);
+	--footer-bg: rgba(255, 255, 255, 0.8);
+	--footer-text: #333333;
+	--footer-link: #3b82f6;
+	--footer-link-hover: #1d4ed8;
+	--footer-border: rgba(0, 0, 0, 0.1);
+	--footer-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Light theme styles */
+body.light-mode {
+	--background: #f5f5f7;
+	--text: #121212;
+	--gradient-start: rgba(69, 162, 255, 0.1);
+	--gradient-end: rgba(245, 245, 247, 0.9);
+	--primary: #212121;
+	--secondary: #333333;
+	--card-bg: rgba(255, 255, 255, 0.8);
+	--button-bg: rgba(240, 240, 245, 0.8);
+	--button-hover: rgba(230, 230, 235, 0.9);
+	--border-color: rgba(0, 0, 0, 0.1);
+	--border-color-hover: rgba(0, 0, 0, 0.2);
+	--footer-bg: rgba(255, 255, 255, 0.8);
+	--footer-text: #333333;
+	--footer-link: #3b82f6;
+	--footer-link-hover: #1d4ed8;
+	--footer-border: rgba(0, 0, 0, 0.1);
+	--footer-shadow: rgba(0, 0, 0, 0.1);
+	--love: #e11d48;
+	--like: #2563eb;
+	--watched: #475569;
+	--success: #059669;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+	position: fixed;
+	top: 1rem;
+	right: 1rem;
+	z-index: 100;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	background: var(--button-bg);
+	border: 1px solid var(--border-color);
+	color: var(--text);
+	font-size: 1.2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.theme-toggle:hover {
+	background: var(--button-hover);
+	border-color: var(--border-color-hover);
+	transform: translateY(-2px);
 }
 
 /* Reset and Base Styles */
@@ -44,6 +107,7 @@ body {
 	position: relative;
 	overflow-x: hidden;
 	padding: 2rem 0;
+	transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Background Gradient */
@@ -56,6 +120,7 @@ body {
 	background: radial-gradient(circle at 30% 50%, var(--gradient-start), transparent 70%);
 	pointer-events: none;
 	z-index: 0;
+	transition: background 0.3s ease;
 }
 
 /* Container and Header Styles */
@@ -1026,28 +1091,29 @@ body {
 .footer-content {
 	position: relative;
 	padding: 1.5rem 3rem;
-	background: rgba(17, 24, 39, 0.7);
+	background: var(--footer-bg, rgba(17, 24, 39, 0.7));
 	border-radius: 20px;
 	backdrop-filter: blur(10px);
 	box-shadow:
-		0 10px 30px -5px rgba(0, 0, 0, 0.3),
-		0 0 0 1px rgba(255, 255, 255, 0.1),
+		0 10px 30px -5px var(--footer-shadow, rgba(0, 0, 0, 0.3)),
+		0 0 0 1px var(--footer-border, rgba(255, 255, 255, 0.1)),
 		inset 0 0 20px rgba(99, 102, 241, 0.1);
 	display: inline-block;
 	transform-style: preserve-3d;
 	transition: all 0.3s ease;
+	color: var(--footer-text, var(--text));
 }
 
 .footer-content:hover {
 	transform: translateY(-5px);
 	box-shadow:
-		0 15px 40px -5px rgba(0, 0, 0, 0.4),
-		0 0 0 1px rgba(255, 255, 255, 0.2),
+		0 15px 40px -5px var(--footer-shadow, rgba(0, 0, 0, 0.4)),
+		0 0 0 1px var(--footer-border, rgba(255, 255, 255, 0.2)),
 		inset 0 0 30px rgba(99, 102, 241, 0.2);
 }
 
 .footer a {
-	color: #a5b4fc;
+	color: var(--footer-link, #a5b4fc);
 	text-decoration: none;
 	position: relative;
 	padding: 0.2em 0.5em;
@@ -1063,7 +1129,7 @@ body {
 	position: absolute;
 	width: 100%;
 	height: 2px;
-	background: linear-gradient(90deg, #818cf8, #c084fc);
+	background: linear-gradient(90deg, var(--footer-link, #818cf8), var(--footer-link-hover, #c084fc));
 	left: 0;
 	transform: scaleX(0);
 	transition: transform 0.3s ease;
@@ -1080,8 +1146,8 @@ body {
 }
 
 .footer a:hover {
-	color: #c7d2fe;
-	text-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+	color: var(--footer-link-hover, #c7d2fe);
+	text-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
 	background: rgba(99, 102, 241, 0.1);
 }
 
@@ -1093,6 +1159,82 @@ body {
 .footer a:hover::after {
 	transform: scaleX(1);
 	transform-origin: left;
+}
+
+/* GitHub Link Animation */
+.github-link {
+    display: inline-flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.github-link i {
+    margin-right: 0.3em;
+    transition: transform 0.4s ease;
+}
+
+.github-link:hover i {
+    animation: spin-bounce 0.7s ease;
+}
+
+@keyframes spin-bounce {
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(120deg); }
+    40% { transform: rotate(240deg); }
+    60% { transform: rotate(300deg); }
+    70% { transform: scale(1.2) rotate(330deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Coffee Icon Animation */
+.coffee-icon {
+    color: #6F4E37;
+    font-size: 1.2em;
+    margin: 0 0.3em;
+    display: inline-block;
+    animation: steam 4s ease-in-out infinite;
+    position: relative;
+}
+
+.coffee-icon::after {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    background: transparent;
+    box-shadow: 0 0 3px 2px rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    animation: coffee-steam 3s ease-out infinite;
+}
+
+@keyframes coffee-steam {
+    0% {
+        opacity: 0;
+        transform: translateY(0) translateX(-50%) scale(0.2);
+    }
+    20% {
+        opacity: 0.6;
+    }
+    70% {
+        opacity: 0.2;
+        transform: translateY(-15px) translateX(-30%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-20px) translateX(-20%) scale(1.5);
+    }
+}
+
+@keyframes steam {
+    0% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-2px) rotate(1deg); }
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(-1px) rotate(-1deg); }
+    100% { transform: translateY(0) rotate(0deg); }
 }
 
 /* Disclaimer Styles */
@@ -1573,4 +1715,73 @@ body {
 	}
 
 
+}
+
+/* Light mode specific adjustments */
+body.light-mode .coffee-icon {
+    color: #3b82f6;
+}
+
+body.light-mode .rating-item,
+body.light-mode .meta-item {
+    background: rgba(240, 240, 245, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .genre {
+    background: rgba(69, 162, 255, 0.1);
+    color: #1d4ed8;
+    border-color: rgba(69, 162, 255, 0.2);
+}
+
+body.light-mode .streaming-info,
+body.light-mode .ratings-container,
+body.light-mode .movie-meta {
+    background: rgba(240, 240, 245, 0.7);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .dinner-time-movie .ratings-container {
+    background: rgba(240, 240, 245, 0.7);
+}
+
+body.light-mode .dinner-time-movie .rating-item {
+    background: rgba(240, 240, 245, 0.9);
+}
+
+body.light-mode .recommended-movie {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .recommended-movie-title {
+    color: rgba(0, 0, 0, 0.9);
+}
+
+body.light-mode .recommended-movie-meta {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+body.light-mode .action-buttons .btn {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .trailer-link {
+    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+}
+
+body.light-mode .dinner-time-trigger,
+body.light-mode .free-movie-trigger,
+body.light-mode .search-movie-trigger,
+body.light-mode .preference-trigger {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+body.light-mode .overview {
+    color: rgba(18, 18, 18, 0.9);
+    border-left: 3px solid var(--accent);
+}
+
+body.light-mode .rating-item .rating-label {
+    color: rgba(18, 18, 18, 0.8);
 }
