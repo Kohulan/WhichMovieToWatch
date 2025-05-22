@@ -37,29 +37,30 @@
 	--footer-shadow: rgba(0, 0, 0, 0.1);
 }
 
-/* Light theme styles */
+/* Light theme styles - Enhanced version */
 body.light-mode {
-	--background: #f5f5f7;
-	--text: #121212;
-	--gradient-start: rgba(69, 162, 255, 0.1);
-	--gradient-end: rgba(245, 245, 247, 0.9);
-	--primary: #212121;
-	--secondary: #333333;
-	--card-bg: rgba(255, 255, 255, 0.8);
-	--button-bg: rgba(240, 240, 245, 0.8);
-	--button-hover: rgba(230, 230, 235, 0.9);
+	--background: #f0f2f5;
+	--text: #1a1a1a;
+	--gradient-start: rgba(79, 172, 254, 0.15);
+	--gradient-end: rgba(240, 242, 245, 0.9);
+	--primary: #111827;
+	--secondary: #374151;
+	--card-bg: rgba(255, 255, 255, 0.95);
+	--button-bg: rgba(240, 240, 245, 0.95);
+	--button-hover: rgba(230, 230, 235, 0.95);
 	--border-color: rgba(0, 0, 0, 0.1);
 	--border-color-hover: rgba(0, 0, 0, 0.2);
-	--footer-bg: rgba(255, 255, 255, 0.8);
+	--footer-bg: rgba(255, 255, 255, 0.95);
 	--footer-text: #333333;
-	--footer-link: #3b82f6;
+	--footer-link: #2563eb;
 	--footer-link-hover: #1d4ed8;
 	--footer-border: rgba(0, 0, 0, 0.1);
 	--footer-shadow: rgba(0, 0, 0, 0.1);
 	--love: #e11d48;
 	--like: #2563eb;
-	--watched: #475569;
-	--success: #059669;
+	--watched: #4b5563;
+	--success: #047857;
+	--accent: #3b82f6;
 }
 
 /* Theme toggle button */
@@ -1719,69 +1720,217 @@ body {
 
 /* Light mode specific adjustments */
 body.light-mode .coffee-icon {
-    color: #3b82f6;
+    color: #2563eb;
 }
 
 body.light-mode .rating-item,
 body.light-mode .meta-item {
-    background: rgba(240, 240, 245, 0.9);
-    border-color: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    color: #1a1a1a;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 body.light-mode .genre {
-    background: rgba(69, 162, 255, 0.1);
+    background: rgba(37, 99, 235, 0.1);
     color: #1d4ed8;
-    border-color: rgba(69, 162, 255, 0.2);
+    border-color: rgba(37, 99, 235, 0.2);
+    font-weight: 500;
 }
 
 body.light-mode .streaming-info,
 body.light-mode .ratings-container,
 body.light-mode .movie-meta {
-    background: rgba(240, 240, 245, 0.7);
-    border-color: rgba(0, 0, 0, 0.1);
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 body.light-mode .dinner-time-movie .ratings-container {
-    background: rgba(240, 240, 245, 0.7);
+    background: rgba(248, 250, 252, 0.9);
 }
 
 body.light-mode .dinner-time-movie .rating-item {
-    background: rgba(240, 240, 245, 0.9);
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a1a;
 }
 
 body.light-mode .recommended-movie {
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.95);
     border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 body.light-mode .recommended-movie-title {
-    color: rgba(0, 0, 0, 0.9);
+    color: #111827;
+    font-weight: 600;
 }
 
 body.light-mode .recommended-movie-meta {
-    color: rgba(0, 0, 0, 0.7);
+    color: #4b5563;
 }
 
 body.light-mode .action-buttons .btn {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .trailer-link {
-    box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(225, 29, 72, 0.15);
 }
 
 body.light-mode .dinner-time-trigger,
 body.light-mode .free-movie-trigger,
 body.light-mode .search-movie-trigger,
 body.light-mode .preference-trigger {
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 body.light-mode .overview {
-    color: rgba(18, 18, 18, 0.9);
-    border-left: 3px solid var(--accent);
+    color: #1f2937;
+    border-left: 3px solid #3b82f6;
+    font-weight: 400;
 }
 
 body.light-mode .rating-item .rating-label {
-    color: rgba(18, 18, 18, 0.8);
+    color: #4b5563;
+    font-weight: 500;
+}
+
+body.light-mode .movie-card {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .poster {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .footer-content {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .meta-item i,
+body.light-mode .rating-item i {
+    color: #3b82f6;
+}
+
+/* Dark text for light theme in important areas */
+body.light-mode .title-letter {
+    background: linear-gradient(90deg, #1a1a1a, #333333, #4b5563, #1a1a1a);
+    background-size: 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+body.light-mode .dinner-time-info h2 {
+    background: linear-gradient(135deg, #111827, #374151);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+body.light-mode .recommended-movie:hover,
+body.light-mode .search-result-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .toast {
+    background: rgba(255, 255, 255, 0.95);
+    color: #1a1a1a;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Light Mode Headers and Text */
+body.light-mode .header h1::after {
+    background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+}
+
+body.light-mode .movie-info h2 {
+    background: linear-gradient(135deg, #111827, #374151);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+body.light-mode .preference-header h2 {
+    background: linear-gradient(135deg, #111827, #374151);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+body.light-mode .preference-section label {
+    color: #1f2937;
+    font-weight: 500;
+}
+
+body.light-mode .preference-select {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    color: #1a1a1a;
+}
+
+body.light-mode .preference-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+body.light-mode .search-bar {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .search-bar input {
+    color: #1a1a1a;
+}
+
+body.light-mode .search-result-title {
+    color: #111827;
+}
+
+body.light-mode .search-result-year,
+body.light-mode .search-result-rating {
+    color: #4b5563;
+}
+
+/* More Light Mode Improvements */
+body.light-mode .dinner-time-modal-content,
+body.light-mode .search-modal-content {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .dinner-time-overview {
+    color: #1f2937;
+}
+
+body.light-mode .dinner-time-meta span {
+    color: #4b5563;
+    font-weight: 500;
+}
+
+body.light-mode .loading {
+    color: #1a1a1a;
+}
+
+body.light-mode .loading i {
+    color: #3b82f6;
+}
+
+body.light-mode .container {
+    box-shadow: none;
+}
+
+body.light-mode .dinner-time-error {
+    color: #1a1a1a;
+}
+
+body.light-mode .dinner-time-retry {
+    box-shadow: 0 4px 8px rgba(225, 29, 72, 0.15);
+}
+
+body.light-mode .no-streaming {
+    color: #4b5563;
+}
+
+body.light-mode .theme-toggle {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
