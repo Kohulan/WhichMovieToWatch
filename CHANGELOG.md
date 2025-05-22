@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.0.0...v1.1.0) (2025-05-22)
+
+
+### Features
+
+* light mode & github link ([42c7015](https://github.com/Kohulan/WhichMovieToWatch/commit/42c701521737fdd0515b9f4ac418cb330255451e))
+* light mode & github link ([26fa393](https://github.com/Kohulan/WhichMovieToWatch/commit/26fa39310b952553e73fbaf9ed27cb6361132359))
+
+
+### Bug Fixes
+
+* footer colour ([914be45](https://github.com/Kohulan/WhichMovieToWatch/commit/914be45ed284621ea013f7ec043c10f62b422c54))
+* metadata CITATION.cff ([a382c96](https://github.com/Kohulan/WhichMovieToWatch/commit/a382c965992639e931e6ee41cc5dd1ab3f85d922))
+
 ## 1.0.0 (2025-02-12)
 
 
