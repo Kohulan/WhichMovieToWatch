@@ -20,19 +20,24 @@ function displayCountry(countryCode) {
     }
  }
  
- // Main movie display function
- async function displayMovie(movie) {
-    if (!movie) {
-       displayError('No movie data available');
-       return;
-    }
- 
-    try {
-       // Fetch trailer and ratings in parallel for better performance
-       const [trailer, externalRatings] = await Promise.all([
-          fetchMovieTrailer(movie.id),
-          fetchExternalRatings(movie.id)
-       ]);
+// Main movie display function
+async function displayMovie(movie) {
+   if (!movie) {
+      displayError('No movie data available');
+      return;
+   }
+
+   try {
+      // Fetch trailer and ratings in parallel for better performance
+      const [trailer, externalRatings] = await Promise.all([
+         fetchMovieTrailer(movie.id),
+         fetchExternalRatings(movie.id)
+      ]);
+
+      // Update meta tags for the current movie
+      if (window.metaTagsManager) {
+         await window.metaTagsManager.updateMovieMeta(movie, externalRatings);
+      }
  
        const movieCard = document.getElementById('movieCard');
        const releaseYear = new Date(movie.release_date).getFullYear();
@@ -166,14 +171,16 @@ function displayCountry(countryCode) {
                               <span class="genre">${genre.name}</span>
                           `).join('') : ''}
                       </div>
-                      <p class="overview">${movie.overview || 'No overview available.'}</p>
-                      
-                      <div class="streaming-info">
-                          ${streamingHTML}
-                          ${rentHTML}
-                          ${buyHTML}
-                          ${availabilityMessage}
-                      </div>
+                     <p class="overview">${movie.overview || 'No overview available.'}</p>
+                     
+                     ${window.createShareButtons ? window.createShareButtons(movie) : ''}
+                     
+                     <div class="streaming-info">
+                         ${streamingHTML}
+                         ${rentHTML}
+                         ${buyHTML}
+                         ${availabilityMessage}
+                     </div>
                   </div>
               </div>
           `;
