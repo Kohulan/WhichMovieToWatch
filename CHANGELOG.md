@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.0.0...v1.1.0) (2025-07-18)
+
+
+### Features
+
+* improved animations ([f74d180](https://github.com/Kohulan/WhichMovieToWatch/commit/f74d180630e00a93e546c3e050e7663abdf24ee3))
+* improved link sharing ([be4c355](https://github.com/Kohulan/WhichMovieToWatch/commit/be4c35540cfd2b7125aae56636008c3f0af2b763))
+* light mode & github link ([42c7015](https://github.com/Kohulan/WhichMovieToWatch/commit/42c701521737fdd0515b9f4ac418cb330255451e))
+* light mode & github link ([26fa393](https://github.com/Kohulan/WhichMovieToWatch/commit/26fa39310b952553e73fbaf9ed27cb6361132359))
+
+
+### Bug Fixes
+
+* footer colour ([914be45](https://github.com/Kohulan/WhichMovieToWatch/commit/914be45ed284621ea013f7ec043c10f62b422c54))
+* instagram share ([e00ca6f](https://github.com/Kohulan/WhichMovieToWatch/commit/e00ca6f5822b09b58f01e10d40fe47af437bac63))
+* metadata CITATION.cff ([a382c96](https://github.com/Kohulan/WhichMovieToWatch/commit/a382c965992639e931e6ee41cc5dd1ab3f85d922))
+* share buttons ([944aa8e](https://github.com/Kohulan/WhichMovieToWatch/commit/944aa8e84d86154561f1ba24a5b39283aace201d))
+* sharing instagram ([e41d60b](https://github.com/Kohulan/WhichMovieToWatch/commit/e41d60b1ee24bfdd53a69ec6c22f33d291b52198))
+
 ## 1.0.0 (2025-02-12)
 
 
