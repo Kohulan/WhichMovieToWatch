@@ -342,19 +342,85 @@ function createShareButtons(movie) {
     const shareUrls = metaTagsManager.generateShareUrls(movie);
     const movieTitle = movie.title || 'this movie';
     
-    // Function to handle Instagram share
-    const handleInstagramShare = () => {
-        // Copy movie info to clipboard for Instagram
-        const textToCopy = `Check out ${movieTitle} on Which Movie To Watch! ${window.location.href}`;
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            showToast('Movie info copied! You can paste it on Instagram.', 'success');
-        }).catch(() => {
-            showToast('Please copy the movie link manually.', 'info');
-        });
+    // Function to handle Instagram share with story card
+    const handleInstagramShare = async () => {
+        // Show loading
+        showToast('Creating your story card...', 'info');
+        
+        try {
+            // Generate story card
+            const storyCard = await window.storyCardGenerator.generateStoryCard(movie, {
+                theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
+                includeRating: true,
+                includeGenres: true
+            });
+            
+            // Copy to clipboard or download
+            await window.storyCardGenerator.copyCardToClipboard(storyCard);
+        } catch (error) {
+            console.error('Error creating story card:', error);
+            // Fallback to text copy
+            const textToCopy = `Check out ${movieTitle} on Which Movie To Watch! ${window.location.href}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showToast('Movie info copied! You can paste it on Instagram.', 'success');
+            }).catch(() => {
+                showToast('Please copy the movie link manually.', 'info');
+            });
+        }
     };
     
-    // Attach the Instagram handler to window for onclick
+    // Function to handle Facebook share with story card
+    const handleFacebookShare = async () => {
+        showToast('Creating your share card...', 'info');
+        
+        try {
+            const squareCard = await window.storyCardGenerator.generateSquareCard(movie, {
+                theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
+                includeRating: true
+            });
+            
+            // Download the card for Facebook upload
+            window.storyCardGenerator.downloadCard(squareCard, `${movie.title.replace(/[^a-z0-9]/gi, '_')}_facebook.png`);
+            showToast('Card downloaded! You can upload it to Facebook.', 'success');
+            
+            // Also open Facebook share dialog
+            setTimeout(() => {
+                window.open(shareUrls.facebook, '_blank');
+            }, 1000);
+        } catch (error) {
+            console.error('Error creating Facebook card:', error);
+            window.open(shareUrls.facebook, '_blank');
+        }
+    };
+    
+    // Function to handle WhatsApp share with story card
+    const handleWhatsAppShare = async () => {
+        showToast('Creating your share card...', 'info');
+        
+        try {
+            const storyCard = await window.storyCardGenerator.generateStoryCard(movie, {
+                theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
+                includeRating: true,
+                includeGenres: true
+            });
+            
+            // Copy to clipboard for WhatsApp
+            await window.storyCardGenerator.copyCardToClipboard(storyCard);
+            
+            // Open WhatsApp share
+            setTimeout(() => {
+                window.open(shareUrls.whatsapp, '_blank');
+            }, 1000);
+        } catch (error) {
+            console.error('Error creating WhatsApp card:', error);
+            window.open(shareUrls.whatsapp, '_blank');
+        }
+    };
+    
+    // Attach handlers to window for onclick
     window.handleInstagramShare = handleInstagramShare;
+    window.handleFacebookShare = handleFacebookShare;
+    window.handleWhatsAppShare = handleWhatsAppShare;
     
     return `
         <div class="share-container">
@@ -363,10 +429,10 @@ function createShareButtons(movie) {
                 <span>Share this movie</span>
             </div>
             <div class="share-buttons">
-                <a href="${shareUrls.facebook}" target="_blank" rel="noopener" class="share-btn facebook" title="Share on Facebook">
+                <button onclick="handleFacebookShare()" class="share-btn facebook" title="Share on Facebook">
                     <i class="fab fa-facebook-f"></i>
                     <span class="share-label">Facebook</span>
-                </a>
+                </button>
                 <a href="${shareUrls.twitter}" target="_blank" rel="noopener" class="share-btn twitter" title="Share on Twitter">
                     <i class="fab fa-twitter"></i>
                     <span class="share-label">Twitter</span>
@@ -375,10 +441,10 @@ function createShareButtons(movie) {
                     <i class="fab fa-instagram"></i>
                     <span class="share-label">Instagram</span>
                 </button>
-                <a href="${shareUrls.whatsapp}" target="_blank" rel="noopener" class="share-btn whatsapp" title="Share on WhatsApp">
+                <button onclick="handleWhatsAppShare()" class="share-btn whatsapp" title="Share on WhatsApp">
                     <i class="fab fa-whatsapp"></i>
                     <span class="share-label">WhatsApp</span>
-                </a>
+                </button>
                 <a href="${shareUrls.telegram}" target="_blank" rel="noopener" class="share-btn telegram" title="Share on Telegram">
                     <i class="fab fa-telegram-plane"></i>
                     <span class="share-label">Telegram</span>
