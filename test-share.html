@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Instagram Share</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-button {
+            padding: 10px 20px;
+            margin: 5px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Instagram Share Feature</h1>
+    
+    <div class="test-section">
+        <h2>Test URL Parameters</h2>
+        <p>Current URL: <code id="currentUrl"></code></p>
+        <button class="test-button" onclick="testWithMovieId()">Test with Movie ID</button>
+        <button class="test-button" onclick="clearUrlParams()">Clear URL Parameters</button>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Share Links</h2>
+        <p>Test movie links:</p>
+        <ul>
+            <li><a href="?movie=550" target="_blank">Fight Club (Movie ID: 550)</a></li>
+            <li><a href="?movie=278" target="_blank">The Shawshank Redemption (Movie ID: 278)</a></li>
+            <li><a href="?movie=238" target="_blank">The Godfather (Movie ID: 238)</a></li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="results">Click a test button to see results...</div>
+    </div>
+    
+    <script>
+        const resultsDiv = document.getElementById('results');
+        const currentUrlSpan = document.getElementById('currentUrl');
+        
+        // Update current URL display
+        function updateUrlDisplay() {
+            currentUrlSpan.textContent = window.location.href;
+        }
+        updateUrlDisplay();
+        
+        // Test with movie ID
+        function testWithMovieId() {
+            const movieId = prompt('Enter a movie ID:', '550');
+            if (movieId) {
+                window.location.href = `?movie=${movieId}`;
+            }
+        }
+        
+        // Clear URL parameters
+        function clearUrlParams() {
+            window.location.href = window.location.pathname;
+        }
+        
+        // Check current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieId = urlParams.get('movie');
+        
+        if (movieId) {
+            resultsDiv.textContent = `Movie ID detected: ${movieId}\n\nThe main app should load this movie automatically.`;
+        } else {
+            resultsDiv.textContent = 'No movie ID in URL.\n\nThe main app should load a random movie.';
+        }
+        
+        // Listen for URL changes
+        window.addEventListener('popstate', function() {
+            updateUrlDisplay();
+            location.reload();
+        });
+    </script>
+</body>
+</html>

@@ -207,6 +207,18 @@ class StoryCardGenerator {
                 this.ctx.fillText(genreText, this.cardWidth / 2, genreY);
             }
 
+            // Draw link section
+            const linkY = this.cardHeight - 200;
+            this.ctx.font = '36px Arial';
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText('🔗 Visit:', this.cardWidth / 2, linkY);
+            
+            // Draw the movie link
+            const movieLink = `whichmovieto.watch?movie=${movie.id}`;
+            this.ctx.font = 'bold 32px Arial';
+            this.ctx.fillStyle = '#4ecdc4';
+            this.ctx.fillText(movieLink, this.cardWidth / 2, linkY + 45);
+            
             // Draw brand footer
             const footerY = this.cardHeight - 100;
             this.ctx.font = 'bold 42px Arial';
@@ -216,7 +228,7 @@ class StoryCardGenerator {
             // Add logo or icon
             this.ctx.font = '32px Arial';
             this.ctx.fillStyle = '#ffffff99';
-            this.ctx.fillText('whichmovieto.watch', this.cardWidth / 2, footerY + 40);
+            this.ctx.fillText('Share & Watch Together! 🎬', this.cardWidth / 2, footerY + 40);
 
         } catch (error) {
             console.error('Error generating story card:', error);
@@ -299,6 +311,12 @@ class StoryCardGenerator {
                 this.ctx.fillStyle = '#ffd700';
                 this.ctx.fillText(`★ ${movie.vote_average.toFixed(1)}/10`, size / 2, titleY + size * 0.08);
             }
+            
+            // Draw link at the bottom
+            const linkY = size - 80;
+            this.ctx.font = `${size * 0.025}px Arial`;
+            this.ctx.fillStyle = '#ffffff';
+            this.ctx.fillText('whichmovieto.watch?movie=' + movie.id, size / 2, linkY);
 
             // Draw brand
             this.ctx.font = `${size * 0.025}px Arial`;

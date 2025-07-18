@@ -34,8 +34,15 @@ class MovieApp {
          // Set up event listeners
          this.setupEventListeners();
 
-         // Validate API and fetch initial movie
-         await this.validateAndFetch();
+         // Check URL for movie parameter and fetch that movie
+         const urlParams = new URLSearchParams(window.location.search);
+         const movieId = urlParams.get('movie');
+         if (movieId) {
+            await this.fetchAndDisplayMovie(movieId);
+         } else {
+            // Validate API and fetch initial movie
+            await this.validateAndFetch();
+         }
 
          console.log('Application initialized successfully');
       } catch (error) {
@@ -90,6 +97,53 @@ class MovieApp {
          console.error('API validation failed:', error);
          this.handleError('Service temporarily unavailable. Please try again in a few moments.');
          setTimeout(() => this.validateAndFetch(), 2000);
+      }
+   }
+
+   // Fetch and display a specific movie by ID
+   async fetchAndDisplayMovie(movieId) {
+      try {
+         // Show loading state
+         if (window.loadingManager) {
+            window.loadingManager.show('search');
+         }
+
+         const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+         if (!response.ok) {
+            throw new Error('Movie not found');
+         }
+         
+         const movie = await response.json();
+         if (movie && movie.id) {
+            // Get external ratings
+            const externalRatings = await fetchExternalRatings(movie.id, movie.imdb_id);
+            
+            // Display the movie
+            await displayMovie(movie, externalRatings);
+            
+            // Update state
+            this.state.currentMovie = movie;
+            
+            // Hide loading
+            if (window.loadingManager) {
+               window.loadingManager.hide();
+            }
+         } else {
+            throw new Error('Invalid movie data');
+         }
+      } catch (error) {
+         console.error('Error fetching specific movie:', error);
+         
+         // Hide loading
+         if (window.loadingManager) {
+            window.loadingManager.hide();
+         }
+         
+         // Show error and redirect to random movie
+         this.handleError('Movie not found. Loading a random movie instead...');
+         setTimeout(() => {
+            this.validateAndFetch();
+         }, 2000);
       }
    }
 
