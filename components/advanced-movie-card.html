@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Movie Card Component</title>
+    <link rel="stylesheet" href="advanced-movie-card.css">
+</head>
+<body>
+    <!-- Movie Card Component -->
+    <div class="movie-card-container">
+        <div class="movie-card" data-movie-id="1">
+            <!-- Front Side -->
+            <div class="card-face card-front">
+                <div class="holographic-layer"></div>
+                <div class="movie-poster">
+                    <img src="https://via.placeholder.com/300x450" alt="Movie Poster" />
+                    <div class="rating-ring">
+                        <svg class="progress-ring" width="80" height="80">
+                            <circle class="progress-ring__circle" stroke="url(#gradient)" stroke-width="6" fill="transparent" r="35" cx="40" cy="40"/>
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#4ecdc4;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="rating-text">8.5</div>
+                    </div>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title">Inception</h3>
+                    <p class="movie-year">2010</p>
+                    <div class="movie-genres">
+                        <span class="genre-tag">Sci-Fi</span>
+                        <span class="genre-tag">Thriller</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back Side -->
+            <div class="card-face card-back">
+                <div class="back-content">
+                    <h3 class="movie-title-back">Inception</h3>
+                    <p class="movie-description">
+                        A skilled thief is given a chance at redemption if he can successfully perform an inception.
+                    </p>
+                    <div class="movie-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Director:</span>
+                            <span class="detail-value">Christopher Nolan</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Runtime:</span>
+                            <span class="detail-value">148 min</span>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn-magnetic btn-watch" data-magnetic>
+                            <span class="btn-text">Watch Now</span>
+                            <div class="btn-bg"></div>
+                        </button>
+                        <button class="btn-magnetic btn-love" data-magnetic>
+                            <span class="btn-text">Love It</span>
+                            <div class="btn-bg"></div>
+                            <canvas class="particle-canvas"></canvas>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skeleton Loading State -->
+    <div class="movie-card-skeleton" style="display: none;">
+        <div class="skeleton-poster"></div>
+        <div class="skeleton-info">
+            <div class="skeleton-title"></div>
+            <div class="skeleton-year"></div>
+            <div class="skeleton-genres">
+                <div class="skeleton-genre"></div>
+                <div class="skeleton-genre"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="advanced-movie-card.js"></script>
+</body>
+</html>

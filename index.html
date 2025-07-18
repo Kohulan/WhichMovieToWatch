@@ -56,37 +56,193 @@
     <title>Which Movie To Watch!</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css" rel="stylesheet">
+    <link href="themes.css" rel="stylesheet">
     <link href="css/styles.css" rel="stylesheet">
+    <link href="loading.css" rel="stylesheet">
 
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Which Movie To Watch",
-        "url": "https://whichmovietowatch.com",
-        "description": "A movie recommendation tool that helps users find their next favorite movie based on streaming service availability and preferences.",
-        "applicationCategory": "Entertainment",
-        "operatingSystem": "Any",
-        "browserRequirements": "Requires JavaScript",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "EUR"
+    [
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Which Movie To Watch",
+            "url": "https://www.whichmovieto.watch",
+            "description": "A movie recommendation tool that helps users find their next favorite movie based on streaming service availability and preferences.",
+            "applicationCategory": "EntertainmentApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "author": {
+                "@type": "Person",
+                "name": "Kohulan.R",
+                "url": "https://kohulanr.com"
+            },
+            "featureList": [
+                "Personalized movie recommendations",
+                "Streaming service availability check",
+                "Free movie suggestions",
+                "Movie ratings and reviews",
+                "Trailer links"
+            ],
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": "https://www.whichmovieto.watch/?search={search_term_string}"
+                },
+                "query-input": "required name=search_term_string"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "1250",
+                "bestRating": "5",
+                "worstRating": "1"
+            }
         },
-        "author": {
-            "@type": "Person",
-            "name": "Kohulan.R",
-            "url": "https://kohulanr.com"
+        {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": "https://www.whichmovieto.watch"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Find Movies",
+                    "item": "https://www.whichmovieto.watch/#search"
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": "Free Movies",
+                    "item": "https://www.whichmovieto.watch/#free-movies"
+                }
+            ]
         },
-        "featureList": [
-            "Personalized movie recommendations",
-            "Streaming service availability check",
-            "Free movie suggestions",
-            "Movie ratings and reviews",
-            "Trailer links"
-        ]
-    }
+        {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+                {
+                    "@type": "Question",
+                    "name": "How does Which Movie To Watch recommend movies?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Our AI-powered system analyzes thousands of data points including user ratings, popularity trends, and viewing patterns to suggest movies that match your unique taste. We consider your preferred streaming services and genres to provide personalized recommendations."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "What is Dinner Time Mode?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Dinner Time Mode is a unique feature that suggests movies perfect for mealtime viewing. It filters out content with unsavory scenes to ensure your dining experience isn't disrupted, focusing on movies available on major streaming platforms."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Are the free movies really free?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes! Our free movie collection consists of legally available content from trusted sources like YouTube. These are movies that have been made freely available by their rights holders."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "How do I search for specific movies?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Click the 'Search Movies' button to open the search modal. You can type movie titles or use voice search if your browser supports it. The search results will show movies with ratings, release years, and posters."
+                    }
+                },
+                {
+                    "@type": "Question",
+                    "name": "Can I change my streaming service preferences?",
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": "Yes! Click the 'Change Preferences' button to update your preferred streaming service and movie genre. Your preferences are saved locally and used to provide better recommendations."
+                    }
+                }
+            ]
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "HowTo",
+            "name": "How to Find Your Perfect Movie on Which Movie To Watch",
+            "description": "A step-by-step guide to finding your next favorite movie using our recommendation system",
+            "image": "https://www.whichmovieto.watch/assets/images/preview.png",
+            "totalTime": "PT2M",
+            "estimatedCost": {
+                "@type": "MonetaryAmount",
+                "currency": "USD",
+                "value": "0"
+            },
+            "supply": [
+                {
+                    "@type": "HowToSupply",
+                    "name": "Internet connection"
+                },
+                {
+                    "@type": "HowToSupply",
+                    "name": "Web browser with JavaScript enabled"
+                }
+            ],
+            "step": [
+                {
+                    "@type": "HowToStep",
+                    "name": "Set Your Preferences",
+                    "text": "When you first visit the site, select your preferred streaming service and favorite movie genre from the preference modal.",
+                    "image": "https://www.whichmovieto.watch/assets/images/step1.png"
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Browse Recommendations",
+                    "text": "The main page will show you a personalized movie recommendation. Read the description, check ratings, and see streaming availability.",
+                    "image": "https://www.whichmovieto.watch/assets/images/step2.png"
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Use Special Features",
+                    "text": "Try 'Dinner Time!' for meal-friendly movies, 'Free Movie!' for YouTube content, or 'Search Movies' to find specific titles.",
+                    "image": "https://www.whichmovieto.watch/assets/images/step3.png"
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Interact with Movies",
+                    "text": "Use the action buttons to mark movies as 'Love it!', 'Not Interested', or 'Watched' to improve future recommendations.",
+                    "image": "https://www.whichmovieto.watch/assets/images/step4.png"
+                },
+                {
+                    "@type": "HowToStep",
+                    "name": "Get New Suggestions",
+                    "text": "Click 'Next Movie' to get another recommendation, or explore similar movies when you find one you love.",
+                    "image": "https://www.whichmovieto.watch/assets/images/step5.png"
+                }
+            ]
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "Which Movie To Watch",
+            "url": "https://www.whichmovieto.watch",
+            "logo": "https://www.whichmovieto.watch/assets/favicon_io/android-chrome-512x512.png",
+            "sameAs": [
+                "https://github.com/Kohulan/WhichMovieToWatch",
+                "https://www.instagram.com/kohulanr/",
+                "https://www.linkedin.com/in/kohulanrajan/"
+            ]
+        }
+    ]
     </script>
 
     <!-- SEO verification tags (add your verification codes) -->
@@ -95,9 +251,46 @@
 </head>
 
 <body>
-    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark/light mode">
+    <button class="theme-toggle" id="themeToggleButton" aria-label="Toggle dark/light mode">
         <i class="fas fa-moon"></i>
     </button>
+
+    <!-- Loading Container -->
+    <div class="loading-container">
+        <!-- Film Reel Spinner Loader -->
+        <div class="film-reel-spinner">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="reel-circle" cx="60" cy="60" r="50" fill="none" stroke-width="8" />
+            <g class="film-holes">
+              <circle class="film-hole" cx="60" cy="15" r="4" />
+              <circle class="film-hole" cx="105" cy="60" r="4" />
+              <circle class="film-hole" cx="60" cy="105" r="4" />
+              <circle class="film-hole" cx="15" cy="60" r="4" />
+            </g>
+          </svg>
+        </div>
+
+        <!-- Popcorn Particles Loading Bar -->
+        <div class="popcorn-loading-bar">
+          <div class="popcorn-bar">
+            <div class="popcorn-fill"></div>
+            <div class="popcorn-particles">
+              <div class="popcorn-particle"></div>
+              <div class="popcorn-particle"></div>
+              <div class="popcorn-particle"></div>
+              <div class="popcorn-particle"></div>
+              <div class="popcorn-particle"></div>
+            </div>
+          </div>
+          <span class="loading-text">Loading</span>
+        </div>
+
+        <!-- Movie Quotes and Progress Percentage -->
+        <div class="quote-loading">
+          <div class="quote" id="movieQuote">"May the Force be with you."</div>
+          <div class="progress" id="loadingProgress">0%</div>
+        </div>
+    </div>
 
     <div id="preferenceModal" class="preference-modal">
         <div class="preference-modal-content">
@@ -228,9 +421,12 @@
     <script src="scripts/search.js"></script>
     <script src="scripts/utils.js"></script>
     <script src="scripts/preferences.js"></script>
+    <script src="scripts/meta-tags.js"></script>
     <script src="scripts/ui.js"></script>
     <script src="scripts/app.js"></script>
     <script src="scripts/theme.js"></script>
+    <script src="theme.js" defer></script>
+    <script src="loading.js" defer></script>
 
     <!-- Analytics -->
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>
