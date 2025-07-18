@@ -97,31 +97,7 @@ body.light-mode {
     box-sizing: border-box;
 }
 
-/* Share Buttons Styles */
-.share-buttons {
-    margin-top: 1rem;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
-}
-
-.share-buttons .share-btn {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--button-bg);
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background-color 0.3s ease;
-}
-
-.share-buttons .share-btn:hover {
-    background-color: var(--button-hover);
-    transform: translateY(-2px);
-}
+/* Share button styles moved to loading.css for better organization */
 
 body {
 	font-family: 'Space Grotesk', sans-serif;

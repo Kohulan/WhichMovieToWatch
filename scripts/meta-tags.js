@@ -278,11 +278,13 @@ class MetaTagsManager {
         return {
             facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
             twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedDescription}`,
+            instagram: `instagram://user?username=_u`, // Instagram doesn't support direct web sharing with pre-filled content
             whatsapp: `https://wa.me/?text=${encodedTitle}%20${encodedUrl}`,
             telegram: `https://t.me/share/url?url=${encodedUrl}&text=${encodedTitle}`,
             reddit: `https://reddit.com/submit?url=${encodedUrl}&title=${encodedTitle}`,
             linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
-            pinterest: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${encodeURIComponent(movieData.image)}&description=${encodedDescription}`
+            pinterest: `https://pinterest.com/pin/create/button/?url=${encodedUrl}&media=${encodeURIComponent(movieData.image)}&description=${encodedDescription}`,
+            email: `mailto:?subject=${encodedTitle}&body=${encodedDescription}%20${encodedUrl}`
         };
     }
 
@@ -335,28 +337,72 @@ function updateMetaForMovie(movie, externalRatings) {
     metaTagsManager.updateMovieMeta(movie, externalRatings);
 }
 
-// Example share button implementation
+// Share button implementation
 function createShareButtons(movie) {
     const shareUrls = metaTagsManager.generateShareUrls(movie);
+    const movieTitle = movie.title || 'this movie';
+    
+    // Function to handle Instagram share
+    const handleInstagramShare = () => {
+        // Copy movie info to clipboard for Instagram
+        const textToCopy = `Check out ${movieTitle} on Which Movie To Watch! ${window.location.href}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showToast('Movie info copied! You can paste it on Instagram.', 'success');
+        }).catch(() => {
+            showToast('Please copy the movie link manually.', 'info');
+        });
+    };
+    
+    // Attach the Instagram handler to window for onclick
+    window.handleInstagramShare = handleInstagramShare;
     
     return `
-        <div class="share-buttons">
-            <h3>Share this movie:</h3>
-            <a href="${shareUrls.facebook}" target="_blank" rel="noopener" class="share-btn facebook">
-                <i class="fab fa-facebook"></i>
-            </a>
-            <a href="${shareUrls.twitter}" target="_blank" rel="noopener" class="share-btn twitter">
-                <i class="fab fa-twitter"></i>
-            </a>
-            <a href="${shareUrls.whatsapp}" target="_blank" rel="noopener" class="share-btn whatsapp">
-                <i class="fab fa-whatsapp"></i>
-            </a>
-            <a href="${shareUrls.reddit}" target="_blank" rel="noopener" class="share-btn reddit">
-                <i class="fab fa-reddit"></i>
-            </a>
-            <a href="${shareUrls.linkedin}" target="_blank" rel="noopener" class="share-btn linkedin">
-                <i class="fab fa-linkedin"></i>
-            </a>
+        <div class="share-container">
+            <div class="share-header">
+                <i class="fas fa-share-alt"></i>
+                <span>Share this movie</span>
+            </div>
+            <div class="share-buttons">
+                <a href="${shareUrls.facebook}" target="_blank" rel="noopener" class="share-btn facebook" title="Share on Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                    <span class="share-label">Facebook</span>
+                </a>
+                <a href="${shareUrls.twitter}" target="_blank" rel="noopener" class="share-btn twitter" title="Share on Twitter">
+                    <i class="fab fa-twitter"></i>
+                    <span class="share-label">Twitter</span>
+                </a>
+                <button onclick="handleInstagramShare()" class="share-btn instagram" title="Share on Instagram">
+                    <i class="fab fa-instagram"></i>
+                    <span class="share-label">Instagram</span>
+                </button>
+                <a href="${shareUrls.whatsapp}" target="_blank" rel="noopener" class="share-btn whatsapp" title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                    <span class="share-label">WhatsApp</span>
+                </a>
+                <a href="${shareUrls.telegram}" target="_blank" rel="noopener" class="share-btn telegram" title="Share on Telegram">
+                    <i class="fab fa-telegram-plane"></i>
+                    <span class="share-label">Telegram</span>
+                </a>
+                <a href="${shareUrls.reddit}" target="_blank" rel="noopener" class="share-btn reddit" title="Share on Reddit">
+                    <i class="fab fa-reddit-alien"></i>
+                    <span class="share-label">Reddit</span>
+                </a>
+                <a href="${shareUrls.linkedin}" target="_blank" rel="noopener" class="share-btn linkedin" title="Share on LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                    <span class="share-label">LinkedIn</span>
+                </a>
+                <a href="${shareUrls.pinterest}" target="_blank" rel="noopener" class="share-btn pinterest" title="Share on Pinterest">
+                    <i class="fab fa-pinterest-p"></i>
+                    <span class="share-label">Pinterest</span>
+                </a>
+                <a href="${shareUrls.email}" class="share-btn email" title="Share via Email">
+                    <i class="fas fa-envelope"></i>
+                    <span class="share-label">Email</span>
+                </a>
+            </div>
         </div>
     `;
 }
+
+// Export createShareButtons globally
+window.createShareButtons = createShareButtons;
