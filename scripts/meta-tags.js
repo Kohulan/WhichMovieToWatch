@@ -344,8 +344,7 @@ function createShareButtons(movie) {
     
     // Function to handle Instagram share with story card
     const handleInstagramShare = async () => {
-        // Show loading
-        showToast('Creating your story card...', 'info');
+        showToast('Creating your Instagram story...', 'info');
         
         try {
             // Generate story card
@@ -357,10 +356,25 @@ function createShareButtons(movie) {
             
             // Copy to clipboard or download
             await window.storyCardGenerator.copyCardToClipboard(storyCard);
+            
+            // Also copy the link text for easy sharing
+            const movieLink = `${window.location.origin}?movie=${movie.id}`;
+            const shareText = `Check out ${movieTitle} on Which Movie To Watch!\n${movieLink}`;
+            
+            // Try to copy text after a delay (so it doesn't interfere with image copy)
+            setTimeout(() => {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('Story card and link copied! Paste in Instagram.', 'success');
+                }).catch((err) => {
+                    console.log('Could not copy link text:', err);
+                });
+            }, 1000);
+            
         } catch (error) {
             console.error('Error creating story card:', error);
             // Fallback to text copy
-            const textToCopy = `Check out ${movieTitle} on Which Movie To Watch! ${window.location.href}`;
+            const movieLink = `${window.location.origin}?movie=${movie.id}`;
+            const textToCopy = `Check out ${movieTitle} on Which Movie To Watch! ${movieLink}`;
             navigator.clipboard.writeText(textToCopy).then(() => {
                 showToast('Movie info copied! You can paste it on Instagram.', 'success');
             }).catch(() => {
