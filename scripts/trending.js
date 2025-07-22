@@ -31,7 +31,8 @@ function getUserRegion() {
 // Fetch trending movies from TMDB API
 async function fetchTrendingMovies() {
     const region = getUserRegion();
-    const apiKey = '04c35731a5ee918f014970082a0088b1';
+    // Use the global API_KEY from api.js (will be replaced during deployment)
+    const apiKey = API_KEY;
     
     try {
         // Fetch movies currently in theaters for the user's region

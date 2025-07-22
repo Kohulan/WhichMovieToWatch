@@ -42,6 +42,7 @@ The trending movies feature displays the current movies playing in cinemas based
 
 ### API Integration:
 - Uses TMDB API for movie data
+- API key is managed through GitHub secrets and replaced during deployment
 - Endpoint: `/movie/now_playing` with region parameter
 - Fallback: `/movie/popular` if regional data unavailable
 
