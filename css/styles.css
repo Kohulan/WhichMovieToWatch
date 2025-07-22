@@ -1936,3 +1936,212 @@ body.light-mode .theme-toggle {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border: 1px solid rgba(0, 0, 0, 0.05);
 }
+
+/* ===========================================================================
+                        Trending Movies Section
+   =========================================================================== */
+
+.trending-movies {
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: var(--card-bg);
+    border-radius: 24px;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.6s ease-out;
+}
+
+.trending-movies h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.trending-movies h3 i {
+    font-size: 1.5rem;
+    background: var(--accent);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.trending-subtitle {
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.7;
+    margin-bottom: 1.5rem;
+}
+
+.trending-list {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.trending-movie-item {
+    flex: 0 1 calc(20% - 1rem);
+    min-width: 180px;
+    max-width: 220px;
+    animation: slideIn 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+.trending-movie-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.trending-movie-link:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.trending-poster {
+    width: 80px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.trending-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.trending-title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.trending-rating {
+    font-size: 0.85rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.trending-rating i {
+    font-size: 0.75rem;
+}
+
+/* Light mode styles for trending movies */
+body.light-mode .trending-movies {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .trending-movie-link {
+    background: rgba(0, 0, 0, 0.02);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .trending-movie-link:hover {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+body.light-mode .trending-subtitle {
+    color: var(--text);
+    opacity: 0.6;
+}
+
+/* Responsive design for trending movies */
+@media (max-width: 1200px) {
+    .trending-movie-item {
+        flex: 0 1 calc(25% - 1rem);
+    }
+}
+
+@media (max-width: 768px) {
+    .trending-movies {
+        padding: 1.5rem;
+        margin-top: 3rem;
+    }
+    
+    .trending-movies h3 {
+        font-size: 1.5rem;
+    }
+    
+    .trending-list {
+        gap: 0.75rem;
+    }
+    
+    .trending-movie-item {
+        flex: 0 1 calc(33.333% - 0.75rem);
+        min-width: 140px;
+    }
+    
+    .trending-poster {
+        width: 60px;
+        height: 90px;
+    }
+    
+    .trending-title {
+        font-size: 0.85rem;
+    }
+    
+    .trending-rating {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .trending-movie-item {
+        flex: 0 1 calc(50% - 0.75rem);
+        min-width: 120px;
+    }
+    
+    .trending-movie-link {
+        padding: 0.75rem;
+    }
+}
+
+/* Animations for trending movies */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
