@@ -40,11 +40,17 @@ class MovieApp {
          if (movieId) {
             await this.fetchAndDisplayMovie(movieId);
          } else {
-            // Validate API and fetch initial movie
-            await this.validateAndFetch();
-         }
+         // Validate API and fetch initial movie
+         await this.validateAndFetch();
+      }
+      
+      // Initialize trending movies
+      if (typeof initializeTrendingMovies === 'function') {
+         initializeTrendingMovies();
+         startTrendingMoviesRefresh();
+      }
 
-         console.log('Application initialized successfully');
+      console.log('Application initialized successfully');
       } catch (error) {
          console.error('Failed to initialize application:', error);
          this.handleError('Application initialization failed. Please try again later.');
