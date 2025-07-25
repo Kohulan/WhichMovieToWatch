@@ -27,7 +27,7 @@ class StoryCardGenerator {
     async loadImage(src) {
         return new Promise((resolve, reject) => {
             const img = new Image();
-            img.crossOrigin = 'anonymous';
+            img.crossOrigin = 'use-credentials';
             img.onload = () => resolve(img);
             img.onerror = reject;
             img.src = src;
