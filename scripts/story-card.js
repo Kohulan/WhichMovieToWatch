@@ -28,45 +28,68 @@ class StoryCardGenerator {
         return new Promise((resolve, reject) => {
             const img = new Image();
             
-            // For TMDB images, try without CORS first
-            if (src.includes('image.tmdb.org')) {
-                // Try direct loading first
-                img.onload = () => resolve(img);
-                img.onerror = () => {
-                    // If that fails, create a placeholder
-                    console.log('TMDB image failed to load, using placeholder');
-                    const canvas = document.createElement('canvas');
-                    canvas.width = 500;
-                    canvas.height = 750;
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Create gradient background
-                    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-                    gradient.addColorStop(0, '#667eea');
-                    gradient.addColorStop(1, '#764ba2');
-                    ctx.fillStyle = gradient;
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    
-                    // Add movie icon
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = '120px Arial';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('🎬', canvas.width / 2, canvas.height / 2);
-                    
-                    // Convert canvas to image
-                    const placeholderImg = new Image();
-                    placeholderImg.onload = () => resolve(placeholderImg);
-                    placeholderImg.src = canvas.toDataURL();
+            // For TMDB images, we'll use a different approach
+            if (src && src.includes('image.tmdb.org')) {
+                // Try to use a proxy service that adds CORS headers
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(src)}`;
+                
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    console.log('Successfully loaded movie poster via proxy');
+                    resolve(img);
                 };
-                img.src = src;
-            } else {
-                // For local images, use normal loading
+                img.onerror = () => {
+                    console.log('Proxy failed, trying direct load as fallback');
+                    // Try direct loading without CORS
+                    const imgDirect = new Image();
+                    imgDirect.onload = () => resolve(imgDirect);
+                    imgDirect.onerror = () => {
+                        // If all fails, create a nice placeholder
+                        console.log('All methods failed, using styled placeholder');
+                        this.createPlaceholderImage(resolve);
+                    };
+                    imgDirect.src = src;
+                };
+                img.src = proxyUrl;
+            } else if (src) {
+                // For local images or other sources
                 img.crossOrigin = 'anonymous';
                 img.onload = () => resolve(img);
-                img.onerror = reject;
+                img.onerror = () => this.createPlaceholderImage(resolve);
                 img.src = src;
+            } else {
+                // No source provided
+                this.createPlaceholderImage(resolve);
             }
         });
+    }
+
+    /**
+     * Create a styled placeholder image
+     */
+    createPlaceholderImage(resolve) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 500;
+        canvas.height = 750;
+        const ctx = canvas.getContext('2d');
+        
+        // Create gradient background
+        const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        gradient.addColorStop(0, '#667eea');
+        gradient.addColorStop(1, '#764ba2');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Add movie icon
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '120px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('🎬', canvas.width / 2, canvas.height / 2);
+        
+        // Convert canvas to image
+        const placeholderImg = new Image();
+        placeholderImg.onload = () => resolve(placeholderImg);
+        placeholderImg.src = canvas.toDataURL();
     }
 
     /**
@@ -165,39 +188,65 @@ class StoryCardGenerator {
         }
         this.ctx.globalAlpha = 1;
 
-        // Since we can't load TMDB images due to CORS, create a stylized card
-        // Draw a movie poster placeholder area
+        // Try to load the actual movie poster
         const posterWidth = 800;
         const posterHeight = 1200;
         const posterX = (this.cardWidth - posterWidth) / 2;
         const posterY = 200;
         
-        // Draw poster placeholder with gradient
-        const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterWidth, posterY + posterHeight);
-        if (theme === 'dark') {
-            posterGradient.addColorStop(0, '#2d3561');
-            posterGradient.addColorStop(1, '#0f3460');
-        } else {
-            posterGradient.addColorStop(0, '#f8b195');
-            posterGradient.addColorStop(1, '#c06c84');
-        }
-        
-        // Draw poster shadow
-        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        this.ctx.shadowBlur = 30;
-        this.ctx.shadowOffsetX = 0;
-        this.ctx.shadowOffsetY = 15;
-        
-        // Draw poster background
-        this.ctx.save();
-        this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
-        this.ctx.fillStyle = posterGradient;
-        this.ctx.fill();
-        
-        // Add movie icon in poster area
-        this.ctx.shadowColor = 'transparent';
-        this.ctx.fillStyle = '#ffffff20';
-        this.ctx.font = '300px Arial';
+        try {
+            // Attempt to load the movie poster
+            if (movie.poster_path) {
+                const posterUrl = `https://image.tmdb.org/t/p/w780${movie.poster_path}`;
+                const posterImg = await this.loadImage(posterUrl);
+                
+                // Draw poster shadow
+                this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                this.ctx.shadowBlur = 30;
+                this.ctx.shadowOffsetX = 0;
+                this.ctx.shadowOffsetY = 15;
+                
+                // Draw poster with rounded corners
+                this.ctx.save();
+                this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
+                this.ctx.clip();
+                this.ctx.drawImage(posterImg, posterX, posterY, posterWidth, posterHeight);
+                this.ctx.restore();
+                
+                // Reset shadow
+                this.ctx.shadowColor = 'transparent';
+            } else {
+                throw new Error('No poster path available');
+            }
+        } catch (error) {
+            console.log('Failed to load poster, using fallback design');
+            
+            // Fallback: Draw poster placeholder with gradient
+            const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterWidth, posterY + posterHeight);
+            if (theme === 'dark') {
+                posterGradient.addColorStop(0, '#2d3561');
+                posterGradient.addColorStop(1, '#0f3460');
+            } else {
+                posterGradient.addColorStop(0, '#f8b195');
+                posterGradient.addColorStop(1, '#c06c84');
+            }
+            
+            // Draw poster shadow
+            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            this.ctx.shadowBlur = 30;
+            this.ctx.shadowOffsetX = 0;
+            this.ctx.shadowOffsetY = 15;
+            
+            // Draw poster background
+            this.ctx.save();
+            this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
+            this.ctx.fillStyle = posterGradient;
+            this.ctx.fill();
+            
+            // Add movie icon in poster area
+            this.ctx.shadowColor = 'transparent';
+            this.ctx.fillStyle = '#ffffff20';
+            this.ctx.font = '300px Arial';
         this.ctx.textAlign = 'center';
         this.ctx.fillText('🎬', this.cardWidth / 2, posterY + posterHeight / 2 + 50);
         
