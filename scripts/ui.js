@@ -120,12 +120,11 @@ async function displayMovie(movie) {
               <div class="movie-content">
                   <div class="poster-container">
                       <div class="poster">
-                          <img data-src="${IMAGE_BASE_URL}${movie.poster_path}" 
-                              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='350' height='525'%3E%3Crect width='100%25' height='100%25' fill='%23333'/%3E%3C/svg%3E"
+                          <img src="${IMAGE_BASE_URL}${movie.poster_path}" 
                               loading="lazy"
                               decoding="async"
                               alt="${movie.title}"
-                              class="lazy-image"
+                              class="poster-image"
                               onerror="this.src='https://via.placeholder.com/350x525?text=No+Poster'" />
                       </div>
                       ${trailerHTML}
