@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.1.0...v1.2.0) (2025-07-25)
+
+
+### Features
+
+* improved visual appeal ([bb47ce9](https://github.com/Kohulan/WhichMovieToWatch/commit/bb47ce91d9002339c975a69d08dd6c79992f08d9))
+* improved visual appeal ([a0e1e8f](https://github.com/Kohulan/WhichMovieToWatch/commit/a0e1e8f4528e509a8e239d7f9f2dbab5a8cdf8c0))
+
+
+### Bug Fixes
+
+* love button feedback ([f12aa59](https://github.com/Kohulan/WhichMovieToWatch/commit/f12aa59cf29a8bbf1f3f990d97d329b67e061578))
+* movie poster visibility ([193c75e](https://github.com/Kohulan/WhichMovieToWatch/commit/193c75e8f46d161003599409a4bdd12514375de8))
+
 ## [1.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.0.0...v1.1.0) (2025-07-25)
 
 
