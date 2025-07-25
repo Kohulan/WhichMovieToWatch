@@ -110,6 +110,52 @@ class StoryCardGenerator {
     }
 
     /**
+     * Draw rounded rectangle with custom context
+     */
+    drawRoundedRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+    }
+
+    /**
+     * Wrap text with custom context
+     */
+    wrapTextOnCanvas(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        let lines = [];
+
+        for (let n = 0; n < words.length; n++) {
+            const testLine = line + words[n] + ' ';
+            const metrics = ctx.measureText(testLine);
+            const testWidth = metrics.width;
+            
+            if (testWidth > maxWidth && n > 0) {
+                lines.push(line);
+                line = words[n] + ' ';
+            } else {
+                line = testLine;
+            }
+        }
+        lines.push(line);
+
+        for (let i = 0; i < lines.length; i++) {
+            ctx.fillText(lines[i], x, y + (i * lineHeight));
+        }
+
+        return lines.length;
+    }
+
+    /**
      * Create gradient background
      */
     createGradientBackground(theme = 'dark') {
@@ -247,21 +293,22 @@ class StoryCardGenerator {
             this.ctx.shadowColor = 'transparent';
             this.ctx.fillStyle = '#ffffff20';
             this.ctx.font = '300px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('🎬', this.cardWidth / 2, posterY + posterHeight / 2 + 50);
-        
-        // Draw movie title in poster area
-        this.ctx.font = 'bold 96px Arial';
-        this.ctx.fillStyle = '#ffffff';
-        const titleInPoster = this.wrapText(
-            movie.title || 'Unknown Title',
-            this.cardWidth / 2,
-            posterY + posterHeight / 2 + 150,
-            posterWidth - 100,
-            110
-        );
-        
-        this.ctx.restore();
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('🎬', this.cardWidth / 2, posterY + posterHeight / 2 + 50);
+            
+            // Draw movie title in poster area
+            this.ctx.font = 'bold 96px Arial';
+            this.ctx.fillStyle = '#ffffff';
+            const titleInPoster = this.wrapText(
+                movie.title || 'Unknown Title',
+                this.cardWidth / 2,
+                posterY + posterHeight / 2 + 150,
+                posterWidth - 100,
+                110
+            );
+            
+            this.ctx.restore();
+        }
         
         // Reset shadow
         this.ctx.shadowColor = 'transparent';
@@ -339,103 +386,140 @@ class StoryCardGenerator {
             brandName = 'Which Movie To Watch'
         } = options;
 
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = size;
-        this.canvas.height = size;
-        this.ctx = this.canvas.getContext('2d');
+        console.log('Generating square card for:', movie.title);
 
-        // Create gradient background
-        const gradient = this.ctx.createLinearGradient(0, 0, size, size);
+        // Create a new canvas for square card
+        const squareCanvas = document.createElement('canvas');
+        squareCanvas.width = size;
+        squareCanvas.height = size;
+        const ctx = squareCanvas.getContext('2d');
+
+        // Fill with solid color first to ensure visibility
+        ctx.fillStyle = theme === 'dark' ? '#1a1a2e' : '#f8b195';
+        ctx.fillRect(0, 0, size, size);
+
+        // Create gradient background overlay
+        const gradient = ctx.createLinearGradient(0, 0, size, size);
         if (theme === 'dark') {
-            gradient.addColorStop(0, '#1a1a2e');
-            gradient.addColorStop(1, '#0f3460');
+            gradient.addColorStop(0, 'rgba(26, 26, 46, 0.8)');
+            gradient.addColorStop(1, 'rgba(15, 52, 96, 1)');
         } else {
-            gradient.addColorStop(0, '#f8b195');
-            gradient.addColorStop(1, '#c06c84');
+            gradient.addColorStop(0, 'rgba(248, 177, 149, 0.8)');
+            gradient.addColorStop(1, 'rgba(198, 108, 132, 1)');
         }
-        this.ctx.fillStyle = gradient;
-        this.ctx.fillRect(0, 0, size, size);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, size, size);
 
-        // Since we can't load TMDB images due to CORS, create a stylized card
-        // Draw a movie poster placeholder area
+        // Try to load actual movie poster for square card
         const posterSize = size * 0.6;
         const posterX = (size - posterSize) / 2;
         const posterY = size * 0.1;
         
-        // Draw poster placeholder with gradient
-        const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterSize, posterY + posterSize);
-        if (theme === 'dark') {
-            posterGradient.addColorStop(0, '#2d3561');
-            posterGradient.addColorStop(1, '#0f3460');
-        } else {
-            posterGradient.addColorStop(0, '#f8b195');
-            posterGradient.addColorStop(1, '#c06c84');
+        let posterLoaded = false;
+        
+        // Attempt to load the actual poster
+        if (movie.poster_path) {
+            try {
+                console.log('Attempting to load poster for square card...');
+                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const posterImg = await this.loadImage(posterUrl);
+                
+                // If we got here, the image loaded successfully
+                ctx.save();
+                this.drawRoundedRect(ctx, posterX, posterY, posterSize, posterSize, 15);
+                ctx.clip();
+                
+                // Draw the poster image
+                ctx.drawImage(posterImg, posterX, posterY, posterSize, posterSize);
+                ctx.restore();
+                
+                posterLoaded = true;
+                console.log('Poster loaded successfully for square card!');
+            } catch (error) {
+                console.log('Failed to load poster for square card:', error);
+                posterLoaded = false;
+            }
         }
         
-        // Draw poster shadow
-        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        this.ctx.shadowBlur = 20;
-        this.ctx.shadowOffsetY = 10;
-        
-        // Draw poster background
-        this.ctx.save();
-        this.roundRect(posterX, posterY, posterSize, posterSize, 15);
-        this.ctx.fillStyle = posterGradient;
-        this.ctx.fill();
-        
-        // Add movie icon in poster area
-        this.ctx.shadowColor = 'transparent';
-        this.ctx.fillStyle = '#ffffff20';
-        this.ctx.font = `${size * 0.2}px Arial`;
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('🎬', size / 2, posterY + posterSize / 2);
-        
-        // Draw movie title in poster area
-        this.ctx.font = `bold ${size * 0.08}px Arial`;
-        this.ctx.fillStyle = '#ffffff';
-        this.wrapText(
-            movie.title || 'Unknown Title',
-            size / 2,
-            posterY + posterSize / 2 + size * 0.1,
-            posterSize - 40,
-            size * 0.09
-        );
-        
-        this.ctx.restore();
+        // If poster didn't load, create stylized placeholder
+        if (!posterLoaded) {
+            console.log('Using stylized placeholder for square card');
+            // Draw poster placeholder with gradient
+            const posterGradient = ctx.createLinearGradient(posterX, posterY, posterX + posterSize, posterY + posterSize);
+            if (theme === 'dark') {
+                posterGradient.addColorStop(0, '#2d3561');
+                posterGradient.addColorStop(1, '#0f3460');
+            } else {
+                posterGradient.addColorStop(0, '#f8b195');
+                posterGradient.addColorStop(1, '#c06c84');
+            }
+            
+            // Draw poster shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 10;
+            
+            // Draw poster background
+            ctx.save();
+            this.drawRoundedRect(ctx, posterX, posterY, posterSize, posterSize, 15);
+            ctx.fillStyle = posterGradient;
+            ctx.fill();
+            
+            // Add movie icon in poster area
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = '#ffffff20';
+            ctx.font = `${size * 0.2}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('🎬', size / 2, posterY + posterSize / 2);
+            
+            // Draw movie title in poster area
+            ctx.font = `bold ${size * 0.08}px Arial`;
+            ctx.fillStyle = '#ffffff';
+            this.wrapTextOnCanvas(
+                ctx,
+                movie.title || 'Unknown Title',
+                size / 2,
+                posterY + posterSize / 2 + size * 0.1,
+                posterSize - 40,
+                size * 0.09
+            );
+            
+            ctx.restore();
+        }
         
         // Reset shadow
-        this.ctx.shadowColor = 'transparent';
+        ctx.shadowColor = 'transparent';
 
         // Draw rating and info below poster
         const infoY = posterY + posterSize + 40;
         
         if (includeRating && movie.vote_average) {
-            this.ctx.font = `${size * 0.04}px Arial`;
-            this.ctx.fillStyle = '#ffd700';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText(`★ ${movie.vote_average.toFixed(1)}/10`, size / 2, infoY);
+            ctx.font = `${size * 0.04}px Arial`;
+            ctx.fillStyle = '#ffd700';
+            ctx.textAlign = 'center';
+            ctx.fillText(`★ ${movie.vote_average.toFixed(1)}/10`, size / 2, infoY);
         }
         
         // Draw genres if available
         if (movie.genres && movie.genres.length > 0) {
-            this.ctx.font = `${size * 0.025}px Arial`;
-            this.ctx.fillStyle = '#ffffffcc';
+            ctx.font = `${size * 0.025}px Arial`;
+            ctx.fillStyle = '#ffffffcc';
             const genreText = movie.genres.slice(0, 2).map(g => g.name).join(' • ');
-            this.ctx.fillText(genreText, size / 2, infoY + 40);
+            ctx.fillText(genreText, size / 2, infoY + 40);
         }
         
         // Draw link at the bottom
         const linkY = size - 80;
-        this.ctx.font = `${size * 0.025}px Arial`;
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.fillText('whichmovieto.watch?movie=' + movie.id, size / 2, linkY);
+        ctx.font = `${size * 0.025}px Arial`;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText('whichmovieto.watch?movie=' + movie.id, size / 2, linkY);
 
         // Draw brand
-        this.ctx.font = `${size * 0.025}px Arial`;
-        this.ctx.fillStyle = '#ffffff99';
-        this.ctx.fillText(brandName, size / 2, size - 30);
+        ctx.font = `${size * 0.025}px Arial`;
+        ctx.fillStyle = '#ffffff99';
+        ctx.fillText(brandName, size / 2, size - 30);
 
-        return this.canvas;
+        return squareCanvas;
     }
 
     /**
