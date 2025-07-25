@@ -550,6 +550,9 @@ function getCountryName(countryCode) {
    return countryNames[countryCode] || countryCode;
 }
 
+// Make displayRecommendations globally accessible for other scripts
+window.displayRecommendations = displayRecommendations;
+
 // Export all utilities
 window.utils = {
    getProviderURL,
