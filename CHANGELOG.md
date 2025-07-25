@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.0.0...v1.1.0) (2025-07-25)
+
+
+### Features
+
+* improved animations ([f74d180](https://github.com/Kohulan/WhichMovieToWatch/commit/f74d180630e00a93e546c3e050e7663abdf24ee3))
+* improved link sharing ([be4c355](https://github.com/Kohulan/WhichMovieToWatch/commit/be4c35540cfd2b7125aae56636008c3f0af2b763))
+* light mode & github link ([42c7015](https://github.com/Kohulan/WhichMovieToWatch/commit/42c701521737fdd0515b9f4ac418cb330255451e))
+* light mode & github link ([26fa393](https://github.com/Kohulan/WhichMovieToWatch/commit/26fa39310b952553e73fbaf9ed27cb6361132359))
+* trending movies ([d8b8696](https://github.com/Kohulan/WhichMovieToWatch/commit/d8b8696c4f686aa86bc24712bd0f3f711c8b90e0))
+
+
+### Bug Fixes
+
+* cleanup and tending movies update ([c80a3ee](https://github.com/Kohulan/WhichMovieToWatch/commit/c80a3eef77291ccd072215a729e7f79066b9c5a6))
+* footer colour ([914be45](https://github.com/Kohulan/WhichMovieToWatch/commit/914be45ed284621ea013f7ec043c10f62b422c54))
+* instagram share ([e00ca6f](https://github.com/Kohulan/WhichMovieToWatch/commit/e00ca6f5822b09b58f01e10d40fe47af437bac63))
+* metadata CITATION.cff ([a382c96](https://github.com/Kohulan/WhichMovieToWatch/commit/a382c965992639e931e6ee41cc5dd1ab3f85d922))
+* remove api ([f443d2e](https://github.com/Kohulan/WhichMovieToWatch/commit/f443d2e661470789a720c176afde57c871605d06))
+* share buttons ([944aa8e](https://github.com/Kohulan/WhichMovieToWatch/commit/944aa8e84d86154561f1ba24a5b39283aace201d))
+* sharing instagram ([e41d60b](https://github.com/Kohulan/WhichMovieToWatch/commit/e41d60b1ee24bfdd53a69ec6c22f33d291b52198))
+* story card generation ([8824bae](https://github.com/Kohulan/WhichMovieToWatch/commit/8824bae3a6dcc19664f2492630a89eb11965be65))
+* update logos ([35c0701](https://github.com/Kohulan/WhichMovieToWatch/commit/35c07016eea65ddbf088d372447e99c7256ddf19))
+* update logos no animation ([9cdc306](https://github.com/Kohulan/WhichMovieToWatch/commit/9cdc306b006296048d3b19963e63566e88ce75aa))
+* update meta tags and story ([8b2f3cf](https://github.com/Kohulan/WhichMovieToWatch/commit/8b2f3cff69d7af00cd6f3f0a9bba29a34dadcbfa))
+* update meta tags and story cards ([6c7fb2b](https://github.com/Kohulan/WhichMovieToWatch/commit/6c7fb2bdc7d845ef0b30b8f45d84db5835d5a135))
+* update meta tags and story cards cors ([3d22ae4](https://github.com/Kohulan/WhichMovieToWatch/commit/3d22ae4ac03bc5d5a07576890e8e14a7293b3231))
+* update meta tags and story cards cors ([d7ac724](https://github.com/Kohulan/WhichMovieToWatch/commit/d7ac7249133026f9251c8090dc783bb5113d2770))
+* update meta tags and story cards cors ([8227e5f](https://github.com/Kohulan/WhichMovieToWatch/commit/8227e5f0b2396ba849358524c4a6913ed90b45b6))
+* update meta tags and story cards cors ([f154827](https://github.com/Kohulan/WhichMovieToWatch/commit/f154827e399c1f1be77769e7cd0cfd374806c5cd))
+* update meta tags and story cards cors ([9e7cbdf](https://github.com/Kohulan/WhichMovieToWatch/commit/9e7cbdfe74da8b6004d77a9b560f859f31ca333f))
+* update share logos ([1f7f815](https://github.com/Kohulan/WhichMovieToWatch/commit/1f7f81595cb942b5705003526a73de81e39a4c0e))
+
 ## 1.0.0 (2025-02-12)
 
 
