@@ -46,8 +46,8 @@ async function fetchTrendingMovies() {
         
         const data = await response.json();
         
-        // Get top 5 movies
-        return data.results.slice(0, 5);
+        // Get top 10 movies
+        return data.results.slice(0, 10);
     } catch (error) {
         console.error('Error fetching trending movies:', error);
         
@@ -57,7 +57,7 @@ async function fetchTrendingMovies() {
                 `https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=en-US&page=1`
             );
             const fallbackData = await fallbackResponse.json();
-            return fallbackData.results.slice(0, 5);
+            return fallbackData.results.slice(0, 10);
         } catch (fallbackError) {
             console.error('Fallback also failed:', fallbackError);
             return [];
