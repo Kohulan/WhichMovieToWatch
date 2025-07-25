@@ -28,18 +28,44 @@ class StoryCardGenerator {
         return new Promise((resolve, reject) => {
             const img = new Image();
             
-            // Try without CORS first
-            img.onload = () => resolve(img);
-            img.onerror = () => {
-                // If CORS fails, try with proxy
-                const proxyImg = new Image();
-                proxyImg.crossOrigin = 'anonymous';
-                proxyImg.onload = () => resolve(proxyImg);
-                proxyImg.onerror = reject;
-                // Use a CORS proxy service
-                proxyImg.src = `https://corsproxy.io/?${encodeURIComponent(src)}`;
-            };
-            img.src = src;
+            // For TMDB images, try without CORS first
+            if (src.includes('image.tmdb.org')) {
+                // Try direct loading first
+                img.onload = () => resolve(img);
+                img.onerror = () => {
+                    // If that fails, create a placeholder
+                    console.log('TMDB image failed to load, using placeholder');
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 500;
+                    canvas.height = 750;
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Create gradient background
+                    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Add movie icon
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = '120px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('🎬', canvas.width / 2, canvas.height / 2);
+                    
+                    // Convert canvas to image
+                    const placeholderImg = new Image();
+                    placeholderImg.onload = () => resolve(placeholderImg);
+                    placeholderImg.src = canvas.toDataURL();
+                };
+                img.src = src;
+            } else {
+                // For local images, use normal loading
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            }
         });
     }
 
@@ -139,114 +165,116 @@ class StoryCardGenerator {
         }
         this.ctx.globalAlpha = 1;
 
-        try {
-            // Load and draw movie poster
-            const posterUrl = movie.poster_path 
-                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : '/assets/images/no-poster.png';
-            
-            const posterImg = await this.loadImage(posterUrl);
-            
-            // Calculate poster dimensions
-            const posterWidth = 800;
-            const posterHeight = 1200;
-            const posterX = (this.cardWidth - posterWidth) / 2;
-            const posterY = 200;
-            
-            // Draw poster shadow
-            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            this.ctx.shadowBlur = 30;
-            this.ctx.shadowOffsetX = 0;
-            this.ctx.shadowOffsetY = 15;
-            
-            // Draw poster with rounded corners
-            this.ctx.save();
-            this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
-            this.ctx.clip();
-            this.ctx.drawImage(posterImg, posterX, posterY, posterWidth, posterHeight);
-            this.ctx.restore();
-            
-            // Reset shadow
-            this.ctx.shadowColor = 'transparent';
-            this.ctx.shadowBlur = 0;
-            this.ctx.shadowOffsetX = 0;
-            this.ctx.shadowOffsetY = 0;
-
-            // Draw content container
-            const contentY = posterY + posterHeight + 60;
-            const contentPadding = 60;
-            const contentWidth = this.cardWidth - (contentPadding * 2);
-
-            // Draw movie title
-            this.ctx.font = 'bold 72px Arial';
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.textAlign = 'center';
-            const titleLines = this.wrapText(
-                movie.title || 'Unknown Title',
-                this.cardWidth / 2,
-                contentY,
-                contentWidth,
-                85
-            );
-
-            // Draw release year and rating
-            if (includeRating || movie.release_date) {
-                const infoY = contentY + (titleLines * 85) + 40;
-                this.ctx.font = '48px Arial';
-                this.ctx.fillStyle = '#ffffff99';
-                
-                let infoText = '';
-                if (movie.release_date) {
-                    infoText = new Date(movie.release_date).getFullYear().toString();
-                }
-                if (includeRating && movie.vote_average) {
-                    infoText += infoText ? ' • ' : '';
-                    infoText += `★ ${movie.vote_average.toFixed(1)}`;
-                }
-                
-                this.ctx.fillText(infoText, this.cardWidth / 2, infoY);
-            }
-
-            // Draw genres
-            if (includeGenres && movie.genres && movie.genres.length > 0) {
-                const genreY = contentY + (titleLines * 85) + 120;
-                this.ctx.font = '36px Arial';
-                this.ctx.fillStyle = '#ffffffcc';
-                const genreText = movie.genres.slice(0, 3).map(g => g.name).join(' • ');
-                this.ctx.fillText(genreText, this.cardWidth / 2, genreY);
-            }
-
-            // Draw link section
-            const linkY = this.cardHeight - 200;
-            this.ctx.font = '36px Arial';
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.fillText('🔗 Visit:', this.cardWidth / 2, linkY);
-            
-            // Draw the movie link
-            const movieLink = `whichmovieto.watch?movie=${movie.id}`;
-            this.ctx.font = 'bold 32px Arial';
-            this.ctx.fillStyle = '#4ecdc4';
-            this.ctx.fillText(movieLink, this.cardWidth / 2, linkY + 45);
-            
-            // Draw brand footer
-            const footerY = this.cardHeight - 100;
-            this.ctx.font = 'bold 42px Arial';
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.fillText(brandName, this.cardWidth / 2, footerY);
-
-            // Add logo or icon
-            this.ctx.font = '32px Arial';
-            this.ctx.fillStyle = '#ffffff99';
-            this.ctx.fillText('Share & Watch Together! 🎬', this.cardWidth / 2, footerY + 40);
-
-        } catch (error) {
-            console.error('Error generating story card:', error);
-            // Draw error message
-            this.ctx.font = '48px Arial';
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText('Failed to load movie poster', this.cardWidth / 2, this.cardHeight / 2);
+        // Since we can't load TMDB images due to CORS, create a stylized card
+        // Draw a movie poster placeholder area
+        const posterWidth = 800;
+        const posterHeight = 1200;
+        const posterX = (this.cardWidth - posterWidth) / 2;
+        const posterY = 200;
+        
+        // Draw poster placeholder with gradient
+        const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterWidth, posterY + posterHeight);
+        if (theme === 'dark') {
+            posterGradient.addColorStop(0, '#2d3561');
+            posterGradient.addColorStop(1, '#0f3460');
+        } else {
+            posterGradient.addColorStop(0, '#f8b195');
+            posterGradient.addColorStop(1, '#c06c84');
         }
+        
+        // Draw poster shadow
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.shadowBlur = 30;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 15;
+        
+        // Draw poster background
+        this.ctx.save();
+        this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
+        this.ctx.fillStyle = posterGradient;
+        this.ctx.fill();
+        
+        // Add movie icon in poster area
+        this.ctx.shadowColor = 'transparent';
+        this.ctx.fillStyle = '#ffffff20';
+        this.ctx.font = '300px Arial';
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('🎬', this.cardWidth / 2, posterY + posterHeight / 2 + 50);
+        
+        // Draw movie title in poster area
+        this.ctx.font = 'bold 96px Arial';
+        this.ctx.fillStyle = '#ffffff';
+        const titleInPoster = this.wrapText(
+            movie.title || 'Unknown Title',
+            this.cardWidth / 2,
+            posterY + posterHeight / 2 + 150,
+            posterWidth - 100,
+            110
+        );
+        
+        this.ctx.restore();
+        
+        // Reset shadow
+        this.ctx.shadowColor = 'transparent';
+        this.ctx.shadowBlur = 0;
+        this.ctx.shadowOffsetX = 0;
+        this.ctx.shadowOffsetY = 0;
+
+        // Draw content container
+        const contentY = posterY + posterHeight + 60;
+        const contentPadding = 60;
+        const contentWidth = this.cardWidth - (contentPadding * 2);
+
+        // Draw release year and rating
+        if (includeRating || movie.release_date) {
+            const infoY = contentY;
+            this.ctx.font = '48px Arial';
+            this.ctx.fillStyle = '#ffffff99';
+            this.ctx.textAlign = 'center';
+            
+            let infoText = '';
+            if (movie.release_date) {
+                infoText = new Date(movie.release_date).getFullYear().toString();
+            }
+            if (includeRating && movie.vote_average) {
+                infoText += infoText ? ' • ' : '';
+                infoText += `★ ${movie.vote_average.toFixed(1)}`;
+            }
+            
+            this.ctx.fillText(infoText, this.cardWidth / 2, infoY);
+        }
+
+        // Draw genres
+        if (includeGenres && movie.genres && movie.genres.length > 0) {
+            const genreY = contentY + 80;
+            this.ctx.font = '36px Arial';
+            this.ctx.fillStyle = '#ffffffcc';
+            const genreText = movie.genres.slice(0, 3).map(g => g.name).join(' • ');
+            this.ctx.fillText(genreText, this.cardWidth / 2, genreY);
+        }
+
+        // Draw link section
+        const linkY = this.cardHeight - 200;
+        this.ctx.font = '36px Arial';
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillText('🔗 Visit:', this.cardWidth / 2, linkY);
+        
+        // Draw the movie link
+        const movieLink = `whichmovieto.watch?movie=${movie.id}`;
+        this.ctx.font = 'bold 32px Arial';
+        this.ctx.fillStyle = '#4ecdc4';
+        this.ctx.fillText(movieLink, this.cardWidth / 2, linkY + 45);
+        
+        // Draw brand footer
+        const footerY = this.cardHeight - 100;
+        this.ctx.font = 'bold 42px Arial';
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillText(brandName, this.cardWidth / 2, footerY);
+
+        // Add logo or icon
+        this.ctx.font = '32px Arial';
+        this.ctx.fillStyle = '#ffffff99';
+        this.ctx.fillText('Share & Watch Together! 🎬', this.cardWidth / 2, footerY + 40);
 
         return this.canvas;
     }
@@ -279,69 +307,84 @@ class StoryCardGenerator {
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, size, size);
 
-        try {
-            // Load and draw movie poster
-            const posterUrl = movie.poster_path 
-                ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-                : '/assets/images/no-poster.png';
-            
-            const posterImg = await this.loadImage(posterUrl);
-            
-            // Calculate poster dimensions for square layout
-            const posterSize = size * 0.6;
-            
-            // Verify movie.poster_path exists to fetch actual poster
-            if (!movie.poster_path) {
-                console.error('No poster path available for this movie.');
-                showToast('No poster available to generate story.', 'warning');
-                return null;
-            }
-            const posterX = (size - posterSize) / 2;
-            const posterY = size * 0.1;
-            
-            // Draw poster shadow
-            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-            this.ctx.shadowBlur = 20;
-            this.ctx.shadowOffsetY = 10;
-            
-            // Draw poster with rounded corners
-            this.ctx.save();
-            this.roundRect(posterX, posterY, posterSize, posterSize * 1.5, 15);
-            this.ctx.clip();
-            this.ctx.drawImage(posterImg, posterX, posterY, posterSize, posterSize * 1.5);
-            this.ctx.restore();
-            
-            // Reset shadow
-            this.ctx.shadowColor = 'transparent';
-
-            // Draw movie title
-            const titleY = posterY + (posterSize * 1.5) + 60;
-            this.ctx.font = `bold ${size * 0.05}px Arial`;
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.textAlign = 'center';
-            this.wrapText(movie.title, size / 2, titleY, size * 0.8, size * 0.06);
-
-            // Draw rating if included
-            if (includeRating && movie.vote_average) {
-                this.ctx.font = `${size * 0.04}px Arial`;
-                this.ctx.fillStyle = '#ffd700';
-                this.ctx.fillText(`★ ${movie.vote_average.toFixed(1)}/10`, size / 2, titleY + size * 0.08);
-            }
-            
-            // Draw link at the bottom
-            const linkY = size - 80;
-            this.ctx.font = `${size * 0.025}px Arial`;
-            this.ctx.fillStyle = '#ffffff';
-            this.ctx.fillText('whichmovieto.watch?movie=' + movie.id, size / 2, linkY);
-
-            // Draw brand
-            this.ctx.font = `${size * 0.025}px Arial`;
-            this.ctx.fillStyle = '#ffffff99';
-            this.ctx.fillText(brandName, size / 2, size - 30);
-
-        } catch (error) {
-            console.error('Error generating square card:', error);
+        // Since we can't load TMDB images due to CORS, create a stylized card
+        // Draw a movie poster placeholder area
+        const posterSize = size * 0.6;
+        const posterX = (size - posterSize) / 2;
+        const posterY = size * 0.1;
+        
+        // Draw poster placeholder with gradient
+        const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterSize, posterY + posterSize);
+        if (theme === 'dark') {
+            posterGradient.addColorStop(0, '#2d3561');
+            posterGradient.addColorStop(1, '#0f3460');
+        } else {
+            posterGradient.addColorStop(0, '#f8b195');
+            posterGradient.addColorStop(1, '#c06c84');
         }
+        
+        // Draw poster shadow
+        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+        this.ctx.shadowBlur = 20;
+        this.ctx.shadowOffsetY = 10;
+        
+        // Draw poster background
+        this.ctx.save();
+        this.roundRect(posterX, posterY, posterSize, posterSize, 15);
+        this.ctx.fillStyle = posterGradient;
+        this.ctx.fill();
+        
+        // Add movie icon in poster area
+        this.ctx.shadowColor = 'transparent';
+        this.ctx.fillStyle = '#ffffff20';
+        this.ctx.font = `${size * 0.2}px Arial`;
+        this.ctx.textAlign = 'center';
+        this.ctx.fillText('🎬', size / 2, posterY + posterSize / 2);
+        
+        // Draw movie title in poster area
+        this.ctx.font = `bold ${size * 0.08}px Arial`;
+        this.ctx.fillStyle = '#ffffff';
+        this.wrapText(
+            movie.title || 'Unknown Title',
+            size / 2,
+            posterY + posterSize / 2 + size * 0.1,
+            posterSize - 40,
+            size * 0.09
+        );
+        
+        this.ctx.restore();
+        
+        // Reset shadow
+        this.ctx.shadowColor = 'transparent';
+
+        // Draw rating and info below poster
+        const infoY = posterY + posterSize + 40;
+        
+        if (includeRating && movie.vote_average) {
+            this.ctx.font = `${size * 0.04}px Arial`;
+            this.ctx.fillStyle = '#ffd700';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText(`★ ${movie.vote_average.toFixed(1)}/10`, size / 2, infoY);
+        }
+        
+        // Draw genres if available
+        if (movie.genres && movie.genres.length > 0) {
+            this.ctx.font = `${size * 0.025}px Arial`;
+            this.ctx.fillStyle = '#ffffffcc';
+            const genreText = movie.genres.slice(0, 2).map(g => g.name).join(' • ');
+            this.ctx.fillText(genreText, size / 2, infoY + 40);
+        }
+        
+        // Draw link at the bottom
+        const linkY = size - 80;
+        this.ctx.font = `${size * 0.025}px Arial`;
+        this.ctx.fillStyle = '#ffffff';
+        this.ctx.fillText('whichmovieto.watch?movie=' + movie.id, size / 2, linkY);
+
+        // Draw brand
+        this.ctx.font = `${size * 0.025}px Arial`;
+        this.ctx.fillStyle = '#ffffff99';
+        this.ctx.fillText(brandName, size / 2, size - 30);
 
         return this.canvas;
     }

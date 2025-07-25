@@ -2145,3 +2145,126 @@ body.light-mode .trending-subtitle {
         transform: translateY(0);
     }
 }
+
+/* Minimal Share Buttons */
+.share-container-minimal {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.share-label {
+    font-size: 0.9rem;
+    color: var(--text);
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+.share-buttons-minimal {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.share-btn-minimal {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.share-btn-minimal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.share-btn-minimal::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.share-btn-minimal:hover::before {
+    opacity: 1;
+}
+
+/* Social Media Brand Colors */
+.share-btn-minimal.facebook:hover {
+    background: #1877f2;
+    color: white;
+}
+
+.share-btn-minimal.twitter:hover {
+    background: #1da1f2;
+    color: white;
+}
+
+.share-btn-minimal.instagram:hover {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    color: white;
+}
+
+.share-btn-minimal.whatsapp:hover {
+    background: #25d366;
+    color: white;
+}
+
+.share-btn-minimal.reddit:hover {
+    background: #ff4500;
+    color: white;
+}
+
+.share-btn-minimal.link:hover {
+    background: var(--accent);
+    color: white;
+}
+
+/* Light mode adjustments */
+body.light-mode .share-container-minimal {
+    border-top-color: rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .share-btn-minimal {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--text);
+}
+
+body.light-mode .share-btn-minimal:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .share-container-minimal {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        gap: 0.75rem;
+    }
+    
+    .share-btn-minimal {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .share-buttons-minimal {
+        gap: 0.4rem;
+    }
+}

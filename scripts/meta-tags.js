@@ -432,48 +432,27 @@ function createShareButtons(movie) {
     window.handleWhatsAppShare = handleWhatsAppShare;
     
     return `
-        <div class="share-container">
-            <div class="share-header">
-                <i class="fas fa-share-alt"></i>
-                <span>Share this movie</span>
-            </div>
-            <div class="share-buttons">
-                <button onclick="handleFacebookShare()" class="share-btn facebook" title="Share on Facebook">
+        <div class="share-container-minimal">
+            <div class="share-label">Share:</div>
+            <div class="share-buttons-minimal">
+                <button onclick="handleFacebookShare()" class="share-btn-minimal facebook" title="Share on Facebook" aria-label="Share on Facebook">
                     <i class="fab fa-facebook-f"></i>
-                    <span class="share-label">Facebook</span>
                 </button>
-                <a href="${shareUrls.twitter}" target="_blank" rel="noopener" class="share-btn twitter" title="Share on Twitter">
+                <a href="${shareUrls.twitter}" target="_blank" rel="noopener" class="share-btn-minimal twitter" title="Share on X (Twitter)" aria-label="Share on X">
                     <i class="fab fa-twitter"></i>
-                    <span class="share-label">Twitter</span>
                 </a>
-                <button onclick="handleInstagramShare()" class="share-btn instagram" title="Share on Instagram">
+                <button onclick="handleInstagramShare()" class="share-btn-minimal instagram" title="Share on Instagram" aria-label="Share on Instagram">
                     <i class="fab fa-instagram"></i>
-                    <span class="share-label">Instagram</span>
                 </button>
-                <button onclick="handleWhatsAppShare()" class="share-btn whatsapp" title="Share on WhatsApp">
+                <button onclick="handleWhatsAppShare()" class="share-btn-minimal whatsapp" title="Share on WhatsApp" aria-label="Share on WhatsApp">
                     <i class="fab fa-whatsapp"></i>
-                    <span class="share-label">WhatsApp</span>
                 </button>
-                <a href="${shareUrls.telegram}" target="_blank" rel="noopener" class="share-btn telegram" title="Share on Telegram">
-                    <i class="fab fa-telegram-plane"></i>
-                    <span class="share-label">Telegram</span>
-                </a>
-                <a href="${shareUrls.reddit}" target="_blank" rel="noopener" class="share-btn reddit" title="Share on Reddit">
+                <a href="${shareUrls.reddit}" target="_blank" rel="noopener" class="share-btn-minimal reddit" title="Share on Reddit" aria-label="Share on Reddit">
                     <i class="fab fa-reddit-alien"></i>
-                    <span class="share-label">Reddit</span>
                 </a>
-                <a href="${shareUrls.linkedin}" target="_blank" rel="noopener" class="share-btn linkedin" title="Share on LinkedIn">
-                    <i class="fab fa-linkedin-in"></i>
-                    <span class="share-label">LinkedIn</span>
-                </a>
-                <a href="${shareUrls.pinterest}" target="_blank" rel="noopener" class="share-btn pinterest" title="Share on Pinterest">
-                    <i class="fab fa-pinterest-p"></i>
-                    <span class="share-label">Pinterest</span>
-                </a>
-                <a href="${shareUrls.email}" class="share-btn email" title="Share via Email">
-                    <i class="fas fa-envelope"></i>
-                    <span class="share-label">Email</span>
-                </a>
+                <button onclick="navigator.clipboard.writeText('${window.location.origin}?movie=${movie.id}').then(() => showToast('Link copied!', 'success')).catch(() => showToast('Failed to copy', 'error'))" class="share-btn-minimal link" title="Copy Link" aria-label="Copy Link">
+                    <i class="fas fa-link"></i>
+                </button>
             </div>
         </div>
     `;
