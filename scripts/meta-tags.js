@@ -426,14 +426,39 @@ function createShareButtons(movie) {
         }
     };
     
+    // Function to handle email share
+    const handleEmailShare = () => {
+        window.location.href = shareUrls.email;
+    };
+    
+    // Function to handle copy link
+    const handleCopyLink = async () => {
+        const movieLink = `${window.location.origin}?movie=${movie.id}`;
+        try {
+            await navigator.clipboard.writeText(movieLink);
+            showToast('Link copied to clipboard!', 'success');
+        } catch (err) {
+            // Fallback for older browsers
+            const input = document.createElement('input');
+            input.value = movieLink;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            showToast('Link copied!', 'success');
+        }
+    };
+    
     // Attach handlers to window for onclick
     window.handleInstagramShare = handleInstagramShare;
     window.handleFacebookShare = handleFacebookShare;
     window.handleWhatsAppShare = handleWhatsAppShare;
+    window.handleEmailShare = handleEmailShare;
+    window.handleCopyLink = handleCopyLink;
     
     return `
         <div class="share-container-minimal">
-            <div class="share-label">Share:</div>
+            <div class="share-label">Share Movie:</div>
             <div class="share-buttons-minimal">
                 <button onclick="handleFacebookShare()" class="share-btn-minimal facebook" title="Share on Facebook" aria-label="Share on Facebook">
                     <i class="fab fa-facebook-f"></i>
@@ -450,7 +475,19 @@ function createShareButtons(movie) {
                 <a href="${shareUrls.reddit}" target="_blank" rel="noopener" class="share-btn-minimal reddit" title="Share on Reddit" aria-label="Share on Reddit">
                     <i class="fab fa-reddit-alien"></i>
                 </a>
-                <button onclick="navigator.clipboard.writeText('${window.location.origin}?movie=${movie.id}').then(() => showToast('Link copied!', 'success')).catch(() => showToast('Failed to copy', 'error'))" class="share-btn-minimal link" title="Copy Link" aria-label="Copy Link">
+                <a href="${shareUrls.telegram}" target="_blank" rel="noopener" class="share-btn-minimal telegram" title="Share on Telegram" aria-label="Share on Telegram">
+                    <i class="fab fa-telegram-plane"></i>
+                </a>
+                <a href="${shareUrls.linkedin}" target="_blank" rel="noopener" class="share-btn-minimal linkedin" title="Share on LinkedIn" aria-label="Share on LinkedIn">
+                    <i class="fab fa-linkedin-in"></i>
+                </a>
+                <a href="${shareUrls.pinterest}" target="_blank" rel="noopener" class="share-btn-minimal pinterest" title="Share on Pinterest" aria-label="Share on Pinterest">
+                    <i class="fab fa-pinterest-p"></i>
+                </a>
+                <button onclick="handleEmailShare()" class="share-btn-minimal email" title="Share via Email" aria-label="Share via Email">
+                    <i class="fas fa-envelope"></i>
+                </button>
+                <button onclick="handleCopyLink()" class="share-btn-minimal link" title="Copy Link" aria-label="Copy Link">
                     <i class="fas fa-link"></i>
                 </button>
             </div>
