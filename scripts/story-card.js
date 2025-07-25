@@ -26,10 +26,33 @@ class StoryCardGenerator {
      */
     async loadImage(src) {
         return new Promise((resolve, reject) => {
-            // Due to CSP and CORS restrictions, we'll always use the styled placeholder
-            // This ensures the canvas is never tainted and can be exported
-            console.log('Using styled placeholder for consistent behavior');
-            this.createPlaceholderImage(resolve);
+            const img = new Image();
+            
+            // For TMDB images, we'll use a CORS proxy
+            if (src && src.includes('image.tmdb.org')) {
+                // Use CORS proxy to load TMDB images
+                const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(src)}`;
+                
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    console.log('Successfully loaded movie poster via proxy');
+                    resolve(img);
+                };
+                img.onerror = () => {
+                    console.log('Failed to load poster, using stylized placeholder');
+                    this.createPlaceholderImage(resolve);
+                };
+                img.src = proxyUrl;
+            } else if (src) {
+                // For local images or other sources
+                img.crossOrigin = 'anonymous';
+                img.onload = () => resolve(img);
+                img.onerror = () => this.createPlaceholderImage(resolve);
+                img.src = src;
+            } else {
+                // No source provided
+                this.createPlaceholderImage(resolve);
+            }
         });
     }
 
@@ -203,62 +226,81 @@ class StoryCardGenerator {
         }
         this.ctx.globalAlpha = 1;
 
-        // Create a stylized poster area without loading external images
+        // Try to load the actual movie poster
         const posterWidth = 800;
         const posterHeight = 1200;
         const posterX = (this.cardWidth - posterWidth) / 2;
         const posterY = 200;
         
-        // Always use the stylized design to avoid CSP/CORS issues
-        const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterWidth, posterY + posterHeight);
-        if (theme === 'dark') {
-            posterGradient.addColorStop(0, '#2d3561');
-            posterGradient.addColorStop(1, '#0f3460');
-        } else {
-            posterGradient.addColorStop(0, '#f8b195');
-            posterGradient.addColorStop(1, '#c06c84');
+        try {
+            // Attempt to load the movie poster
+            if (movie.poster_path) {
+                const posterUrl = `https://image.tmdb.org/t/p/w780${movie.poster_path}`;
+                const posterImg = await this.loadImage(posterUrl);
+                
+                // Draw poster shadow
+                this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+                this.ctx.shadowBlur = 30;
+                this.ctx.shadowOffsetX = 0;
+                this.ctx.shadowOffsetY = 15;
+                
+                // Draw poster with rounded corners
+                this.ctx.save();
+                this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
+                this.ctx.clip();
+                this.ctx.drawImage(posterImg, posterX, posterY, posterWidth, posterHeight);
+                this.ctx.restore();
+                
+                // Reset shadow
+                this.ctx.shadowColor = 'transparent';
+            } else {
+                throw new Error('No poster path available');
+            }
+        } catch (error) {
+            console.log('Failed to load poster, using fallback design');
+            
+            // Fallback: Draw poster placeholder with gradient
+            const posterGradient = this.ctx.createLinearGradient(posterX, posterY, posterX + posterWidth, posterY + posterHeight);
+            if (theme === 'dark') {
+                posterGradient.addColorStop(0, '#2d3561');
+                posterGradient.addColorStop(1, '#0f3460');
+            } else {
+                posterGradient.addColorStop(0, '#f8b195');
+                posterGradient.addColorStop(1, '#c06c84');
+            }
+            
+            // Draw poster shadow
+            this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            this.ctx.shadowBlur = 30;
+            this.ctx.shadowOffsetX = 0;
+            this.ctx.shadowOffsetY = 15;
+            
+            // Draw poster background
+            this.ctx.save();
+            this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
+            this.ctx.fillStyle = posterGradient;
+            this.ctx.fill();
+            
+            // Add movie icon in poster area
+            this.ctx.shadowColor = 'transparent';
+            this.ctx.fillStyle = '#ffffff20';
+            this.ctx.font = '300px Arial';
+            this.ctx.textAlign = 'center';
+            this.ctx.fillText('🎬', this.cardWidth / 2, posterY + posterHeight / 2 + 50);
+            
+            // Draw movie title in poster area
+            this.ctx.font = 'bold 96px Arial';
+            this.ctx.fillStyle = '#ffffff';
+            const titleInPoster = this.wrapText(
+                movie.title || 'Unknown Title',
+                this.cardWidth / 2,
+                posterY + posterHeight / 2 + 150,
+                posterWidth - 100,
+                110
+            );
+            
+            this.ctx.restore();
         }
-        
-        // Draw poster shadow
-        this.ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        this.ctx.shadowBlur = 30;
-        this.ctx.shadowOffsetX = 0;
-        this.ctx.shadowOffsetY = 15;
-        
-        // Draw poster background
-        this.ctx.save();
-        this.roundRect(posterX, posterY, posterWidth, posterHeight, 20);
-        this.ctx.fillStyle = posterGradient;
-        this.ctx.fill();
-        
-        // Add movie icon in poster area
-        this.ctx.shadowColor = 'transparent';
-        this.ctx.fillStyle = '#ffffff20';
-        this.ctx.font = '300px Arial';
-        this.ctx.textAlign = 'center';
-        this.ctx.fillText('🎬', this.cardWidth / 2, posterY + posterHeight / 2 - 100);
-        
-        // Draw movie title in poster area
-        this.ctx.font = 'bold 80px Arial';
-        this.ctx.fillStyle = '#ffffff';
-        this.ctx.textAlign = 'center';
-        const titleLines = this.wrapText(
-            movie.title || 'Unknown Title',
-            this.cardWidth / 2,
-            posterY + posterHeight / 2 + 50,
-            posterWidth - 100,
-            90
-        );
-        
-        // Add release year below title if available
-        if (movie.release_date) {
-            const year = new Date(movie.release_date).getFullYear();
-            this.ctx.font = '60px Arial';
-            this.ctx.fillStyle = '#ffffffcc';
-            this.ctx.fillText(year, this.cardWidth / 2, posterY + posterHeight / 2 + 50 + (titleLines * 90) + 40);
-        }
-        
-        this.ctx.restore();
         
         // Reset shadow
         this.ctx.shadowColor = 'transparent';
@@ -360,60 +402,82 @@ class StoryCardGenerator {
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, size, size);
 
-        // Create a stylized poster area without loading external images
+        // Try to load actual movie poster for square card
         const posterSize = size * 0.6;
         const posterX = (size - posterSize) / 2;
         const posterY = size * 0.1;
         
-        // Always use stylized design to avoid CSP/CORS issues
-        const posterGradient = ctx.createLinearGradient(posterX, posterY, posterX + posterSize, posterY + posterSize);
-        if (theme === 'dark') {
-            posterGradient.addColorStop(0, '#2d3561');
-            posterGradient.addColorStop(1, '#0f3460');
-        } else {
-            posterGradient.addColorStop(0, '#f8b195');
-            posterGradient.addColorStop(1, '#c06c84');
+        let posterLoaded = false;
+        
+        // Attempt to load the actual poster
+        if (movie.poster_path) {
+            try {
+                console.log('Attempting to load poster for square card...');
+                const posterUrl = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                const posterImg = await this.loadImage(posterUrl);
+                
+                // If we got here, the image loaded successfully
+                ctx.save();
+                this.drawRoundedRect(ctx, posterX, posterY, posterSize, posterSize, 15);
+                ctx.clip();
+                
+                // Draw the poster image
+                ctx.drawImage(posterImg, posterX, posterY, posterSize, posterSize);
+                ctx.restore();
+                
+                posterLoaded = true;
+                console.log('Poster loaded successfully for square card!');
+            } catch (error) {
+                console.log('Failed to load poster for square card:', error);
+                posterLoaded = false;
+            }
         }
         
-        // Draw poster shadow
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        ctx.shadowBlur = 20;
-        ctx.shadowOffsetY = 10;
-        
-        // Draw poster background
-        ctx.save();
-        this.drawRoundedRect(ctx, posterX, posterY, posterSize, posterSize, 15);
-        ctx.fillStyle = posterGradient;
-        ctx.fill();
-        
-        // Add movie icon in poster area
-        ctx.shadowColor = 'transparent';
-        ctx.fillStyle = '#ffffff20';
-        ctx.font = `${size * 0.15}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.fillText('🎬', size / 2, posterY + posterSize / 2 - size * 0.05);
-        
-        // Draw movie title in poster area
-        ctx.font = `bold ${size * 0.07}px Arial`;
-        ctx.fillStyle = '#ffffff';
-        this.wrapTextOnCanvas(
-            ctx,
-            movie.title || 'Unknown Title',
-            size / 2,
-            posterY + posterSize / 2 + size * 0.08,
-            posterSize - 40,
-            size * 0.08
-        );
-        
-        // Add year if available
-        if (movie.release_date) {
-            const year = new Date(movie.release_date).getFullYear();
-            ctx.font = `${size * 0.04}px Arial`;
-            ctx.fillStyle = '#ffffffcc';
-            ctx.fillText(year, size / 2, posterY + posterSize - size * 0.05);
+        // If poster didn't load, create stylized placeholder
+        if (!posterLoaded) {
+            console.log('Using stylized placeholder for square card');
+            // Draw poster placeholder with gradient
+            const posterGradient = ctx.createLinearGradient(posterX, posterY, posterX + posterSize, posterY + posterSize);
+            if (theme === 'dark') {
+                posterGradient.addColorStop(0, '#2d3561');
+                posterGradient.addColorStop(1, '#0f3460');
+            } else {
+                posterGradient.addColorStop(0, '#f8b195');
+                posterGradient.addColorStop(1, '#c06c84');
+            }
+            
+            // Draw poster shadow
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = 20;
+            ctx.shadowOffsetY = 10;
+            
+            // Draw poster background
+            ctx.save();
+            this.drawRoundedRect(ctx, posterX, posterY, posterSize, posterSize, 15);
+            ctx.fillStyle = posterGradient;
+            ctx.fill();
+            
+            // Add movie icon in poster area
+            ctx.shadowColor = 'transparent';
+            ctx.fillStyle = '#ffffff20';
+            ctx.font = `${size * 0.2}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('🎬', size / 2, posterY + posterSize / 2);
+            
+            // Draw movie title in poster area
+            ctx.font = `bold ${size * 0.08}px Arial`;
+            ctx.fillStyle = '#ffffff';
+            this.wrapTextOnCanvas(
+                ctx,
+                movie.title || 'Unknown Title',
+                size / 2,
+                posterY + posterSize / 2 + size * 0.1,
+                posterSize - 40,
+                size * 0.09
+            );
+            
+            ctx.restore();
         }
-        
-        ctx.restore();
         
         // Reset shadow
         ctx.shadowColor = 'transparent';
