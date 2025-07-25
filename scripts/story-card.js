@@ -27,9 +27,18 @@ class StoryCardGenerator {
     async loadImage(src) {
         return new Promise((resolve, reject) => {
             const img = new Image();
-            img.crossOrigin = 'use-credentials';
+            
+            // Try without CORS first
             img.onload = () => resolve(img);
-            img.onerror = reject;
+            img.onerror = () => {
+                // If CORS fails, try with proxy
+                const proxyImg = new Image();
+                proxyImg.crossOrigin = 'anonymous';
+                proxyImg.onload = () => resolve(proxyImg);
+                proxyImg.onerror = reject;
+                // Use a CORS proxy service
+                proxyImg.src = `https://corsproxy.io/?${encodeURIComponent(src)}`;
+            };
             img.src = src;
         });
     }
