@@ -391,47 +391,8 @@ class AdvancedAnimations {
     }
 
     initCursorEffects() {
-        const cursor = document.createElement('div');
-        cursor.className = 'custom-cursor';
-        document.body.appendChild(cursor);
-
-        const cursorTrail = document.createElement('div');
-        cursorTrail.className = 'cursor-trail';
-        document.body.appendChild(cursorTrail);
-
-        let mouseX = 0, mouseY = 0;
-        let cursorX = 0, cursorY = 0;
-        let trailX = 0, trailY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
-
-        // Smooth cursor animation
-        gsap.ticker.add(() => {
-            cursorX += (mouseX - cursorX) * 0.1;
-            cursorY += (mouseY - cursorY) * 0.1;
-            
-            trailX += (mouseX - trailX) * 0.05;
-            trailY += (mouseY - trailY) * 0.05;
-
-            gsap.set(cursor, { x: cursorX, y: cursorY });
-            gsap.set(cursorTrail, { x: trailX, y: trailY });
-        });
-
-        // Interactive hover states
-        document.querySelectorAll('button, a, .movie-card').forEach(element => {
-            element.addEventListener('mouseenter', () => {
-                gsap.to(cursor, { scale: 1.5, duration: 0.3 });
-                gsap.to(cursorTrail, { scale: 1.5, duration: 0.3 });
-            });
-            
-            element.addEventListener('mouseleave', () => {
-                gsap.to(cursor, { scale: 1, duration: 0.3 });
-                gsap.to(cursorTrail, { scale: 1, duration: 0.3 });
-            });
-        });
+        // Removed custom cursor for better usability
+        // Keep default cursor visible
     }
 
     initDynamicGradients() {
