@@ -3,8 +3,8 @@
 
 /* Animate-in class for entrance animations */
 .movie-card {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: translateY(0);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -480,8 +480,8 @@ html {
 
 /* Fade in scroll elements */
 .fade-in-scroll {
-    opacity: 0;
-    transform: translateY(30px);
+    opacity: 1;
+    transform: translateY(0);
 }
 
 /* Dynamic color variable */

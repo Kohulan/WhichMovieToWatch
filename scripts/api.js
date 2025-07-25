@@ -1,6 +1,8 @@
 // API Configuration and Constants
-const API_KEY = '381b2cb115fa9f1cdd779d03f7627d1a'; // Replace with your TMDB API key
-const OMDB_API_KEY = '3326e18b'; // Replace with your OMDB API key
+// For local development: Replace the placeholders below with your actual API keys
+// For deployment: These will be automatically replaced by GitHub Actions
+const API_KEY = window.TMDB_API_KEY || '381b2cb115fa9f1cdd779d03f7627d1a'; // Replace with your TMDB API key
+const OMDB_API_KEY = window.OMDB_API_KEY || '3326e18b'; // Replace with your OMDB API key
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
 
