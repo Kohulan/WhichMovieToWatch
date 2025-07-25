@@ -557,4 +557,9 @@ class StoryCardGenerator {
 }
 
 // Create global instance
-window.storyCardGenerator = new StoryCardGenerator();
+try {
+    window.storyCardGenerator = new StoryCardGenerator();
+    console.log('Story card generator initialized successfully');
+} catch (error) {
+    console.error('Failed to initialize story card generator:', error);
+}

@@ -347,6 +347,13 @@ function createShareButtons(movie) {
         showToast('Creating your Instagram story...', 'info');
 
         try {
+            // Check if story card generator is available
+            if (!window.storyCardGenerator) {
+                console.error('Story card generator not loaded');
+                showToast('Share feature is loading, please try again in a moment.', 'info');
+                return;
+            }
+            
             // Fetch and generate the story card
             const storyCard = await window.storyCardGenerator.generateStoryCard(movie, {
                 theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
@@ -383,6 +390,15 @@ function createShareButtons(movie) {
         showToast('Creating your share card...', 'info');
         
         try {
+            // Check if story card generator is available
+            if (!window.storyCardGenerator) {
+                console.error('Story card generator not loaded');
+                showToast('Share feature is loading, please try again in a moment.', 'info');
+                // Fallback to regular share
+                window.open(shareUrls.facebook, '_blank');
+                return;
+            }
+            
             const squareCard = await window.storyCardGenerator.generateSquareCard(movie, {
                 theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
                 includeRating: true
@@ -407,6 +423,14 @@ function createShareButtons(movie) {
         showToast('Creating your share card...', 'info');
         
         try {
+            // Check if story card generator is available
+            if (!window.storyCardGenerator) {
+                console.error('Story card generator not loaded');
+                // Fallback to regular share
+                window.open(shareUrls.whatsapp, '_blank');
+                return;
+            }
+            
             const storyCard = await window.storyCardGenerator.generateStoryCard(movie, {
                 theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
                 includeRating: true,
