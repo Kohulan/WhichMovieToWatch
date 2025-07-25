@@ -280,6 +280,13 @@ class StoryCardGenerator {
             
             // Calculate poster dimensions for square layout
             const posterSize = size * 0.6;
+            
+            // Verify movie.poster_path exists to fetch actual poster
+            if (!movie.poster_path) {
+                console.error('No poster path available for this movie.');
+                showToast('No poster available to generate story.', 'warning');
+                return null;
+            }
             const posterX = (size - posterSize) / 2;
             const posterY = size * 0.1;
             

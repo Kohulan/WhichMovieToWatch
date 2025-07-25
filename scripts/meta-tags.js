@@ -345,6 +345,38 @@ function createShareButtons(movie) {
     // Function to handle Instagram share with story card
     const handleInstagramShare = async () => {
         showToast('Creating your Instagram story...', 'info');
+
+        try {
+            // Fetch and generate the story card
+            const storyCard = await window.storyCardGenerator.generateStoryCard(movie, {
+                theme: document.body.classList.contains('light-mode') ? 'light' : 'dark',
+                includePoster: true,  // Added support for poster
+                includeRating: true,
+                includeGenres: true
+            });
+
+            if (storyCard) {
+                await window.storyCardGenerator.downloadCard(storyCard, `${movie.title.replace(/[^a-z0-9]/gi, '_')}_instagram.png`);
+                showToast('Story card created and downloaded for Instagram.', 'success');
+            }
+
+            // Copy the link text for easy sharing
+            const movieLink = `${window.location.origin}?movie=${movie.id}`;
+            const shareText = `Check out ${movieTitle} on Which Movie To Watch!\n${movieLink}`;
+
+            // Try to copy text after a delay
+            setTimeout(() => {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('Link copied! Paste in Instagram.', 'success');
+                }).catch((err) => {
+                    console.log('Could not copy link text:', err);
+                });
+            }, 1000);
+        } catch (error) {
+            console.error('Error creating Instagram story card:', error);
+            showToast('Error creating Instagram story. Please try again.', 'error');
+        }
+        showToast('Creating your Instagram story...', 'info');
         
         try {
             // Generate story card
