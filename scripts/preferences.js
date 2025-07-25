@@ -89,12 +89,42 @@ function handleDinnerTimePreference(movieId, liked) {
    closeDinnerTimeModal();
 }
 
-function handleLove(movieId) {
-   if (!preferences.lovedMovies.includes(movieId)) {
-      preferences.lovedMovies.push(movieId);
-      localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
+async function handleLove(movieId) {
+   try {
+      if (!preferences.lovedMovies.includes(movieId)) {
+         preferences.lovedMovies.push(movieId);
+         localStorage.setItem('lovedMovies', JSON.stringify(preferences.lovedMovies));
+      }
+      
+      // Update genre preferences
+      await updateGenrePreferences(movieId);
+      
+      // Show toast and fetch recommendations
+      showToast('Great choice! Here are similar movies you might love');
+      
+      // Fetch similar movies
+      const response = await fetch(
+         `${BASE_URL}/movie/${movieId}/similar?api_key=${API_KEY}`
+      );
+      const data = await response.json();
+      
+      if (data.results && data.results.length > 0) {
+         const filteredMovies = data.results
+            .filter(movie => !hasMovieBeenShown(movie.id))
+            .slice(0, 5);
+         
+         if (filteredMovies.length > 0) {
+            // Display recommendations
+            const recommendationsSection = document.getElementById('recommendationsSection');
+            if (recommendationsSection && window.displayRecommendations) {
+               window.displayRecommendations(filteredMovies, '❤️ Because you loved this movie');
+            }
+         }
+      }
+   } catch (error) {
+      console.error('Error handling love:', error);
+      showToast('Failed to update preferences');
    }
-   // Fetch and display similar movies will be handled by the calling function
 }
 
 function handleWatched(movieId) {
@@ -115,7 +145,11 @@ function handleNotInterested(movieId) {
    fetchRandomMovie();
 }
 
+// Make handler functions globally accessible for HTML onclick handlers
 window.handleNotInterested = handleNotInterested;
+window.handleLove = handleLove;
+window.handleWatched = handleWatched;
+window.handleDinnerTimePreference = handleDinnerTimePreference;
 
 // Genre preference handling
 function updateGenrePreferences(movieId) {
