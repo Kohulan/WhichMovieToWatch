@@ -1,0 +1,537 @@
+/* Visual Enhancements CSS */
+/* Advanced animations and effects for WhichMovieToWatch */
+
+/* Animate-in class for entrance animations */
+.movie-card {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.movie-card.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Enhanced parallax effect */
+.movie-card {
+    transform-style: preserve-3d;
+    transition: transform 0.1s ease-out;
+}
+
+.movie-card:hover {
+    z-index: 10;
+}
+
+/* Magnetic button enhancements */
+.btn {
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Ripple animation */
+@keyframes ripple-animation {
+    from {
+        transform: scale(0);
+        opacity: 1;
+    }
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(0);
+    animation: ripple-animation 0.6s ease-out;
+    pointer-events: none;
+}
+
+/* Particle effects */
+.particle {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform, opacity;
+}
+
+/* Enhanced poster hover effect */
+.poster {
+    position: relative;
+    overflow: hidden;
+}
+
+.poster::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+    );
+    transition: left 0.5s;
+}
+
+.poster:hover::before {
+    left: 100%;
+}
+
+/* Cinematic fade-in */
+@keyframes cinematicFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        filter: blur(10px);
+    }
+    50% {
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.cinematic-fade {
+    animation: cinematicFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Glowing effect for ratings */
+.rating-item {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.rating-item::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24);
+    border-radius: inherit;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.3s ease;
+    filter: blur(5px);
+}
+
+.rating-item:hover::before {
+    opacity: 0.7;
+    animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+    0%, 100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+}
+
+/* Enhanced genre tags */
+.genre {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.genre::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transition: left 0.5s;
+    z-index: -1;
+}
+
+.genre:hover::before {
+    left: 100%;
+}
+
+/* Smooth color transitions */
+.movie-card {
+    --accent-color: var(--accent);
+    transition: box-shadow 0.5s ease;
+}
+
+/* Enhanced streaming provider hover */
+.provider {
+    position: relative;
+    overflow: hidden;
+}
+
+.provider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3), transparent);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.provider:hover::after {
+    width: 100px;
+    height: 100px;
+}
+
+/* Loading state enhancements */
+.loading {
+    position: relative;
+}
+
+.loading::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, transparent, var(--accent));
+    transform: translate(-50%, -50%);
+    animation: loadingPulse 2s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.3;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.1;
+    }
+}
+
+/* Enhanced button group hover effect */
+.action-buttons {
+    position: relative;
+}
+
+.action-buttons::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.05),
+        transparent
+    );
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+    pointer-events: none;
+}
+
+.action-buttons:hover::before {
+    width: 120%;
+    height: 200%;
+}
+
+/* Text shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+.shimmer-text {
+    background: linear-gradient(
+        90deg,
+        var(--text) 25%,
+        rgba(255, 255, 255, 0.8) 50%,
+        var(--text) 75%
+    );
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Perspective hover for cards */
+.movie-card {
+    transform-origin: center center;
+    will-change: transform;
+}
+
+/* Smooth transitions for dynamic color changes */
+* {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Enhanced focus states */
+button:focus,
+select:focus,
+input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
+}
+
+/* Floating animation for special elements */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.floating {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Enhanced toast notifications */
+.toast {
+    animation: slideInRight 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Staggered animations for lists */
+.recommendations .movie-card:nth-child(1) { animation-delay: 0.1s; }
+.recommendations .movie-card:nth-child(2) { animation-delay: 0.2s; }
+.recommendations .movie-card:nth-child(3) { animation-delay: 0.3s; }
+.recommendations .movie-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Enhanced modal backdrop */
+.dinner-time-modal,
+.search-modal,
+.preference-modal {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.8);
+}
+
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Performance optimizations */
+.movie-card,
+.btn,
+.poster,
+.genre,
+.provider {
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* GSAP Animation Styles */
+.btn-bg-animation {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: currentColor;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Character animation for title */
+.char {
+    display: inline-block;
+    will-change: transform, opacity;
+}
+
+/* Custom cursor styles */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10000;
+    transform: translate(-50%, -50%);
+    transition: border-color 0.3s ease;
+    mix-blend-mode: difference;
+}
+
+.cursor-trail {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    opacity: 0.3;
+}
+
+/* Hide default cursor on supported browsers */
+@supports (cursor: none) {
+    body {
+        cursor: none;
+    }
+}
+
+/* Image placeholder for lazy loading */
+.image-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: inherit;
+}
+
+/* Ambient light effect */
+.ambient-light {
+    filter: blur(100px);
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+
+/* Heart particle styles */
+.heart-particle {
+    will-change: transform, opacity;
+}
+
+/* 3D card transforms */
+.movie-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Typewriter cursor */
+.typewriter::after {
+    content: '|';
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Advanced hover states */
+.movie-card:hover {
+    transform: translateZ(20px);
+}
+
+/* Fade in scroll elements */
+.fade-in-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+/* Dynamic color variable */
+.movie-card {
+    --dynamic-color: var(--accent);
+}
+
+/* Smooth image loading */
+img {
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+img.loaded {
+    animation: imageReveal 0.8s ease-out;
+}
+
+@keyframes imageReveal {
+    from {
+        clip-path: inset(100% 0 0 0);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* Advanced button states */
+.btn {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+    z-index: -1;
+}
+
+.btn:hover::before {
+    transform: translateX(100%);
+}
+
+/* Gradient animation for background */
+.gradient-background {
+    transition: background 3s ease;
+}
