@@ -21,6 +21,15 @@
   will-change: opacity, visibility;
 }
 
+body[data-theme="light"] .loading-container {
+  background: rgba(255, 255, 255, 0.95);
+}
+
+body[data-theme="light"] .loading-text,
+body[data-theme="light"] .quote-loading {
+  color: #1f2937;
+}
+
 .loading-container.active {
   opacity: 1;
   visibility: visible;
