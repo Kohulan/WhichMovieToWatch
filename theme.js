@@ -29,13 +29,6 @@ function initTheme() {
   const storedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   setTheme(storedTheme);
   
-  // Optional: Time-based theme switching
-  const hour = new Date().getHours();
-  if (hour >= 18 || hour < 6) {
-    setTheme('dark');
-  } else {
-    setTheme('light');
-  }
 }
 
 // Initialize the theme
