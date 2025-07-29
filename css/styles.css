@@ -2017,6 +2017,13 @@ body {
     color: var(--footer-link);
 }
 
+[data-theme="light"] .service-disclaimer,
+[data-theme="light"] .disclaimer-text {
+    color: #1f2937;
+    background: rgba(229, 231, 235, 0.9);
+    border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
 [data-theme="light"] .rating-item,
 [data-theme="light"] .meta-item {
     background: rgba(255, 255, 255, 0.95);
@@ -2144,12 +2151,23 @@ body.light-mode .movie-info h2 {
     background-clip: text;
 }
 
-body.light-mode .preference-header h2 {
+[data-theme="light"] .preference-header h2 {
     background: linear-gradient(135deg, #111827, #374151);
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
+.availability-modal {
+    padding: 0.5rem;
+    height: auto;
+}
+
+.availability-intro,
+.availability-results,
+.availability-note {
+    margin-bottom: 1rem;
+}
 body.light-mode .preference-section label {
     color: #1f2937;
     font-weight: 500;
