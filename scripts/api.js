@@ -32,6 +32,12 @@ async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
       const preferredProvider = localStorage.getItem('preferredProvider');
       const preferredGenre = localStorage.getItem('preferredGenre');
       const providerId = getProviderId(preferredProvider);
+      
+      console.log('Fetching movie with preferences:', {
+         provider: preferredProvider,
+         providerId: providerId,
+         genre: preferredGenre
+      });
 
       // Build the initial API URL with preferences
       let apiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`;
