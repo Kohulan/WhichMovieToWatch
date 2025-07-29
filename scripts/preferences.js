@@ -44,6 +44,21 @@ function clearOldMovieHistory() {
 function showPreferenceModal() {
    const modal = document.getElementById('preferenceModal');
    modal.style.display = 'block';
+   
+   // Load saved preferences
+   const savedProvider = localStorage.getItem('preferredProvider');
+   const savedGenre = localStorage.getItem('preferredGenre');
+   
+   if (savedProvider) {
+      document.getElementById('streamingProvider').value = savedProvider;
+   }
+   
+   if (savedGenre) {
+      document.getElementById('movieGenre').value = savedGenre;
+   }
+   
+   // Validate to enable/disable the start button
+   validatePreferences();
 }
 
 function hidePreferenceModal() {
