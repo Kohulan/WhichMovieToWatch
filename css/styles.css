@@ -39,28 +39,32 @@
 
 /* Light theme styles - Enhanced version */
 [data-theme="light"] {
-	--background: #f0f2f5;
-	--text: #1a1a1a;
-	--gradient-start: rgba(79, 172, 254, 0.15);
-	--gradient-end: rgba(240, 242, 245, 0.9);
-	--primary: #111827;
-	--secondary: #374151;
-	--card-bg: rgba(255, 255, 255, 0.95);
-	--button-bg: rgba(240, 240, 245, 0.95);
-	--button-hover: rgba(230, 230, 235, 0.95);
-	--border-color: rgba(0, 0, 0, 0.1);
-	--border-color-hover: rgba(0, 0, 0, 0.2);
-	--footer-bg: rgba(255, 255, 255, 0.95);
-	--footer-text: #333333;
-	--footer-link: #2563eb;
-	--footer-link-hover: #1d4ed8;
-	--footer-border: rgba(0, 0, 0, 0.1);
-	--footer-shadow: rgba(0, 0, 0, 0.1);
-	--love: #e11d48;
-	--like: #2563eb;
-	--watched: #4b5563;
-	--success: #047857;
-	--accent: #3b82f6;
+    --background: #f0f2f5;
+    --text: #1a1a1a;
+    --gradient-start: rgba(79, 172, 254, 0.15);
+    --gradient-end: rgba(240, 242, 245, 0.9);
+    --primary: #111827;
+    --secondary: #374151;
+    --card-bg: rgba(255, 255, 255, 0.95);
+    --button-bg: rgba(240, 240, 245, 0.95);
+    --button-hover: rgba(230, 230, 235, 0.95);
+    --border-color: rgba(0, 0, 0, 0.1);
+    --border-color-hover: rgba(0, 0, 0, 0.2);
+    --footer-bg: rgba(255, 255, 255, 0.95);
+    --footer-text: #333333;
+    --footer-link: #2563eb;
+    --footer-link-hover: #1d4ed8;
+    --footer-border: rgba(0, 0, 0, 0.1);
+    --footer-shadow: rgba(0, 0, 0, 0.1);
+    --love: #e11d48;
+    --like: #2563eb;
+    --watched: #4b5563;
+    --success: #047857;
+    --accent: #3b82f6;
+
+    /* New Enhancements */
+    --highlight: #ff6f61;
+    --gradient: linear-gradient(135deg, #f59e0b, #d97706);
 }
 
 /* Theme toggle button */
@@ -127,7 +131,7 @@
 
 /* Availability Modal Styles */
 .availability-modal {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.1));
+    background: var(--gradient);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
@@ -2309,24 +2313,86 @@ body.light-mode .search-result-rating {
 
 /* More Light Mode Improvements */
 body.light-mode .dinner-time-modal-content,
-body.light-mode .search-modal-content {
-    background: rgba(255, 255, 255, 0.95);
-    color: #1f2937;
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+/* Light mode availability modal rewrite */
+[data-theme="light"] .availability-modal {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 420px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-body.light-mode .search-bar {
-    background: rgba(245, 245, 245, 1);
+[data-theme="light"] .availability-modal .availability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem; 
     color: #1f2937;
 }
 
-body.light-mode .search-bar input {
-    color: #1f2937;
+[data-theme="light"] .availability-modal .availability-intro {
+    background: #e5e7eb;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    color: #6b7280;
 }
 
-body.light-mode .search-icon,
-body.light-mode .voice-icon {
+[data-theme="light"] .availability-modal .availability-results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+}
+
+[data-theme="light"] .availability-modal .availability-result {
+    background: #f9fafb;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: #111827;
+}
+
+[data-theme="light"] .availability-modal .availability-note {
+    background: #fef3c7;
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: #92400e;
+    margin-top: 1rem;
+}
+
+[data-theme="light"] .availability-modal .more-services-note {
+    background: #f3f4f6;
+    border-radius: 8px;
+    padding: 0.75rem;
     color: #4b5563;
+}
+
+[data-theme="light"] .availability-modal .btn-close-availability {
+    margin-top: 1rem;
+    background: #10b981;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+}
+
+.loading-container {
+    background: rgba(245, 247, 250, 0.8);
+    color: #2d3748;
+}
+
+.loading-text {
+    color: #4a5568;
 }
 
 body.light-mode .dinner-time-overview {
