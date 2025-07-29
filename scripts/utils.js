@@ -139,9 +139,24 @@ async function findMovieInOtherRegions(title, movieId) {
             }
         }
         
-        if (foundResults.length === 0) {
-            showToast('This movie is not available on major streaming platforms worldwide.');
-            return;
+if (foundResults.length === 0) {
+            // Check all streaming services if not available on major platforms
+            for (const [countryCode, countryProviders] of Object.entries(providers)) {
+                const streamingProviders = countryProviders.flatrate || [];
+                for (const provider of streamingProviders) {
+                    foundResults.push({
+                        country: getCountryName(countryCode),
+                        countryCode: countryCode,
+                        service: provider.provider_name,
+                        serviceId: provider.provider_id
+                    });
+                }
+            }
+            
+            if (foundResults.length === 0) {
+                showToast('No streaming information found for this movie worldwide.');
+                return;
+            }
         }
         
         // Group results by service
@@ -167,23 +182,89 @@ function displayMovieAvailabilityModal(movieTitle, availabilityData) {
     const modal = document.getElementById('dinnerTimeModal');
     const modalContent = document.querySelector('.dinner-time-modal-content');
     
-    let resultsHTML = '';
+    // Define major streaming services for categorization
+    const majorServices = ['Netflix', 'Disney Plus', 'Amazon Prime Video', 'HBO Max', 'Apple TV Plus', 'Paramount Plus', 'Hulu'];
+    
+    // Separate major and other services
+    const majorPlatforms = {};
+    const otherPlatforms = {};
     
     for (const [service, countries] of Object.entries(availabilityData)) {
-        const countryList = countries.slice(0, 5).join(', ') + (countries.length > 5 ? ` and ${countries.length - 5} more` : '');
-        resultsHTML += `
-            <div class="availability-result">
-                <div class="service-name">
-                    <i class="fas fa-tv"></i>
-                    ${service}
-                </div>
-                <div class="countries-list">
-                    <i class="fas fa-globe"></i>
-                    Available in: ${countryList}
-                </div>
-            </div>
-        `;
+        const isMajor = majorServices.some(major => service.toLowerCase().includes(major.toLowerCase()));
+        if (isMajor) {
+            majorPlatforms[service] = countries;
+        } else {
+            otherPlatforms[service] = countries;
+        }
     }
+    
+    // Create HTML for major platforms
+    let majorHTML = '';
+    if (Object.keys(majorPlatforms).length > 0) {
+        majorHTML = `
+            <div class="availability-category">
+                <h4 class="category-title"><i class="fas fa-star"></i> Major Streaming Platforms</h4>
+                <div class="category-results">
+        `;
+        for (const [service, countries] of Object.entries(majorPlatforms)) {
+            const countryList = countries.slice(0, 6).join(', ') + (countries.length > 6 ? ` and ${countries.length - 6} more` : '');
+            majorHTML += `
+                <div class="availability-result major-platform">
+                    <div class="service-name">
+                        <i class="fas fa-tv"></i>
+                        ${service}
+                    </div>
+                    <div class="countries-list">
+                        <i class="fas fa-globe"></i>
+                        Available in: ${countryList}
+                    </div>
+                </div>
+            `;
+        }
+        majorHTML += '</div></div>';
+    }
+    
+    // Create HTML for other platforms
+    let otherHTML = '';
+    if (Object.keys(otherPlatforms).length > 0) {
+        otherHTML = `
+            <div class="availability-category">
+                <h4 class="category-title"><i class="fas fa-broadcast-tower"></i> Other Streaming Services</h4>
+                <div class="category-results">
+        `;
+        
+        // Sort other platforms by number of countries (most available first)
+        const sortedOther = Object.entries(otherPlatforms).sort((a, b) => b[1].length - a[1].length);
+        
+        for (const [service, countries] of sortedOther.slice(0, 15)) { // Limit to 15 other services
+            const countryList = countries.slice(0, 4).join(', ') + (countries.length > 4 ? ` and ${countries.length - 4} more` : '');
+            otherHTML += `
+                <div class="availability-result other-platform">
+                    <div class="service-name">
+                        <i class="fas fa-play-circle"></i>
+                        ${service}
+                    </div>
+                    <div class="countries-list">
+                        <i class="fas fa-globe"></i>
+                        Available in: ${countryList}
+                    </div>
+                </div>
+            `;
+        }
+        
+        if (sortedOther.length > 15) {
+            otherHTML += `
+                <div class="more-services-note">
+                    <i class="fas fa-info-circle"></i>
+                    And ${sortedOther.length - 15} more streaming services worldwide...
+                </div>
+            `;
+        }
+        
+        otherHTML += '</div></div>';
+    }
+    
+    const resultsHTML = majorHTML + otherHTML;
     
     modalContent.innerHTML = `
         <div class="availability-modal">
