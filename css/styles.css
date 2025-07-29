@@ -195,7 +195,7 @@ background: linear-gradient(to right, #3b82f6, #6366f1);
 .close-btn {
     background: none;
     border: none;
-    color: white;
+    color: var(--text);
     font-size: 1.4rem;
     cursor: pointer;
     padding: 0.3rem;
@@ -1089,6 +1089,124 @@ body {
 	padding: 2rem;
 }
 
+/* Availability Modal Container */
+.availability-modal-container {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    animation: modalFadeIn 0.7s ease-out;
+}
+
+/* Animated modal appearance */
+@keyframes modalFadeIn {
+    0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.availability-modal {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    width: 90%;
+    max-width: 420px;
+}
+
+.availability-modal .availability-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px 24px 0 0;
+    color: var(--text);
+}
+
+.availability-modal .availability-header h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text);
+}
+
+.availability-modal .availability-intro {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 233, 193, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+    color: var(--text);
+    margin: 1rem 0;
+}
+
+.availability-modal .availability-result {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-radius: 12px;
+    margin: 0.5rem 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--text);
+}
+
+.availability-modal .availability-result:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.availability-modal .availability-note {
+    background: #ffe4b2;
+    padding: 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    color: #7f5539;
+}
+
+.availability-modal .btn-close-availability {
+    background: #ff6363;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    box-shadow: 0 4px 10px rgba(255, 99, 99, 0.3);
+    transition: background 0.3s ease, transform 0.3s ease;
+    margin-top: 1rem;
+}
+
+.availability-modal .btn-close-availability:hover {
+    background: #e55555;
+    transform: translateY(-5px);
+}
+
+[data-theme="light"] .availability-modal .btn-close-availability {
+    background: #059669;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .availability-modal .btn-close-availability:hover {
+    background: #047857;
+}
+
+.availability-modal .btn-close-availability:hover {
+    background: #e55555;
+    transform: translateY(-5px);
+}
+
 /* Search Modal */
 .search-modal {
 	display: none;
@@ -1259,10 +1377,7 @@ body {
 .dinner-time-info h2 {
 	font-size: 2.5rem;
 	margin-bottom: 1.5rem;
-	background: linear-gradient(135deg, #fff, #e2e8f0);
-	-webkit-background-clip: text;
-	background-clip: text;
-	-webkit-text-fill-color: transparent;
+	color: var(--text);
 }
 
 .dinner-time-meta {
@@ -1283,7 +1398,7 @@ body {
 	font-size: 1.1rem;
 	line-height: 1.8;
 	margin-bottom: 2rem;
-	color: rgba(248, 250, 252, 0.9);
+	color: var(--text);
 }
 
 .dinner-time-streaming {
@@ -2079,18 +2194,15 @@ body {
 
 /* Light mode availability modal */
 [data-theme="light"] .availability-modal {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.95));
-    box-shadow: 
-        0 30px 60px -15px rgba(0, 0, 0, 0.15),
-        0 15px 30px rgba(59, 130, 246, 0.08),
-        inset 0 0 0 1px rgba(59, 130, 246, 0.1);
-    border: 1px solid rgba(59, 130, 246, 0.2);
+    background: var(--button-bg);
+    border: 1px solid var(--border-color-hover);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="light"] .availability-intro {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(79, 70, 229, 0.05));
-    color: #1f2937;
-    border-left-color: #3b82f6;
+    background: #e5e7eb;
+    color: #6b7280;
+    border-left-color: #1f2937;
 }
 
 [data-theme="light"] .category-title {
@@ -2114,8 +2226,12 @@ body {
     color: #111827;
 }
 
-[data-theme="light"] .countries-list {
-    color: #4b5563;
+[data-theme="light"] .close-btn {
+    color: #1f2937;
+}
+
+[data-theme="light"] .close-btn:hover {
+    background: rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="light"] .availability-note {
@@ -2372,6 +2488,55 @@ body.light-mode .search-result-rating {
 
 /* More Light Mode Improvements */
 body.light-mode .dinner-time-modal-content,
+[data-theme="light"] .dinner-time-modal-content {
+    background: rgba(255, 255, 255, 0.98);
+    color: #1a1a1a;
+}
+
+/* Light mode dinner time modal styles */
+[data-theme="light"] .dinner-time-modal {
+    background: rgba(240, 242, 245, 0.95);
+}
+
+[data-theme="light"] .dinner-time-info h2 {
+    background: linear-gradient(135deg, #111827, #374151);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .dinner-time-meta span {
+    color: #4b5563;
+}
+
+[data-theme="light"] .dinner-time-overview {
+    color: #1f2937;
+}
+
+[data-theme="light"] .dinner-time-streaming {
+    color: #374151;
+}
+
+[data-theme="light"] .dinner-time-error {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .dinner-time-error p {
+    color: #4b5563;
+}
+
+[data-theme="light"] .dinner-time-loading {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .dinner-time-loading i {
+    color: #3b82f6;
+}
+
+[data-theme="light"] .no-streaming {
+    color: #4b5563;
+}
+
 /* Light mode availability modal rewrite */
 [data-theme="light"] .availability-modal {
     background: white;
@@ -2386,9 +2551,9 @@ body.light-mode .dinner-time-modal-content,
     justify-content: space-between;
     align-items: center;
     background: #f3f4f6;
-    border-radius: 8px;
+    border-radius: 24px 24px 0 0;
     padding: 1rem 1.5rem;
-    margin-bottom: 1rem; 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     color: #1f2937;
 }
 

@@ -179,8 +179,8 @@ if (foundResults.length === 0) {
 
 // Display modal showing movie availability in different regions
 function displayMovieAvailabilityModal(movieTitle, availabilityData) {
-    const modal = document.getElementById('dinnerTimeModal');
-    const modalContent = document.querySelector('.dinner-time-modal-content');
+    const modal = document.getElementById('availabilityModal');
+    const modalContent = document.querySelector('.availability-modal-content');
     
     // Define major streaming services for categorization
     const majorServices = ['Netflix', 'Disney Plus', 'Amazon Prime Video', 'HBO Max', 'Apple TV Plus', 'Paramount Plus', 'Hulu'];
@@ -270,7 +270,7 @@ function displayMovieAvailabilityModal(movieTitle, availabilityData) {
         <div class="availability-modal">
             <div class="availability-header">
                 <h2><i class="fas fa-search-location"></i> "${movieTitle}" Availability</h2>
-                <button class="close-btn" onclick="closeDinnerTimeModal()">
+                <button class="close-btn" onclick="closeAvailabilityModal()">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -288,7 +288,7 @@ function displayMovieAvailabilityModal(movieTitle, availabilityData) {
                     Consider using a VPN service or checking local streaming platforms.
                 </div>
                 <div class="availability-actions">
-                    <button onclick="closeDinnerTimeModal()" class="btn-close-availability">
+                    <button onclick="closeAvailabilityModal()" class="btn-close-availability">
                         <i class="fas fa-check"></i> Got it!
                     </button>
                 </div>
@@ -356,11 +356,19 @@ function closeDinnerTimeModal() {
    document.getElementById('dinnerTimeModal').style.display = 'none';
 }
 
+function closeAvailabilityModal() {
+   document.getElementById('availabilityModal').style.display = 'none';
+}
+
 // Window click handler for modals
 window.onclick = function (event) {
-   const modal = document.getElementById('dinnerTimeModal');
-   if (event.target === modal) {
+   const dinnerModal = document.getElementById('dinnerTimeModal');
+   const availabilityModal = document.getElementById('availabilityModal');
+   
+   if (event.target === dinnerModal) {
       closeDinnerTimeModal();
+   } else if (event.target === availabilityModal) {
+      closeAvailabilityModal();
    }
 };
 
@@ -763,8 +771,9 @@ function getCountryName(countryCode) {
 // Make displayRecommendations globally accessible for other scripts
 window.displayRecommendations = displayRecommendations;
 
-// Make function globally available
+// Make functions globally available
 window.findMovieInOtherRegions = findMovieInOtherRegions;
+window.closeAvailabilityModal = closeAvailabilityModal;
 
 // Export all utilities
 window.utils = {
