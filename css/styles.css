@@ -2294,6 +2294,65 @@ body.light-mode .preference-select:focus {
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
+/* Light mode search styles */
+[data-theme="light"] .search-modal {
+    background: rgba(240, 242, 245, 0.95);
+}
+
+[data-theme="light"] .search-modal-content {
+    background: transparent;
+}
+
+[data-theme="light"] .search-container {
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .search-bar {
+    background: #f3f4f6;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .search-bar input {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .search-bar input::placeholder {
+    color: #6b7280;
+}
+
+[data-theme="light"] .search-icon {
+    color: #4b5563;
+}
+
+[data-theme="light"] .search-result-card {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .search-result-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .search-result-title {
+    color: #111827;
+}
+
+[data-theme="light"] .search-result-year {
+    color: #6b7280;
+}
+
+[data-theme="light"] .search-result-rating {
+    color: #6b7280;
+}
+
+[data-theme="light"] .search-results-grid {
+    background: transparent;
+}
+
 body.light-mode .search-bar {
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
