@@ -173,3 +173,6 @@ cython_debug/
 
 # Local API configuration
 api-config.js
+
+# Demo files
+demo.html
