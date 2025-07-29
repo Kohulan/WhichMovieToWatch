@@ -136,7 +136,7 @@
     -webkit-backdrop-filter: blur(20px);
     border-radius: 24px;
     padding: 0;
-    max-width: 420px;
+    max-width: 600px;
     width: 90%;
     max-height: 85vh;
     overflow: hidden;
@@ -1091,7 +1091,7 @@ body {
 
 /* Availability Modal Container */
 .availability-modal-container {
-    display: flex;
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -1121,7 +1121,7 @@ body {
     position: relative;
     overflow: hidden;
     width: 90%;
-    max-width: 420px;
+    max-width: 600px;
 }
 
 .availability-modal .availability-header {
@@ -2375,9 +2375,17 @@ body.light-mode .movie-info h2 {
     background: linear-gradient(135deg, #111827, #374151);
     -webkit-background-clip: text;
     background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 [data-theme="light"] .preference-header h2 {
+    background: linear-gradient(135deg, #111827, #374151);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .movie-info h2 {
     background: linear-gradient(135deg, #111827, #374151);
     -webkit-background-clip: text;
     background-clip: text;
@@ -2542,7 +2550,7 @@ body.light-mode .dinner-time-modal-content,
     background: white;
     border-radius: 12px;
     padding: 1.5rem;
-    max-width: 420px;
+    max-width: 600px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
