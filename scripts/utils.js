@@ -89,6 +89,135 @@ function createProviderLink(provider) {
     `;
 }
 
+// Function to search movie availability in other regions and platforms
+async function findMovieInOtherRegions(title, movieId) {
+    try {
+        showToast('Searching for availability in other regions...');
+        
+        // Get the movie details with watch providers for all regions
+        const detailsResponse = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&append_to_response=watch/providers`);
+        const movieData = await detailsResponse.json();
+        const providers = movieData['watch/providers']?.results;
+        
+        if (!providers || Object.keys(providers).length === 0) {
+            showToast('No streaming information found for this movie worldwide.');
+            return;
+        }
+        
+        // Define major streaming services in priority order
+        const majorServices = [
+            { name: 'Netflix', id: 8 },
+            { name: 'Disney Plus', id: 337 },
+            { name: 'Amazon Prime Video', id: 9 },
+            { name: 'HBO Max', id: 384 },
+            { name: 'Apple TV Plus', id: 350 },
+            { name: 'Paramount Plus', id: 531 },
+            { name: 'Hulu', id: 15 }
+        ];
+        
+        let foundResults = [];
+        
+        // Search through all regions for major streaming services
+        for (const [countryCode, countryProviders] of Object.entries(providers)) {
+            const streamingProviders = countryProviders.flatrate || [];
+            
+            // Check if any major streaming service has this movie
+            for (const service of majorServices) {
+                const foundProvider = streamingProviders.find(p => 
+                    p.provider_id === service.id || 
+                    p.provider_name.toLowerCase().includes(service.name.toLowerCase())
+                );
+                
+                if (foundProvider) {
+                    foundResults.push({
+                        country: getCountryName(countryCode),
+                        countryCode: countryCode,
+                        service: foundProvider.provider_name,
+                        serviceId: foundProvider.provider_id
+                    });
+                }
+            }
+        }
+        
+        if (foundResults.length === 0) {
+            showToast('This movie is not available on major streaming platforms worldwide.');
+            return;
+        }
+        
+        // Group results by service
+        const groupedResults = {};
+        foundResults.forEach(result => {
+            if (!groupedResults[result.service]) {
+                groupedResults[result.service] = [];
+            }
+            groupedResults[result.service].push(result.country);
+        });
+        
+        // Display results in a modal
+        displayMovieAvailabilityModal(title, groupedResults);
+        
+    } catch (error) {
+        console.error('Error searching for movie in other regions:', error);
+        showToast('An error occurred while searching. Please try again.');
+    }
+}
+
+// Display modal showing movie availability in different regions
+function displayMovieAvailabilityModal(movieTitle, availabilityData) {
+    const modal = document.getElementById('dinnerTimeModal');
+    const modalContent = document.querySelector('.dinner-time-modal-content');
+    
+    let resultsHTML = '';
+    
+    for (const [service, countries] of Object.entries(availabilityData)) {
+        const countryList = countries.slice(0, 5).join(', ') + (countries.length > 5 ? ` and ${countries.length - 5} more` : '');
+        resultsHTML += `
+            <div class="availability-result">
+                <div class="service-name">
+                    <i class="fas fa-tv"></i>
+                    ${service}
+                </div>
+                <div class="countries-list">
+                    <i class="fas fa-globe"></i>
+                    Available in: ${countryList}
+                </div>
+            </div>
+        `;
+    }
+    
+    modalContent.innerHTML = `
+        <div class="availability-modal">
+            <div class="availability-header">
+                <h2><i class="fas fa-search-location"></i> "${movieTitle}" Availability</h2>
+                <button class="close-btn" onclick="closeDinnerTimeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="availability-content">
+                <p class="availability-intro">
+                    <i class="fas fa-info-circle"></i>
+                    This movie is available on the following streaming platforms in other regions:
+                </p>
+                <div class="availability-results">
+                    ${resultsHTML}
+                </div>
+                <div class="availability-note">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Note:</strong> Streaming availability varies by region due to licensing agreements. 
+                    Consider using a VPN service or checking local streaming platforms.
+                </div>
+                <div class="availability-actions">
+                    <button onclick="closeDinnerTimeModal()" class="btn-close-availability">
+                        <i class="fas fa-check"></i> Got it!
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.style.display = 'flex';
+}
+
 // Toast notification system
 function showToast(message) {
    const toast = document.getElementById('toast');
@@ -553,6 +682,9 @@ function getCountryName(countryCode) {
 // Make displayRecommendations globally accessible for other scripts
 window.displayRecommendations = displayRecommendations;
 
+// Make function globally available
+window.findMovieInOtherRegions = findMovieInOtherRegions;
+
 // Export all utilities
 window.utils = {
    getProviderURL,
@@ -575,5 +707,6 @@ window.utils = {
    isValidImageUrl,
    safelyParseJSON,
    safelyStringifyJSON,
-   debugLog
+   debugLog,
+   findMovieInOtherRegions
 };

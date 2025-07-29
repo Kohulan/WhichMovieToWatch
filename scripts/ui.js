@@ -78,7 +78,10 @@ async function displayMovie(movie) {
           ` : '';
  
        const availabilityMessage = !streamingProviders.length && !rentProviders.length && !buyProviders.length ?
-          `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>` :
+          `<p class="no-streaming"><i class="fas fa-info-circle"></i> No streaming information available in ${userCountry}</p>
+           <button class="btn-find-movie" onclick="findMovieInOtherRegions('${movie.title}', ${movie.id})">
+              <i class="fas fa-search-location"></i> Find the Movie
+           </button>` :
           '';
  
        // Create ratings HTML
