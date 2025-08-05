@@ -4,29 +4,31 @@
 
 /* Netflix Search Button Styles */
 .netflix-search-trigger {
-    background: linear-gradient(135deg, #e50914, #b81d24);
-    color: white;
+    flex: 1;
+    max-width: 275px;
+    padding: 1rem 2rem;
     border: none;
-    padding: 12px 20px;
-    border-radius: 10px;
+    border-radius: 15px;
+    font-size: 1rem;
     font-weight: 600;
-    font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.3);
+    justify-content: center;
+    gap: 0.8rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, #e50914, #831010);
+    color: white;
 }
 
 .netflix-search-trigger:hover {
-    background: linear-gradient(135deg, #f40612, #d01b25);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-.netflix-search-trigger:active {
-    transform: translateY(0);
+.netflix-search-trigger i {
+    font-size: 1.4rem;
 }
 
 /* Netflix Modal Styles */
@@ -213,32 +215,32 @@
 
 /* Light theme styles - Enhanced version */
 [data-theme="light"] {
-    --background: #f0f2f5;
+    --background: #ffffff;
     --text: #1a1a1a;
-    --gradient-start: rgba(79, 172, 254, 0.15);
-    --gradient-end: rgba(240, 242, 245, 0.9);
+    --gradient-start: rgba(79, 172, 254, 0.1);
+    --gradient-end: rgba(255, 255, 255, 0.95);
     --primary: #111827;
     --secondary: #374151;
-    --card-bg: rgba(255, 255, 255, 0.95);
-    --button-bg: rgba(240, 240, 245, 0.95);
-    --button-hover: rgba(230, 230, 235, 0.95);
-    --border-color: rgba(0, 0, 0, 0.1);
-    --border-color-hover: rgba(0, 0, 0, 0.2);
-    --footer-bg: rgba(255, 255, 255, 0.95);
-    --footer-text: #333333;
+    --card-bg: rgba(255, 255, 255, 0.98);
+    --button-bg: rgba(245, 245, 250, 0.98);
+    --button-hover: rgba(235, 235, 240, 0.98);
+    --border-color: rgba(0, 0, 0, 0.08);
+    --border-color-hover: rgba(0, 0, 0, 0.15);
+    --footer-bg: rgba(255, 255, 255, 0.98);
+    --footer-text: #1a1a1a;
     --footer-link: #2563eb;
     --footer-link-hover: #1d4ed8;
-    --footer-border: rgba(0, 0, 0, 0.1);
-    --footer-shadow: rgba(0, 0, 0, 0.1);
-    --love: #e11d48;
+    --footer-border: rgba(0, 0, 0, 0.08);
+    --footer-shadow: rgba(0, 0, 0, 0.08);
+    --love: #dc2626;
     --like: #2563eb;
-    --watched: #4b5563;
-    --success: #047857;
+    --watched: #6b7280;
+    --success: #059669;
     --accent: #3b82f6;
 
     /* New Enhancements */
     --highlight: #ff6f61;
-    --gradient: linear-gradient(135deg, #f59e0b, #d97706);
+    --gradient: linear-gradient(135deg, #ffffff, #f9fafb);
 }
 
 /* Theme toggle button */
@@ -930,7 +932,7 @@ body {
 	font-size: 1.1rem;
 	line-height: 1.8;
 	margin-bottom: 2.5rem;
-	color: rgba(248, 250, 252, 0.9);
+	color: var(--text);
 	position: relative;
 	padding-left: 1.5rem;
 	border-left: 3px solid var(--primary);
