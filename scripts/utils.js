@@ -346,7 +346,145 @@ function displayDinnerTimeError(maxRetries) {
     `;
 }
 
-// Modal handling utilities
+// Netflix Search modal handling utility
+function openNetflixSearchModal() {
+    document.getElementById('netflixModal').style.display = 'flex';
+    // Keep the disclaimer visible initially
+    const resultsContainer = document.getElementById('netflixResults');
+    resultsContainer.innerHTML = `
+        <div class="disclaimer">
+            <i class="fas fa-info-circle"></i>
+            <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
+        </div>
+    `;
+}
+
+function closeNetflixModal() {
+    document.getElementById('netflixModal').style.display = 'none';
+}
+
+async function searchNetflixAvailability() {
+    const searchInput = document.getElementById('netflixMovieSearch').value.trim();
+    if (!searchInput) {
+        showToast('Please enter a movie title');
+        return;
+    }
+    
+    const resultsContainer = document.getElementById('netflixResults');
+    const loadingMessage = `
+        <div class="disclaimer">
+            <i class="fas fa-info-circle"></i>
+            <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
+        </div>
+        <div class="loading-netflix">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Looking up Netflix availability...</p>
+        </div>
+    `;
+    resultsContainer.innerHTML = loadingMessage;
+
+    try {
+        // First search for the movie using TMDB
+        const searchResponse = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchInput)}`);
+        const searchData = await searchResponse.json();
+        
+        if (!searchData.results || searchData.results.length === 0) {
+            throw new Error('Movie not found');
+        }
+        
+        // Get the first result and check Netflix availability
+        const movie = searchData.results[0];
+        const detailsResponse = await fetch(`${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`);
+        const movieData = await detailsResponse.json();
+        
+        const providers = movieData['watch/providers']?.results;
+        if (!providers) {
+            throw new Error('No streaming data available');
+        }
+        
+        // Find Netflix availability across all regions
+        const netflixCountries = [];
+        const netflixId = 8; // Netflix provider ID
+        
+        for (const [countryCode, countryProviders] of Object.entries(providers)) {
+            const streamingProviders = countryProviders.flatrate || [];
+            const hasNetflix = streamingProviders.some(provider => 
+                provider.provider_id === netflixId || 
+                provider.provider_name.toLowerCase().includes('netflix')
+            );
+            
+            if (hasNetflix) {
+                netflixCountries.push({
+                    code: countryCode,
+                    name: getCountryName(countryCode)
+                });
+            }
+        }
+        
+        if (netflixCountries.length === 0) {
+            throw new Error('Not available on Netflix');
+        }
+        
+        // Display results
+        const disclaimer = `
+            <div class="disclaimer">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
+            </div>
+        `;
+        
+        const results = netflixCountries.map(country => `
+            <div class="country-result">
+                <div class="country-name">
+                    <i class="fas fa-flag"></i>
+                    ${country.name}
+                </div>
+                <a href="https://www.netflix.com/search?q=${encodeURIComponent(movie.title)}" 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="netflix-link">
+                    <i class="fab fa-netflix"></i>
+                    Search on Netflix
+                </a>
+            </div>
+        `).join('');
+        
+        resultsContainer.innerHTML = disclaimer + `
+            <div class="netflix-results-section">
+                <h3>"${movie.title}" is available on Netflix in:</h3>
+                ${results}
+                <div class="availability-note">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p><strong>Note:</strong> Streaming availability varies by region due to licensing agreements. You may need to use a VPN service to access content in different regions.</p>
+                </div>
+            </div>
+        `;
+        
+    } catch (error) {
+        console.error('Netflix search error:', error);
+        const disclaimer = `
+            <div class="disclaimer">
+                <i class="fas fa-info-circle"></i>
+                <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
+            </div>
+        `;
+        
+        let errorMessage = 'Unable to retrieve Netflix availability.';
+        if (error.message === 'Movie not found') {
+            errorMessage = 'Movie not found. Please check the spelling and try again.';
+        } else if (error.message === 'Not available on Netflix') {
+            errorMessage = 'This movie is not currently available on Netflix in any region.';
+        }
+        
+        resultsContainer.innerHTML = disclaimer + `
+            <div class="error-netflix">
+                <i class="fas fa-times-circle"></i>
+                <p>${errorMessage}</p>
+                <p>Please try again later or search for a different movie.</p>
+            </div>
+        `;
+    }
+}
 function openDinnerTimeModal() {
    document.getElementById('dinnerTimeModal').style.display = 'flex';
    fetchDinnerTimeMovie();
@@ -774,6 +912,9 @@ window.displayRecommendations = displayRecommendations;
 // Make functions globally available
 window.findMovieInOtherRegions = findMovieInOtherRegions;
 window.closeAvailabilityModal = closeAvailabilityModal;
+window.openNetflixSearchModal = openNetflixSearchModal;
+window.closeNetflixModal = closeNetflixModal;
+window.searchNetflixAvailability = searchNetflixAvailability;
 
 // Export all utilities
 window.utils = {

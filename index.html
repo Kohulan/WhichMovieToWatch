@@ -50,7 +50,7 @@
         style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com;
         img-src 'self' https://image.tmdb.org data: https://via.placeholder.com https://*.simpleanalyticscdn.com https://corsproxy.io;
         font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com;
-        connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com;
+        connect-src 'self' https://api.themoviedb.org https://ipapi.co https://ipinfo.io https://www.omdbapi.com/ https://youtube.com https://streaming-availability.p.rapidapi.com;
         worker-src 'self';
         object-src 'none';">
     <title>Which Movie To Watch!</title>
@@ -383,6 +383,10 @@
                 <i class="fas fa-cog"></i>
                 Change Preferences
             </button>
+            <button onclick="openNetflixSearchModal()" class="netflix-search-trigger">
+                <i class="fab fa-netflix" style="color: #e50914;"></i>
+                Netflix Search
+            </button>
         </div>
         <div class="movie-card" id="movieCard">
             <div class="loading">
@@ -437,6 +441,33 @@
             </div>
         </div>
     </div>
+    </div>
+
+    <!-- Netflix Search Modal -->
+    <div id="netflixModal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-container">
+                <div class="netflix-header">
+                    <h2><i class="fab fa-netflix" style="color: #e50914;"></i> Netflix Regional Search</h2>
+                    <button class="close-btn" onclick="closeNetflixModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="search-bar">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="netflixMovieSearch" placeholder="Search for a movie on Netflix" onkeypress="if(event.key==='Enter') searchNetflixAvailability()" />
+                    <button class="netflix-search-btn" onclick="searchNetflixAvailability()">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div id="netflixResults" class="netflix-results">
+                    <div class="disclaimer">
+                        <i class="fas fa-info-circle"></i>
+                        <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->
