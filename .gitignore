@@ -176,3 +176,6 @@ api-config.js
 
 # Demo files
 demo.html
+
+# PRD documentation (internal)
+PRDs/

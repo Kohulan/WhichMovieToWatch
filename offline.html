@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Which Movie To Watch</title>
+    <link rel="manifest" href="/site.webmanifest">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0E0E12 0%, #1a1a2e 100%);
+            color: #F4F4F5;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .offline-container {
+            text-align: center;
+            padding: 3rem 2rem;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .offline-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+
+        .offline-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #FF4545, #FF8A45);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .offline-message {
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .offline-features {
+            text-align: left;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+
+        .offline-features h3 {
+            margin-bottom: 1rem;
+            color: #FF4545;
+        }
+
+        .offline-features ul {
+            list-style: none;
+        }
+
+        .offline-features li {
+            padding: 0.5rem 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .offline-features li:before {
+            content: '✓';
+            color: #4CAF50;
+            margin-right: 0.75rem;
+            font-weight: bold;
+        }
+
+        .offline-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .offline-btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #FF4545, #FF8A45);
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 69, 69, 0.3);
+        }
+
+        .offline-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 69, 69, 0.4);
+        }
+
+        .offline-btn.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .offline-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .network-status {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: blink 1.5s ease-in-out infinite;
+        }
+
+        .status-indicator.offline {
+            background: #FF4545;
+        }
+
+        .status-indicator.online {
+            background: #4CAF50;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 480px) {
+            .offline-title {
+                font-size: 2rem;
+            }
+            .offline-icon {
+                font-size: 4rem;
+            }
+            .offline-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">🎬</div>
+        <h1 class="offline-title">You're Offline</h1>
+        <p class="offline-message">
+            Don't worry! Some features are still available while you're offline.
+        </p>
+        
+        <div class="offline-features">
+            <h3>Available Offline:</h3>
+            <ul>
+                <li>Browse cached movie data</li>
+                <li>View your saved preferences</li>
+                <li>Access recently viewed movies</li>
+                <li>Read saved movie details</li>
+            </ul>
+        </div>
+        
+        <div class="offline-actions">
+            <button class="offline-btn" onclick="retryConnection()">
+                Try Again
+            </button>
+            <button class="offline-btn secondary" onclick="viewCachedContent()">
+                View Cached Movies
+            </button>
+        </div>
+        
+        <div class="network-status">
+            <span class="status-indicator offline"></span>
+            <span id="statusText">Waiting for connection...</span>
+        </div>
+    </div>
+
+    <script>
+        // Check connection status
+        function checkConnection() {
+            const statusText = document.getElementById('statusText');
+            const statusIndicator = document.querySelector('.status-indicator');
+            
+            if (navigator.onLine) {
+                statusText.textContent = 'Connection restored! Redirecting...';
+                statusIndicator.classList.remove('offline');
+                statusIndicator.classList.add('online');
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            } else {
+                statusText.textContent = 'No internet connection';
+            }
+        }
+
+        // Retry connection
+        function retryConnection() {
+            checkConnection();
+            if (navigator.onLine) {
+                location.reload();
+            } else {
+                const statusText = document.getElementById('statusText');
+                statusText.textContent = 'Still offline. Please check your connection.';
+            }
+        }
+
+        // View cached content
+        function viewCachedContent() {
+            // Try to load cached homepage
+            if ('caches' in window) {
+                caches.match('/').then(response => {
+                    if (response) {
+                        window.location.href = '/';
+                    } else {
+                        alert('No cached content available yet. Please visit the site while online first.');
+                    }
+                });
+            }
+        }
+
+        // Listen for online/offline events
+        window.addEventListener('online', checkConnection);
+        window.addEventListener('offline', checkConnection);
+
+        // Check connection on load
+        checkConnection();
+
+        // Periodically check connection
+        setInterval(checkConnection, 5000);
+    </script>
+</body>
+</html>
