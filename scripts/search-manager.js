@@ -138,12 +138,16 @@ class SearchManager {
      * Apply filters and execute search
      */
     async applyFilters(page = 1) {
+        console.log('Applying filters:', this.filters);
         this.currentPage = page;
         
         // Open the Advanced Search modal to show results
         const searchModal = document.getElementById('advancedSearchModal');
         if (searchModal) {
             searchModal.style.display = 'flex';
+            console.log('Advanced search modal opened');
+        } else {
+            console.error('Advanced search modal not found');
         }
         
         // Create cache key
@@ -541,7 +545,7 @@ class SearchManager {
     // UI Helper Methods
     
     showLoading() {
-        const resultsContainer = document.getElementById('searchResults');
+        const resultsContainer = document.getElementById('advancedSearchResults');
         if (resultsContainer) {
             resultsContainer.innerHTML = `
                 <div class="search-loading">
@@ -553,7 +557,7 @@ class SearchManager {
     }
     
     showError(message) {
-        const resultsContainer = document.getElementById('searchResults');
+        const resultsContainer = document.getElementById('advancedSearchResults');
         if (resultsContainer) {
             resultsContainer.innerHTML = `
                 <div class="search-error">
@@ -574,8 +578,11 @@ class SearchManager {
     }
     
     displayResults(searchResult) {
-        const resultsContainer = document.getElementById('searchResults');
-        if (!resultsContainer) return;
+        const resultsContainer = document.getElementById('advancedSearchResults');
+        if (!resultsContainer) {
+            console.error('Advanced search results container not found');
+            return;
+        }
         
         if (!searchResult.results || searchResult.results.length === 0) {
             resultsContainer.innerHTML = `
