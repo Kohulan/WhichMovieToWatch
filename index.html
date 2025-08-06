@@ -66,6 +66,7 @@
     <link href="css/styles.css" rel="stylesheet">
     <link href="css/visual-enhancements.css" rel="stylesheet">
     <link href="css/professional-animations.css" rel="stylesheet">
+    <link href="css/advanced-search.css" rel="stylesheet">
     <link href="loading.css" rel="stylesheet">
 
     <!-- Structured Data -->
@@ -256,6 +257,9 @@
     <!-- SEO verification tags (add your verification codes) -->
     <meta name="google-site-verification" content="your-google-verification-code">
     <meta name="msvalidate.01" content="your-bing-verification-code">
+    
+    <!-- Performance Optimization Scripts - Load Early -->
+    <script src="scripts/performance-manager.js"></script>
 </head>
 
 <body>
@@ -387,6 +391,10 @@
                 <i class="fab fa-netflix" style="color: #e50914;"></i>
                 Netflix Search
             </button>
+            <button onclick="filterPanel.togglePanel()" class="advanced-search-trigger">
+                <i class="fas fa-filter"></i>
+                Advanced Search
+            </button>
         </div>
         <div class="movie-card" id="movieCard">
             <div class="loading">
@@ -470,11 +478,28 @@
         </div>
     </div>
 
+    <!-- Advanced Search Results Modal -->
+    <div id="advancedSearchModal" class="search-modal">
+        <div class="search-modal-content">
+            <div class="search-container">
+                <div class="search-header">
+                    <h2><i class="fas fa-filter"></i> Advanced Search Results</h2>
+                    <button class="close-btn" onclick="document.getElementById('advancedSearchModal').style.display='none'">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="searchResults" class="search-results"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <!-- Optional local API configuration (create from api-config.example.js) -->
     <script src="api-config.js" onerror="console.log('No local API config found, using defaults')"></script>
     <script src="scripts/api.js"></script>
     <script src="scripts/search.js"></script>
+    <script src="scripts/search-manager.js"></script>
+    <script src="scripts/filter-panel.js"></script>
     <script src="scripts/utils.js"></script>
     <script src="scripts/preferences.js"></script>
     <script src="scripts/meta-tags.js"></script>
@@ -486,6 +511,15 @@
     <script src="scripts/professional-animations.js"></script>
     <script src="theme.js" defer></script>
     <script src="loading.js" defer></script>
+    
+    <!-- PWA Installer -->
+    <script src="scripts/pwa-installer.js" defer></script>
+    
+    <!-- Image Optimizer -->
+    <script src="scripts/image-optimizer.js" defer></script>
+    
+    <!-- Accessibility Manager -->
+    <script src="scripts/accessibility-manager.js" defer></script>
 
     <!-- Analytics -->
     <script async src="https://scripts.simpleanalyticscdn.com/latest.js"></script>

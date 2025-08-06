@@ -349,6 +349,9 @@ function displayDinnerTimeError(maxRetries) {
 // Netflix Search modal handling utility
 function openNetflixSearchModal() {
     document.getElementById('netflixModal').style.display = 'flex';
+    const searchInput = document.getElementById('netflixMovieSearch');
+    searchInput.focus();
+    
     // Keep the disclaimer visible initially
     const resultsContainer = document.getElementById('netflixResults');
     resultsContainer.innerHTML = `
@@ -357,17 +360,32 @@ function openNetflixSearchModal() {
             <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
         </div>
     `;
+    
+    // Initialize autocomplete
+    initNetflixAutocomplete();
 }
 
 function closeNetflixModal() {
     document.getElementById('netflixModal').style.display = 'none';
+    document.getElementById('netflixMovieSearch').value = '';
+    const suggestions = document.getElementById('netflixSuggestions');
+    if (suggestions) {
+        suggestions.remove();
+    }
 }
 
-async function searchNetflixAvailability() {
-    const searchInput = document.getElementById('netflixMovieSearch').value.trim();
+async function searchNetflixAvailability(movieTitle = null, movieId = null) {
+    // Allow passing movie title and ID directly for autocomplete selection
+    const searchInput = movieTitle || document.getElementById('netflixMovieSearch').value.trim();
     if (!searchInput) {
         showToast('Please enter a movie title');
         return;
+    }
+    
+    // Hide suggestions when searching
+    const suggestions = document.getElementById('netflixSuggestions');
+    if (suggestions) {
+        suggestions.style.display = 'none';
     }
     
     const resultsContainer = document.getElementById('netflixResults');
@@ -384,16 +402,24 @@ async function searchNetflixAvailability() {
     resultsContainer.innerHTML = loadingMessage;
 
     try {
-        // First search for the movie using TMDB
-        const searchResponse = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchInput)}`);
-        const searchData = await searchResponse.json();
+        let movie;
         
-        if (!searchData.results || searchData.results.length === 0) {
-            throw new Error('Movie not found');
+        if (movieId) {
+            // If movieId is provided (from autocomplete), use it directly
+            const detailsResponse = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`);
+            movie = await detailsResponse.json();
+        } else {
+            // Otherwise search for the movie using TMDB
+            const searchResponse = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchInput)}`);
+            const searchData = await searchResponse.json();
+            
+            if (!searchData.results || searchData.results.length === 0) {
+                throw new Error('Movie not found');
+            }
+            
+            // Get the first result
+            movie = searchData.results[0];
         }
-        
-        // Get the first result and check Netflix availability
-        const movie = searchData.results[0];
         const detailsResponse = await fetch(`${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`);
         const movieData = await detailsResponse.json();
         
@@ -906,6 +932,183 @@ function getCountryName(countryCode) {
    return countryNames[countryCode] || countryCode;
 }
 
+// Netflix Autocomplete functionality
+let netflixAutocompleteTimeout = null;
+
+function initNetflixAutocomplete() {
+    const searchInput = document.getElementById('netflixMovieSearch');
+    if (!searchInput) return;
+    
+    // Remove any existing suggestions container
+    const existingSuggestions = document.getElementById('netflixSuggestions');
+    if (existingSuggestions) {
+        existingSuggestions.remove();
+    }
+    
+    // Create suggestions container
+    const suggestionsDiv = document.createElement('div');
+    suggestionsDiv.id = 'netflixSuggestions';
+    suggestionsDiv.className = 'netflix-suggestions';
+    searchInput.parentElement.appendChild(suggestionsDiv);
+    
+    // Add event listeners
+    searchInput.addEventListener('input', handleNetflixAutocomplete);
+    searchInput.addEventListener('keydown', handleNetflixKeydown);
+    searchInput.addEventListener('focus', handleNetflixFocus);
+    
+    // Close suggestions when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-bar')) {
+            suggestionsDiv.style.display = 'none';
+        }
+    });
+}
+
+async function handleNetflixAutocomplete(event) {
+    const query = event.target.value.trim();
+    const suggestionsDiv = document.getElementById('netflixSuggestions');
+    
+    // Clear previous timeout
+    if (netflixAutocompleteTimeout) {
+        clearTimeout(netflixAutocompleteTimeout);
+    }
+    
+    if (query.length < 2) {
+        suggestionsDiv.style.display = 'none';
+        return;
+    }
+    
+    // Debounce the API call
+    netflixAutocompleteTimeout = setTimeout(async () => {
+        try {
+            const response = await fetch(`${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+                displayNetflixSuggestions(data.results.slice(0, 5));
+            } else {
+                suggestionsDiv.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Autocomplete error:', error);
+            suggestionsDiv.style.display = 'none';
+        }
+    }, 300);
+}
+
+function displayNetflixSuggestions(movies) {
+    const suggestionsDiv = document.getElementById('netflixSuggestions');
+    if (!suggestionsDiv) return;
+    
+    suggestionsDiv.innerHTML = movies.map((movie, index) => `
+        <div class="netflix-suggestion" 
+             data-movie-id="${movie.id}"
+             data-movie-title="${movie.title.replace(/"/g, '&quot;')}"
+             data-index="${index}"
+             onclick="selectNetflixMovie(${movie.id}, '${movie.title.replace(/'/g, "\\'")}')"
+             onmouseover="highlightSuggestion(${index})">
+            <div class="suggestion-poster">
+                ${movie.poster_path 
+                    ? `<img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}">` 
+                    : '<i class="fas fa-film"></i>'}
+            </div>
+            <div class="suggestion-info">
+                <div class="suggestion-title">${movie.title}</div>
+                <div class="suggestion-year">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A'}</div>
+            </div>
+            <div class="suggestion-rating">
+                <i class="fas fa-star"></i>
+                ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
+            </div>
+        </div>
+    `).join('');
+    
+    suggestionsDiv.style.display = 'block';
+}
+
+function selectNetflixMovie(movieId, movieTitle) {
+    const searchInput = document.getElementById('netflixMovieSearch');
+    const suggestionsDiv = document.getElementById('netflixSuggestions');
+    
+    if (searchInput) {
+        searchInput.value = movieTitle;
+    }
+    
+    if (suggestionsDiv) {
+        suggestionsDiv.style.display = 'none';
+    }
+    
+    // Trigger the search with the selected movie
+    searchNetflixAvailability(movieTitle, movieId);
+}
+
+function handleNetflixKeydown(event) {
+    const suggestionsDiv = document.getElementById('netflixSuggestions');
+    if (!suggestionsDiv || suggestionsDiv.style.display === 'none') {
+        return;
+    }
+    
+    const suggestions = suggestionsDiv.querySelectorAll('.netflix-suggestion');
+    if (suggestions.length === 0) return;
+    
+    let currentIndex = -1;
+    suggestions.forEach((s, i) => {
+        if (s.classList.contains('highlighted')) {
+            currentIndex = i;
+        }
+    });
+    
+    switch(event.key) {
+        case 'ArrowDown':
+            event.preventDefault();
+            currentIndex = (currentIndex + 1) % suggestions.length;
+            highlightSuggestion(currentIndex);
+            break;
+            
+        case 'ArrowUp':
+            event.preventDefault();
+            currentIndex = currentIndex <= 0 ? suggestions.length - 1 : currentIndex - 1;
+            highlightSuggestion(currentIndex);
+            break;
+            
+        case 'Enter':
+            event.preventDefault();
+            if (currentIndex >= 0) {
+                const selected = suggestions[currentIndex];
+                const movieId = selected.dataset.movieId;
+                const movieTitle = selected.dataset.movieTitle;
+                selectNetflixMovie(movieId, movieTitle);
+            } else {
+                // If no suggestion is highlighted, search with the input value
+                searchNetflixAvailability();
+            }
+            break;
+            
+        case 'Escape':
+            suggestionsDiv.style.display = 'none';
+            break;
+    }
+}
+
+function highlightSuggestion(index) {
+    const suggestions = document.querySelectorAll('.netflix-suggestion');
+    suggestions.forEach((s, i) => {
+        if (i === index) {
+            s.classList.add('highlighted');
+        } else {
+            s.classList.remove('highlighted');
+        }
+    });
+}
+
+function handleNetflixFocus(event) {
+    const query = event.target.value.trim();
+    if (query.length >= 2) {
+        // Re-trigger autocomplete on focus if there's text
+        handleNetflixAutocomplete({ target: event.target });
+    }
+}
+
 // Make displayRecommendations globally accessible for other scripts
 window.displayRecommendations = displayRecommendations;
 
@@ -915,6 +1118,8 @@ window.closeAvailabilityModal = closeAvailabilityModal;
 window.openNetflixSearchModal = openNetflixSearchModal;
 window.closeNetflixModal = closeNetflixModal;
 window.searchNetflixAvailability = searchNetflixAvailability;
+window.initNetflixAutocomplete = initNetflixAutocomplete;
+window.selectNetflixMovie = selectNetflixMovie;
 
 // Export all utilities
 window.utils = {
