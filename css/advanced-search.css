@@ -888,9 +888,101 @@
 
 @media (max-width: 480px) {
     .search-results-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.75rem;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     }
+}
+
+/* Advanced Search Results Modal Specific Styles */
+#advancedSearchModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+}
+
+#advancedSearchModal.show {
+    display: flex !important;
+}
+
+#advancedSearchModal .search-modal-content {
+    background: var(--card-bg, #1a1a2e);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#advancedSearchModal .search-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#advancedSearchModal .search-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color, #333);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+#advancedSearchModal .search-header h2 {
+    margin: 0;
+    color: var(--text-primary, #fff);
+    font-size: 1.5rem;
+}
+
+#advancedSearchModal .close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary, #999);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: color 0.2s;
+}
+
+#advancedSearchModal .close-btn:hover {
+    color: var(--text-primary, #fff);
+}
+
+#advancedSearchResults {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    min-height: 400px;
+}
+
+/* Light mode specific for Advanced Search Modal */
+[data-theme="light"] #advancedSearchModal .search-modal-content {
+    background: #ffffff;
+}
+
+[data-theme="light"] #advancedSearchModal .search-header {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+[data-theme="light"] #advancedSearchModal .search-header h2 {
+    color: #2c3e50;
+}
+
+[data-theme="light"] #advancedSearchModal .close-btn {
+    color: #666666;
+}
+
+[data-theme="light"] #advancedSearchModal .close-btn:hover {
+    color: #2c3e50;
+}
     
     .preset-buttons {
         grid-template-columns: 1fr;
