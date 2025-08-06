@@ -130,21 +130,28 @@ class PWAInstaller {
   }
 
   showInstallButton() {
-    // Add install button to header if it exists
-    const header = document.querySelector('.app-header, header, nav');
-    if (header && !document.querySelector('.header-install-btn')) {
-      const installBtn = document.createElement('button');
-      installBtn.className = 'header-install-btn';
-      installBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        <span>Install</span>
+    // Add install button after trending movies section
+    const trendingSection = document.getElementById('trendingMovies');
+    if (trendingSection && !document.querySelector('.pwa-install-section')) {
+      const installSection = document.createElement('div');
+      installSection.className = 'pwa-install-section';
+      installSection.innerHTML = `
+        <button class="pwa-main-install-btn" id="mainInstallBtn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Install App for Offline Access</span>
+        </button>
+        <p class="pwa-install-text">Works offline and provides a better experience!</p>
       `;
-      installBtn.addEventListener('click', () => this.installApp());
-      header.appendChild(installBtn);
+      
+      // Insert after trending movies section
+      trendingSection.insertAdjacentElement('afterend', installSection);
+      
+      // Add event listener
+      document.getElementById('mainInstallBtn').addEventListener('click', () => this.installApp());
     }
   }
 
@@ -552,6 +559,78 @@ class PWAInstaller {
 
       .pwa-success-content svg {
         color: #4CAF50;
+      }
+
+      /* Centered Install Section After Trending Movies */
+      .pwa-install-section {
+        text-align: center;
+        padding: 2rem 1rem;
+        margin: 2rem auto;
+        max-width: 600px;
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .pwa-main-install-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 2.5rem;
+        background: linear-gradient(135deg, #FF4545, #FF8A45);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 69, 69, 0.3);
+        margin: 0 auto;
+      }
+
+      .pwa-main-install-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(255, 69, 69, 0.4);
+        background: linear-gradient(135deg, #FF5555, #FF9A55);
+      }
+
+      .pwa-main-install-btn:active {
+        transform: translateY(-1px);
+      }
+
+      .pwa-main-install-btn svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .pwa-install-section .pwa-install-text {
+        margin-top: 1rem;
+        color: var(--text, #F4F4F5);
+        font-size: 0.95rem;
+        opacity: 0.8;
+      }
+
+      /* Light mode styles */
+      [data-theme="light"] .pwa-install-section .pwa-install-text {
+        color: #4b5563;
+      }
+
+      [data-theme="light"] .pwa-main-install-btn {
+        box-shadow: 0 4px 15px rgba(255, 69, 69, 0.2);
+      }
+
+      [data-theme="light"] .pwa-main-install-btn:hover {
+        box-shadow: 0 6px 20px rgba(255, 69, 69, 0.3);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
 
       @media (max-width: 600px) {

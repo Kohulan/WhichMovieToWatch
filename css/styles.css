@@ -95,19 +95,25 @@
 }
 
 /* Netflix Autocomplete Suggestions */
+#netflixModal .search-bar {
+    position: relative;
+}
+
 .netflix-suggestions {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 5px);
     left: 0;
     right: 0;
     background: var(--card-bg, #1a1a2e);
     border: 1px solid var(--border-color, #333);
-    border-radius: 0 0 12px 12px;
+    border-radius: 12px;
     max-height: 300px;
     overflow-y: auto;
     display: none;
-    z-index: 1001;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    margin-top: 0;
+    width: 100%;
 }
 
 .netflix-suggestion {
