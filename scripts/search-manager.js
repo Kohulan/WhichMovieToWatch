@@ -140,6 +140,12 @@ class SearchManager {
     async applyFilters(page = 1) {
         this.currentPage = page;
         
+        // Open the Advanced Search modal to show results
+        const searchModal = document.getElementById('advancedSearchModal');
+        if (searchModal) {
+            searchModal.style.display = 'flex';
+        }
+        
         // Create cache key
         const cacheKey = JSON.stringify({ ...this.filters, page });
         
