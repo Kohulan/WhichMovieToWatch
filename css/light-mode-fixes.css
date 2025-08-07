@@ -326,6 +326,60 @@
     color: #999999;
 }
 
+/* Sort Controls - Light Mode */
+[data-theme="light"] .sort-controls label {
+    color: #666666;
+}
+
+[data-theme="light"] .sort-select {
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    color: #495057;
+}
+
+[data-theme="light"] .sort-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+[data-theme="light"] .sort-order-btn {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+}
+
+[data-theme="light"] .sort-order-btn.active {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+[data-theme="light"] .sort-order-btn:hover {
+    background: #e9ecef;
+}
+
+[data-theme="light"] .sort-order-btn.active:hover {
+    background: #0056b3;
+}
+
+/* Movie Card Hover - Light Mode */
+[data-theme="light"] .movie-hover-info {
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.8) 50%, transparent 100%);
+}
+
+[data-theme="light"] .movie-hover-info p {
+    color: white;
+}
+
+/* Results Info - Light Mode */
+[data-theme="light"] .results-info {
+    color: #495057;
+}
+
+[data-theme="light"] .results-count strong {
+    color: #007bff;
+}
+
 /* ============================================
    MODAL WINDOWS
    ============================================ */

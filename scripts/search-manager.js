@@ -598,24 +598,44 @@ class SearchManager {
             return;
         }
         
-        // Results header
+        // Sort dropdown options
+        const sortOptionsHTML = Object.entries(this.sortOptions).map(([value, label]) => 
+            `<option value="${value}" ${this.filters.sortBy === value ? 'selected' : ''}>${label}</option>`
+        ).join('');
+        
+        // Results header with sort controls
         const resultsHTML = `
             <div class="results-header">
-                <p class="results-count">
-                    Found ${searchResult.totalResults} movies
-                    ${this.filters.query ? `for "${this.filters.query}"` : ''}
-                </p>
+                <div class="results-info">
+                    <p class="results-count">
+                        Found <strong>${searchResult.totalResults}</strong> movies
+                        ${this.filters.query ? `for "${this.filters.query}"` : ''}
+                    </p>
+                    <div class="sort-controls">
+                        <label>Sort by:</label>
+                        <select class="sort-select" onchange="searchManager.updateSort(this.value)">
+                            ${sortOptionsHTML}
+                        </select>
+                        <button class="sort-order-btn ${this.filters.sortOrder === 'desc' ? 'active' : ''}" 
+                                onclick="searchManager.toggleSortOrder()" 
+                                title="${this.filters.sortOrder === 'desc' ? 'Descending' : 'Ascending'}">
+                            <i class="fas fa-sort-amount-${this.filters.sortOrder === 'desc' ? 'down' : 'up'}"></i>
+                        </button>
+                    </div>
+                </div>
                 <div class="view-controls">
-                    <button class="view-btn grid-view active" onclick="searchManager.setViewMode('grid')">
+                    <button class="view-btn grid-view ${localStorage.getItem('searchViewMode') !== 'list' ? 'active' : ''}" 
+                            onclick="searchManager.setViewMode('grid')" title="Grid View">
                         <i class="fas fa-th"></i>
                     </button>
-                    <button class="view-btn list-view" onclick="searchManager.setViewMode('list')">
+                    <button class="view-btn list-view ${localStorage.getItem('searchViewMode') === 'list' ? 'active' : ''}" 
+                            onclick="searchManager.setViewMode('list')" title="List View">
                         <i class="fas fa-list"></i>
                     </button>
                 </div>
             </div>
             
-            <div class="search-results-grid">
+            <div class="search-results-grid ${localStorage.getItem('searchViewMode') === 'list' ? 'list-mode' : ''}" id="searchResultsGrid">
                 ${searchResult.results.map(movie => this.createMovieCard(movie)).join('')}
             </div>
             
@@ -623,17 +643,21 @@ class SearchManager {
         `;
         
         resultsContainer.innerHTML = resultsHTML;
+        
+        // Scroll to top of results
+        resultsContainer.scrollTop = 0;
     }
     
     createMovieCard(movie) {
         const year = movie.release_date ? new Date(movie.release_date).getFullYear() : 'N/A';
-        const rating = movie.vote_average ? (movie.vote_average * 10).toFixed(0) : 'N/A';
+        const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
         const poster = movie.poster_path 
             ? `${IMAGE_BASE_URL}${movie.poster_path}`
             : 'https://via.placeholder.com/300x450?text=No+Poster';
+        const overview = movie.overview ? movie.overview.substring(0, 150) + '...' : 'No overview available';
         
         return `
-            <div class="movie-card" onclick="searchManager.selectMovie(${movie.id})">
+            <div class="movie-card" onclick="searchManager.selectMovie(${movie.id})" title="${movie.title}">
                 <div class="movie-poster">
                     <img src="${poster}" alt="${movie.title}" loading="lazy">
                     ${movie.availableOn ? `
@@ -643,13 +667,16 @@ class SearchManager {
                             ).join('')}
                         </div>
                     ` : ''}
+                    <div class="movie-hover-info">
+                        <p>${overview}</p>
+                    </div>
                 </div>
                 <div class="movie-info">
-                    <h3 class="movie-title">${movie.title}</h3>
+                    <h3 class="movie-title" title="${movie.title}">${movie.title}</h3>
                     <div class="movie-meta">
                         <span class="movie-year">${year}</span>
-                        <span class="movie-rating">
-                            <i class="fas fa-star"></i> ${rating}%
+                        <span class="movie-rating" title="Rating: ${rating}/10">
+                            <i class="fas fa-star"></i> ${rating}
                         </span>
                     </div>
                 </div>
@@ -719,21 +746,37 @@ class SearchManager {
     }
     
     setViewMode(mode) {
-        const resultsGrid = document.querySelector('.search-results-grid');
+        const resultsGrid = document.querySelector('#searchResultsGrid');
         const gridBtn = document.querySelector('.grid-view');
         const listBtn = document.querySelector('.list-view');
         
+        if (!resultsGrid) {
+            console.error('Results grid not found');
+            return;
+        }
+        
         if (mode === 'list') {
-            resultsGrid?.classList.add('list-mode');
+            resultsGrid.classList.add('list-mode');
             gridBtn?.classList.remove('active');
             listBtn?.classList.add('active');
         } else {
-            resultsGrid?.classList.remove('list-mode');
+            resultsGrid.classList.remove('list-mode');
             gridBtn?.classList.add('active');
             listBtn?.classList.remove('active');
         }
         
         localStorage.setItem('searchViewMode', mode);
+    }
+    
+    // Add new methods for sorting
+    updateSort(sortBy) {
+        this.filters.sortBy = sortBy;
+        this.applyFilters(this.currentPage);
+    }
+    
+    toggleSortOrder() {
+        this.filters.sortOrder = this.filters.sortOrder === 'desc' ? 'asc' : 'desc';
+        this.applyFilters(this.currentPage);
     }
     
     async selectMovie(movieId) {
