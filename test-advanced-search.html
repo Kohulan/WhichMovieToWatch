@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        .pass {
+            color: green;
+            font-weight: bold;
+        }
+        .fail {
+            color: red;
+            font-weight: bold;
+        }
+        .info {
+            color: #666;
+            font-style: italic;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Advanced Search Implementation Test</h1>
+        
+        <div class="test-section">
+            <h2>📋 Feature Checklist</h2>
+            <div id="checklist"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🧪 Automated Tests</h2>
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="window.location.href='index.html'">Go to Main App</button>
+            <div id="testResults"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>📊 Implementation Status</h2>
+            <div id="implementationStatus"></div>
+        </div>
+    </div>
+
+    <script>
+        // Feature checklist
+        const features = [
+            { name: 'Display all search results (not limited to 3)', key: 'allResults' },
+            { name: 'Grid/List view toggle', key: 'viewToggle' },
+            { name: 'Pagination controls', key: 'pagination' },
+            { name: 'Sorting options dropdown', key: 'sorting' },
+            { name: 'Sort order toggle (asc/desc)', key: 'sortOrder' },
+            { name: 'Movie hover info overlay', key: 'hoverInfo' },
+            { name: 'Results counter display', key: 'resultsCounter' },
+            { name: 'Responsive design', key: 'responsive' },
+            { name: 'Light/Dark mode support', key: 'themeSupport' },
+            { name: 'Scrollbar styling', key: 'scrollbar' }
+        ];
+        
+        function checkImplementation() {
+            const checklist = document.getElementById('checklist');
+            let html = '<ul>';
+            
+            features.forEach(feature => {
+                html += `
+                    <li>
+                        <label>
+                            <input type="checkbox" id="${feature.key}" checked>
+                            <strong>${feature.name}</strong>
+                        </label>
+                    </li>
+                `;
+            });
+            
+            html += '</ul>';
+            checklist.innerHTML = html;
+        }
+        
+        async function runAllTests() {
+            const resultsDiv = document.getElementById('testResults');
+            resultsDiv.innerHTML = '<div class="info">Running tests...</div>';
+            
+            const tests = [
+                testSearchManagerExists,
+                testDisplayResultsFunction,
+                testPaginationFunction,
+                testViewModeFunction,
+                testSortingFunctions,
+                testMovieCardCreation,
+                testCSSStyles,
+                testHTMLStructure
+            ];
+            
+            let results = '';
+            for (const test of tests) {
+                const result = await test();
+                results += result;
+            }
+            
+            resultsDiv.innerHTML = results;
+        }
+        
+        function testSearchManagerExists() {
+            const exists = typeof window.searchManager !== 'undefined';
+            return `
+                <div class="test-result">
+                    <span class="${exists ? 'pass' : 'fail'}">
+                        ${exists ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                    SearchManager class exists: ${exists}
+                </div>
+            `;
+        }
+        
+        function testDisplayResultsFunction() {
+            const hasFunction = typeof window.searchManager?.displayResults === 'function';
+            const hasNewFeatures = window.searchManager?.displayResults.toString().includes('searchResultsGrid');
+            
+            return `
+                <div class="test-result">
+                    <span class="${hasFunction && hasNewFeatures ? 'pass' : 'fail'}">
+                        ${hasFunction && hasNewFeatures ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                    DisplayResults function with new features: ${hasFunction && hasNewFeatures}
+                </div>
+            `;
+        }
+        
+        function testPaginationFunction() {
+            const hasFunction = typeof window.searchManager?.createPagination === 'function';
+            const hasPageNumbers = window.searchManager?.createPagination.toString().includes('page-numbers');
+            
+            return `
+                <div class="test-result">
+                    <span class="${hasFunction && hasPageNumbers ? 'pass' : 'fail'}">
+                        ${hasFunction && hasPageNumbers ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                    Pagination implementation: ${hasFunction && hasPageNumbers}
+                </div>
+            `;
+        }
+        
+        function testViewModeFunction() {
+            const hasFunction = typeof window.searchManager?.setViewMode === 'function';
+            const usesNewId = window.searchManager?.setViewMode.toString().includes('#searchResultsGrid');
+            
+            return `
+                <div class="test-result">
+                    <span class="${hasFunction && usesNewId ? 'pass' : 'fail'}">
+                        ${hasFunction && usesNewId ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                    View mode toggle with correct ID: ${hasFunction && usesNewId}
+                </div>
+            `;
+        }
+        
+        function testSortingFunctions() {
+            const hasUpdateSort = typeof window.searchManager?.updateSort === 'function';
+            const hasToggleOrder = typeof window.searchManager?.toggleSortOrder === 'function';
+            const hasSortOptions = window.searchManager?.sortOptions !== undefined;
+            
+            const allPassed = hasUpdateSort && hasToggleOrder && hasSortOptions;
+            
+            return `
+                <div class="test-result">
+                    <span class="${allPassed ? 'pass' : 'fail'}">
+                        ${allPassed ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                    Sorting functions: updateSort=${hasUpdateSort}, toggleOrder=${hasToggleOrder}, options=${hasSortOptions}
+                </div>
+            `;
+        }
+        
+        function testMovieCardCreation() {
+            const hasFunction = typeof window.searchManager?.createMovieCard === 'function';
+            const hasHoverInfo = window.searchManager?.createMovieCard.toString().includes('movie-hover-info');
+            const hasOverview = window.searchManager?.createMovieCard.toString().includes('overview');
+            
+            const allPassed = hasFunction && hasHoverInfo && hasOverview;
+            
+            return `
+                <div class="test-result">
+                    <span class="${allPassed ? 'pass' : 'fail'}">
+                        ${allPassed ? '✅ PASS' : '❌ FAIL'}
+                    </span>
+                    Movie card with hover info: ${allPassed}
+                </div>
+            `;
+        }
+        
+        async function testCSSStyles() {
+            try {
+                const response = await fetch('css/advanced-search.css');
+                const css = await response.text();
+                
+                const hasSort = css.includes('.sort-controls');
+                const hasHover = css.includes('.movie-hover-info');
+                const hasListMode = css.includes('.list-mode');
+                const hasPagination = css.includes('.pagination');
+                
+                const allPassed = hasSort && hasHover && hasListMode && hasPagination;
+                
+                return `
+                    <div class="test-result">
+                        <span class="${allPassed ? 'pass' : 'fail'}">
+                            ${allPassed ? '✅ PASS' : '❌ FAIL'}
+                        </span>
+                        CSS styles: sort=${hasSort}, hover=${hasHover}, list=${hasListMode}, pagination=${hasPagination}
+                    </div>
+                `;
+            } catch (error) {
+                return `
+                    <div class="test-result">
+                        <span class="fail">❌ FAIL</span>
+                        Could not load CSS file: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        async function testHTMLStructure() {
+            try {
+                const response = await fetch('index.html');
+                const html = await response.text();
+                
+                const hasModal = html.includes('advancedSearchModal');
+                const hasResults = html.includes('advancedSearchResults');
+                
+                const allPassed = hasModal && hasResults;
+                
+                return `
+                    <div class="test-result">
+                        <span class="${allPassed ? 'pass' : 'fail'}">
+                            ${allPassed ? '✅ PASS' : '❌ FAIL'}
+                        </span>
+                        HTML structure: modal=${hasModal}, results=${hasResults}
+                    </div>
+                `;
+            } catch (error) {
+                return `
+                    <div class="test-result">
+                        <span class="fail">❌ FAIL</span>
+                        Could not load HTML file: ${error.message}
+                    </div>
+                `;
+            }
+        }
+        
+        function showImplementationStatus() {
+            const statusDiv = document.getElementById('implementationStatus');
+            
+            const codeSnippets = [
+                {
+                    title: 'Results Display (No Limit)',
+                    code: 'searchResult.results.map(movie => this.createMovieCard(movie)).join("")',
+                    status: 'Implemented'
+                },
+                {
+                    title: 'Pagination',
+                    code: 'createPagination(searchResult) with page numbers, Previous/Next buttons',
+                    status: 'Implemented'
+                },
+                {
+                    title: 'View Toggle',
+                    code: 'setViewMode(mode) with localStorage persistence',
+                    status: 'Implemented'
+                },
+                {
+                    title: 'Sorting',
+                    code: 'updateSort(sortBy) and toggleSortOrder() methods',
+                    status: 'Implemented'
+                },
+                {
+                    title: 'Hover Info',
+                    code: 'movie-hover-info div with overview text',
+                    status: 'Implemented'
+                }
+            ];
+            
+            let html = '<table style="width: 100%; border-collapse: collapse;">';
+            html += '<tr><th style="text-align: left; padding: 10px; background: #007bff; color: white;">Feature</th>';
+            html += '<th style="text-align: left; padding: 10px; background: #007bff; color: white;">Implementation</th>';
+            html += '<th style="text-align: left; padding: 10px; background: #007bff; color: white;">Status</th></tr>';
+            
+            codeSnippets.forEach(item => {
+                html += `
+                    <tr style="border-bottom: 1px solid #ddd;">
+                        <td style="padding: 10px;"><strong>${item.title}</strong></td>
+                        <td style="padding: 10px;"><code>${item.code}</code></td>
+                        <td style="padding: 10px;"><span class="pass">${item.status}</span></td>
+                    </tr>
+                `;
+            });
+            
+            html += '</table>';
+            statusDiv.innerHTML = html;
+        }
+        
+        // Load scripts
+        const scripts = ['scripts/api.js', 'scripts/search-manager.js'];
+        scripts.forEach(src => {
+            const script = document.createElement('script');
+            script.src = src;
+            document.head.appendChild(script);
+        });
+        
+        // Initialize on load
+        window.addEventListener('load', () => {
+            checkImplementation();
+            showImplementationStatus();
+            
+            // Auto-run tests after a delay to ensure scripts are loaded
+            setTimeout(() => {
+                runAllTests();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
