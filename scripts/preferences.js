@@ -82,7 +82,35 @@ function savePreferences() {
    localStorage.setItem('preferencesLastUpdated', new Date().toISOString());
 
    hidePreferenceModal();
-   window.location.reload();
+   
+   // Close any open modals
+   const advancedSearchModal = document.getElementById('advancedSearchModal');
+   if (advancedSearchModal) {
+      advancedSearchModal.style.display = 'none';
+   }
+   
+   // Clear any search results
+   const searchResults = document.getElementById('advancedSearchResults');
+   if (searchResults) {
+      searchResults.innerHTML = '';
+   }
+   
+   // Close the filter panel if it's open
+   if (window.filterPanel && window.filterPanel.isOpen) {
+      window.filterPanel.togglePanel();
+   }
+   
+   // Get provider and genre names for the toast message
+   const providerSelect = document.getElementById('streamingProvider');
+   const genreSelect = document.getElementById('movieGenre');
+   const providerName = providerSelect.options[providerSelect.selectedIndex].text;
+   const genreName = genreSelect.options[genreSelect.selectedIndex].text;
+   
+   // Show toast notification
+   showToast(`Preferences updated! Looking for ${genreName} movies on ${providerName}...`);
+   
+   // Fetch a new movie with the updated preferences
+   fetchRandomMovie();
 }
 
 function skipPreferences() {

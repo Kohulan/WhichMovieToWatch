@@ -133,6 +133,9 @@ class PWAInstaller {
     // Add install button after trending movies section
     const trendingSection = document.getElementById('trendingMovies');
     if (trendingSection && !document.querySelector('.pwa-install-section')) {
+      // Ensure styles are added
+      this.addInstallStyles();
+      
       const installSection = document.createElement('div');
       installSection.className = 'pwa-install-section';
       installSection.innerHTML = `
