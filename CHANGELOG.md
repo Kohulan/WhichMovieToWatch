@@ -1,5 +1,36 @@
 # Changelog
 
+## [1.2.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.1.0...v1.2.0) (2025-08-08)
+
+
+### Features
+
+* add netflix search ([1829b64](https://github.com/Kohulan/WhichMovieToWatch/commit/1829b64e16c07279be3df2c1f7859fc70113bf49))
+* advanced search ([fa319e9](https://github.com/Kohulan/WhichMovieToWatch/commit/fa319e98289873269adb6759fc1c1b19be0265af))
+* find the movie globally ([9244113](https://github.com/Kohulan/WhichMovieToWatch/commit/92441137db76ba76082cd933b06901e8795587a7))
+* improved visual appeal ([bb47ce9](https://github.com/Kohulan/WhichMovieToWatch/commit/bb47ce91d9002339c975a69d08dd6c79992f08d9))
+* improved visual appeal ([a0e1e8f](https://github.com/Kohulan/WhichMovieToWatch/commit/a0e1e8f4528e509a8e239d7f9f2dbab5a8cdf8c0))
+
+
+### Bug Fixes
+
+* advanced search ([dc72f8a](https://github.com/Kohulan/WhichMovieToWatch/commit/dc72f8a1fbc15b32a5a4f62f5c73a98c37d35d67))
+* advanced search ([3dad49a](https://github.com/Kohulan/WhichMovieToWatch/commit/3dad49a5e8afbfa5cc44ede902340437863a7334))
+* advanced search filters ([e602e65](https://github.com/Kohulan/WhichMovieToWatch/commit/e602e65e41285c46c671a0bae88fdbcdaf543d0d))
+* advanced search filters ([a1a0e41](https://github.com/Kohulan/WhichMovieToWatch/commit/a1a0e417e8c263fc47e9949cefbf80618cad646d))
+* fetching movie accoding to preferences ([eb8c8a6](https://github.com/Kohulan/WhichMovieToWatch/commit/eb8c8a60d0d7bccc00e9ff159b31470bdb232b60))
+* find movie ([2f0318a](https://github.com/Kohulan/WhichMovieToWatch/commit/2f0318a88311254aca473646ce6f9c201b460c67))
+* find the movie globally ([f492c13](https://github.com/Kohulan/WhichMovieToWatch/commit/f492c13ec97c612bdd9f993a9ae57d0d599ee063))
+* light mode in dinner time ([2a71366](https://github.com/Kohulan/WhichMovieToWatch/commit/2a71366ae8c297079df6d35fd9fb18bb1fb0b181))
+* love button feedback ([f12aa59](https://github.com/Kohulan/WhichMovieToWatch/commit/f12aa59cf29a8bbf1f3f990d97d329b67e061578))
+* movie poster visibility ([193c75e](https://github.com/Kohulan/WhichMovieToWatch/commit/193c75e8f46d161003599409a4bdd12514375de8))
+* search light mode ([bb11e4f](https://github.com/Kohulan/WhichMovieToWatch/commit/bb11e4f4b6e2b7d40e45dd4c8e094fcbc2b68a4c))
+* update light mode ([11162dc](https://github.com/Kohulan/WhichMovieToWatch/commit/11162dc387c4b2d53cb9f8cca54306b741862441))
+* visual clean up in title ([25d1d9f](https://github.com/Kohulan/WhichMovieToWatch/commit/25d1d9f99c381f4b1baba334821a6d78e3ed1262))
+* visual elements in pop up ([86b2b67](https://github.com/Kohulan/WhichMovieToWatch/commit/86b2b67e8bd5d6e65dfa8c81207e8734b9506d5d))
+* visual elements in pop up ([7434098](https://github.com/Kohulan/WhichMovieToWatch/commit/743409838379728e7235afa583f80d227ad72b50))
+* visual optimizations ([f591bd8](https://github.com/Kohulan/WhichMovieToWatch/commit/f591bd88f004badac6207ac14423fc92476a6abb))
+
 ## [1.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.0.0...v1.1.0) (2025-07-25)
 
 
