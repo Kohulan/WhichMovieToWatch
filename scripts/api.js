@@ -18,7 +18,7 @@ const MAJOR_STREAMING_SERVICES = [
 ];
 
 // Main movie fetching function
-async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
+async function fetchRandomMovie(retryCount = 0, maxRetries = 100, temporaryGenreOverride = null) {
    try {
       const loadingAnimation = `
             <div class="loading">
@@ -30,17 +30,18 @@ async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
 
       // Get user preferences
       const preferredProvider = localStorage.getItem('preferredProvider');
-      const preferredGenre = localStorage.getItem('preferredGenre');
+      const preferredGenre = temporaryGenreOverride || localStorage.getItem('preferredGenre');
       const providerId = getProviderId(preferredProvider);
       
       console.log('Fetching movie with preferences:', {
          provider: preferredProvider,
          providerId: providerId,
-         genre: preferredGenre
+         genre: preferredGenre,
+         userCountry: userCountry
       });
 
       // Build the initial API URL with preferences
-      let apiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=1000&vote_average.gte=6.5&include_adult=false`;
+      let apiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 50) + 1}&sort_by=popularity.desc&vote_count.gte=500&vote_average.gte=6.0&include_adult=false`;
 
       // Add genre if specified and not 'any'
       let usingPreferredGenre = false;
@@ -52,13 +53,13 @@ async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
       const response = await fetch(apiUrl);
       if (!response.ok) {
          // Try with different parameters if the API call fails
-         return await retryWithDifferentParams(retryCount, maxRetries);
+         return await retryWithDifferentParams(retryCount, maxRetries, preferredProvider, preferredGenre);
       }
 
       const data = await response.json();
       if (!data.results || data.results.length === 0) {
          // If no results found, try with different parameters
-         return await retryWithDifferentParams(retryCount, maxRetries);
+         return await retryWithDifferentParams(retryCount, maxRetries, preferredProvider, preferredGenre);
       }
 
       // Filter out movies that have been shown
@@ -66,14 +67,15 @@ async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
 
       if (availableMovies.length === 0) {
          if (retryCount < maxRetries) {
-            return fetchRandomMovie(retryCount + 1, maxRetries);
+            return fetchRandomMovie(retryCount + 1, maxRetries, temporaryGenreOverride);
          }
          clearOldMovieHistory();
-         return fetchRandomMovie(0, maxRetries);
+         return fetchRandomMovie(0, maxRetries, temporaryGenreOverride);
       }
 
       // Check streaming availability if provider is selected
       if (providerId) {
+         // First, try to find movies matching both provider and genre
          for (const movie of availableMovies) {
             const movieDetailsResponse = await fetch(
                `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
@@ -85,39 +87,46 @@ async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
             const providers = movieData['watch/providers']?.results?.[userCountry] || {};
             const streamingProviders = providers.flatrate || [];
 
+            // Check if movie is available on the selected provider
             if (streamingProviders.some(provider => provider.provider_id === providerId)) {
+               console.log(`Found movie on ${preferredProvider}:`, movieData.title);
                trackShownMovie(movieData.id);
                await displayMovie(movieData);
-
-               // Show warning if we had to ignore genre preference
-               if (!usingPreferredGenre) {
-                  showToast('No movies found in your preferred genre. Here\'s a great alternative!');
-               }
                return;
             }
          }
 
          // If no movies found with selected provider and genre, try without genre restriction
-         if (usingPreferredGenre) {
-            console.log('Retrying without genre restriction...');
+         if (usingPreferredGenre && !temporaryGenreOverride) {
+            console.log('No movies found with genre restriction, trying without genre...');
             const genreName = getGenreName(preferredGenre);
-            showToast(`No ${genreName} movies found on ${preferredProvider}. Looking for alternatives...`);
-
-            // Remove genre preference and try again
-            localStorage.setItem('preferredGenre', 'any');
-            return fetchRandomMovie(0, maxRetries);
+            showToast(`No ${genreName} movies found on ${preferredProvider}. Showing other genres...`);
+            
+            // Retry without genre restriction (but don't save this preference)
+            return fetchRandomMovie(0, maxRetries, 'any');
          }
 
          // If still no movies found after removing genre restriction
          if (retryCount < maxRetries) {
-            return fetchRandomMovie(retryCount + 1, maxRetries);
+            return fetchRandomMovie(retryCount + 1, maxRetries, temporaryGenreOverride);
          }
 
-         showToast(`No movies found on ${preferredProvider}. Try different preferences!`);
-         return await retryWithDifferentParams(retryCount, maxRetries);
+         // Last resort: show any movie from the provider (fetch more pages)
+         console.log(`Couldn't find movies on ${preferredProvider}, showing alternative...`);
+         showToast(`No movies currently available on ${preferredProvider}. Showing alternatives...`);
+         
+         // Show any available movie but warn the user
+         const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+         const movieDetailsResponse = await fetch(
+            `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+         );
+         const movieData = await movieDetailsResponse.json();
+         trackShownMovie(movieData.id);
+         await displayMovie(movieData);
+         return;
       }
 
-      // If no provider selected or no matches found, show any available movie
+      // If no provider selected, show any available movie
       const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
       const movieDetailsResponse = await fetch(
          `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
@@ -129,19 +138,24 @@ async function fetchRandomMovie(retryCount = 0, maxRetries = 100) {
    } catch (error) {
       console.error('Error fetching movie:', error);
       // Instead of showing error, retry with different parameters
-      return await retryWithDifferentParams(retryCount, maxRetries);
+      return await retryWithDifferentParams(retryCount, maxRetries, preferredProvider, preferredGenre);
    }
 }
 
 // Helper function to retry with different parameters
-async function retryWithDifferentParams(retryCount, maxRetries) {
+async function retryWithDifferentParams(retryCount, maxRetries, preferredProvider = null, preferredGenre = null) {
    if (retryCount >= maxRetries) {
       displayError("Unable to find movies at the moment. Please try again later.");
       return;
    }
 
-   // Try with more relaxed parameters
-   const fallbackUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=100&include_adult=false`;
+   // Try with more relaxed parameters but still respect provider if possible
+   let fallbackUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&page=${Math.floor(Math.random() * 100) + 1}&sort_by=popularity.desc&vote_count.gte=100&include_adult=false`;
+   
+   // Still try to respect genre preference in fallback
+   if (preferredGenre && preferredGenre !== 'any') {
+      fallbackUrl += `&with_genres=${preferredGenre}`;
+   }
 
    try {
       const response = await fetch(fallbackUrl);
@@ -152,14 +166,43 @@ async function retryWithDifferentParams(retryCount, maxRetries) {
          return fetchRandomMovie(retryCount + 1, maxRetries);
       }
 
-      // Get a random movie from the results
-      const randomMovie = data.results[Math.floor(Math.random() * data.results.length)];
-      const movieDetailsResponse = await fetch(
-         `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
-      );
-      const movieData = await movieDetailsResponse.json();
-      trackShownMovie(movieData.id);
-      await displayMovie(movieData);
+      // If provider is specified, try to find a movie from that provider
+      const providerId = getProviderId(preferredProvider);
+      if (providerId) {
+         for (const movie of data.results) {
+            if (hasMovieBeenShown(movie.id)) continue;
+            
+            const movieDetailsResponse = await fetch(
+               `${BASE_URL}/movie/${movie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+            );
+            
+            if (!movieDetailsResponse.ok) continue;
+            
+            const movieData = await movieDetailsResponse.json();
+            const providers = movieData['watch/providers']?.results?.[userCountry] || {};
+            const streamingProviders = providers.flatrate || [];
+            
+            if (streamingProviders.some(provider => provider.provider_id === providerId)) {
+               trackShownMovie(movieData.id);
+               await displayMovie(movieData);
+               return;
+            }
+         }
+      }
+
+      // If no provider match found, show any available movie
+      const availableMovies = data.results.filter(movie => !hasMovieBeenShown(movie.id));
+      if (availableMovies.length > 0) {
+         const randomMovie = availableMovies[Math.floor(Math.random() * availableMovies.length)];
+         const movieDetailsResponse = await fetch(
+            `${BASE_URL}/movie/${randomMovie.id}?api_key=${API_KEY}&append_to_response=watch/providers`
+         );
+         const movieData = await movieDetailsResponse.json();
+         trackShownMovie(movieData.id);
+         await displayMovie(movieData);
+      } else {
+         return fetchRandomMovie(retryCount + 1, maxRetries);
+      }
 
    } catch (error) {
       console.error('Error in fallback request:', error);

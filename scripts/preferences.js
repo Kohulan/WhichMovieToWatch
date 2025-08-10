@@ -77,6 +77,13 @@ function savePreferences() {
    const provider = document.getElementById('streamingProvider').value;
    const genre = document.getElementById('movieGenre').value;
 
+   // Log the preferences being saved
+   console.log('Saving preferences:', {
+      provider: provider,
+      genre: genre,
+      timestamp: new Date().toISOString()
+   });
+
    localStorage.setItem('preferredProvider', provider);
    localStorage.setItem('preferredGenre', genre);
    localStorage.setItem('preferencesLastUpdated', new Date().toISOString());
@@ -108,6 +115,12 @@ function savePreferences() {
    
    // Show toast notification
    showToast(`Preferences updated! Looking for ${genreName} movies on ${providerName}...`);
+   
+   // Clear recommendations section if it exists
+   const recommendationsSection = document.getElementById('recommendationsSection');
+   if (recommendationsSection) {
+      recommendationsSection.innerHTML = '';
+   }
    
    // Fetch a new movie with the updated preferences
    fetchRandomMovie();
