@@ -1,0 +1,1031 @@
+/**
+ * Netflix Modal Enhanced Styles
+ * Visually stunning and clearly visible Netflix search popup
+ */
+
+/* ============================================
+   NETFLIX MODAL OVERLAY & CONTAINER
+   ============================================ */
+
+#netflixModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, 
+                rgba(229, 9, 20, 0.25) 0%, 
+                rgba(0, 0, 0, 0.92) 50%,
+                rgba(139, 0, 0, 0.15) 100%);
+    backdrop-filter: blur(30px) saturate(150%);
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+    z-index: 10000;
+    animation: netflixOverlayFadeIn 0.6s ease-out;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes netflixOverlayFadeIn {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0) saturate(100%);
+    }
+    to {
+        opacity: 1;
+        backdrop-filter: blur(30px) saturate(150%);
+    }
+}
+
+#netflixModal .search-modal-content {
+    position: relative;
+    background: linear-gradient(145deg, 
+                rgba(18, 18, 22, 0.98) 0%, 
+                rgba(10, 10, 12, 0.98) 100%);
+    border-radius: 32px;
+    max-width: 1200px;
+    width: 92%;
+    height: 90vh;
+    max-height: 900px;
+    overflow: hidden;
+    box-shadow: 
+        0 0 0 3px rgba(229, 9, 20, 0.4),
+        0 40px 80px rgba(0, 0, 0, 0.9),
+        0 0 300px rgba(229, 9, 20, 0.15),
+        inset 0 2px 1px rgba(255, 255, 255, 0.08);
+    animation: netflixModalSlideIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes netflixModalSlideIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+        filter: blur(10px);
+    }
+    50% {
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+    }
+}
+
+/* ============================================
+   NETFLIX HEADER
+   ============================================ */
+
+.netflix-header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem 3rem;
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 50%, #831010 100%);
+    color: white;
+    border-radius: 32px 32px 0 0;
+    overflow: hidden;
+    flex-shrink: 0;
+    min-height: 100px;
+}
+
+.netflix-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                transparent 70%);
+    animation: netflixShimmer 8s linear infinite;
+}
+
+@keyframes netflixShimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.netflix-header h2 {
+    margin: 0;
+    font-size: 2.25rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    text-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.4),
+        0 0 30px rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.75px;
+    position: relative;
+    z-index: 1;
+}
+
+.netflix-header h2 i {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 15px rgba(229, 9, 20, 0.6));
+    animation: netflixIconPulse 2s ease-in-out infinite;
+}
+
+@keyframes netflixIconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.netflix-header .close-btn {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.netflix-header .close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   SEARCH BAR SECTION
+   ============================================ */
+
+#netflixModal .search-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 2.5rem 3rem;
+    background: linear-gradient(180deg, 
+                rgba(229, 9, 20, 0.03) 0%, 
+                transparent 50%);
+    overflow: hidden;
+}
+
+#netflixModal .search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%, 
+                rgba(255, 255, 255, 0.03) 100%);
+    border: 2px solid rgba(229, 9, 20, 0.25);
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.3),
+        inset 0 2px 1px rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+    margin-bottom: 2.5rem;
+}
+
+#netflixModal .search-bar:focus-within {
+    border-color: rgba(229, 9, 20, 0.6);
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.12) 0%, 
+                rgba(255, 255, 255, 0.06) 100%);
+    box-shadow: 
+        0 20px 50px rgba(229, 9, 20, 0.35),
+        0 0 0 4px rgba(229, 9, 20, 0.15),
+        inset 0 2px 1px rgba(255, 255, 255, 0.15);
+    transform: translateY(-3px) scale(1.01);
+}
+
+#netflixModal .search-icon {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.5rem;
+    margin-right: 1.25rem;
+    animation: searchIconBounce 2s ease-in-out infinite;
+}
+
+@keyframes searchIconBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(3px); }
+}
+
+#netflixModal #netflixMovieSearch {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 500;
+    outline: none;
+    letter-spacing: 0.5px;
+}
+
+#netflixModal #netflixMovieSearch::placeholder {
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 400;
+}
+
+.netflix-search-btn {
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-left: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    box-shadow: 
+        0 6px 20px rgba(229, 9, 20, 0.4),
+        inset 0 2px 1px rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.netflix-search-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.3) 0%, 
+                transparent 70%);
+    transition: all 0.5s ease;
+    transform: translate(-50%, -50%);
+}
+
+.netflix-search-btn:hover {
+    background: linear-gradient(135deg, #f40612 0%, #d01b25 100%);
+    transform: translateY(-2px);
+    box-shadow: 
+        0 6px 20px rgba(229, 9, 20, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.netflix-search-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.netflix-search-btn:active {
+    transform: translateY(0);
+}
+
+/* ============================================
+   NETFLIX RESULTS SECTION
+   ============================================ */
+
+.netflix-results {
+    flex: 1;
+    padding: 0 3rem 3rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    min-height: 0;
+}
+
+/* Custom Scrollbar */
+.netflix-results::-webkit-scrollbar {
+    width: 12px;
+}
+
+.netflix-results::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.netflix-results::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+.netflix-results::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #f40612 0%, #d01b25 100%);
+    background-clip: padding-box;
+}
+
+/* ============================================
+   DISCLAIMER STYLING
+   ============================================ */
+
+.disclaimer {
+    background: linear-gradient(135deg, 
+                rgba(255, 193, 7, 0.12) 0%, 
+                rgba(255, 193, 7, 0.04) 100%);
+    border: 2px solid rgba(255, 193, 7, 0.25);
+    border-radius: 20px;
+    padding: 1.75rem 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1.25rem;
+    animation: disclaimerGlow 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes disclaimerGlow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(255, 193, 7, 0.1);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(255, 193, 7, 0.2);
+    }
+}
+
+.disclaimer::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, 
+                transparent 30%, 
+                rgba(255, 193, 7, 0.1) 50%, 
+                transparent 70%);
+    animation: disclaimerShine 4s linear infinite;
+}
+
+@keyframes disclaimerShine {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+.disclaimer i {
+    color: #ffc107;
+    font-size: 1.75rem;
+    margin-top: 2px;
+    filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.5));
+    animation: warningPulse 2s ease-in-out infinite;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes warningPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.disclaimer p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+}
+
+.disclaimer strong {
+    color: #ffc107;
+    font-weight: 700;
+}
+
+/* ============================================
+   COUNTRY RESULTS
+   ============================================ */
+
+.netflix-results-section {
+    animation: resultsSlideIn 0.5s ease-out;
+}
+
+@keyframes resultsSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.netflix-results-section h3 {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid rgba(229, 9, 20, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.country-results-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.country-result {
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.06) 0%, 
+                rgba(255, 255, 255, 0.02) 100%);
+    border: 2px solid rgba(229, 9, 20, 0.15);
+    border-radius: 20px;
+    padding: 1.75rem;
+    transition: all 0.3s ease;
+    animation: countryCardFadeIn 0.4s ease-out;
+    position: relative;
+    overflow: hidden;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.country-result::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(229, 9, 20, 0.1) 50%, 
+                transparent 100%);
+    transition: left 0.5s ease;
+}
+
+.country-result:hover::before {
+    left: 100%;
+}
+
+.country-result:hover {
+    border-color: rgba(229, 9, 20, 0.5);
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 
+        0 15px 40px rgba(229, 9, 20, 0.35),
+        inset 0 2px 1px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, 
+                rgba(229, 9, 20, 0.12) 0%, 
+                rgba(255, 255, 255, 0.04) 100%);
+}
+
+@keyframes countryCardFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.country-name {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.country-name i {
+    color: #e50914;
+    font-size: 1.6rem;
+    filter: drop-shadow(0 0 8px rgba(229, 9, 20, 0.6));
+}
+
+.netflix-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    background: linear-gradient(135deg, #e50914 0%, #b81d24 100%);
+    color: white;
+    text-decoration: none;
+    padding: 0.85rem 1.75rem;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 5px 18px rgba(229, 9, 20, 0.4),
+        inset 0 2px 1px rgba(255, 255, 255, 0.15);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    text-align: center;
+}
+
+.netflix-link::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, 
+                rgba(255, 255, 255, 0.3) 0%, 
+                transparent 70%);
+    transition: all 0.5s ease;
+    transform: translate(-50%, -50%);
+}
+
+.netflix-link:hover {
+    background: linear-gradient(135deg, #f40612 0%, #d01b25 100%);
+    transform: translateY(-2px) scale(1.05);
+    text-decoration: none;
+    color: white;
+    box-shadow: 
+        0 6px 20px rgba(229, 9, 20, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.netflix-link:hover::before {
+    width: 200px;
+    height: 200px;
+}
+
+.netflix-link i {
+    font-size: 1.2rem;
+}
+
+/* ============================================
+   AVAILABILITY NOTE
+   ============================================ */
+
+.availability-note {
+    background: linear-gradient(135deg, 
+                rgba(59, 130, 246, 0.08) 0%, 
+                rgba(59, 130, 246, 0.03) 100%);
+    border: 2px solid rgba(59, 130, 246, 0.25);
+    border-radius: 20px;
+    padding: 1.75rem 2rem;
+    margin-top: 3rem;
+    animation: noteFloat 3s ease-in-out infinite;
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes noteFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+
+.availability-note i {
+    color: #3b82f6;
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+}
+
+.availability-note p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.availability-note strong {
+    color: #60a5fa;
+    font-weight: 600;
+}
+
+/* ============================================
+   LOADING & ERROR STATES
+   ============================================ */
+
+.loading-netflix {
+    text-align: center;
+    padding: 3rem;
+    color: white;
+}
+
+.loading-netflix i {
+    font-size: 3rem;
+    color: #e50914;
+    margin-bottom: 1.5rem;
+    animation: netflixSpin 1s linear infinite;
+    filter: drop-shadow(0 0 20px rgba(229, 9, 20, 0.5));
+}
+
+@keyframes netflixSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.loading-netflix p {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    animation: loadingPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes loadingPulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+}
+
+.error-netflix {
+    text-align: center;
+    padding: 3rem;
+    color: white;
+}
+
+.error-netflix i {
+    font-size: 3rem;
+    color: #ef4444;
+    margin-bottom: 1.5rem;
+    animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}
+
+.error-netflix p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0.5rem 0;
+}
+
+.error-netflix p:first-of-type {
+    font-weight: 600;
+    color: #ef4444;
+}
+
+/* ============================================
+   AUTOCOMPLETE SUGGESTIONS
+   ============================================ */
+
+.netflix-suggestions {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, 
+                rgba(20, 20, 30, 0.98) 0%, 
+                rgba(10, 10, 15, 0.98) 100%);
+    border: 2px solid rgba(229, 9, 20, 0.3);
+    border-radius: 16px;
+    max-height: 320px;
+    overflow-y: auto;
+    display: none;
+    z-index: 10001;
+    box-shadow: 
+        0 15px 40px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(229, 9, 20, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    animation: suggestionsSlideDown 0.3s ease-out;
+}
+
+@keyframes suggestionsSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.netflix-suggestion {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid rgba(229, 9, 20, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.netflix-suggestion::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(229, 9, 20, 0.2) 50%, 
+                transparent 100%);
+    transition: left 0.3s ease;
+}
+
+.netflix-suggestion:hover::before,
+.netflix-suggestion.highlighted::before {
+    left: 100%;
+}
+
+.netflix-suggestion:last-child {
+    border-bottom: none;
+}
+
+.netflix-suggestion:hover,
+.netflix-suggestion.highlighted {
+    background: linear-gradient(135deg, 
+                rgba(229, 9, 20, 0.2) 0%, 
+                rgba(178, 7, 16, 0.1) 100%);
+    padding-left: 1.5rem;
+}
+
+.suggestion-poster {
+    width: 50px;
+    height: 75px;
+    margin-right: 1.25rem;
+    border-radius: 8px;
+    overflow: hidden;
+    background: linear-gradient(135deg, 
+                rgba(229, 9, 20, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.suggestion-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.netflix-suggestion:hover .suggestion-poster img {
+    transform: scale(1.1);
+}
+
+.suggestion-poster i {
+    font-size: 2rem;
+    color: rgba(229, 9, 20, 0.3);
+}
+
+.suggestion-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.suggestion-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 0.25rem;
+}
+
+.suggestion-year {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.suggestion-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    color: #ffc107;
+    margin-left: auto;
+    padding-left: 1rem;
+    font-weight: 600;
+}
+
+.suggestion-rating i {
+    font-size: 0.9rem;
+    filter: drop-shadow(0 0 3px rgba(255, 193, 7, 0.5));
+}
+
+/* ============================================
+   LIGHT MODE OVERRIDES
+   ============================================ */
+
+[data-theme="light"] #netflixModal {
+    background: radial-gradient(ellipse at center, 
+                rgba(229, 9, 20, 0.1) 0%, 
+                rgba(255, 255, 255, 0.95) 100%);
+}
+
+[data-theme="light"] #netflixModal .search-modal-content {
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(250, 250, 252, 0.98) 100%);
+    box-shadow: 
+        0 0 0 2px rgba(229, 9, 20, 0.3),
+        0 30px 60px rgba(0, 0, 0, 0.2),
+        0 0 200px rgba(229, 9, 20, 0.1);
+}
+
+[data-theme="light"] #netflixModal .search-container {
+    background: linear-gradient(180deg, 
+                rgba(229, 9, 20, 0.03) 0%, 
+                transparent 100%);
+}
+
+[data-theme="light"] #netflixModal .search-bar {
+    background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.05) 0%, 
+                rgba(0, 0, 0, 0.02) 100%);
+    border: 2px solid rgba(229, 9, 20, 0.2);
+}
+
+[data-theme="light"] #netflixModal #netflixMovieSearch {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] #netflixModal #netflixMovieSearch::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="light"] .disclaimer {
+    background: linear-gradient(135deg, 
+                rgba(255, 193, 7, 0.1) 0%, 
+                rgba(255, 193, 7, 0.05) 100%);
+    border: 2px solid rgba(255, 193, 7, 0.4);
+}
+
+[data-theme="light"] .disclaimer p {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .netflix-results-section h3 {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .country-result {
+    background: linear-gradient(135deg, 
+                rgba(229, 9, 20, 0.05) 0%, 
+                rgba(229, 9, 20, 0.02) 100%);
+    border: 2px solid rgba(229, 9, 20, 0.15);
+}
+
+[data-theme="light"] .country-name {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .availability-note {
+    background: linear-gradient(135deg, 
+                rgba(59, 130, 246, 0.08) 0%, 
+                rgba(59, 130, 246, 0.03) 100%);
+    border: 2px solid rgba(59, 130, 246, 0.25);
+}
+
+[data-theme="light"] .availability-note p {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .netflix-suggestions {
+    background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(250, 250, 252, 0.98) 100%);
+    border: 2px solid rgba(229, 9, 20, 0.2);
+}
+
+[data-theme="light"] .suggestion-title {
+    color: #1a1a1a;
+}
+
+[data-theme="light"] .suggestion-year {
+    color: #6b7280;
+}
+
+[data-theme="light"] .loading-netflix p,
+[data-theme="light"] .error-netflix p {
+    color: #1a1a1a;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    #netflixModal .search-modal-content {
+        width: 95%;
+        margin: 2.5vh auto;
+        max-height: 95vh;
+    }
+
+    .netflix-header {
+        padding: 1.5rem;
+    }
+
+    .netflix-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .netflix-header h2 i {
+        font-size: 1.6rem;
+    }
+
+    #netflixModal .search-container {
+        padding: 1.5rem;
+    }
+
+    .netflix-results {
+        padding: 0 1.5rem 1.5rem;
+    }
+
+    .netflix-search-btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .country-name {
+        font-size: 1.1rem;
+    }
+
+    .netflix-link {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .netflix-header {
+        padding: 1.25rem;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+
+    .netflix-header h2 {
+        font-size: 1.25rem;
+    }
+
+    .netflix-header .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+
+    #netflixModal .search-bar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .netflix-search-btn {
+        width: 100%;
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    #netflixModal #netflixMovieSearch {
+        font-size: 1rem;
+    }
+
+    .disclaimer {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .disclaimer i {
+        font-size: 1.25rem;
+    }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Enable GPU acceleration for smooth animations */
+#netflixModal,
+#netflixModal .search-modal-content,
+.netflix-header::before,
+.country-result::before,
+.netflix-link::before,
+.netflix-suggestion::before {
+    will-change: transform;
+    transform: translateZ(0);
+}
