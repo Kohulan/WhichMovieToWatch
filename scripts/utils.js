@@ -352,14 +352,9 @@ function openNetflixSearchModal() {
     const searchInput = document.getElementById('netflixMovieSearch');
     searchInput.focus();
     
-    // Keep the disclaimer visible initially
+    // Clear any previous results
     const resultsContainer = document.getElementById('netflixResults');
-    resultsContainer.innerHTML = `
-        <div class="disclaimer">
-            <i class="fas fa-info-circle"></i>
-            <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
-        </div>
-    `;
+    resultsContainer.innerHTML = '';
     
     // Initialize autocomplete
     initNetflixAutocomplete();
@@ -390,10 +385,6 @@ async function searchNetflixAvailability(movieTitle = null, movieId = null) {
     
     const resultsContainer = document.getElementById('netflixResults');
     const loadingMessage = `
-        <div class="disclaimer">
-            <i class="fas fa-info-circle"></i>
-            <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
-        </div>
         <div class="loading-netflix">
             <i class="fas fa-spinner fa-spin"></i>
             <p>Looking up Netflix availability...</p>
@@ -451,14 +442,7 @@ async function searchNetflixAvailability(movieTitle = null, movieId = null) {
             throw new Error('Not available on Netflix');
         }
         
-        // Display results
-        const disclaimer = `
-            <div class="disclaimer">
-                <i class="fas fa-info-circle"></i>
-                <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
-            </div>
-        `;
-        
+        // Display results        
         const results = netflixCountries.map(country => `
             <div class="country-result">
                 <div class="country-name">
@@ -475,10 +459,12 @@ async function searchNetflixAvailability(movieTitle = null, movieId = null) {
             </div>
         `).join('');
         
-        resultsContainer.innerHTML = disclaimer + `
+        resultsContainer.innerHTML = `
             <div class="netflix-results-section">
                 <h3>"${movie.title}" is available on Netflix in:</h3>
-                ${results}
+                <div class="country-results-grid">
+                    ${results}
+                </div>
                 <div class="availability-note">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p><strong>Note:</strong> Streaming availability varies by region due to licensing agreements. You may need to use a VPN service to access content in different regions.</p>
@@ -488,13 +474,6 @@ async function searchNetflixAvailability(movieTitle = null, movieId = null) {
         
     } catch (error) {
         console.error('Netflix search error:', error);
-        const disclaimer = `
-            <div class="disclaimer">
-                <i class="fas fa-info-circle"></i>
-                <p><strong>Disclaimer:</strong> We are not sponsored by or affiliated with Netflix. This search is provided for your convenience to find regional availability.</p>
-            </div>
-        `;
-        
         let errorMessage = 'Unable to retrieve Netflix availability.';
         if (error.message === 'Movie not found') {
             errorMessage = 'Movie not found. Please check the spelling and try again.';
@@ -502,7 +481,7 @@ async function searchNetflixAvailability(movieTitle = null, movieId = null) {
             errorMessage = 'This movie is not currently available on Netflix in any region.';
         }
         
-        resultsContainer.innerHTML = disclaimer + `
+        resultsContainer.innerHTML = `
             <div class="error-netflix">
                 <i class="fas fa-times-circle"></i>
                 <p>${errorMessage}</p>

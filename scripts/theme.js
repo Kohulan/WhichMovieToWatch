@@ -1,41 +1,41 @@
-// Get DOM elements
-const themeToggle = document.getElementById('themeToggleButton');
+// Function to set the theme
+function setTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+  updateThemeImages(theme);
+}
 
-// Apply theme
-const applyTheme = (theme) => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-
-    const themeIcon = themeToggle.querySelector('i');
-    if (theme === 'light') {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-        themeIcon.style.color = '#f59e0b';
-    } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-        themeIcon.style.color = '';
+// Function to update images based on theme
+function updateThemeImages(theme) {
+  const themeImages = document.querySelectorAll('[data-theme-image]');
+  themeImages.forEach(img => {
+    const themeSrc = img.getAttribute(`data-${theme}-src`);
+    if (themeSrc) {
+      img.setAttribute('src', themeSrc);
     }
+  });
 }
 
-// Toggle theme
-const toggleTheme = () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    applyTheme(newTheme);
-    showToast(`Switched to ${newTheme} mode`);
+// Function to toggle theme
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme');
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  setTheme(newTheme);
 }
 
-// Initialize theme
-const initTheme = () => {
-    const storedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    applyTheme(storedTheme);
+// Function to initialize theme on page load
+function initTheme() {
+  // Retrieve stored theme or default to light
+  const storedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  setTheme(storedTheme);
+  
 }
 
-// Event listener
-if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
-}
+// Initialize the theme
+initTheme();
 
-// Initialize theme on page load
-document.addEventListener('DOMContentLoaded', initTheme);
+// Accessibility considerations
+window.matchMedia('(prefers-reduced-motion: reduce)').matches ? document.documentElement.style.transition = 'none' : null;
+
+// Theme toggle button
+document.getElementById('themeToggleButton').addEventListener('click', toggleTheme);

@@ -137,17 +137,19 @@ class SearchManager {
     /**
      * Apply filters and execute search
      */
-    async applyFilters(page = 1) {
+    async applyFilters(page = 1, showModal = true) {
         console.log('Applying filters:', this.filters);
         this.currentPage = page;
         
-        // Open the Advanced Search modal to show results
-        const searchModal = document.getElementById('advancedSearchModal');
-        if (searchModal) {
-            searchModal.style.display = 'flex';
-            console.log('Advanced search modal opened');
-        } else {
-            console.error('Advanced search modal not found');
+        // Only open the modal if explicitly requested (not from URL loading)
+        if (showModal) {
+            const searchModal = document.getElementById('advancedSearchModal');
+            if (searchModal) {
+                searchModal.style.display = 'flex';
+                console.log('Advanced search modal opened');
+            } else {
+                console.error('Advanced search modal not found');
+            }
         }
         
         // Create cache key
@@ -313,8 +315,8 @@ class SearchManager {
         
         if (savedSearch) {
             this.filters = { ...savedSearch.filters };
-            this.applyFilters();
             this.updateFilterUI();
+            this.applyFilters(); // Show modal when user explicitly loads a search
             this.showToast(`Loaded search: ${savedSearch.name}`);
             return true;
         }
@@ -352,7 +354,8 @@ class SearchManager {
         
         this.currentPage = 1;
         this.updateFilterUI();
-        this.applyFilters();
+        // Don't automatically show modal when clearing filters
+        // this.applyFilters();
     }
     
     /**
@@ -420,7 +423,7 @@ class SearchManager {
         
         if (params.toString()) {
             this.updateFilterUI();
-            this.applyFilters();
+            this.applyFilters(1, false); // Don't show modal when loading from URL
         }
     }
     

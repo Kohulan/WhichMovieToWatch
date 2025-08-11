@@ -170,7 +170,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 2.5rem 3rem;
+    padding: 2.5rem 3rem 1rem;
     background: linear-gradient(180deg, 
                 rgba(229, 9, 20, 0.03) 0%, 
                 transparent 50%);
@@ -294,7 +294,8 @@
 
 .netflix-results {
     flex: 1;
-    padding: 0 3rem 3rem;
+    padding: 0;
+    margin-bottom: 1.5rem;
     overflow-y: auto;
     overflow-x: hidden;
     position: relative;
@@ -335,14 +336,19 @@
                 rgba(255, 193, 7, 0.04) 100%);
     border: 2px solid rgba(255, 193, 7, 0.25);
     border-radius: 20px;
-    padding: 1.75rem 2rem;
-    margin-bottom: 3rem;
+    padding: 1.25rem 1.5rem;
     display: flex;
     align-items: flex-start;
-    gap: 1.25rem;
+    gap: 1rem;
     animation: disclaimerGlow 3s ease-in-out infinite;
     position: relative;
     overflow: hidden;
+}
+
+.netflix-disclaimer {
+    margin-top: 1rem;
+    flex-shrink: 0;
+    font-size: 0.9rem;
 }
 
 @keyframes disclaimerGlow {
@@ -375,12 +381,16 @@
 
 .disclaimer i {
     color: #ffc107;
-    font-size: 1.75rem;
+    font-size: 1.25rem;
     margin-top: 2px;
     filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.5));
     animation: warningPulse 2s ease-in-out infinite;
     position: relative;
     z-index: 1;
+}
+
+.netflix-disclaimer i {
+    font-size: 1.1rem;
 }
 
 @keyframes warningPulse {
@@ -395,6 +405,11 @@
     line-height: 1.7;
     position: relative;
     z-index: 1;
+}
+
+.netflix-disclaimer p {
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 
 .disclaimer strong {
@@ -946,7 +961,8 @@
     }
 
     .netflix-results {
-        padding: 0 1.5rem 1.5rem;
+        padding: 0;
+        margin-bottom: 1rem;
     }
 
     .netflix-search-btn {
@@ -1000,10 +1016,19 @@
     .disclaimer {
         flex-direction: column;
         text-align: center;
+        padding: 1rem;
     }
 
     .disclaimer i {
-        font-size: 1.25rem;
+        font-size: 1.1rem;
+    }
+
+    .netflix-disclaimer {
+        margin-top: 0.75rem;
+    }
+
+    .netflix-disclaimer p {
+        font-size: 0.85rem;
     }
 }
 
