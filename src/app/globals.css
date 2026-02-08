@@ -1,0 +1,326 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — "Cinematic Clay" Design System
+   ============================================================ */
+
+:root {
+  /* Dynamic clay hue — overridden per-movie via JS */
+  --clay-hue: 260;
+
+  /* Core palette */
+  --bg-base: #09090B;
+  --bg-elevated: #18181B;
+  --bg-clay: oklch(0.18 0.02 var(--clay-hue));
+  --bg-card: oklch(0.15 0.015 var(--clay-hue));
+
+  --accent-primary: #A78BFA;
+  --accent-warm: #F97316;
+  --accent-teal: #2DD4BF;
+  --accent-rose: #FB7185;
+
+  --text-primary: #FAFAFA;
+  --text-secondary: #A1A1AA;
+  --text-muted: #71717A;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-clay: rgba(255, 255, 255, 0.08);
+
+  /* Clay shadow tokens (responsive via clamp) */
+  --clay-radius: clamp(16px, 3vw, 40px);
+  --clay-radius-sm: clamp(10px, 2vw, 24px);
+  --clay-radius-lg: clamp(20px, 4vw, 50px);
+
+  --clay-shadow:
+    clamp(12px, 2vw, 35px) clamp(12px, 2vw, 35px) clamp(24px, 4vw, 68px) oklch(0.05 0.02 var(--clay-hue) / 0.6),
+    inset -6px -6px 14px oklch(0.08 0.025 var(--clay-hue) / 0.7),
+    inset 0px 10px 24px oklch(0.25 0.02 var(--clay-hue));
+
+  --clay-shadow-sm:
+    8px 8px 20px oklch(0.05 0.02 var(--clay-hue) / 0.5),
+    inset -3px -3px 8px oklch(0.08 0.025 var(--clay-hue) / 0.5),
+    inset 0px 5px 12px oklch(0.25 0.02 var(--clay-hue));
+
+  --clay-shadow-hover:
+    clamp(16px, 2.5vw, 40px) clamp(16px, 2.5vw, 40px) clamp(30px, 5vw, 80px) oklch(0.05 0.03 var(--clay-hue) / 0.7),
+    inset -8px -8px 18px oklch(0.08 0.03 var(--clay-hue) / 0.8),
+    inset 0px 12px 28px oklch(0.28 0.025 var(--clay-hue));
+
+  /* Glow accent */
+  --glow-primary: 0 0 40px oklch(0.6 0.15 var(--clay-hue) / 0.15);
+  --glow-warm: 0 0 40px rgba(249, 115, 22, 0.15);
+
+  /* Animation */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  color-scheme: dark;
+}
+
+/* Light mode overrides */
+[data-theme="light"] {
+  --bg-base: #FAFAF9;
+  --bg-elevated: #F5F0EB;
+  --bg-clay: oklch(0.92 0.02 var(--clay-hue));
+  --bg-card: oklch(0.95 0.015 var(--clay-hue));
+
+  --accent-primary: #7C3AED;
+  --accent-warm: #EA580C;
+  --accent-teal: #0D9488;
+  --accent-rose: #E11D48;
+
+  --text-primary: #1C1917;
+  --text-secondary: #57534E;
+  --text-muted: #A8A29E;
+
+  --border-subtle: rgba(0, 0, 0, 0.06);
+  --border-clay: rgba(0, 0, 0, 0.08);
+
+  --clay-shadow:
+    clamp(12px, 2vw, 34px) clamp(12px, 2vw, 34px) clamp(24px, 4vw, 68px) oklch(0.7 0.02 var(--clay-hue) / 0.35),
+    inset -6px -6px 14px oklch(0.6 0.02 var(--clay-hue) / 0.3),
+    inset 0px 10px 24px oklch(0.98 0.01 var(--clay-hue));
+
+  --clay-shadow-sm:
+    8px 8px 20px oklch(0.7 0.02 var(--clay-hue) / 0.25),
+    inset -3px -3px 8px oklch(0.6 0.02 var(--clay-hue) / 0.2),
+    inset 0px 5px 12px oklch(0.98 0.01 var(--clay-hue));
+
+  --clay-shadow-hover:
+    clamp(16px, 2.5vw, 40px) clamp(16px, 2.5vw, 40px) clamp(30px, 5vw, 80px) oklch(0.65 0.03 var(--clay-hue) / 0.4),
+    inset -8px -8px 18px oklch(0.55 0.025 var(--clay-hue) / 0.35),
+    inset 0px 12px 28px oklch(0.99 0.01 var(--clay-hue));
+
+  --glow-primary: 0 0 40px oklch(0.6 0.15 var(--clay-hue) / 0.1);
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   TAILWIND THEME EXTENSIONS
+   ============================================================ */
+
+@theme inline {
+  --color-background: var(--bg-base);
+  --color-foreground: var(--text-primary);
+  --color-card: var(--bg-card);
+  --color-elevated: var(--bg-elevated);
+  --color-clay: var(--bg-clay);
+  --color-accent: var(--accent-primary);
+  --color-accent-warm: var(--accent-warm);
+  --color-accent-teal: var(--accent-teal);
+  --color-accent-rose: var(--accent-rose);
+  --color-muted: var(--text-muted);
+  --color-secondary: var(--text-secondary);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-clay: var(--border-clay);
+
+  --font-sans: var(--font-inter);
+
+  --radius-clay: var(--clay-radius);
+  --radius-clay-sm: var(--clay-radius-sm);
+  --radius-clay-lg: var(--clay-radius-lg);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-inter, system-ui, -apple-system, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   CLAY COMPONENT CLASSES
+   ============================================================ */
+
+.clay-card {
+  background: var(--bg-clay);
+  border-radius: var(--clay-radius);
+  box-shadow: var(--clay-shadow);
+  border: 1px solid var(--border-clay);
+  transition: transform 0.2s var(--ease-out-expo);
+}
+
+.clay-card-sm {
+  background: var(--bg-clay);
+  border-radius: var(--clay-radius-sm);
+  box-shadow: var(--clay-shadow-sm);
+  border: 1px solid var(--border-clay);
+}
+
+.clay-button {
+  background: var(--bg-clay);
+  border-radius: var(--clay-radius-sm);
+  box-shadow: var(--clay-shadow-sm);
+  border: 1px solid var(--border-clay);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease-spring);
+}
+
+.clay-button:active {
+  transform: scale(0.96);
+}
+
+/* ============================================================
+   GRAINY AURORA BACKGROUND
+   ============================================================ */
+
+.aurora-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.aurora-bg::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background:
+    conic-gradient(from 180deg at 50% 50%,
+      oklch(0.25 0.08 var(--clay-hue)),
+      oklch(0.15 0.04 calc(var(--clay-hue) + 60)),
+      oklch(0.1 0.02 calc(var(--clay-hue) + 120)),
+      oklch(0.2 0.06 calc(var(--clay-hue) + 180)),
+      oklch(0.25 0.08 var(--clay-hue))
+    );
+  filter: blur(80px);
+  opacity: 0.5;
+  animation: aurora-rotate 30s linear infinite;
+}
+
+.aurora-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.4;
+}
+
+@keyframes aurora-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   SKELETON LOADING
+   ============================================================ */
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-elevated);
+  border-radius: var(--clay-radius-sm);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.04),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ============================================================
+   SCROLL SNAP CAROUSELS
+   ============================================================ */
+
+.snap-carousel {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 1rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.snap-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.snap-carousel > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .aurora-bg::before {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   MOBILE OPTIMIZATIONS
+   ============================================================ */
+
+@media (max-width: 640px) {
+  :root {
+    --clay-shadow:
+      8px 8px 20px oklch(0.05 0.02 var(--clay-hue) / 0.4),
+      inset -3px -3px 8px oklch(0.08 0.025 var(--clay-hue) / 0.5),
+      inset 0px 5px 12px oklch(0.25 0.02 var(--clay-hue));
+  }
+}
