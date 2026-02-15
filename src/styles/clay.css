@@ -1,0 +1,91 @@
+/* ============================================================
+   CLAY CSS — Base clay surface styles
+   Texture overlay, shadow presets, and shimmer animation.
+
+   Clay aesthetic: Bold, puffy 3D look (not subtle neumorphism).
+   Visible plasticine grain texture on all clay surfaces.
+   ============================================================ */
+
+/* --- Clay Texture Overlay ---
+   Applied via .clay-texture class. Uses an inline SVG with
+   feTurbulence for plasticine grain. Sits above the background
+   but below content (z-index managed by components).
+   ------------------------------------------------------------ */
+
+.clay-texture {
+  position: relative;
+}
+
+.clay-texture::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.08;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* Reduced texture for small elements (badges, etc.) */
+.clay-texture-subtle::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* --- Clay Shadow Presets ---
+   Bold, chunky 3D clay shadows. Not subtle neumorphism.
+   Uses --clay-shadow and --clay-highlight CSS variables for
+   automatic theme reactivity.
+   ------------------------------------------------------------ */
+
+/* Subtle flat clay (background layer) */
+.clay-shadow-sm {
+  box-shadow:
+    4px 4px 8px var(--clay-shadow),
+    -2px -2px 6px var(--clay-highlight);
+}
+
+/* Standard elevated clay — pronounced 3D pop */
+.clay-shadow-md {
+  box-shadow:
+    8px 8px 16px var(--clay-shadow),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.08),
+    inset 0 6px 12px var(--clay-highlight);
+}
+
+/* Highly elevated clay (cards, modals) — bold puffy 3D */
+.clay-shadow-lg {
+  box-shadow:
+    16px 16px 32px var(--clay-shadow),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.1),
+    inset 0 8px 16px var(--clay-highlight);
+}
+
+/* Pressed-in clay (inputs) — indented into surface */
+.clay-shadow-inset {
+  box-shadow:
+    inset 4px 4px 8px var(--clay-shadow),
+    inset -2px -2px 6px var(--clay-highlight);
+}
+
+/* --- Shimmer Animation ---
+   Used by ClaySkeletonCard for loading shimmer effect.
+   ------------------------------------------------------------ */
+
+@keyframes clay-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
