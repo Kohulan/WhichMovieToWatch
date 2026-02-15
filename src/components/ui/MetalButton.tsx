@@ -22,13 +22,13 @@ const variantStyles: Record<MetalButtonVariant, string> = {
   ghost: 'bg-transparent text-clay-text hover:bg-metal-base/20',
 };
 
-/* Multi-layer realistic shadows */
+/* Multi-directional layered shadows for true 3D depth */
 const defaultShadow =
-  'inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -1px 1px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.2), 0 4px 8px rgba(0,0,0,0.15)';
+  '0 4px 3px 1px rgba(255,255,255,0.15), 0 6px 8px rgba(0,0,0,0.12), 0 -2px 4px rgba(255,255,255,0.06), inset 0 1px 1px rgba(255,255,255,0.35), inset 0 -1px 2px rgba(0,0,0,0.12)';
 const pressedShadow =
-  'inset 0 2px 6px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.1), 0 1px 1px rgba(0,0,0,0.1)';
+  '0 1px 1px rgba(255,255,255,0.1), 0 2px 3px rgba(0,0,0,0.08), inset 0 2px 6px rgba(0,0,0,0.2), inset 0 0 4px rgba(0,0,0,0.1)';
 const hoverShadow =
-  'inset 0 1px 2px rgba(255,255,255,0.5), inset 0 -1px 1px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.2), 0 8px 16px rgba(0,0,0,0.15), 0 0 12px rgba(255,255,255,0.08)';
+  '0 6px 6px 1px rgba(255,255,255,0.15), 0 10px 14px rgba(0,0,0,0.15), 0 -2px 6px rgba(255,255,255,0.08), inset 0 1px 2px rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.1)';
 
 export function MetalButton({
   variant = 'primary',
