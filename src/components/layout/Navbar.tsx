@@ -17,7 +17,7 @@ export function Navbar() {
         bg-clay-surface clay-shadow-sm clay-texture
         h-16 flex items-center justify-between
         px-4 sm:px-6
-        transition-colors duration-300
+        transition-colors duration-500 ease-in-out
       "
     >
       {/* Left: App identity */}

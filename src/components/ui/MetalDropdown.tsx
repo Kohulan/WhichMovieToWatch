@@ -16,6 +16,38 @@ interface MetalDropdownProps {
   className?: string;
 }
 
+const containerVariants = {
+  hidden: { opacity: 0, y: -8, scale: 0.96 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: 'spring' as const,
+      stiffness: 400,
+      damping: 28,
+      staggerChildren: 0.03,
+      delayChildren: 0.05,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -4,
+    scale: 0.98,
+    transition: {
+      duration: 0.15,
+      staggerChildren: 0.02,
+      staggerDirection: -1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -8 },
+  visible: { opacity: 1, x: 0, transition: { type: 'spring' as const, stiffness: 400, damping: 25 } },
+  exit: { opacity: 0, x: 8, transition: { duration: 0.1 } },
+};
+
 export function MetalDropdown({
   options,
   value,
@@ -33,7 +65,6 @@ export function MetalDropdown({
   const selectedOption = options.find((o) => o.value === value);
   const displayLabel = selectedOption?.label ?? placeholder;
 
-  /* Close on outside click */
   useEffect(() => {
     if (!open) return;
 
@@ -48,7 +79,6 @@ export function MetalDropdown({
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [open]);
 
-  /* Scroll focused option into view */
   useEffect(() => {
     if (open && focusedIndex >= 0 && listRef.current) {
       const items = listRef.current.querySelectorAll('[role="option"]');
@@ -146,15 +176,19 @@ export function MetalDropdown({
         onClick={() => setOpen((prev) => !prev)}
         onKeyDown={handleTriggerKeyDown}
         className="
-          metal-gradient metal-shadow metal-text
+          metal-gradient metal-shadow metal-text metal-brushed
+          relative overflow-hidden
           flex items-center justify-between gap-2
           w-full px-4 py-2.5 rounded-lg
           font-body text-sm cursor-pointer
           select-none
         "
       >
-        <span className={selectedOption ? '' : 'opacity-60'}>{displayLabel}</span>
+        <span className={`relative z-10 ${selectedOption ? '' : 'opacity-60'}`}>
+          {displayLabel}
+        </span>
         <motion.span
+          className="relative z-10"
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
         >
@@ -162,7 +196,7 @@ export function MetalDropdown({
         </motion.span>
       </button>
 
-      {/* Dropdown panel — clay surface */}
+      {/* Dropdown panel — clay surface with staggered items */}
       <div className="relative">
         <AnimatePresence>
           {open && (
@@ -173,18 +207,17 @@ export function MetalDropdown({
               aria-label={label ?? 'Options'}
               tabIndex={-1}
               onKeyDown={handleListKeyDown}
-              initial={{ opacity: 0, scaleY: 0.95, y: -4 }}
-              animate={{ opacity: 1, scaleY: 1, y: 0 }}
-              exit={{ opacity: 0, scaleY: 0.95, y: -4 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              style={{ transformOrigin: 'top' }}
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              style={{ transformOrigin: 'top center' }}
               className="
                 absolute z-50 top-1 left-0 right-0
-                bg-clay-elevated rounded-clay
+                bg-clay-elevated rounded-clay clay-texture
                 py-1 overflow-hidden
                 max-h-60 overflow-y-auto
               "
-              /* Clay shadow for passive panel */
               onAnimationComplete={() => {
                 if (open && listRef.current) {
                   listRef.current.focus();
@@ -192,21 +225,22 @@ export function MetalDropdown({
               }}
             >
               {options.map((option, idx) => (
-                <li
+                <motion.li
                   key={option.value}
+                  variants={itemVariants}
                   role="option"
                   aria-selected={option.value === value}
                   onClick={() => selectOption(option.value)}
                   onMouseEnter={() => setFocusedIndex(idx)}
                   className={`
-                    px-4 py-2 font-body text-sm cursor-pointer
+                    px-4 py-2.5 font-body text-sm cursor-pointer
                     select-none transition-colors duration-100
-                    ${option.value === value ? 'text-accent font-semibold' : 'text-clay-text'}
+                    ${option.value === value ? 'text-accent font-semibold bg-clay-surface/50' : 'text-clay-text'}
                     ${idx === focusedIndex ? 'bg-clay-surface' : 'hover:bg-clay-surface'}
                   `}
                 >
                   {option.label}
-                </li>
+                </motion.li>
               ))}
             </motion.ul>
           )}

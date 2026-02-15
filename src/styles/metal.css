@@ -1,69 +1,99 @@
 /* ============================================================
    METAL HARDWARE STYLES
-   Brushed metal gradients, shadows, and knob styles for
-   interactive hardware control components.
-   Distinct from clay surfaces — two-material design language.
+   Realistic skeuomorphic brushed metal with multi-layer gradients,
+   edge bevels, text embossing, and proper light/shadow layering.
    ============================================================ */
 
 /* --- Brushed Metal Gradient ---
-   Signature multi-stop 45-degree linear gradient creating
-   brushed metal appearance with light/dark reflections.
-   Uses --metal-base, --metal-shine, --metal-dark CSS variables
-   that change per theme preset (brass/chrome/gunmetal).
+   7-stop gradient at 135deg for realistic brushed steel look.
+   Multiple layers: base gradient + noise texture overlay.
 */
 .metal-gradient {
-  background: linear-gradient(
-    45deg,
-    var(--metal-dark) 5%,
-    var(--metal-shine) 10%,
-    var(--metal-base) 30%,
-    var(--metal-shine) 50%,
-    var(--metal-base) 70%,
-    var(--metal-shine) 80%,
-    var(--metal-dark) 95%
-  );
+  background:
+    linear-gradient(
+      135deg,
+      var(--metal-dark) 0%,
+      var(--metal-shine) 10%,
+      var(--metal-base) 25%,
+      var(--metal-shine) 40%,
+      var(--metal-base) 55%,
+      var(--metal-shine) 75%,
+      var(--metal-dark) 100%
+    );
+  /* Edge bevel — bright top/left, dark bottom/right */
+  border-top: 1px solid rgba(255, 255, 255, 0.35);
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  border-right: 1px solid rgba(0, 0, 0, 0.15);
 }
 
 /* --- Metal Shadow Presets --- */
 
-/* Standard raised metal — default resting state */
+/* Standard raised metal — resting state with multi-layer depth */
 .metal-shadow {
   box-shadow:
-    0 3px 6px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    inset 0 1px 1px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* Depressed metal — pressed/active state */
 .metal-shadow-pressed {
   box-shadow:
-    0 1px 2px rgba(0, 0, 0, 0.3),
-    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    inset 0 2px 6px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.1),
+    0 1px 1px rgba(0, 0, 0, 0.1);
 }
 
-/* Lifted metal — hover state */
+/* Lifted metal — hover state with glow */
 .metal-shadow-hover {
   box-shadow:
-    0 5px 10px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    inset 0 1px 2px rgba(255, 255, 255, 0.5),
+    inset 0 -1px 1px rgba(0, 0, 0, 0.1),
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.15),
+    0 0 12px rgba(255, 255, 255, 0.08);
 }
 
 /* --- Metal Text ---
-   Text rendered on metal surfaces with subtle shine highlight.
+   Embossed text on metal surfaces — dual shadow for engraved look.
 */
 .metal-text {
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
   color: var(--clay-text);
+  text-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.4),
+    0 -1px 1px rgba(0, 0, 0, 0.2);
 }
 
 /* --- Metal Knob ---
-   Radial gradient for circular knobs (toggle, slider, rotary dial).
-   Creates 3D dome illusion with highlight at top-left.
+   Radial gradient for circular knobs with highlight dome + ring edge.
 */
 .metal-knob {
-  background: radial-gradient(
-    circle at 40% 40%,
-    var(--metal-shine),
-    var(--metal-base) 60%,
-    var(--metal-dark)
-  );
+  background:
+    radial-gradient(
+      circle at 35% 35%,
+      var(--metal-shine) 0%,
+      var(--metal-base) 50%,
+      var(--metal-dark) 100%
+    );
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.3),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* --- Metal Noise Overlay ---
+   Subtle brushed texture via SVG filter.
+*/
+.metal-brushed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }

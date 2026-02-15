@@ -9,43 +9,25 @@ interface AppShellProps {
 
 /**
  * AppShell — Root layout wrapper with persistent navbar and
- * clay reshape animation on theme changes.
- *
- * "Clay reshape" = elements briefly flatten (scale down) then
- * re-inflate (scale up) with the new color scheme, mimicking
- * clay being reshaped.
+ * smooth fade transition on theme changes.
  */
 export function AppShell({ children }: AppShellProps) {
   const { mode, preset } = useTheme();
 
   return (
-    <div className="min-h-screen bg-clay-base transition-colors duration-300">
+    <div className="min-h-screen bg-clay-base transition-colors duration-500 ease-in-out">
       <Navbar />
 
-      {/* Main content with clay reshape animation on theme change */}
       <AnimatePresence mode="wait">
         <motion.main
           key={`${mode}-${preset}`}
-          initial={{ scaleY: 0.95, scaleX: 0.98, opacity: 0.7 }}
-          animate={{ scaleY: 1, scaleX: 1, opacity: 1 }}
-          exit={{ scaleY: 0.95, scaleX: 0.98, opacity: 0.7 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
           transition={{
-            scaleX: {
-              type: 'spring',
-              stiffness: 150,
-              damping: 12,
-              mass: 0.8,
-            },
-            scaleY: {
-              type: 'spring',
-              stiffness: 150,
-              damping: 12,
-              mass: 0.8,
-            },
-            opacity: { duration: 0.15 },
+            opacity: { duration: 0.25, ease: 'easeInOut' },
           }}
           className="pt-16 min-h-screen"
-          style={{ transformOrigin: 'top center' }}
         >
           {children}
         </motion.main>
