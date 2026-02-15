@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 1 of 8 (Foundation & Design System)
-Plan: 4 of 6 in current phase
+Plan: 5 of 6 in current phase
 Status: Executing
-Last activity: 2026-02-15 — Completed 01-04-PLAN.md (Metal Hardware Controls)
+Last activity: 2026-02-15 — Completed 01-05-PLAN.md (Theme Controls and Layout)
 
-Progress: [████░░░░░░] 8%
+Progress: [█████░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
+- Total plans completed: 5
 - Average duration: 4 min
-- Total execution time: 0.27 hours
+- Total execution time: 0.32 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-design-system | 4 | 15 min | 4 min |
+| 01-foundation-design-system | 5 | 18 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min), 01-02 (3 min), 01-03 (4 min), 01-04 (4 min)
+- Last 5 plans: 01-01 (4 min), 01-02 (3 min), 01-03 (4 min), 01-04 (4 min), 01-05 (3 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -63,6 +63,10 @@ Recent decisions affecting current work:
 - [Phase 01-03]: SVG feTurbulence texture at 0.08 opacity for visible plasticine grain without external assets
 - [Phase 01-03]: forwardRef on ClayInput for form library and focus management compatibility
 - [Phase 01-03]: Body scroll lock in ClayModal for proper UX, restored on close
+- Plan 01-05: useSound uses module-level AudioContext with one-shot document listener for browser autoplay compliance
+- Plan 01-05: AppShell clay reshape uses AnimatePresence mode=wait with spring stiffness 150, damping 12 for soft clay feel
+- Plan 01-05: Navbar shows abbreviated title (WMTW) on mobile, full title on desktop
+- Plan 01-05: All 12 UI components barrel-exported from @/components/ui; temp test buttons removed from App.tsx
 
 ### Pending Todos
 
@@ -86,5 +90,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 01-04-PLAN.md (Metal Hardware Controls)
+Stopped at: Completed 01-05-PLAN.md (Theme Controls and Layout)
 Resume file: None
