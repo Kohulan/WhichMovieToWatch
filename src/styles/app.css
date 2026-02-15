@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Colors — mapped to CSS variables, overridden per-theme */
+  --color-clay-base: var(--clay-base);
+  --color-clay-surface: var(--clay-surface);
+  --color-clay-elevated: var(--clay-elevated);
+  --color-clay-shadow: var(--clay-shadow);
+  --color-clay-highlight: var(--clay-highlight);
+  --color-clay-text: var(--clay-text);
+  --color-clay-text-muted: var(--clay-text-muted);
+  --color-metal-base: var(--metal-base);
+  --color-metal-shine: var(--metal-shine);
+  --color-metal-dark: var(--metal-dark);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  /* Border radius */
+  --radius-clay: 1.5rem;
+  --radius-clay-lg: 2rem;
+  --radius-clay-xl: 3rem;
+
+  /* Fonts */
+  --font-heading: 'Righteous', cursive;
+  --font-body: 'Poppins', sans-serif;
+}
+
+/* Cinema Gold Light (default) */
+:root {
+  --clay-base: oklch(0.92 0.03 85);
+  --clay-surface: oklch(0.95 0.025 85);
+  --clay-elevated: oklch(0.97 0.02 85);
+  --clay-shadow: oklch(0.55 0.05 85);
+  --clay-highlight: oklch(0.99 0.01 85);
+  --clay-text: oklch(0.25 0.02 85);
+  --clay-text-muted: oklch(0.5 0.03 85);
+  --metal-base: oklch(0.75 0.02 85);
+  --metal-shine: oklch(0.92 0.01 85);
+  --metal-dark: oklch(0.45 0.03 85);
+  --accent: oklch(0.7 0.12 85);
+  --accent-hover: oklch(0.65 0.14 85);
+}
