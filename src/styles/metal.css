@@ -1,0 +1,69 @@
+/* ============================================================
+   METAL HARDWARE STYLES
+   Brushed metal gradients, shadows, and knob styles for
+   interactive hardware control components.
+   Distinct from clay surfaces — two-material design language.
+   ============================================================ */
+
+/* --- Brushed Metal Gradient ---
+   Signature multi-stop 45-degree linear gradient creating
+   brushed metal appearance with light/dark reflections.
+   Uses --metal-base, --metal-shine, --metal-dark CSS variables
+   that change per theme preset (brass/chrome/gunmetal).
+*/
+.metal-gradient {
+  background: linear-gradient(
+    45deg,
+    var(--metal-dark) 5%,
+    var(--metal-shine) 10%,
+    var(--metal-base) 30%,
+    var(--metal-shine) 50%,
+    var(--metal-base) 70%,
+    var(--metal-shine) 80%,
+    var(--metal-dark) 95%
+  );
+}
+
+/* --- Metal Shadow Presets --- */
+
+/* Standard raised metal — default resting state */
+.metal-shadow {
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Depressed metal — pressed/active state */
+.metal-shadow-pressed {
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Lifted metal — hover state */
+.metal-shadow-hover {
+  box-shadow:
+    0 5px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+/* --- Metal Text ---
+   Text rendered on metal surfaces with subtle shine highlight.
+*/
+.metal-text {
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+  color: var(--clay-text);
+}
+
+/* --- Metal Knob ---
+   Radial gradient for circular knobs (toggle, slider, rotary dial).
+   Creates 3D dome illusion with highlight at top-left.
+*/
+.metal-knob {
+  background: radial-gradient(
+    circle at 40% 40%,
+    var(--metal-shine),
+    var(--metal-base) 60%,
+    var(--metal-dark)
+  );
+}

@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@import './clay.css';
+@import './metal.css';
 
 @theme inline {
   /* Colors — mapped to CSS variables, overridden per-theme */
