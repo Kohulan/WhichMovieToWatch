@@ -25,18 +25,108 @@
   --font-body: 'Poppins', sans-serif;
 }
 
-/* Cinema Gold Light (default) */
-:root {
+/* ============================================================
+   THEME SYSTEM: 3 presets x 2 modes = 6 variants
+   All colors use oklch() for perceptual uniformity.
+   Text colors meet WCAG AA minimum 4.5:1 contrast ratio.
+   ============================================================ */
+
+/* --- Cinema Gold --- */
+/* Warm luxury: cream/beige base, muted gold accents, brass metal */
+
+:root,
+.theme-cinema-gold {
   --clay-base: oklch(0.92 0.03 85);
   --clay-surface: oklch(0.95 0.025 85);
   --clay-elevated: oklch(0.97 0.02 85);
   --clay-shadow: oklch(0.55 0.05 85);
   --clay-highlight: oklch(0.99 0.01 85);
   --clay-text: oklch(0.25 0.02 85);
-  --clay-text-muted: oklch(0.5 0.03 85);
-  --metal-base: oklch(0.75 0.02 85);
-  --metal-shine: oklch(0.92 0.01 85);
-  --metal-dark: oklch(0.45 0.03 85);
-  --accent: oklch(0.7 0.12 85);
-  --accent-hover: oklch(0.65 0.14 85);
+  --clay-text-muted: oklch(0.45 0.03 85);
+  --metal-base: oklch(0.75 0.05 85);
+  --metal-shine: oklch(0.92 0.02 85);
+  --metal-dark: oklch(0.45 0.04 85);
+  --accent: oklch(0.68 0.13 85);
+  --accent-hover: oklch(0.62 0.15 85);
+}
+
+.dark.theme-cinema-gold {
+  --clay-base: oklch(0.22 0.02 85);
+  --clay-surface: oklch(0.26 0.02 85);
+  --clay-elevated: oklch(0.30 0.02 85);
+  --clay-shadow: oklch(0.10 0.02 85);
+  --clay-highlight: oklch(0.35 0.03 85);
+  --clay-text: oklch(0.92 0.02 85);
+  --clay-text-muted: oklch(0.70 0.03 85);
+  --metal-base: oklch(0.50 0.05 75);
+  --metal-shine: oklch(0.72 0.08 85);
+  --metal-dark: oklch(0.30 0.04 85);
+  --accent: oklch(0.72 0.14 85);
+  --accent-hover: oklch(0.78 0.12 85);
+}
+
+/* --- Ocean Blue --- */
+/* Deep ocean: blue-grey base, teal/navy accents, chrome metal */
+
+.theme-ocean-blue {
+  --clay-base: oklch(0.93 0.02 230);
+  --clay-surface: oklch(0.95 0.015 230);
+  --clay-elevated: oklch(0.97 0.01 230);
+  --clay-shadow: oklch(0.55 0.04 230);
+  --clay-highlight: oklch(0.99 0.005 230);
+  --clay-text: oklch(0.22 0.04 245);
+  --clay-text-muted: oklch(0.45 0.03 230);
+  --metal-base: oklch(0.72 0.02 240);
+  --metal-shine: oklch(0.90 0.01 230);
+  --metal-dark: oklch(0.42 0.03 240);
+  --accent: oklch(0.60 0.12 195);
+  --accent-hover: oklch(0.55 0.14 195);
+}
+
+.dark.theme-ocean-blue {
+  --clay-base: oklch(0.20 0.03 245);
+  --clay-surface: oklch(0.24 0.03 245);
+  --clay-elevated: oklch(0.28 0.03 245);
+  --clay-shadow: oklch(0.10 0.02 245);
+  --clay-highlight: oklch(0.33 0.03 240);
+  --clay-text: oklch(0.92 0.02 210);
+  --clay-text-muted: oklch(0.70 0.03 220);
+  --metal-base: oklch(0.48 0.03 240);
+  --metal-shine: oklch(0.70 0.02 230);
+  --metal-dark: oklch(0.28 0.03 245);
+  --accent: oklch(0.70 0.12 185);
+  --accent-hover: oklch(0.76 0.10 185);
+}
+
+/* --- Neon Purple --- */
+/* Cyberpunk/synthwave: lavender base, electric purple/pink accents, gunmetal */
+
+.theme-neon-purple {
+  --clay-base: oklch(0.92 0.03 300);
+  --clay-surface: oklch(0.95 0.025 300);
+  --clay-elevated: oklch(0.97 0.02 300);
+  --clay-shadow: oklch(0.55 0.05 300);
+  --clay-highlight: oklch(0.99 0.01 300);
+  --clay-text: oklch(0.22 0.06 300);
+  --clay-text-muted: oklch(0.45 0.04 300);
+  --metal-base: oklch(0.58 0.02 280);
+  --metal-shine: oklch(0.78 0.01 280);
+  --metal-dark: oklch(0.38 0.02 280);
+  --accent: oklch(0.55 0.20 310);
+  --accent-hover: oklch(0.50 0.22 310);
+}
+
+.dark.theme-neon-purple {
+  --clay-base: oklch(0.18 0.04 300);
+  --clay-surface: oklch(0.22 0.04 300);
+  --clay-elevated: oklch(0.26 0.04 300);
+  --clay-shadow: oklch(0.08 0.03 300);
+  --clay-highlight: oklch(0.32 0.05 300);
+  --clay-text: oklch(0.90 0.04 300);
+  --clay-text-muted: oklch(0.70 0.05 290);
+  --metal-base: oklch(0.42 0.02 280);
+  --metal-shine: oklch(0.60 0.03 290);
+  --metal-dark: oklch(0.25 0.02 280);
+  --accent: oklch(0.68 0.22 310);
+  --accent-hover: oklch(0.74 0.20 300);
 }

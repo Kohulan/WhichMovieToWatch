@@ -11,7 +11,24 @@
     <meta name="description" content="Discover your next favorite movie with a visually immersive experience that makes browsing feel as cinematic as watching." />
     <title>Which Movie To Watch!</title>
     <script>
-      // Theme flash prevention -- populated in Plan 02
+      (function() {
+        try {
+          var stored = JSON.parse(localStorage.getItem('theme-preferences'));
+          if (stored && stored.state) {
+            if (stored.state.mode === 'dark') document.documentElement.classList.add('dark');
+            if (stored.state.preset) document.documentElement.classList.add('theme-' + stored.state.preset);
+          } else {
+            // First visit: check system preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              document.documentElement.classList.add('dark');
+            }
+            // Default preset
+            document.documentElement.classList.add('theme-cinema-gold');
+          }
+        } catch(e) {
+          document.documentElement.classList.add('theme-cinema-gold');
+        }
+      })();
     </script>
   </head>
   <body>
