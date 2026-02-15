@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 1 of 8 (Foundation & Design System)
-Plan: 5 of 6 in current phase
-Status: Executing
-Last activity: 2026-02-15 — Completed 01-05-PLAN.md (Theme Controls and Layout)
+Plan: 6 of 6 in current phase
+Status: Checkpoint (visual verification pending)
+Last activity: 2026-02-15 — Executing 01-06-PLAN.md (Showcase Page + Deploy Workflow) - Task 1 complete, Task 2 awaiting human verify
 
-Progress: [█████░░░░░] 10%
+Progress: [██████░░░░] 12%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
+- Total plans completed: 5 (Plan 06 in checkpoint)
 - Average duration: 4 min
-- Total execution time: 0.32 hours
+- Total execution time: 0.35 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-design-system | 5 | 18 min | 4 min |
+| 01-foundation-design-system | 5+1 | 21 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min), 01-02 (3 min), 01-03 (4 min), 01-04 (4 min), 01-05 (3 min)
+- Last 5 plans: 01-02 (3 min), 01-03 (4 min), 01-04 (4 min), 01-05 (3 min), 01-06 (3 min, checkpoint pending)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -67,6 +67,10 @@ Recent decisions affecting current work:
 - Plan 01-05: AppShell clay reshape uses AnimatePresence mode=wait with spring stiffness 150, damping 12 for soft clay feel
 - Plan 01-05: Navbar shows abbreviated title (WMTW) on mobile, full title on desktop
 - Plan 01-05: All 12 UI components barrel-exported from @/components/ui; temp test buttons removed from App.tsx
+- Plan 01-06: Route-based App.tsx with Outlet pattern for scalable page additions
+- Plan 01-06: Showcase as index route during Phase 1 for design system verification
+- Plan 01-06: CNAME in public/ for automatic inclusion in Vite dist output
+- Plan 01-06: Deploy workflow uses actions/deploy-pages@v4 (official) instead of peaceiris third-party action
 
 ### Pending Todos
 
@@ -77,7 +81,7 @@ None yet.
 **Phase 1 considerations:**
 - GitHub Pages routing strategy needs decision: HashRouter (works immediately, ugly URLs) vs. platform migration to Cloudflare Pages/Vercel (clean URLs, requires migration)
 - TypeScript strict mode strategy: Start with `strict: false` for migration, enable flags incrementally to avoid chaos
-- API key injection strategy must be validated in Phase 1 (VITE_ prefix with GitHub Actions sed injection)
+- API key injection strategy validated: VITE_TMDB_API_KEY and VITE_OMDB_API_KEY injected as env vars during build in deploy.yml
 
 **Phase 3 risk:**
 - Feature parity with 25+ existing features is critical — requires explicit feature inventory validation during planning
@@ -90,5 +94,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 01-05-PLAN.md (Theme Controls and Layout)
+Stopped at: 01-06-PLAN.md Task 2 checkpoint (visual verification pending)
 Resume file: None
+Dev server: http://localhost:5173/
