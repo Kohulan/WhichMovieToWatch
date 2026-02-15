@@ -10,27 +10,27 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 1 of 8 (Foundation & Design System)
-Plan: 2 of 6 in current phase
+Plan: 4 of 6 in current phase
 Status: Executing
-Last activity: 2026-02-15 — Completed 01-02-PLAN.md (Theme System)
+Last activity: 2026-02-15 — Completed 01-04-PLAN.md (Metal Hardware Controls)
 
-Progress: [██░░░░░░░░] 4%
+Progress: [████░░░░░░] 8%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 4
 - Average duration: 4 min
-- Total execution time: 0.12 hours
+- Total execution time: 0.27 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation-design-system | 2 | 7 min | 4 min |
+| 01-foundation-design-system | 4 | 15 min | 4 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (4 min), 01-02 (3 min)
+- Last 5 plans: 01-01 (4 min), 01-02 (3 min), 01-03 (4 min), 01-04 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -55,6 +55,10 @@ Recent decisions affecting current work:
 - Plan 01-02: System preference detection only on first visit; manual toggle disables auto-follow
 - Plan 01-02: oklch colors for all 6 theme variants, WCAG AA 4.5:1 contrast minimum
 - Plan 01-02: Temporary test buttons in App.tsx (replaced by RotaryDial in Plan 05)
+- Plan 01-04: HTMLMotionProps<'button'> over ButtonHTMLAttributes to avoid onDrag type conflict
+- Plan 01-04: Two-material pattern: metal-gradient trigger + clay-elevated dropdown panel
+- Plan 01-04: Spring stiffness 300-500 for metal (firm hardware feel), lower for clay (soft)
+- Plan 01-04: Custom motion drag slider over native range for consistent skeuomorphic appearance
 
 ### Pending Todos
 
@@ -78,5 +82,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 01-02-PLAN.md (Theme System)
+Stopped at: Completed 01-04-PLAN.md (Metal Hardware Controls)
 Resume file: None
