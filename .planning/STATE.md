@@ -59,6 +59,10 @@ Recent decisions affecting current work:
 - Plan 01-04: Two-material pattern: metal-gradient trigger + clay-elevated dropdown panel
 - Plan 01-04: Spring stiffness 300-500 for metal (firm hardware feel), lower for clay (soft)
 - Plan 01-04: Custom motion drag slider over native range for consistent skeuomorphic appearance
+- [Phase 01-03]: Bold 3D clay shadows (16px/32px for lg) over subtle neumorphism for puffy clay toy aesthetic
+- [Phase 01-03]: SVG feTurbulence texture at 0.08 opacity for visible plasticine grain without external assets
+- [Phase 01-03]: forwardRef on ClayInput for form library and focus management compatibility
+- [Phase 01-03]: Body scroll lock in ClayModal for proper UX, restored on close
 
 ### Pending Todos
 
