@@ -2,9 +2,9 @@
 
 <div align="center">
 
-[![Which Movie To Watch Demo](https://github.com/Kohulan/WhichMovieToWatch/blob/main/assets/images/website.png?raw=true)](https://www.whichmovieto.watch)
+[![Which Movie To Watch Demo](https://github.com/Kohulan/WhichMovieToWatch/blob/main/assets/images/website.png?raw=true)](https://whichmovietowatch.online)
 
-[**✨ EXPLORE THE APP ✨**](https://www.whichmovieto.watch)
+[**✨ EXPLORE THE APP ✨**](https://whichmovietowatch.online)
 
 ---
 
