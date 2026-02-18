@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 3 of 8 (Core Features) -- IN PROGRESS
-Plan: 1 of 5 in current phase (complete)
+Plan: 4 of 5 in current phase (complete)
 Status: Phase 3 In Progress
-Last activity: 2026-02-18 — Plan 03-01 complete (movie display components + shared infrastructure)
+Last activity: 2026-02-18 — Plan 03-04 complete (Trending, Dinner Time, Free Movies discovery modes)
 
 Progress: [██████████░] 31%
 
@@ -29,10 +29,10 @@ Progress: [██████████░] 31%
 |-------|-------|-------|----------|--------|
 | 01-foundation-design-system | 6 | 24 min | 4 min | Complete |
 | 02-data-layer | 5/5 | 13 min | 2.6 min | Complete |
-| 03-core-features | 1/5 | 4 min | 4 min | In Progress |
+| 03-core-features | 4/5 | 16 min | 4 min | In Progress |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (2 min), 02-03 (3 min), 02-04 (2 min), 02-05 (5 min), 03-01 (4 min)
+- Last 5 plans: 02-05 (5 min), 03-01 (4 min), 03-02 (4 min), 03-03 (4 min), 03-04 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -87,6 +87,11 @@ Recent decisions affecting current work:
 - [Phase 03-core-features]: ExternalLink wrapper enforces rel=noopener noreferrer site-wide with no escape hatch (SECU-04)
 - [Phase 03-core-features]: ToastProvider uses CSS var() references for automatic adaptation to all 6 claymorphism theme variants
 - [Phase 03-core-features]: useAnnounce returns [announce, AnnouncerComponent] tuple so callers don't manage ARIA state
+- Plan 03-04: useFreeMovies uses import.meta.env.BASE_URL prefix for movies.txt fetch (GitHub Pages base path compatibility)
+- Plan 03-04: Module-level movies.txt cache in useFreeMovies — single fetch per session, shared across all hook instances
+- Plan 03-04: TMDB enrichment in useFreeMovies is non-fatal — FreeMoviesPage shows YouTube movie with title-only if TMDB lookup fails
+- Plan 03-04: markDinnerLike/markDinnerDislike are mutually exclusive in movieHistoryStore
+- Plan 03-04: ServiceBranding exports both visual badge component and getServiceConfig() function for gradient/watchUrl access
 
 ### Pending Todos
 
@@ -110,6 +115,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 03-01-PLAN.md (movie display components + shared infrastructure)
+Stopped at: Completed 03-04-PLAN.md (Trending, Dinner Time, Free Movies discovery modes)
 Resume file: .planning/phases/03-core-features/03-01-SUMMARY.md
 Dev server: http://localhost:5173/

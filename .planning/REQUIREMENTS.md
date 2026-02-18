@@ -114,24 +114,24 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Trending (Feature Parity)
 
-- [ ] **TRND-01**: "Now Playing" in theaters section, region-aware
-- [ ] **TRND-02**: Auto-refresh every 30 minutes
-- [ ] **TRND-03**: Movie links with poster, title, rating
-- [ ] **TRND-04**: Fallback to popular movies if now_playing fails
+- [x] **TRND-01**: "Now Playing" in theaters section, region-aware
+- [x] **TRND-02**: Auto-refresh every 30 minutes
+- [x] **TRND-03**: Movie links with poster, title, rating
+- [x] **TRND-04**: Fallback to popular movies if now_playing fails
 
 ### Dinner Time Mode (Feature Parity)
 
-- [ ] **DINR-01**: Family-friendly movie finder for Netflix/Prime/Disney+
-- [ ] **DINR-02**: Dedicated modal experience with movie details
-- [ ] **DINR-03**: Direct "Watch on [Service]" button linking to service search
-- [ ] **DINR-04**: Like/dislike preference tracking for dinner time recommendations
+- [x] **DINR-01**: Family-friendly movie finder for Netflix/Prime/Disney+
+- [x] **DINR-02**: Dedicated modal experience with movie details
+- [x] **DINR-03**: Direct "Watch on [Service]" button linking to service search
+- [x] **DINR-04**: Like/dislike preference tracking for dinner time recommendations
 
 ### Free Movies (Feature Parity)
 
-- [ ] **FREE-01**: 1,000+ legally free YouTube movies from data/movies.txt
-- [ ] **FREE-02**: TMDB metadata + OMDB ratings fetched for free movies
-- [ ] **FREE-03**: "Watch on YouTube" button + "Next Suggestion" button
-- [ ] **FREE-04**: Regional availability disclaimer
+- [x] **FREE-01**: 1,000+ legally free YouTube movies from data/movies.txt
+- [x] **FREE-02**: TMDB metadata + OMDB ratings fetched for free movies
+- [x] **FREE-03**: "Watch on YouTube" button + "Next Suggestion" button
+- [x] **FREE-04**: Regional availability disclaimer
 
 ### Social Sharing (Feature Parity)
 
@@ -268,18 +268,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADVS-05 | Phase 3 | Pending |
 | ADVS-06 | Phase 3 | Pending |
 | ADVS-07 | Phase 3 | Pending |
-| TRND-01 | Phase 3 | Pending |
-| TRND-02 | Phase 3 | Pending |
-| TRND-03 | Phase 3 | Pending |
-| TRND-04 | Phase 3 | Pending |
-| DINR-01 | Phase 3 | Pending |
-| DINR-02 | Phase 3 | Pending |
-| DINR-03 | Phase 3 | Pending |
-| DINR-04 | Phase 3 | Pending |
-| FREE-01 | Phase 3 | Pending |
-| FREE-02 | Phase 3 | Pending |
-| FREE-03 | Phase 3 | Pending |
-| FREE-04 | Phase 3 | Pending |
+| TRND-01 | Phase 3 | Complete |
+| TRND-02 | Phase 3 | Complete |
+| TRND-03 | Phase 3 | Complete |
+| TRND-04 | Phase 3 | Complete |
+| DINR-01 | Phase 3 | Complete |
+| DINR-02 | Phase 3 | Complete |
+| DINR-03 | Phase 3 | Complete |
+| DINR-04 | Phase 3 | Complete |
+| FREE-01 | Phase 3 | Complete |
+| FREE-02 | Phase 3 | Complete |
+| FREE-03 | Phase 3 | Complete |
+| FREE-04 | Phase 3 | Complete |
 | A11Y-02 | Phase 3 | Complete |
 | A11Y-03 | Phase 3 | Pending |
 | A11Y-04 | Phase 3 | Complete |

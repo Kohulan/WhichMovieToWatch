@@ -188,7 +188,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 6/6 | Complete | 2026-02-17 |
 | 2. Data Layer | 1/5 | Complete    | 2026-02-18 |
-| 3. Core Features | 1/5 | In Progress|  |
+| 3. Core Features | 2/5 | In Progress|  |
 | 4. PWA Infrastructure | 0/TBD | Not started | - |
 | 5. Animation Layer | 0/TBD | Not started | - |
 | 6. Bento Grid Layouts | 0/TBD | Not started | - |
