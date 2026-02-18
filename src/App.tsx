@@ -4,9 +4,14 @@ import { AnimatePresence } from 'motion/react';
 import { AppShell } from './components/layout/AppShell';
 import { SplashScreen } from './components/SplashScreen';
 import { ToastProvider } from './components/shared/Toast';
+import { TabBar } from './components/layout/TabBar';
+import { useMigration } from './hooks/useMigration';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
+
+  // Run legacy localStorage migration on mount (Plan 02-02)
+  useMigration();
 
   return (
     <>
@@ -23,9 +28,14 @@ function App() {
       </AnimatePresence>
 
       {!showSplash && (
-        <AppShell>
-          <Outlet />
-        </AppShell>
+        <>
+          <AppShell>
+            <Outlet />
+          </AppShell>
+
+          {/* Tab bar — persistent bottom navigation (DISC-03) */}
+          <TabBar />
+        </>
       )}
     </>
   );
