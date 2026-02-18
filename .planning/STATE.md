@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 4 of 8 (PWA Infrastructure) -- IN PROGRESS
-Plan: 1 of 2 in current phase (complete)
-Status: Phase 4 In Progress
-Last activity: 2026-02-18 — Plan 04-01 complete (vite-plugin-pwa, service worker, manifest, offline.html)
+Phase: 4 of 8 (PWA Infrastructure) -- COMPLETE
+Plan: 2 of 2 in current phase (complete)
+Status: Phase 4 Complete
+Last activity: 2026-02-18 — Plan 04-02 complete (ReloadPrompt, InstallBanner, useInstallPrompt, App.tsx mounts)
 
-Progress: [████████████░] 37%
+Progress: [█████████████░] 40%
 
 ## Performance Metrics
 
@@ -30,7 +30,7 @@ Progress: [████████████░] 37%
 | 01-foundation-design-system | 6 | 24 min | 4 min | Complete |
 | 02-data-layer | 5/5 | 13 min | 2.6 min | Complete |
 | 03-core-features | 5/5 | 20 min | 4 min | Complete |
-| 04-pwa-infrastructure | 1/2 | 5 min | 5 min | In Progress |
+| 04-pwa-infrastructure | 2/2 | 7 min | 3.5 min | Complete |
 
 **Recent Trend:**
 - Last 5 plans: 03-02 (4 min), 03-03 (4 min), 03-04 (4 min), 03-05 (4 min), 04-01 (5 min)
@@ -40,6 +40,7 @@ Progress: [████████████░] 37%
 | Phase 03 P02 | 6 | 2 tasks | 7 files |
 | Phase 03-core-features P03 | 9 | 2 tasks | 14 files |
 | Phase 04-pwa-infrastructure P01 | 5 | 2 tasks | 11 files |
+| Phase 04-pwa-infrastructure P02 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,10 @@ Recent decisions affecting current work:
 - Plan 04-01: offline.html navigates to /#/ (not /) for HashRouter compatibility on GitHub Pages
 - Plan 04-01: globPatterns includes html to prevent WorkboxError: non-precached-url for navigation fallback
 - Plan 04-01: Icons live in public/favicon_io/ — Vite copies to dist/ at build time, manifest paths resolve at root
+- Plan 04-02: ReloadPrompt and InstallBanner mounted outside splash guard — SW registers immediately regardless of onboarding state
+- Plan 04-02: offlineReady auto-dismisses after 5s (informational); needRefresh persists until user acts (requires explicit reload)
+- Plan 04-02: wmtw-pwa-install-dismissed localStorage key enforces 7-day install banner dismissal cooldown
+- Plan 04-02: beforeinstallprompt e.preventDefault() defers native mini-infobar for user-controlled Chromium install
 
 ### Pending Todos
 
@@ -131,6 +136,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 04-01-PLAN.md (vite-plugin-pwa service worker, manifest, offline.html)
-Resume file: .planning/phases/04-pwa-infrastructure/04-01-SUMMARY.md
+Stopped at: Completed 04-02-PLAN.md (ReloadPrompt, InstallBanner, useInstallPrompt, App.tsx PWA mounts)
+Resume file: .planning/phases/04-pwa-infrastructure/04-02-SUMMARY.md
 Dev server: http://localhost:5173/

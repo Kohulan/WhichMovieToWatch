@@ -144,8 +144,8 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 - [x] **PWA-01**: Service worker with offline support via Vite PWA plugin + Workbox
 - [x] **PWA-02**: Offline fallback page
-- [ ] **PWA-03**: Install prompts (including iOS-specific instructions)
-- [ ] **PWA-04**: Update notifications when new version available
+- [x] **PWA-03**: Install prompts (including iOS-specific instructions)
+- [x] **PWA-04**: Update notifications when new version available
 - [x] **PWA-05**: Multi-layer caching: static assets (cache-first), API responses (network-first), images (cache-first)
 - [x] **PWA-06**: Web app manifest with icons, theme color, standalone display
 
@@ -288,8 +288,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SECU-04 | Phase 3 | Complete |
 | PWA-01 | Phase 4 | Complete |
 | PWA-02 | Phase 4 | Complete |
-| PWA-03 | Phase 4 | Pending |
-| PWA-04 | Phase 4 | Pending |
+| PWA-03 | Phase 4 | Complete |
+| PWA-04 | Phase 4 | Complete |
 | PWA-05 | Phase 4 | Complete |
 | PWA-06 | Phase 4 | Complete |
 | ANIM-01 | Phase 5 | Pending |

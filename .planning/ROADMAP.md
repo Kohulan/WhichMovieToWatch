@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Foundation & Design System** - Vite + React + TypeScript stack with claymorphism theme system
 - [x] **Phase 2: Data Layer** - API services, caching strategy, state management foundation (completed 2026-02-18)
 - [ ] **Phase 3: Core Features** - All 25+ features from vanilla JS app with feature parity
-- [ ] **Phase 4: PWA Infrastructure** - Offline support, service worker, installability
+- [x] **Phase 4: PWA Infrastructure** - Offline support, service worker, installability (completed 2026-02-18)
 - [ ] **Phase 5: Animation Layer** - Framer Motion page transitions and micro-interactions
 - [ ] **Phase 6: Bento Grid Layouts** - Animated bento grid hero and feature showcases
 - [ ] **Phase 7: 3D Experience** - React Three Fiber 3D scenes with graceful degradation
@@ -189,7 +189,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 1. Foundation & Design System | 6/6 | Complete | 2026-02-17 |
 | 2. Data Layer | 5/5 | Complete    | 2026-02-18 |
 | 3. Core Features | 5/5 | Complete | 2026-02-18 |
-| 4. PWA Infrastructure | 1/2 | In Progress | - |
+| 4. PWA Infrastructure | 2/2 | Complete   | 2026-02-18 |
 | 5. Animation Layer | 0/TBD | Not started | - |
 | 6. Bento Grid Layouts | 0/TBD | Not started | - |
 | 7. 3D Experience | 0/TBD | Not started | - |
