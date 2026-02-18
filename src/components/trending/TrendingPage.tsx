@@ -4,6 +4,7 @@ import { RefreshCw, Clock, AlertCircle } from 'lucide-react';
 import { useTrending } from '@/hooks/useTrending';
 import { getPosterUrl } from '@/services/tmdb/client';
 import { ClaySkeletonCard } from '@/components/ui';
+import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
 
 /**
  * TrendingPage — Horizontal scroll row of now-playing movies with auto-refresh.
@@ -25,19 +26,12 @@ export function TrendingPage() {
     return (
       <div className="space-y-4 p-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-display font-bold text-clay-text">
+          <h2 className="text-xl font-heading font-semibold text-clay-text">
             Now Playing
           </h2>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-4" aria-busy="true" aria-label="Loading now playing movies">
-          {Array.from({ length: 5 }, (_, i) => (
-            <ClaySkeletonCard
-              key={i}
-              className="flex-shrink-0 w-40"
-              hasImage
-              lines={2}
-            />
-          ))}
+        <div aria-busy="true" aria-label="Loading now playing movies">
+          <LoadingQuotes />
         </div>
       </div>
     );
@@ -46,7 +40,7 @@ export function TrendingPage() {
   if (error && movies.length === 0) {
     return (
       <div className="space-y-4 p-4">
-        <h2 className="text-xl font-display font-bold text-clay-text">
+        <h2 className="text-xl font-heading font-semibold text-clay-text">
           Now Playing
         </h2>
         <div className="flex flex-col items-center gap-3 py-8 text-center">
@@ -70,7 +64,7 @@ export function TrendingPage() {
       <div className="flex items-center justify-between">
         <h2
           id="trending-heading"
-          className="text-xl font-display font-bold text-clay-text"
+          className="text-xl font-heading font-semibold text-clay-text"
         >
           Now Playing
         </h2>
@@ -97,9 +91,9 @@ export function TrendingPage() {
         </div>
       </div>
 
-      {/* Horizontal scroll strip */}
+      {/* Responsive grid — horizontal scroll on mobile, grid on desktop */}
       <div
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-hide"
+        className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-hide md:grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 md:overflow-visible md:mx-0 md:px-0"
         role="list"
         aria-label="Now playing movies"
       >
@@ -123,11 +117,11 @@ export function TrendingPage() {
               key={movie.id}
               role="listitem"
               onClick={() => handleMovieClick(movie.id)}
-              className="flex-shrink-0 snap-start w-40 flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-clay-text rounded-clay"
+              className="flex-shrink-0 snap-start w-40 md:w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
               aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPercent}%`}
             >
               {/* Poster */}
-              <div className="w-40 h-60 rounded-clay overflow-hidden bg-clay-base relative clay-shadow-md group-hover:clay-shadow-lg transition-shadow">
+              <div className="w-40 md:w-full h-60 rounded-2xl overflow-hidden bg-white/[0.05] border border-white/10 relative transition-all duration-300 group-hover:border-white/20 group-hover:shadow-lg group-hover:shadow-accent/10">
                 {posterUrl ? (
                   <img
                     src={posterUrl}
