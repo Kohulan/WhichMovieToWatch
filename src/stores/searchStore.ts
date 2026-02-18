@@ -1,0 +1,75 @@
+import { create } from 'zustand';
+
+// TODO: Import TMDBMovie from @/types/movie once types are defined
+interface TMDBMovie {
+  id: number;
+  title: string;
+  overview: string;
+  poster_path: string | null;
+  backdrop_path: string | null;
+  release_date: string;
+  vote_average: number;
+  vote_count: number;
+  popularity: number;
+  genre_ids: number[];
+  original_language: string;
+  adult: boolean;
+}
+
+interface SearchState {
+  query: string;
+  results: TMDBMovie[];
+  totalResults: number;
+  currentPage: number;
+  totalPages: number;
+  isLoading: boolean;
+  error: string | null;
+  sortBy: string;
+
+  setQuery: (query: string) => void;
+  setResults: (
+    results: TMDBMovie[],
+    totalResults: number,
+    totalPages: number,
+    currentPage: number,
+  ) => void;
+  appendResults: (results: TMDBMovie[], currentPage: number) => void;
+  setSortBy: (sortBy: string) => void;
+  setLoading: (loading: boolean) => void;
+  setError: (error: string | null) => void;
+  reset: () => void;
+}
+
+export const useSearchStore = create<SearchState>()((set) => ({
+  query: '',
+  results: [],
+  totalResults: 0,
+  currentPage: 1,
+  totalPages: 0,
+  isLoading: false,
+  error: null,
+  sortBy: 'popularity.desc',
+
+  setQuery: (query) => set({ query }),
+  setResults: (results, totalResults, totalPages, currentPage) =>
+    set({ results, totalResults, totalPages, currentPage }),
+  appendResults: (results, currentPage) =>
+    set((state) => ({
+      results: [...state.results, ...results],
+      currentPage,
+    })),
+  setSortBy: (sortBy) => set({ sortBy }),
+  setLoading: (loading) => set({ isLoading: loading }),
+  setError: (error) => set({ error }),
+  reset: () =>
+    set({
+      query: '',
+      results: [],
+      totalResults: 0,
+      currentPage: 1,
+      totalPages: 0,
+      isLoading: false,
+      error: null,
+      sortBy: 'popularity.desc',
+    }),
+}));
