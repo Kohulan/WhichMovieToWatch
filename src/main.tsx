@@ -11,6 +11,7 @@ import '@fontsource/poppins/700.css';
 import './styles/app.css';
 import App from './App';
 import { Showcase } from './pages/Showcase';
+import { DiscoverPage } from './pages/DiscoverPage';
 
 const router = createHashRouter([
   {
@@ -18,6 +19,7 @@ const router = createHashRouter([
     element: <App />,
     children: [
       { index: true, element: <Showcase /> },
+      { path: 'discover', element: <DiscoverPage /> },
     ],
   },
 ]);
