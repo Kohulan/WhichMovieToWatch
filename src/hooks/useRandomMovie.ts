@@ -54,7 +54,7 @@ export function useRandomMovie() {
         historyState.trackShown(result.movie.id);
 
         // Update discovery store with full details
-        discoveryState.setCurrentMovie(details as Record<string, unknown>);
+        discoveryState.setCurrentMovie(details);
         discoveryState.setRelaxationStep(result.relaxationStep);
       } else {
         discoveryState.setError(

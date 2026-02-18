@@ -1,7 +1,5 @@
 import { create } from 'zustand';
-
-// TODO: Import TMDBMovieDetails from @/types/movie once types are defined
-type TMDBMovieDetails = Record<string, unknown>;
+import type { TMDBMovieDetails } from '@/types/movie';
 
 interface DiscoveryFilters {
   genreId: string | null;
