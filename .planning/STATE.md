@@ -5,32 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Instantly discover your next movie with a visually immersive experience that makes browsing feel as cinematic as watching.
-**Current focus:** Phase 1 - Foundation & Design System
+**Current focus:** Phase 2 - Data Layer
 
 ## Current Position
 
-Phase: 1 of 8 (Foundation & Design System)
-Plan: 6 of 6 in current phase
-Status: Checkpoint (visual verification pending)
-Last activity: 2026-02-15 — Executing 01-06-PLAN.md (Showcase Page + Deploy Workflow) - Task 1 complete, Task 2 awaiting human verify
+Phase: 2 of 8 (Data Layer)
+Plan: 2 of 5 in current phase
+Status: Executing Phase 2
+Last activity: 2026-02-18 — Plan 02-02 complete (Zustand stores + migration hook)
 
-Progress: [██████░░░░] 12%
+Progress: [██████░░░░] 16%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5 (Plan 06 in checkpoint)
+- Total plans completed: 8
 - Average duration: 4 min
-- Total execution time: 0.35 hours
+- Total execution time: 0.5 hours
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 01-foundation-design-system | 5+1 | 21 min | 4 min |
+| Phase | Plans | Total | Avg/Plan | Status |
+|-------|-------|-------|----------|--------|
+| 01-foundation-design-system | 6 | 24 min | 4 min | Complete |
+| 02-data-layer | 2/5 | 4 min | 2 min | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (3 min), 01-03 (4 min), 01-04 (4 min), 01-05 (3 min), 01-06 (3 min, checkpoint pending)
+- Last 5 plans: 01-04 (4 min), 01-05 (3 min), 01-06 (3 min), 02-01 (2 min), 02-02 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -71,6 +72,8 @@ Recent decisions affecting current work:
 - Plan 01-06: Showcase as index route during Phase 1 for design system verification
 - Plan 01-06: CNAME in public/ for automatic inclusion in Vite dist output
 - Plan 01-06: Deploy workflow uses actions/deploy-pages@v4 (official) instead of peaceiris third-party action
+- Plan 02-01: Singleton DB connection via module-level promise variable to avoid opening multiple IndexedDB connections
+- Plan 02-01: CacheEntry stores TTL per-entry (not per-store) enabling mixed TTLs in one object store
 
 ### Pending Todos
 
@@ -93,7 +96,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: 01-06-PLAN.md Task 2 checkpoint (visual verification pending)
-Resume file: None
+Last session: 2026-02-18
+Stopped at: Completed 02-01-PLAN.md
+Resume file: .planning/phases/02-data-layer/02-01-SUMMARY.md
 Dev server: http://localhost:5173/
