@@ -36,6 +36,7 @@ Progress: [██████████░] 31%
 - Trend: Stable
 
 *Updated after each plan completion*
+| Phase 03 P02 | 6 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -92,6 +93,9 @@ Recent decisions affecting current work:
 - Plan 03-04: TMDB enrichment in useFreeMovies is non-fatal — FreeMoviesPage shows YouTube movie with title-only if TMDB lookup fails
 - Plan 03-04: markDinnerLike/markDinnerDislike are mutually exclusive in movieHistoryStore
 - Plan 03-04: ServiceBranding exports both visual badge component and getServiceConfig() function for gradient/watchUrl access
+- [Phase 03-02]: DiscoverPage checks hasOnboarded via getState() snapshot — wizard only shows on first render, not reactively
+- [Phase 03-02]: OnboardingWizard X button treated as Skip — no forced onboarding, user can always skip (PREF-02)
+- [Phase 03-02]: Similar movies triggered by lovedMovieId state (null=hidden); clicking loads full movie via fetchMovieDetails (INTR-01)
 
 ### Pending Todos
 
@@ -115,6 +119,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 03-04-PLAN.md (Trending, Dinner Time, Free Movies discovery modes)
-Resume file: .planning/phases/03-core-features/03-01-SUMMARY.md
+Stopped at: Completed 03-02-PLAN.md (discovery page + onboarding wizard)
+Resume file: .planning/phases/03-core-features/03-02-SUMMARY.md
 Dev server: http://localhost:5173/

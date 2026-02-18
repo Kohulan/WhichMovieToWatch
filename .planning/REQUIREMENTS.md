@@ -61,10 +61,10 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Movie Discovery (Feature Parity)
 
-- [ ] **DISC-01**: Random movie recommendation with smart filtering (genre, provider, rating >=6.0, popularity)
-- [ ] **DISC-02**: Retry logic with relaxed filters (up to 100 retries, genre fallback)
-- [ ] **DISC-03**: "Next Movie" action to discover another recommendation
-- [ ] **DISC-04**: Deep linking via ?movie=ID URL parameter
+- [x] **DISC-01**: Random movie recommendation with smart filtering (genre, provider, rating >=6.0, popularity)
+- [x] **DISC-02**: Retry logic with relaxed filters (up to 100 retries, genre fallback)
+- [x] **DISC-03**: "Next Movie" action to discover another recommendation
+- [x] **DISC-04**: Deep linking via ?movie=ID URL parameter
 - [x] **DISC-05**: Movie history tracking preventing repeats (last 1,000 movies in localStorage)
 - [x] **DISC-06**: IP geolocation for regional content filtering (default: DE)
 
@@ -80,19 +80,19 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### User Interactions (Feature Parity)
 
-- [ ] **INTR-01**: "Love it" action — saves movie, fetches and displays similar recommendations
-- [ ] **INTR-02**: "Watched" action — marks movie as seen, never shown again, fetches next
-- [ ] **INTR-03**: "Not Interested" action — skips movie, avoids similar, fetches next
-- [ ] **INTR-04**: Genre preference learning from Love interactions (weighted tracking)
+- [x] **INTR-01**: "Love it" action — saves movie, fetches and displays similar recommendations
+- [x] **INTR-02**: "Watched" action — marks movie as seen, never shown again, fetches next
+- [x] **INTR-03**: "Not Interested" action — skips movie, avoids similar, fetches next
+- [x] **INTR-04**: Genre preference learning from Love interactions (weighted tracking)
 - [x] **INTR-05**: Toast notification system for all user actions
 
 ### Preferences (Feature Parity)
 
-- [ ] **PREF-01**: First-visit preference modal (streaming provider + genre selection)
-- [ ] **PREF-02**: Skip preferences option
-- [ ] **PREF-03**: Provider selection: Netflix, Disney+, Prime, Hulu, HBO Max, Apple TV+, Paramount+, Peacock
-- [ ] **PREF-04**: Genre selection with "Any" option
-- [ ] **PREF-05**: Preferences persisted in localStorage, applied to all discovery queries
+- [x] **PREF-01**: First-visit preference modal (streaming provider + genre selection)
+- [x] **PREF-02**: Skip preferences option
+- [x] **PREF-03**: Provider selection: Netflix, Disney+, Prime, Hulu, HBO Max, Apple TV+, Paramount+, Peacock
+- [x] **PREF-04**: Genre selection with "Any" option
+- [x] **PREF-05**: Preferences persisted in localStorage, applied to all discovery queries
 
 ### Search (Feature Parity)
 
@@ -235,10 +235,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | A11Y-06 | Phase 1 | Pending |
 | DISC-05 | Phase 2 | Complete |
 | DISC-06 | Phase 2 | Complete |
-| DISC-01 | Phase 3 | Pending |
-| DISC-02 | Phase 3 | Pending |
-| DISC-03 | Phase 3 | Pending |
-| DISC-04 | Phase 3 | Pending |
+| DISC-01 | Phase 3 | Complete |
+| DISC-02 | Phase 3 | Complete |
+| DISC-03 | Phase 3 | Complete |
+| DISC-04 | Phase 3 | Complete |
 | DISP-01 | Phase 3 | Complete |
 | DISP-02 | Phase 3 | Complete |
 | DISP-03 | Phase 3 | Complete |
@@ -246,16 +246,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DISP-05 | Phase 3 | Complete |
 | DISP-06 | Phase 3 | Complete |
 | DISP-07 | Phase 3 | Complete |
-| INTR-01 | Phase 3 | Pending |
-| INTR-02 | Phase 3 | Pending |
-| INTR-03 | Phase 3 | Pending |
-| INTR-04 | Phase 3 | Pending |
+| INTR-01 | Phase 3 | Complete |
+| INTR-02 | Phase 3 | Complete |
+| INTR-03 | Phase 3 | Complete |
+| INTR-04 | Phase 3 | Complete |
 | INTR-05 | Phase 3 | Complete |
-| PREF-01 | Phase 3 | Pending |
-| PREF-02 | Phase 3 | Pending |
-| PREF-03 | Phase 3 | Pending |
-| PREF-04 | Phase 3 | Pending |
-| PREF-05 | Phase 3 | Pending |
+| PREF-01 | Phase 3 | Complete |
+| PREF-02 | Phase 3 | Complete |
+| PREF-03 | Phase 3 | Complete |
+| PREF-04 | Phase 3 | Complete |
+| PREF-05 | Phase 3 | Complete |
 | SRCH-01 | Phase 3 | Pending |
 | SRCH-02 | Phase 3 | Pending |
 | SRCH-03 | Phase 3 | Pending |
