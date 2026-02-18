@@ -89,3 +89,42 @@
     background-position: 200% 0;
   }
 }
+
+/* --- Ceramic Ripple Texture ---
+   Concentric ripple pattern for light-mode clay cards.
+   References Kosma panel (skeu-panel-light-kosma.jpg) aesthetic.
+   3 concentric semi-transparent rings create an embossed ceramic feel.
+   Only meaningful in light mode (dark surfaces have enough depth without it).
+   ------------------------------------------------------------ */
+
+.ceramic-ripple {
+  position: relative;
+}
+
+.ceramic-ripple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.04;
+  background:
+    radial-gradient(circle at 50% 40%, transparent 30%, rgba(0,0,0,0.02) 35%, transparent 40%),
+    radial-gradient(circle at 50% 40%, transparent 50%, rgba(0,0,0,0.015) 55%, transparent 60%),
+    radial-gradient(circle at 50% 40%, transparent 70%, rgba(0,0,0,0.01) 75%, transparent 80%);
+}
+
+/* --- Deep Clay Shadow ---
+   Enhanced floating card shadow for light mode.
+   Stronger ambient shadow + subtle inner recess for physical depth.
+   (From Kosma panel reference)
+   ------------------------------------------------------------ */
+
+.clay-shadow-deep {
+  box-shadow:
+    16px 16px 32px var(--clay-shadow),
+    0 20px 40px rgba(0,0,0,0.12),
+    inset -6px -6px 12px rgba(0,0,0,0.1),
+    inset 0 8px 16px var(--clay-highlight);
+}

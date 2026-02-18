@@ -98,3 +98,69 @@
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/* --- Enhanced Metal Knob — Specular Highlight ---
+   Overlays a bright top-left highlight spot on existing
+   metal-knob radial gradient, simulating a top-right light source
+   and creating a glossy sphere-like surface appearance.
+   (From skeu-toggle-dark.png Dribbble reference)
+*/
+.metal-knob-enhanced {
+  background:
+    radial-gradient(ellipse at 35% 25%, rgba(255,255,255,0.5) 0%, transparent 30%),
+    radial-gradient(ellipse at 40% 30%, var(--metal-shine) 0%, var(--metal-base) 55%, var(--metal-dark) 100%);
+}
+
+/* --- Deep Track Shadow ---
+   More physically recessed appearance than default inset shadows.
+   Used on toggle and slider tracks to create carved-in depth.
+   (From skeu-toggle-dark.png reference)
+*/
+.metal-track-deep {
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(0,0,0,0.3),
+    inset 0 -1px 2px rgba(255,255,255,0.08),
+    0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* --- Metal Knob Rim Light ---
+   Rim light effect: light wrapping around bottom of a sphere,
+   stronger inner top highlight for 3D dome feel.
+*/
+.metal-knob-rim {
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.35),
+    0 4px 8px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -1px 2px rgba(0,0,0,0.15);
+}
+
+/* --- Accent Glow (Active State) ---
+   Pulsing accent-colored glow applied to controls in checked/active state.
+   Simulates a power indicator LED glow. 2s cycle, gentle pulse.
+*/
+@keyframes accent-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 3px 6px rgba(0,0,0,0.4),
+      inset 0 1px 3px rgba(0,0,0,0.3),
+      inset 0 -1px 2px rgba(255,255,255,0.08),
+      0 1px 0 rgba(255,255,255,0.05),
+      0 0 8px var(--accent),
+      0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 3px 6px rgba(0,0,0,0.4),
+      inset 0 1px 3px rgba(0,0,0,0.3),
+      inset 0 -1px 2px rgba(255,255,255,0.08),
+      0 1px 0 rgba(255,255,255,0.05),
+      0 0 12px var(--accent),
+      0 0 24px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+}
+
+.accent-glow-active {
+  animation: accent-glow-pulse 2s ease-in-out infinite;
+}
