@@ -14,6 +14,7 @@ import type { TMDBDiscoverResponse } from '@/types/movie';
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialProviderId?: number | null;
 }
 
 /** Check if any advanced filters are non-default */
@@ -46,7 +47,7 @@ function hasNonDefaultFilters(
  * Uses tmdbFetch /discover/movie when advanced filters are active.
  * onSelectMovie navigates to /#/?movie={id} for deep-link (SRCH-04).
  */
-export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalProps) {
   const { search, loadMore, results, isLoading, hasMore } = useSearchMovies();
   const advancedFilters = useSearchStore((s) => s.advancedFilters);
   const sortBy = useSearchStore((s) => s.sortBy);
@@ -55,12 +56,20 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const setLoading = useSearchStore((s) => s.setLoading);
   const setError = useSearchStore((s) => s.setError);
   const reset = useSearchStore((s) => s.reset);
+  const setAdvancedFilters = useSearchStore((s) => s.setAdvancedFilters);
   const currentPage = useSearchStore((s) => s.currentPage);
   const totalPages = useSearchStore((s) => s.totalPages);
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [currentQuery, setCurrentQuery] = useState('');
   const region = useRegionStore((s) => s.effectiveRegion)();
+
+  // Apply initialProviderId when modal opens with a preset
+  useEffect(() => {
+    if (isOpen && initialProviderId != null) {
+      setAdvancedFilters({ providerId: initialProviderId });
+    }
+  }, [isOpen, initialProviderId, setAdvancedFilters]);
 
   // Close on Escape key + lock body scroll (SRCH-05)
   useEffect(() => {
@@ -224,19 +233,19 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop — click to close (SRCH-05) */}
+          {/* Backdrop — click to close (SRCH-05). Animates backdrop-filter blur for cinematic entrance. */}
           <motion.div
             key="search-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
+            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            transition={{ duration: 0.25 }}
             className="fixed inset-0 z-40 bg-black/60"
             onClick={onClose}
             aria-hidden="true"
           />
 
-          {/* Content panel — slides up from bottom */}
+          {/* Content panel — dramatic slide-up from bottom with spring entrance */}
           <motion.div
             key="search-panel"
             initial={{ y: '100%', opacity: 0 }}
@@ -245,7 +254,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
             className="
               fixed inset-x-0 bottom-0 z-50
-              bg-clay-surface clay-texture clay-shadow-lg
+              bg-clay-base/80 backdrop-blur-2xl border-t border-white/10
               rounded-t-[24px]
               max-h-[90vh]
               flex flex-col
@@ -257,12 +266,12 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-              <div className="w-10 h-1 rounded-full bg-clay-base" aria-hidden="true" />
+              <div className="w-10 h-1 rounded-full bg-white/20" aria-hidden="true" />
             </div>
 
             {/* Header: title + close button */}
             <div className="flex items-center justify-between px-4 pb-2 flex-shrink-0">
-              <h2 className="font-display font-bold text-lg text-clay-text">
+              <h2 className="font-heading font-bold text-lg text-clay-text">
                 Search
               </h2>
               <button
