@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 Phase: 5 of 8 (Animation Layer) -- IN PROGRESS
 Plan: 5 of 5 in current phase (complete)
 Status: Phase 5 Complete
-Last activity: 2026-02-18 — Plan 05-05 complete (skeuomorphic material enhancements: specular highlights, accent glow, ceramic ripple)
+Last activity: 2026-02-18 — Plan 05-02 complete (page transitions PageTransition.tsx, morph dissolve+backdrop crossfade across Discovery/DinnerTime/FreeMovies, layoutId hero expand)
 
 Progress: [████████████████░] 50%
 
@@ -43,6 +43,8 @@ Progress: [████████████████░] 50%
 | Phase 04-pwa-infrastructure P02 | 2 | 2 tasks | 4 files |
 | Phase 05-animation-layer P05 | 3 | 2 tasks | 6 files |
 | Phase 05-animation-layer P01 | 3 | 3 tasks | 9 files |
+| Phase 05-animation-layer P03 | 3 | 2 tasks | 6 files |
+| Phase 05-animation-layer P02 | 5 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -124,6 +126,13 @@ Recent decisions affecting current work:
 - Plan 05-01: SplashScreen always on bg-black regardless of app theme — Netflix-style cinematic dark, always consistent
 - Plan 05-01: LoadingQuotes integrated into SearchResults.tsx (not SearchModal.tsx) — SearchResults owns the loading display
 - Plan 05-01: film-reel-spin uses CSS @keyframes animation (not Framer Motion) — simpler and more performant for infinite loops
+- [Phase 05-03]: ScrollReveal uses hasAnimated state to play shorter re-entry animation (0.3s/40% travel) vs first entry (0.6s/full travel)
+- [Phase 05-03]: StaggerContainer passes role and aria-label props to motion.div for ARIA list semantics
+- [Phase 05-03]: StaggerItem uses variants prop only — inherits stagger timing from parent StaggerContainer, no own initial/whileInView
+- [Phase 05-animation-layer]: Plan 05-02: PageTransition.tsx is a pure data module (no JSX) — variants exported as constants consumed by AppShell
+- [Phase 05-animation-layer]: Plan 05-02: Morph transition uses tween with cubic-bezier [0.25,0.1,0.25,1] for smooth controlled dissolve (not bouncy spring)
+- [Phase 05-animation-layer]: Plan 05-02: layoutId prefix similar-poster-{movieId} avoids collisions; FreeMoviesPage keys on youtubeId (tmdb.id can be 0 for stubs)
+- [Phase 05-animation-layer]: Plan 05-02: Gradient overlay stays outside AnimatePresence — remains constant while backdrop crossfades beneath
 
 ### Pending Todos
 
@@ -147,6 +156,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 05-01-PLAN.md (MotionProvider, animations.css, Netflix-style splash, LoadingQuotes)
+Stopped at: Completed 05-02-PLAN.md (page transitions, morph transitions, backdrop crossfade, layoutId hero expand)
 Resume file: .planning/phases/05-animation-layer/05-01-SUMMARY.md
 Dev server: http://localhost:5173/

@@ -41,12 +41,12 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Animation
 
-- [ ] **ANIM-01**: Framer Motion page transitions between routes (fade, slide, scale variants)
-- [ ] **ANIM-02**: Scroll-triggered reveal animations for sections (whileInView, staggered children)
-- [ ] **ANIM-03**: Micro-interactions: button hover/tap feedback, card tilt, toggle animations
-- [ ] **ANIM-04**: Layout animations for dynamic content changes (AnimatePresence, layoutId)
-- [ ] **ANIM-05**: prefers-reduced-motion fully respected — all animations disabled when set
-- [ ] **ANIM-06**: Loading animations with movie-themed content (quotes, film reel)
+- [x] **ANIM-01**: Framer Motion page transitions between routes (fade, slide, scale variants)
+- [x] **ANIM-02**: Scroll-triggered reveal animations for sections (whileInView, staggered children)
+- [x] **ANIM-03**: Micro-interactions: button hover/tap feedback, card tilt, toggle animations
+- [x] **ANIM-04**: Layout animations for dynamic content changes (AnimatePresence, layoutId)
+- [x] **ANIM-05**: prefers-reduced-motion fully respected — all animations disabled when set
+- [x] **ANIM-06**: Loading animations with movie-themed content (quotes, film reel)
 - [ ] **ANIM-07**: Smooth animated transitions when switching color scheme presets
 
 ### 3D Experience
@@ -155,7 +155,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 - [x] **A11Y-02**: ARIA labels on all interactive elements
 - [x] **A11Y-03**: Keyboard navigation with visible focus rings
 - [x] **A11Y-04**: Screen reader optimized (semantic HTML, ARIA live regions)
-- [ ] **A11Y-05**: prefers-reduced-motion disables all animations
+- [x] **A11Y-05**: prefers-reduced-motion disables all animations
 - [ ] **A11Y-06**: Color contrast minimum 4.5:1 for text in both light and dark modes
 - [ ] **A11Y-07**: Skip navigation link
 
@@ -292,14 +292,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PWA-04 | Phase 4 | Complete |
 | PWA-05 | Phase 4 | Complete |
 | PWA-06 | Phase 4 | Complete |
-| ANIM-01 | Phase 5 | Pending |
-| ANIM-02 | Phase 5 | Pending |
-| ANIM-03 | Phase 5 | Pending |
-| ANIM-04 | Phase 5 | Pending |
-| ANIM-05 | Phase 5 | Pending |
-| ANIM-06 | Phase 5 | Pending |
+| ANIM-01 | Phase 5 | Complete |
+| ANIM-02 | Phase 5 | Complete |
+| ANIM-03 | Phase 5 | Complete |
+| ANIM-04 | Phase 5 | Complete |
+| ANIM-05 | Phase 5 | Complete |
+| ANIM-06 | Phase 5 | Complete |
 | ANIM-07 | Phase 5 | Pending |
-| A11Y-05 | Phase 5 | Pending |
+| A11Y-05 | Phase 5 | Complete |
 | BENT-01 | Phase 6 | Pending |
 | BENT-02 | Phase 6 | Pending |
 | BENT-03 | Phase 6 | Pending |
