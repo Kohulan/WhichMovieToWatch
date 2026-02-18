@@ -97,7 +97,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Service worker + Workbox caching, web app manifest, offline fallback page, icon setup
+- [x] 04-01-PLAN.md — Service worker + Workbox caching, web app manifest, offline fallback page, icon setup
 - [ ] 04-02-PLAN.md — Install prompts (Chromium + iOS), update notifications (ReloadPrompt), App.tsx integration
 
 ### Phase 5: Animation Layer
@@ -187,9 +187,9 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 6/6 | Complete | 2026-02-17 |
-| 2. Data Layer | 1/5 | Complete    | 2026-02-18 |
-| 3. Core Features | 3/5 | In Progress|  |
-| 4. PWA Infrastructure | 0/2 | Not started | - |
+| 2. Data Layer | 5/5 | Complete    | 2026-02-18 |
+| 3. Core Features | 5/5 | Complete | 2026-02-18 |
+| 4. PWA Infrastructure | 1/2 | In Progress | - |
 | 5. Animation Layer | 0/TBD | Not started | - |
 | 6. Bento Grid Layouts | 0/TBD | Not started | - |
 | 7. 3D Experience | 0/TBD | Not started | - |

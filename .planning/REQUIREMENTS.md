@@ -142,12 +142,12 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### PWA (Feature Parity)
 
-- [ ] **PWA-01**: Service worker with offline support via Vite PWA plugin + Workbox
-- [ ] **PWA-02**: Offline fallback page
+- [x] **PWA-01**: Service worker with offline support via Vite PWA plugin + Workbox
+- [x] **PWA-02**: Offline fallback page
 - [ ] **PWA-03**: Install prompts (including iOS-specific instructions)
 - [ ] **PWA-04**: Update notifications when new version available
-- [ ] **PWA-05**: Multi-layer caching: static assets (cache-first), API responses (network-first), images (cache-first)
-- [ ] **PWA-06**: Web app manifest with icons, theme color, standalone display
+- [x] **PWA-05**: Multi-layer caching: static assets (cache-first), API responses (network-first), images (cache-first)
+- [x] **PWA-06**: Web app manifest with icons, theme color, standalone display
 
 ### Accessibility
 
@@ -286,12 +286,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | A11Y-07 | Phase 3 | Pending |
 | SECU-02 | Phase 3 | Complete |
 | SECU-04 | Phase 3 | Complete |
-| PWA-01 | Phase 4 | Pending |
-| PWA-02 | Phase 4 | Pending |
+| PWA-01 | Phase 4 | Complete |
+| PWA-02 | Phase 4 | Complete |
 | PWA-03 | Phase 4 | Pending |
 | PWA-04 | Phase 4 | Pending |
-| PWA-05 | Phase 4 | Pending |
-| PWA-06 | Phase 4 | Pending |
+| PWA-05 | Phase 4 | Complete |
+| PWA-06 | Phase 4 | Complete |
 | ANIM-01 | Phase 5 | Pending |
 | ANIM-02 | Phase 5 | Pending |
 | ANIM-03 | Phase 5 | Pending |
