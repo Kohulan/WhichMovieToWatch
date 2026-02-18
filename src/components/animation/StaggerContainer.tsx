@@ -60,12 +60,18 @@ interface StaggerContainerProps {
   stagger?: number;
   /** Entrance direction for children (default 'up') */
   direction?: 'up' | 'left' | 'right';
+  /** ARIA role attribute */
+  role?: string;
+  /** ARIA label attribute */
+  'aria-label'?: string;
 }
 
 export function StaggerContainer({
   children,
   className = '',
   stagger = 0.08,
+  role,
+  'aria-label': ariaLabel,
 }: StaggerContainerProps) {
   return (
     <motion.div
@@ -75,6 +81,8 @@ export function StaggerContainer({
       viewport={{ amount: 0.15 }}
       variants={containerVariants}
       custom={stagger}
+      role={role}
+      aria-label={ariaLabel}
     >
       {children}
     </motion.div>

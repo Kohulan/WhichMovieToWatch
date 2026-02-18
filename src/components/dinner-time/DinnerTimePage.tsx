@@ -1,6 +1,9 @@
-// Dinner Time — family-friendly movie finder with service selector and like/dislike tracking (DINR-02, DINR-03, DINR-04)
+// Dinner Time — cinematic family-friendly movie finder (DINR-02, DINR-03, DINR-04)
 
 import { ThumbsUp, ThumbsDown, SkipForward, AlertCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
+import { ScrollReveal } from '@/components/animation/ScrollReveal';
+import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
 import {
   useDinnerTime,
   DINNER_TIME_SERVICES,
@@ -8,31 +11,23 @@ import {
 } from '@/hooks/useDinnerTime';
 import { useOmdbRatings } from '@/hooks/useOmdbRatings';
 import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
-import { ServiceBranding, getServiceConfig } from './ServiceBranding';
-import { MetalButton } from '@/components/ui/MetalButton';
-import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
+import { getServiceConfig, getServiceLogoUrl } from './ServiceBranding';
+import { MovieHero } from '@/components/movie/MovieHero';
 import { RatingBadges } from '@/components/movie/RatingBadges';
-import { GenreBadges } from '@/components/movie/GenreBadges';
+import { TrailerLink } from '@/components/movie/TrailerLink';
+import { MetalButton } from '@/components/ui/MetalButton';
+import { ClayCard } from '@/components/ui/ClayCard';
+import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { ExternalLink } from '@/components/shared/ExternalLink';
 import { showToast } from '@/components/shared/Toast';
-import { getPosterUrl } from '@/services/tmdb/client';
+import { getBackdropUrl } from '@/services/tmdb/client';
 
 const SERVICES = [
   { id: DINNER_TIME_SERVICES.NETFLIX, label: 'Netflix' },
-  { id: DINNER_TIME_SERVICES.PRIME, label: 'Prime' },
+  { id: DINNER_TIME_SERVICES.PRIME, label: 'Prime Video' },
   { id: DINNER_TIME_SERVICES.DISNEY_PLUS, label: 'Disney+' },
 ] as const;
 
-/**
- * DinnerTimePage — Dedicated full-page experience for finding family-friendly movies.
- *
- * Provides:
- * - Service selector (Netflix / Prime Video / Disney+)
- * - Single-movie focused display with poster, metadata, ratings
- * - "Watch on [Service]" button linking to service search
- * - Like/Dislike preference tracking with auto-advance to next movie
- * (DINR-02, DINR-03, DINR-04)
- */
 export function DinnerTimePage() {
   const { movie, isLoading, error, nextMovie, setService, currentService } =
     useDinnerTime();
@@ -44,6 +39,12 @@ export function DinnerTimePage() {
   const { imdbRating, rottenTomatoes, metascore } = useOmdbRatings(imdbId);
 
   const serviceConfig = getServiceConfig(currentService);
+
+  const backdropUrl = movie?.backdrop_path
+    ? getBackdropUrl(movie.backdrop_path, 'original')
+    : null;
+
+  const watchUrl = movie ? serviceConfig.watchUrl(movie.title) : '#';
 
   function handleGreatPick() {
     if (!movie) return;
@@ -58,192 +59,227 @@ export function DinnerTimePage() {
     nextMovie();
   }
 
-  const posterUrl = movie ? getPosterUrl(movie.poster_path, 'w342') : null;
-  const year = movie?.release_date
-    ? new Date(movie.release_date).getFullYear()
-    : null;
-  const runtime = movie?.runtime;
-
-  const watchUrl = movie ? serviceConfig.watchUrl(movie.title) : '#';
-
   return (
-    <div
-      className={`min-h-[calc(100dvh-8rem)] flex flex-col bg-gradient-to-b ${serviceConfig.gradientFrom} ${serviceConfig.gradientTo} transition-colors duration-500`}
-    >
-      {/* Page header */}
-      <div className="px-4 pt-4 pb-2">
-        <h1 className="text-2xl font-display font-bold text-clay-text">
-          Dinner Time
-        </h1>
-        <p className="text-sm text-clay-text-muted mt-0.5">
-          Family-friendly movies for everyone
-        </p>
-      </div>
+    <div className="w-full">
+      {/* Fixed full-screen backdrop — crossfades between movies */}
+      {backdropUrl && (
+        <div className="fixed inset-0 z-0" aria-hidden="true">
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={movie!.id}
+              src={backdropUrl}
+              alt=""
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </AnimatePresence>
+          <div className="absolute inset-0 bg-gradient-to-t from-clay-base from-5% via-clay-base/80 via-35% to-clay-base/20" />
+        </div>
+      )}
 
-      {/* Service selector */}
-      <div className="px-4 pb-4">
-        <div className="flex gap-2" role="group" aria-label="Select streaming service">
+      {/* Page header — once: header near top of page, only animates on first view (ANIM-02) */}
+      <ScrollReveal travel={40} once className="relative z-10 px-4 sm:px-6 lg:px-8 pt-4">
+        <div className="max-w-7xl mx-auto text-center">
+          <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-clay-text">
+            Dinner Time
+          </h1>
+          <p className="text-sm text-clay-text-muted font-light mt-1">
+            Pick a service, find the perfect family movie
+          </p>
+        </div>
+      </ScrollReveal>
+
+      {/* Service selector — centered, with provider logos */}
+      {/* StaggerContainer: 3 service buttons stagger their entrance (ANIM-02) */}
+      <div className="relative z-10 px-4 sm:px-6 lg:px-8 pt-5 pb-4">
+        <StaggerContainer
+          className="flex items-center justify-center gap-3 sm:gap-4"
+          stagger={0.1}
+          direction="up"
+          role="group"
+          aria-label="Select streaming service"
+        >
           {SERVICES.map((service) => {
             const isActive = currentService === service.id;
+            const logoUrl = getServiceLogoUrl(service.id);
+            const config = getServiceConfig(service.id);
+
             return (
-              <MetalButton
-                key={service.id}
-                variant={isActive ? 'primary' : 'secondary'}
-                size="sm"
-                onClick={() => setService(service.id as DinnerTimeServiceId)}
-                aria-pressed={isActive}
-                className={isActive ? 'flex-1' : 'flex-1 opacity-70'}
-              >
-                {service.label}
-              </MetalButton>
+              /* StaggerItem: each service button staggers its entrance from the container (ANIM-02) */
+              <StaggerItem key={service.id} direction="up">
+                <motion.button
+                  type="button"
+                  onClick={() => setService(service.id as DinnerTimeServiceId)}
+                  aria-pressed={isActive}
+                  whileHover={{ scale: 1.05, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  className={`
+                    relative flex flex-col items-center gap-2 px-5 py-4 sm:px-8 sm:py-5
+                    rounded-2xl border transition-all duration-300
+                    outline-none focus-visible:ring-2 focus-visible:ring-accent
+                    ${isActive
+                      ? 'bg-white/[0.12] backdrop-blur-xl border-white/20 shadow-lg shadow-black/10'
+                      : 'bg-white/[0.04] backdrop-blur-sm border-white/[0.06] opacity-50 hover:opacity-80'
+                    }
+                  `}
+                >
+                  {/* Active glow ring */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="service-glow"
+                      className="absolute inset-0 rounded-2xl"
+                      style={{
+                        boxShadow: `0 0 20px ${config.color}30, 0 0 40px ${config.color}15`,
+                      }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                    />
+                  )}
+
+                  {/* Provider logo */}
+                  {logoUrl ? (
+                    <img
+                      src={logoUrl}
+                      alt=""
+                      className={`
+                        w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover
+                        shadow-md transition-shadow duration-300
+                        ${isActive ? 'shadow-lg' : ''}
+                      `}
+                      aria-hidden="true"
+                    />
+                  ) : (
+                    <div
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl flex items-center justify-center text-white font-bold text-lg"
+                      style={{ backgroundColor: config.color }}
+                    >
+                      {service.label[0]}
+                    </div>
+                  )}
+
+                  {/* Label */}
+                  <span className={`
+                    text-xs sm:text-sm font-medium transition-colors duration-300
+                    ${isActive ? 'text-clay-text' : 'text-clay-text-muted'}
+                  `}>
+                    {service.label}
+                  </span>
+
+                  {/* Active dot */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="service-dot"
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: config.color }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                    />
+                  )}
+                </motion.button>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerContainer>
       </div>
 
       {/* Loading state */}
       {isLoading && (
-        <div className="flex-1 flex flex-col items-center gap-4 px-4 pb-6">
-          <ClaySkeletonCard className="w-full max-w-sm" hasImage lines={4} />
-          <p className="text-clay-text-muted text-sm animate-pulse">
-            Finding the perfect family movie...
-          </p>
+        <div className="relative z-10 w-full px-4 py-6">
+          <ClaySkeletonCard hasImage lines={4} className="w-full max-w-7xl mx-auto" />
         </div>
       )}
 
-      {/* Error/empty state */}
+      {/* Error state */}
       {!isLoading && error && (
-        <div className="flex-1 flex flex-col items-center justify-center gap-4 px-4 py-12 text-center">
-          <AlertCircle className="w-12 h-12 text-yellow-400" aria-hidden="true" />
-          <div>
-            <p className="text-clay-text font-semibold mb-1">
-              No movies found on {serviceConfig.name}
-            </p>
-            <p className="text-clay-text-muted text-sm">{error}</p>
-          </div>
-          <MetalButton variant="secondary" size="sm" onClick={nextMovie}>
-            Try another
-          </MetalButton>
+        <div className="relative z-10 w-full px-4 py-6">
+          <ClayCard className="max-w-7xl mx-auto">
+            <div className="p-6 text-center">
+              <AlertCircle className="w-12 h-12 text-yellow-400 mx-auto mb-3" aria-hidden="true" />
+              <p className="text-clay-text font-semibold mb-1">
+                No movies found on {serviceConfig.name}
+              </p>
+              <p className="text-clay-text-muted text-sm mb-4">{error}</p>
+              <MetalButton variant="secondary" size="sm" onClick={nextMovie}>
+                Try another
+              </MetalButton>
+            </div>
+          </ClayCard>
         </div>
       )}
 
-      {/* Movie display */}
+      {/* Movie hero */}
       {!isLoading && !error && movie && (
-        <div className="flex-1 flex flex-col items-center gap-4 px-4 pb-6">
-          {/* Poster */}
-          <div className="w-48 aspect-[2/3] rounded-clay overflow-hidden clay-shadow-lg flex-shrink-0">
-            {posterUrl ? (
-              <img
-                src={posterUrl}
-                alt={`${movie.title} poster`}
-                className="w-full h-full object-cover"
-                loading="eager"
-              />
-            ) : (
-              <div className="w-full h-full bg-clay-base flex items-center justify-center">
-                <span className="text-clay-text-muted text-xs text-center px-3">
-                  No poster available
-                </span>
+        <section className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pb-8">
+          <div className="max-w-7xl mx-auto w-full">
+            <MovieHero
+              movie={movie}
+              posterFooter={<TrailerLink videos={movie.videos} />}
+            >
+              {/* Watch on Service — prominent branded button */}
+              <ExternalLink href={watchUrl} className="block">
+                <MetalButton
+                  variant="primary"
+                  size="md"
+                  className="w-full sm:w-auto gap-2"
+                  style={{ backgroundColor: serviceConfig.color }}
+                  aria-label={`Watch ${movie.title} on ${serviceConfig.name}`}
+                >
+                  {(() => {
+                    const logoUrl = getServiceLogoUrl(currentService);
+                    return logoUrl ? (
+                      <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
+                    ) : null;
+                  })()}
+                  Watch on {serviceConfig.name}
+                </MetalButton>
+              </ExternalLink>
+
+              {/* Like / Dislike / Skip */}
+              <div className="flex gap-2 flex-wrap" role="group" aria-label="Movie actions">
+                <MetalButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleGreatPick}
+                  className="gap-1.5"
+                  aria-label="Great pick — mark as liked and load next"
+                >
+                  <ThumbsUp className="w-4 h-4" aria-hidden="true" />
+                  Great Pick
+                </MetalButton>
+
+                <MetalButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={handleNotThis}
+                  className="gap-1.5"
+                  aria-label="Not this one — mark as disliked and load next"
+                >
+                  <ThumbsDown className="w-4 h-4" aria-hidden="true" />
+                  Not This
+                </MetalButton>
+
+                <MetalButton
+                  variant="ghost"
+                  size="sm"
+                  onClick={nextMovie}
+                  aria-label="Skip to next movie"
+                >
+                  <SkipForward className="w-4 h-4" aria-hidden="true" />
+                </MetalButton>
               </div>
-            )}
-          </div>
 
-          {/* Movie info */}
-          <div className="w-full max-w-sm space-y-3 text-center">
-            {/* Title */}
-            <h2 className="text-xl font-display font-bold text-clay-text leading-tight">
-              {movie.title}
-            </h2>
-
-            {/* Metadata row */}
-            <div className="flex items-center justify-center gap-3 text-sm text-clay-text-muted">
-              {year && <span>{year}</span>}
-              {year && runtime && <span aria-hidden="true">·</span>}
-              {runtime && (
-                <span>
-                  {Math.floor(runtime / 60)}h {runtime % 60}m
-                </span>
-              )}
-            </div>
-
-            {/* Service badge */}
-            <div className="flex justify-center">
-              <ServiceBranding serviceId={currentService} />
-            </div>
-
-            {/* Ratings */}
-            <div className="flex justify-center">
+              {/* Rating badges */}
               <RatingBadges
                 tmdbRating={movie.vote_average}
                 imdbRating={imdbRating}
                 rottenTomatoes={rottenTomatoes}
                 metascore={metascore}
               />
-            </div>
-
-            {/* Genres */}
-            {movie.genres && movie.genres.length > 0 && (
-              <div className="flex justify-center">
-                <GenreBadges genres={movie.genres} maxVisible={4} />
-              </div>
-            )}
-
-            {/* Overview */}
-            {movie.overview && (
-              <p className="text-clay-text-muted text-sm leading-relaxed line-clamp-4 text-left">
-                {movie.overview}
-              </p>
-            )}
+            </MovieHero>
           </div>
-
-          {/* Watch on Service button */}
-          <ExternalLink href={watchUrl} className="w-full max-w-sm">
-            <MetalButton
-              variant="primary"
-              size="lg"
-              className="w-full"
-              style={{ backgroundColor: serviceConfig.color }}
-              aria-label={`Watch ${movie.title} on ${serviceConfig.name}`}
-            >
-              Watch on {serviceConfig.name}
-            </MetalButton>
-          </ExternalLink>
-
-          {/* Action row — Like / Dislike / Next */}
-          <div className="flex gap-3 w-full max-w-sm" role="group" aria-label="Movie actions">
-            <MetalButton
-              variant="secondary"
-              size="md"
-              onClick={handleGreatPick}
-              className="flex-1 gap-1.5"
-              aria-label="Great pick — mark as liked and load next"
-            >
-              <ThumbsUp className="w-4 h-4" aria-hidden="true" />
-              Great Pick
-            </MetalButton>
-
-            <MetalButton
-              variant="secondary"
-              size="md"
-              onClick={handleNotThis}
-              className="flex-1 gap-1.5"
-              aria-label="Not this one — mark as disliked and load next"
-            >
-              <ThumbsDown className="w-4 h-4" aria-hidden="true" />
-              Not This
-            </MetalButton>
-
-            <MetalButton
-              variant="ghost"
-              size="md"
-              onClick={nextMovie}
-              className="px-3"
-              aria-label="Skip to next movie"
-            >
-              <SkipForward className="w-4 h-4" aria-hidden="true" />
-            </MetalButton>
-          </div>
-        </div>
+        </section>
       )}
     </div>
   );

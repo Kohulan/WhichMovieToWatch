@@ -5,6 +5,7 @@ import { useTrending } from '@/hooks/useTrending';
 import { getPosterUrl } from '@/services/tmdb/client';
 import { ClaySkeletonCard } from '@/components/ui';
 import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
+import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
 
 /**
  * TrendingPage — Horizontal scroll row of now-playing movies with auto-refresh.
@@ -92,8 +93,11 @@ export function TrendingPage() {
       </div>
 
       {/* Responsive grid — horizontal scroll on mobile, grid on desktop */}
-      <div
+      {/* StaggerContainer staggers card entrances with 50ms between each (ANIM-02) */}
+      <StaggerContainer
         className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-4 px-4 scrollbar-hide md:grid md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 md:overflow-visible md:mx-0 md:px-0"
+        stagger={0.05}
+        direction="up"
         role="list"
         aria-label="Now playing movies"
       >
@@ -113,52 +117,53 @@ export function TrendingPage() {
                 : 'bg-red-500/80 text-white';
 
           return (
-            <button
-              key={movie.id}
-              role="listitem"
-              onClick={() => handleMovieClick(movie.id)}
-              className="flex-shrink-0 snap-start w-40 md:w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
-              aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPercent}%`}
-            >
-              {/* Poster */}
-              <div className="w-40 md:w-full h-60 rounded-2xl overflow-hidden bg-white/[0.05] border border-white/10 relative transition-all duration-300 group-hover:border-white/20 group-hover:shadow-lg group-hover:shadow-accent/10">
-                {posterUrl ? (
-                  <img
-                    src={posterUrl}
-                    alt={`${movie.title} poster`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-clay-surface">
-                    <span className="text-clay-text-muted text-xs text-center px-2">
-                      No poster
-                    </span>
+            <StaggerItem key={movie.id} direction="up" className="flex-shrink-0 snap-start w-40 md:w-full">
+              <button
+                role="listitem"
+                onClick={() => handleMovieClick(movie.id)}
+                className="w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
+                aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPercent}%`}
+              >
+                {/* Poster */}
+                <div className="w-40 md:w-full h-60 rounded-2xl overflow-hidden bg-white/[0.05] border border-white/10 relative transition-all duration-300 group-hover:border-white/20 group-hover:shadow-lg group-hover:shadow-accent/10">
+                  {posterUrl ? (
+                    <img
+                      src={posterUrl}
+                      alt={`${movie.title} poster`}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-clay-surface">
+                      <span className="text-clay-text-muted text-xs text-center px-2">
+                        No poster
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Rating badge overlay */}
+                  <div
+                    className={`absolute top-2 right-2 text-xs font-bold px-1.5 py-0.5 rounded-md ${ratingColor}`}
+                    aria-hidden="true"
+                  >
+                    {ratingPercent}%
                   </div>
-                )}
-
-                {/* Rating badge overlay */}
-                <div
-                  className={`absolute top-2 right-2 text-xs font-bold px-1.5 py-0.5 rounded-md ${ratingColor}`}
-                  aria-hidden="true"
-                >
-                  {ratingPercent}%
                 </div>
-              </div>
 
-              {/* Title + year */}
-              <div className="px-0.5">
-                <p className="text-clay-text text-sm font-semibold leading-tight line-clamp-2 group-hover:text-clay-accent transition-colors">
-                  {movie.title}
-                </p>
-                {year && (
-                  <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
-                )}
-              </div>
-            </button>
+                {/* Title + year */}
+                <div className="px-0.5">
+                  <p className="text-clay-text text-sm font-semibold leading-tight line-clamp-2 group-hover:text-clay-accent transition-colors">
+                    {movie.title}
+                  </p>
+                  {year && (
+                    <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                  )}
+                </div>
+              </button>
+            </StaggerItem>
           );
         })}
-      </div>
+      </StaggerContainer>
     </section>
   );
 }
