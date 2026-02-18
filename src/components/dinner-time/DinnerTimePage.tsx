@@ -209,78 +209,87 @@ export function DinnerTimePage() {
         </div>
       )}
 
-      {/* Movie hero */}
-      {!isLoading && !error && movie && (
-        <section className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pb-8">
-          <div className="max-w-7xl mx-auto w-full">
-            <MovieHero
-              movie={movie}
-              posterFooter={<TrailerLink videos={movie.videos} />}
-            >
-              {/* Watch on Service — prominent branded button */}
-              <ExternalLink href={watchUrl} className="block">
-                <MetalButton
-                  variant="primary"
-                  size="md"
-                  className="w-full sm:w-auto gap-2"
-                  style={{ backgroundColor: serviceConfig.color }}
-                  aria-label={`Watch ${movie.title} on ${serviceConfig.name}`}
-                >
-                  {(() => {
-                    const logoUrl = getServiceLogoUrl(currentService);
-                    return logoUrl ? (
-                      <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
-                    ) : null;
-                  })()}
-                  Watch on {serviceConfig.name}
-                </MetalButton>
-              </ExternalLink>
+      {/* Movie hero — morph transition on Next Movie */}
+      <AnimatePresence mode="wait">
+        {!isLoading && !error && movie && (
+          <motion.section
+            key={movie.id}
+            initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pb-8"
+          >
+            <div className="max-w-7xl mx-auto w-full">
+              <MovieHero
+                movie={movie}
+                posterFooter={<TrailerLink videos={movie.videos} />}
+              >
+                {/* Watch on Service — prominent branded button */}
+                <ExternalLink href={watchUrl} className="block">
+                  <MetalButton
+                    variant="primary"
+                    size="md"
+                    className="w-full sm:w-auto gap-2"
+                    style={{ backgroundColor: serviceConfig.color }}
+                    aria-label={`Watch ${movie.title} on ${serviceConfig.name}`}
+                  >
+                    {(() => {
+                      const logoUrl = getServiceLogoUrl(currentService);
+                      return logoUrl ? (
+                        <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
+                      ) : null;
+                    })()}
+                    Watch on {serviceConfig.name}
+                  </MetalButton>
+                </ExternalLink>
 
-              {/* Like / Dislike / Skip */}
-              <div className="flex gap-2 flex-wrap" role="group" aria-label="Movie actions">
-                <MetalButton
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleGreatPick}
-                  className="gap-1.5"
-                  aria-label="Great pick — mark as liked and load next"
-                >
-                  <ThumbsUp className="w-4 h-4" aria-hidden="true" />
-                  Great Pick
-                </MetalButton>
+                {/* Like / Dislike / Skip */}
+                <div className="flex gap-2 flex-wrap" role="group" aria-label="Movie actions">
+                  <MetalButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleGreatPick}
+                    className="gap-1.5"
+                    aria-label="Great pick — mark as liked and load next"
+                  >
+                    <ThumbsUp className="w-4 h-4" aria-hidden="true" />
+                    Great Pick
+                  </MetalButton>
 
-                <MetalButton
-                  variant="secondary"
-                  size="sm"
-                  onClick={handleNotThis}
-                  className="gap-1.5"
-                  aria-label="Not this one — mark as disliked and load next"
-                >
-                  <ThumbsDown className="w-4 h-4" aria-hidden="true" />
-                  Not This
-                </MetalButton>
+                  <MetalButton
+                    variant="secondary"
+                    size="sm"
+                    onClick={handleNotThis}
+                    className="gap-1.5"
+                    aria-label="Not this one — mark as disliked and load next"
+                  >
+                    <ThumbsDown className="w-4 h-4" aria-hidden="true" />
+                    Not This
+                  </MetalButton>
 
-                <MetalButton
-                  variant="ghost"
-                  size="sm"
-                  onClick={nextMovie}
-                  aria-label="Skip to next movie"
-                >
-                  <SkipForward className="w-4 h-4" aria-hidden="true" />
-                </MetalButton>
-              </div>
+                  <MetalButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={nextMovie}
+                    aria-label="Skip to next movie"
+                  >
+                    <SkipForward className="w-4 h-4" aria-hidden="true" />
+                  </MetalButton>
+                </div>
 
-              {/* Rating badges */}
-              <RatingBadges
-                tmdbRating={movie.vote_average}
-                imdbRating={imdbRating}
-                rottenTomatoes={rottenTomatoes}
-                metascore={metascore}
-              />
-            </MovieHero>
-          </div>
-        </section>
-      )}
+                {/* Rating badges */}
+                <RatingBadges
+                  tmdbRating={movie.vote_average}
+                  imdbRating={imdbRating}
+                  rottenTomatoes={rottenTomatoes}
+                  metascore={metascore}
+                />
+              </MovieHero>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

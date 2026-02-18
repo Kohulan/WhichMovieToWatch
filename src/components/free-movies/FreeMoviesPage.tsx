@@ -1,6 +1,7 @@
 // Free Movies — cinematic YouTube movie discovery with TMDB metadata (FREE-01 through FREE-04)
 
 import { Youtube, SkipForward, AlertCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useFreeMovies } from '@/hooks/useFreeMovies';
 import { useOmdbRatings } from '@/hooks/useOmdbRatings';
 import { useWatchProviders } from '@/hooks/useWatchProviders';
@@ -66,15 +67,21 @@ export function FreeMoviesPage() {
 
   return (
     <div className="w-full">
-      {/* Fixed full-screen backdrop */}
+      {/* Fixed full-screen backdrop — crossfades between movies */}
       {backdropUrl && tmdb && (
         <div className="fixed inset-0 z-0" aria-hidden="true">
-          <img
-            key={tmdb.id}
-            src={backdropUrl}
-            alt=""
-            className="w-full h-full object-cover"
-          />
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={tmdb.id}
+              src={backdropUrl}
+              alt=""
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-t from-clay-base from-5% via-clay-base/80 via-35% to-clay-base/20" />
         </div>
       )}
@@ -116,61 +123,70 @@ export function FreeMoviesPage() {
         </div>
       )}
 
-      {/* Movie hero */}
-      {!isLoading && !error && movie && heroMovie && (
-        <section className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pt-4 pb-8">
-          <div className="max-w-7xl mx-auto w-full">
-            <MovieHero
-              movie={heroMovie}
-              posterFooter={tmdb ? <TrailerLink videos={tmdb.videos} /> : undefined}
-            >
-              {/* Watch on YouTube */}
-              <ExternalLink href={youtubeUrl} className="block">
-                <MetalButton
-                  variant="primary"
-                  size="md"
-                  className="w-full sm:w-auto gap-2"
-                  style={{ backgroundColor: '#FF0000' }}
-                  aria-label={`Watch ${displayTitle} on YouTube`}
-                >
-                  <Youtube className="w-5 h-5" aria-hidden="true" />
-                  Watch on YouTube
-                </MetalButton>
-              </ExternalLink>
-
-              {/* Next Suggestion */}
-              <MetalButton
-                variant="secondary"
-                size="sm"
-                onClick={nextMovie}
-                className="gap-2"
-                aria-label="Load next free movie suggestion"
+      {/* Movie hero — morph transition on Next Movie */}
+      <AnimatePresence mode="wait">
+        {!isLoading && !error && movie && heroMovie && (
+          <motion.section
+            key={movie.youtubeId}
+            initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pt-4 pb-8"
+          >
+            <div className="max-w-7xl mx-auto w-full">
+              <MovieHero
+                movie={heroMovie}
+                posterFooter={tmdb ? <TrailerLink videos={tmdb.videos} /> : undefined}
               >
-                <SkipForward className="w-4 h-4" aria-hidden="true" />
-                Next Suggestion
-              </MetalButton>
+                {/* Watch on YouTube */}
+                <ExternalLink href={youtubeUrl} className="block">
+                  <MetalButton
+                    variant="primary"
+                    size="md"
+                    className="w-full sm:w-auto gap-2"
+                    style={{ backgroundColor: '#FF0000' }}
+                    aria-label={`Watch ${displayTitle} on YouTube`}
+                  >
+                    <Youtube className="w-5 h-5" aria-hidden="true" />
+                    Watch on YouTube
+                  </MetalButton>
+                </ExternalLink>
 
-              {/* Rating badges */}
-              {tmdb && (
-                <RatingBadges
-                  tmdbRating={tmdb.vote_average}
-                  imdbRating={imdbRating}
-                  rottenTomatoes={rottenTomatoes}
-                  metascore={metascore}
-                />
-              )}
+                {/* Next Suggestion */}
+                <MetalButton
+                  variant="secondary"
+                  size="sm"
+                  onClick={nextMovie}
+                  className="gap-2"
+                  aria-label="Load next free movie suggestion"
+                >
+                  <SkipForward className="w-4 h-4" aria-hidden="true" />
+                  Next Suggestion
+                </MetalButton>
 
-              {/* Streaming providers */}
-              <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+                {/* Rating badges */}
+                {tmdb && (
+                  <RatingBadges
+                    tmdbRating={tmdb.vote_average}
+                    imdbRating={imdbRating}
+                    rottenTomatoes={rottenTomatoes}
+                    metascore={metascore}
+                  />
+                )}
 
-              {/* Regional disclaimer */}
-              <p className="text-xs text-clay-text-muted leading-relaxed opacity-70">
-                Availability may vary by region. Some movies may not be accessible in all countries.
-              </p>
-            </MovieHero>
-          </div>
-        </section>
-      )}
+                {/* Streaming providers */}
+                <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+
+                {/* Regional disclaimer */}
+                <p className="text-xs text-clay-text-muted leading-relaxed opacity-70">
+                  Availability may vary by region. Some movies may not be accessible in all countries.
+                </p>
+              </MovieHero>
+            </div>
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
