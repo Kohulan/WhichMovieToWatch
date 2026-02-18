@@ -22,7 +22,7 @@ export function Navbar() {
     <>
       <nav
         className="
-          fixed top-0 left-0 right-0 z-50
+          fixed top-0 left-0 right-0 z-40
           bg-clay-surface clay-shadow-sm clay-texture
           h-16 flex items-center justify-between
           px-4 sm:px-6

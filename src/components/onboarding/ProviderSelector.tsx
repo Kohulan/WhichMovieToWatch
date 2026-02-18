@@ -48,7 +48,7 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
   if (isLoading) {
     return (
       <div
-        className="grid grid-cols-4 gap-3"
+        className="grid grid-cols-3 sm:grid-cols-4 gap-3"
         aria-label="Loading streaming services"
         aria-busy="true"
       >
@@ -125,7 +125,7 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
     <div className="space-y-4">
       {/* Top 8 providers */}
       <div
-        className="grid grid-cols-4 gap-2"
+        className="grid grid-cols-3 sm:grid-cols-4 gap-2"
         role="group"
         aria-label="Top streaming services"
       >
@@ -154,7 +154,7 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
 
           {showAll && (
             <div
-              className="grid grid-cols-4 gap-2"
+              className="grid grid-cols-3 sm:grid-cols-4 gap-2"
               role="group"
               aria-label="All streaming services"
             >

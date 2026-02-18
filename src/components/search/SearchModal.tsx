@@ -62,7 +62,7 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [currentQuery, setCurrentQuery] = useState('');
   const region = useRegionStore((s) => s.effectiveRegion)();
 
-  // Close on Escape key (SRCH-05)
+  // Close on Escape key + lock body scroll (SRCH-05)
   useEffect(() => {
     if (!isOpen) return;
 
@@ -73,7 +73,13 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     }
 
     document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [isOpen, onClose]);
 
   // Reset search state when modal closes

@@ -68,7 +68,7 @@ export function DinnerTimePage() {
 
   return (
     <div
-      className={`min-h-full flex flex-col bg-gradient-to-b ${serviceConfig.gradientFrom} ${serviceConfig.gradientTo} transition-colors duration-500`}
+      className={`min-h-[calc(100dvh-8rem)] flex flex-col bg-gradient-to-b ${serviceConfig.gradientFrom} ${serviceConfig.gradientTo} transition-colors duration-500`}
     >
       {/* Page header */}
       <div className="px-4 pt-4 pb-2">

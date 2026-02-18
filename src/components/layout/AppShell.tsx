@@ -38,7 +38,7 @@ export function AppShell({ children }: AppShellProps) {
           transition={{
             opacity: { duration: 0.25, ease: 'easeInOut' },
           }}
-          className="pt-16 pb-20 min-h-screen"
+          className="pt-16 pb-[calc(4rem+env(safe-area-inset-bottom,0px)+0.5rem)] min-h-screen"
         >
           {children}
         </motion.main>
