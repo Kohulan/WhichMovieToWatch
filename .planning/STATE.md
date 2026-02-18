@@ -42,6 +42,7 @@ Progress: [████████████████░] 50%
 | Phase 04-pwa-infrastructure P01 | 5 | 2 tasks | 11 files |
 | Phase 04-pwa-infrastructure P02 | 2 | 2 tasks | 4 files |
 | Phase 05-animation-layer P05 | 3 | 2 tasks | 6 files |
+| Phase 05-animation-layer P01 | 3 | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,11 @@ Recent decisions affecting current work:
 - Plan 05-05: RotaryDial glow ring wraps the w-14 h-14 container div so glow surrounds full dial + indicator dots area
 - Plan 05-05: isDark derived inline as mode === 'dark' in ClayCard (themeStore has no computed isDark property)
 - Plan 05-05: Transient glow state pattern: useState boolean + useRef timer + clearTimeout on unmount for 2s interaction feedback
+- Plan 05-01: MotionProvider uses reducedMotion='user' — disables transforms/layout, preserves opacity/color for graceful degradation
+- Plan 05-01: CSS @media prefers-reduced-motion block in animations.css kills all CSS keyframe animations (MotionConfig cannot reach CSS)
+- Plan 05-01: SplashScreen always on bg-black regardless of app theme — Netflix-style cinematic dark, always consistent
+- Plan 05-01: LoadingQuotes integrated into SearchResults.tsx (not SearchModal.tsx) — SearchResults owns the loading display
+- Plan 05-01: film-reel-spin uses CSS @keyframes animation (not Framer Motion) — simpler and more performant for infinite loops
 
 ### Pending Todos
 
@@ -141,6 +147,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 05-05-PLAN.md (skeuomorphic material enhancements: specular highlights, accent glow, ceramic ripple)
-Resume file: .planning/phases/05-animation-layer/05-05-SUMMARY.md
+Stopped at: Completed 05-01-PLAN.md (MotionProvider, animations.css, Netflix-style splash, LoadingQuotes)
+Resume file: .planning/phases/05-animation-layer/05-01-SUMMARY.md
 Dev server: http://localhost:5173/
