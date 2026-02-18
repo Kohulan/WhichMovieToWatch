@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 2 of 8 (Data Layer)
-Plan: 2 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: Executing Phase 2
-Last activity: 2026-02-18 — Plan 02-02 complete (Zustand stores + migration hook)
+Last activity: 2026-02-18 — Plan 02-04 complete (API service clients)
 
-Progress: [██████░░░░] 16%
+Progress: [████████░░] 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 4 min
-- Total execution time: 0.5 hours
+- Total plans completed: 10
+- Average duration: 3.4 min
+- Total execution time: 0.57 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan | Status |
 |-------|-------|-------|----------|--------|
 | 01-foundation-design-system | 6 | 24 min | 4 min | Complete |
-| 02-data-layer | 2/5 | 4 min | 2 min | In progress |
+| 02-data-layer | 4/5 | 8 min | 2 min | In progress |
 
 **Recent Trend:**
-- Last 5 plans: 01-04 (4 min), 01-05 (3 min), 01-06 (3 min), 02-01 (2 min), 02-02 (2 min)
+- Last 5 plans: 01-06 (3 min), 02-01 (2 min), 02-02 (2 min), 02-03 (3 min), 02-04 (2 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -77,6 +77,9 @@ Recent decisions affecting current work:
 - Plan 02-02: TasteProfile defined inline in preferencesStore (types/ dir not yet created, will refactor later)
 - Plan 02-02: Old 'theme' key preserved in localStorage during migration for vanilla app backwards compat
 - Plan 02-02: Persisted stores use 'wmtw-*' key prefix; runtime stores have no persistence
+- Plan 02-04: OMDB returns any cached value (stale or fresh) to conserve 1000/day API quota
+- Plan 02-04: Discover filter relaxation is cumulative (each step merges onto previous relaxed state)
+- Plan 02-04: IPInfo uses unauthenticated free tier; navigator.language fallback for country detection
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 02-02-PLAN.md
-Resume file: .planning/phases/02-data-layer/02-02-SUMMARY.md
+Stopped at: Completed 02-04-PLAN.md
+Resume file: .planning/phases/02-data-layer/02-04-SUMMARY.md
 Dev server: http://localhost:5173/
