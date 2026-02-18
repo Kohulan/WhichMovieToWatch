@@ -94,11 +94,11 @@ Plans:
   3. User receives notification when app update is available with option to refresh
   4. Service worker caches static assets (cache-first), API responses (network-first), and images (cache-first)
   5. Offline fallback page displays when user navigates to uncached route without network
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md — Service worker + Workbox caching, web app manifest, offline fallback page, icon setup
+- [ ] 04-02-PLAN.md — Install prompts (Chromium + iOS), update notifications (ReloadPrompt), App.tsx integration
 
 ### Phase 5: Animation Layer
 **Goal**: Add Framer Motion animations for page transitions, scroll-triggered reveals, and micro-interactions while respecting prefers-reduced-motion.
@@ -189,7 +189,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 1. Foundation & Design System | 6/6 | Complete | 2026-02-17 |
 | 2. Data Layer | 1/5 | Complete    | 2026-02-18 |
 | 3. Core Features | 3/5 | In Progress|  |
-| 4. PWA Infrastructure | 0/TBD | Not started | - |
+| 4. PWA Infrastructure | 0/2 | Not started | - |
 | 5. Animation Layer | 0/TBD | Not started | - |
 | 6. Bento Grid Layouts | 0/TBD | Not started | - |
 | 7. 3D Experience | 0/TBD | Not started | - |
