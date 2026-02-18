@@ -74,6 +74,9 @@ Recent decisions affecting current work:
 - Plan 01-06: Deploy workflow uses actions/deploy-pages@v4 (official) instead of peaceiris third-party action
 - Plan 02-01: Singleton DB connection via module-level promise variable to avoid opening multiple IndexedDB connections
 - Plan 02-01: CacheEntry stores TTL per-entry (not per-store) enabling mixed TTLs in one object store
+- Plan 02-02: TasteProfile defined inline in preferencesStore (types/ dir not yet created, will refactor later)
+- Plan 02-02: Old 'theme' key preserved in localStorage during migration for vanilla app backwards compat
+- Plan 02-02: Persisted stores use 'wmtw-*' key prefix; runtime stores have no persistence
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 02-01-PLAN.md
-Resume file: .planning/phases/02-data-layer/02-01-SUMMARY.md
+Stopped at: Completed 02-02-PLAN.md
+Resume file: .planning/phases/02-data-layer/02-02-SUMMARY.md
 Dev server: http://localhost:5173/
