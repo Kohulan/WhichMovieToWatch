@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import './clay.css';
 @import './metal.css';
+@import './animations.css';
+
+/* Enable class-based dark mode — the app uses .dark on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* Hide scrollbar utility for horizontal scroll containers */
 @utility scrollbar-hide {
@@ -32,8 +36,8 @@
   --radius-clay-xl: 3rem;
 
   /* Fonts */
-  --font-heading: 'Righteous', cursive;
-  --font-body: 'Poppins', sans-serif;
+  --font-heading: 'Inter Tight Variable', 'Inter Tight', sans-serif;
+  --font-body: 'Inter Tight Variable', 'Inter Tight', sans-serif;
 }
 
 /* ============================================================
@@ -42,102 +46,99 @@
    Text colors meet WCAG AA minimum 4.5:1 contrast ratio.
    ============================================================ */
 
-/* --- Cinema Gold --- */
-/* Warm luxury: neutral warm-gray base, gold accents only on interactive elements, brass metal */
+/* --- Warm Orange — Stōkt-inspired, vivid orange accent, cinematic --- */
 
 :root,
-.theme-cinema-gold {
-  --clay-base: oklch(0.94 0.008 60);
-  --clay-surface: oklch(0.96 0.006 60);
-  --clay-elevated: oklch(0.98 0.004 60);
-  --clay-shadow: oklch(0.60 0.015 50);
-  --clay-highlight: oklch(0.99 0.003 60);
-  --clay-text: oklch(0.20 0.01 50);
-  --clay-text-muted: oklch(0.45 0.01 50);
-  --metal-base: oklch(0.78 0.03 70);
-  --metal-shine: oklch(0.95 0.015 75);
-  --metal-dark: oklch(0.55 0.04 65);
-  --accent: oklch(0.65 0.14 75);
-  --accent-hover: oklch(0.60 0.16 75);
+.theme-warm-orange {
+  --clay-base: oklch(0.95 0.01 70);
+  --clay-surface: oklch(0.97 0.008 70);
+  --clay-elevated: oklch(0.99 0.004 70);
+  --clay-shadow: oklch(0.78 0.015 60);
+  --clay-highlight: oklch(1.00 0.003 60);
+  --clay-text: oklch(0.15 0.01 50);
+  --clay-text-muted: oklch(0.48 0.015 50);
+  --metal-base: oklch(0.72 0.06 70);
+  --metal-shine: oklch(0.90 0.035 75);
+  --metal-dark: oklch(0.50 0.06 65);
+  --accent: oklch(0.67 0.22 38);
+  --accent-hover: oklch(0.62 0.24 38);
 }
 
-.dark.theme-cinema-gold {
-  --clay-base: oklch(0.17 0.005 250);
-  --clay-surface: oklch(0.21 0.005 250);
-  --clay-elevated: oklch(0.25 0.006 250);
-  --clay-shadow: oklch(0.08 0.003 250);
-  --clay-highlight: oklch(0.30 0.006 250);
-  --clay-text: oklch(0.93 0.006 60);
-  --clay-text-muted: oklch(0.68 0.008 60);
-  --metal-base: oklch(0.48 0.04 70);
-  --metal-shine: oklch(0.68 0.06 75);
-  --metal-dark: oklch(0.28 0.03 65);
-  --accent: oklch(0.72 0.14 75);
-  --accent-hover: oklch(0.78 0.12 75);
+.dark.theme-warm-orange {
+  --clay-base: oklch(0.13 0.005 60);
+  --clay-surface: oklch(0.17 0.005 60);
+  --clay-elevated: oklch(0.21 0.006 60);
+  --clay-shadow: oklch(0.06 0.003 60);
+  --clay-highlight: oklch(0.25 0.006 60);
+  --clay-text: oklch(0.95 0.01 60);
+  --clay-text-muted: oklch(0.65 0.015 60);
+  --metal-base: oklch(0.55 0.07 70);
+  --metal-shine: oklch(0.75 0.06 75);
+  --metal-dark: oklch(0.32 0.05 65);
+  --accent: oklch(0.70 0.22 38);
+  --accent-hover: oklch(0.75 0.20 38);
 }
 
-/* --- Ocean Blue --- */
-/* Deep ocean: blue-grey base, teal/navy accents, chrome metal */
+/* --- Gold — Warm luxury, rich gold accent, brass metal --- */
 
-.theme-ocean-blue {
-  --clay-base: oklch(0.93 0.02 230);
-  --clay-surface: oklch(0.95 0.015 230);
-  --clay-elevated: oklch(0.97 0.01 230);
-  --clay-shadow: oklch(0.55 0.04 230);
-  --clay-highlight: oklch(0.99 0.005 230);
-  --clay-text: oklch(0.22 0.04 245);
-  --clay-text-muted: oklch(0.45 0.03 230);
-  --metal-base: oklch(0.78 0.01 240);
-  --metal-shine: oklch(0.94 0.005 230);
-  --metal-dark: oklch(0.55 0.02 240);
-  --accent: oklch(0.60 0.12 195);
-  --accent-hover: oklch(0.55 0.14 195);
+.theme-gold {
+  --clay-base: oklch(0.95 0.012 75);
+  --clay-surface: oklch(0.97 0.01 75);
+  --clay-elevated: oklch(0.99 0.006 75);
+  --clay-shadow: oklch(0.76 0.02 65);
+  --clay-highlight: oklch(1.00 0.004 70);
+  --clay-text: oklch(0.18 0.015 55);
+  --clay-text-muted: oklch(0.46 0.02 55);
+  --metal-base: oklch(0.74 0.08 75);
+  --metal-shine: oklch(0.92 0.04 80);
+  --metal-dark: oklch(0.52 0.08 70);
+  --accent: oklch(0.68 0.14 80);
+  --accent-hover: oklch(0.63 0.16 80);
 }
 
-.dark.theme-ocean-blue {
-  --clay-base: oklch(0.16 0.015 245);
-  --clay-surface: oklch(0.20 0.015 245);
-  --clay-elevated: oklch(0.24 0.02 245);
-  --clay-shadow: oklch(0.08 0.01 245);
-  --clay-highlight: oklch(0.28 0.02 240);
-  --clay-text: oklch(0.93 0.01 210);
-  --clay-text-muted: oklch(0.68 0.02 220);
-  --metal-base: oklch(0.46 0.02 240);
-  --metal-shine: oklch(0.68 0.015 230);
-  --metal-dark: oklch(0.26 0.02 245);
-  --accent: oklch(0.70 0.12 185);
-  --accent-hover: oklch(0.76 0.10 185);
+.dark.theme-gold {
+  --clay-base: oklch(0.14 0.008 65);
+  --clay-surface: oklch(0.18 0.008 65);
+  --clay-elevated: oklch(0.22 0.01 65);
+  --clay-shadow: oklch(0.07 0.004 65);
+  --clay-highlight: oklch(0.26 0.01 65);
+  --clay-text: oklch(0.94 0.01 70);
+  --clay-text-muted: oklch(0.66 0.015 65);
+  --metal-base: oklch(0.52 0.08 75);
+  --metal-shine: oklch(0.72 0.07 80);
+  --metal-dark: oklch(0.30 0.06 70);
+  --accent: oklch(0.74 0.14 80);
+  --accent-hover: oklch(0.79 0.12 80);
 }
 
-/* --- Neon Purple --- */
-/* Cyberpunk/synthwave: lavender base, electric purple/pink accents, gunmetal */
+/* --- Clean White — Minimal, neutral, crisp --- */
 
-.theme-neon-purple {
-  --clay-base: oklch(0.92 0.03 300);
-  --clay-surface: oklch(0.95 0.025 300);
-  --clay-elevated: oklch(0.97 0.02 300);
-  --clay-shadow: oklch(0.55 0.05 300);
-  --clay-highlight: oklch(0.99 0.01 300);
-  --clay-text: oklch(0.22 0.06 300);
-  --clay-text-muted: oklch(0.45 0.04 300);
-  --metal-base: oklch(0.62 0.015 280);
-  --metal-shine: oklch(0.82 0.008 280);
-  --metal-dark: oklch(0.42 0.02 280);
-  --accent: oklch(0.55 0.20 310);
-  --accent-hover: oklch(0.50 0.22 310);
+.theme-clean-white {
+  --clay-base: oklch(0.97 0.003 250);
+  --clay-surface: oklch(0.98 0.002 250);
+  --clay-elevated: oklch(1.00 0.001 250);
+  --clay-shadow: oklch(0.82 0.006 250);
+  --clay-highlight: oklch(1.00 0.001 250);
+  --clay-text: oklch(0.15 0.005 250);
+  --clay-text-muted: oklch(0.50 0.008 250);
+  --metal-base: oklch(0.78 0.005 250);
+  --metal-shine: oklch(0.94 0.003 250);
+  --metal-dark: oklch(0.58 0.006 250);
+  --accent: oklch(0.45 0.01 250);
+  --accent-hover: oklch(0.38 0.012 250);
 }
 
-.dark.theme-neon-purple {
-  --clay-base: oklch(0.14 0.02 290);
-  --clay-surface: oklch(0.18 0.025 290);
-  --clay-elevated: oklch(0.22 0.03 290);
-  --clay-shadow: oklch(0.06 0.015 290);
-  --clay-highlight: oklch(0.27 0.03 295);
-  --clay-text: oklch(0.92 0.03 300);
-  --clay-text-muted: oklch(0.70 0.04 290);
-  --metal-base: oklch(0.40 0.02 280);
-  --metal-shine: oklch(0.58 0.025 290);
-  --metal-dark: oklch(0.22 0.015 280);
-  --accent: oklch(0.68 0.22 310);
-  --accent-hover: oklch(0.74 0.20 300);
+.dark.theme-clean-white {
+  --clay-base: oklch(0.12 0.005 250);
+  --clay-surface: oklch(0.16 0.005 250);
+  --clay-elevated: oklch(0.20 0.006 250);
+  --clay-shadow: oklch(0.06 0.003 250);
+  --clay-highlight: oklch(0.24 0.006 250);
+  --clay-text: oklch(0.96 0.004 250);
+  --clay-text-muted: oklch(0.62 0.008 250);
+  --metal-base: oklch(0.50 0.005 250);
+  --metal-shine: oklch(0.70 0.004 250);
+  --metal-dark: oklch(0.28 0.005 250);
+  --accent: oklch(0.88 0.003 250);
+  --accent-hover: oklch(0.95 0.002 250);
 }
