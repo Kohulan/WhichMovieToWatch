@@ -8,6 +8,8 @@ interface MovieHistoryState {
   watchedMovies: number[];
   lovedMovies: number[];
   notInterestedMovies: number[];
+  dinnerTimeLikes: number[];
+  dinnerTimeDislikes: number[];
 
   hasBeenShown: (movieId: number) => boolean;
   trackShown: (movieId: number) => void;
@@ -17,6 +19,8 @@ interface MovieHistoryState {
   removeWatched: (movieId: number) => void;
   removeLoved: (movieId: number) => void;
   removeNotInterested: (movieId: number) => void;
+  markDinnerLike: (movieId: number) => void;
+  markDinnerDislike: (movieId: number) => void;
   importLegacy: (data: {
     shownMovies: number[];
     watchedMovies: number[];
@@ -33,6 +37,8 @@ export const useMovieHistoryStore = create<MovieHistoryState>()(
       watchedMovies: [],
       lovedMovies: [],
       notInterestedMovies: [],
+      dinnerTimeLikes: [],
+      dinnerTimeDislikes: [],
 
       hasBeenShown: (movieId) => {
         const state = get();
@@ -94,6 +100,32 @@ export const useMovieHistoryStore = create<MovieHistoryState>()(
           ),
         })),
 
+      markDinnerLike: (movieId) =>
+        set((state) =>
+          state.dinnerTimeLikes.includes(movieId)
+            ? state
+            : {
+                dinnerTimeLikes: [...state.dinnerTimeLikes, movieId],
+                // Remove from dislikes if previously disliked
+                dinnerTimeDislikes: state.dinnerTimeDislikes.filter(
+                  (id) => id !== movieId,
+                ),
+              },
+        ),
+
+      markDinnerDislike: (movieId) =>
+        set((state) =>
+          state.dinnerTimeDislikes.includes(movieId)
+            ? state
+            : {
+                dinnerTimeDislikes: [...state.dinnerTimeDislikes, movieId],
+                // Remove from likes if previously liked
+                dinnerTimeLikes: state.dinnerTimeLikes.filter(
+                  (id) => id !== movieId,
+                ),
+              },
+        ),
+
       importLegacy: (data) =>
         set({
           shownMovies: data.shownMovies.slice(-MAX_SHOWN_HISTORY),
@@ -120,6 +152,8 @@ export const useMovieHistoryStore = create<MovieHistoryState>()(
         watchedMovies: state.watchedMovies,
         lovedMovies: state.lovedMovies,
         notInterestedMovies: state.notInterestedMovies,
+        dinnerTimeLikes: state.dinnerTimeLikes,
+        dinnerTimeDislikes: state.dinnerTimeDislikes,
       }),
     },
   ),
