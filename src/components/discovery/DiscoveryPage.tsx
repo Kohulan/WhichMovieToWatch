@@ -19,7 +19,8 @@ import { MovieActions } from '@/components/movie/MovieActions';
 import { ClayCard } from '@/components/ui/ClayCard';
 import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { MetalButton } from '@/components/ui';
-import { getPosterUrl } from '@/services/tmdb/client';
+import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
+import { getPosterUrl, getBackdropUrl } from '@/services/tmdb/client';
 import type { TMDBMovieDetails } from '@/types/movie';
 
 /**
@@ -55,6 +56,11 @@ export function DiscoveryPage() {
 
   // Similar movies — only triggered after Love action (INTR-01)
   const { movies: similarMovies, isLoading: similarLoading } = useSimilarMovies(lovedMovieId);
+
+  // Full-bleed backdrop URL
+  const backdropUrl = currentMovie?.backdrop_path
+    ? getBackdropUrl(currentMovie.backdrop_path, 'original')
+    : null;
 
   // Load a random movie on first render if no deep link
   useEffect(() => {
@@ -126,9 +132,9 @@ export function DiscoveryPage() {
   // Loading state
   if (showLoading) {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 py-6">
+      <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[60vh] px-4 py-6">
         <Announcer />
-        <ClaySkeletonCard hasImage lines={4} className="w-full" />
+        <LoadingQuotes />
       </div>
     );
   }
@@ -136,9 +142,9 @@ export function DiscoveryPage() {
   // Error state
   if (error && !currentMovie) {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 py-6">
+      <div className="relative z-10 w-full px-4 py-6">
         <Announcer />
-        <ClayCard>
+        <ClayCard className="max-w-7xl mx-auto">
           <div className="p-6 text-center">
             <p className="text-clay-text-muted mb-4">{error}</p>
             <MetalButton variant="primary" size="md" onClick={discover}>
@@ -153,9 +159,9 @@ export function DiscoveryPage() {
   // Empty state (no movie loaded yet)
   if (!currentMovie) {
     return (
-      <div className="w-full max-w-2xl mx-auto px-4 py-6">
+      <div className="relative z-10 w-full px-4 py-6">
         <Announcer />
-        <ClayCard>
+        <ClayCard className="max-w-7xl mx-auto">
           <div className="p-6 text-center">
             <p className="text-clay-text-muted mb-4">
               No movie loaded yet. Discover something!
@@ -170,97 +176,119 @@ export function DiscoveryPage() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto px-4 py-6 space-y-4">
+    <div className="w-full">
       <Announcer />
 
-      {/* Cinematic hero (DISP-01) */}
-      <MovieHero movie={currentMovie} />
+      {/* Fixed full-screen backdrop */}
+      {backdropUrl && (
+        <div className="fixed inset-0 z-0" aria-hidden="true">
+          <img
+            key={currentMovie.id}
+            src={backdropUrl}
+            alt=""
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-clay-base from-5% via-clay-base/80 via-35% to-clay-base/20" />
+        </div>
+      )}
 
-      {/* Rating badges (DISP-02) */}
-      <RatingBadges
-        tmdbRating={currentMovie.vote_average}
-        imdbRating={imdbRating}
-        rottenTomatoes={rottenTomatoes}
-        metascore={metascore}
-      />
+      {/* Hero section — fills viewport, content pinned to bottom */}
+      <section className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+        <div className="max-w-7xl mx-auto w-full">
+          {/* Cinematic hero with all info in the right column (DISP-01) */}
+          <MovieHero
+            movie={currentMovie}
+            posterFooter={<TrailerLink videos={currentMovie.videos} />}
+          >
+            {/* Action buttons — immediately below title/overview (DISP-06) */}
+            <MovieActions
+              movieId={currentMovie.id}
+              movieGenres={currentMovie.genres ?? []}
+              releaseYear={currentMovie.release_date?.slice(0, 4) ?? ''}
+              onNext={handleNext}
+              onLove={handleLove}
+            />
 
-      {/* Streaming providers (DISP-05) */}
-      <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+            {/* Rating badges (DISP-02) */}
+            <RatingBadges
+              tmdbRating={currentMovie.vote_average}
+              imdbRating={imdbRating}
+              rottenTomatoes={rottenTomatoes}
+              metascore={metascore}
+            />
 
-      {/* Trailer link (DISP-03) */}
-      <TrailerLink videos={currentMovie.videos} />
+            {/* Streaming providers (DISP-05) */}
+            <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+          </MovieHero>
+        </div>
+      </section>
 
-      {/* Action buttons (DISP-06) */}
-      <MovieActions
-        movieId={currentMovie.id}
-        movieGenres={currentMovie.genres ?? []}
-        releaseYear={currentMovie.release_date?.slice(0, 4) ?? ''}
-        onNext={handleNext}
-        onLove={handleLove}
-      />
+      {/* Below-fold section — opaque bg covers the fixed backdrop as user scrolls */}
+      {lovedMovieId !== null && (
+        <div className="relative z-10 bg-clay-base">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <section aria-label="Similar movies you might enjoy">
+              <h3 className="font-heading text-base font-semibold text-clay-text mb-3">
+                You might also like
+              </h3>
 
-      {/* Similar movies — shown after Love action (INTR-01) */}
-      {(lovedMovieId !== null) && (
-        <section aria-label="Similar movies you might enjoy" className="mt-6">
-          <h3 className="font-heading text-base font-semibold text-clay-text mb-3">
-            You might also like
-          </h3>
-
-          {similarLoading ? (
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {Array.from({ length: 4 }).map((_, i) => (
+              {similarLoading ? (
+                <div className="flex gap-3 overflow-x-auto pb-2">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="flex-shrink-0 w-28 h-44 bg-clay-surface rounded-lg clay-shadow-sm animate-pulse"
+                      aria-hidden="true"
+                    />
+                  ))}
+                </div>
+              ) : similarMovies.length > 0 ? (
                 <div
-                  key={i}
-                  className="flex-shrink-0 w-28 h-44 bg-clay-surface rounded-lg clay-shadow-sm animate-pulse"
-                  aria-hidden="true"
-                />
-              ))}
-            </div>
-          ) : similarMovies.length > 0 ? (
-            <div
-              className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
-              role="list"
-            >
-              {similarMovies.slice(0, 10).map((movie) => {
-                const posterUrl = getPosterUrl(movie.poster_path, 'w185');
-                const year = movie.release_date?.slice(0, 4) ?? '';
+                  className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
+                  role="list"
+                >
+                  {similarMovies.slice(0, 10).map((movie) => {
+                    const posterUrl = getPosterUrl(movie.poster_path, 'w185');
+                    const year = movie.release_date?.slice(0, 4) ?? '';
 
-                return (
-                  <button
-                    key={movie.id}
-                    role="listitem"
-                    className="flex-shrink-0 w-28 snap-start text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-clay-accent"
-                    onClick={() => handleSimilarMovieClick(movie.id)}
-                    aria-label={`Load ${movie.title}${year ? ` (${year})` : ''}`}
-                  >
-                    {posterUrl ? (
-                      <img
-                        src={posterUrl}
-                        alt={`${movie.title} poster`}
-                        loading="lazy"
-                        className="w-full aspect-[2/3] object-cover"
-                      />
-                    ) : (
-                      <div className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center">
-                        <span className="text-clay-text-muted text-xs text-center px-1">
-                          {movie.title}
-                        </span>
-                      </div>
-                    )}
-                    <div className="p-2">
-                      <p className="text-clay-text text-xs font-medium line-clamp-2 leading-tight">
-                        {movie.title}
-                      </p>
-                      {year && (
-                        <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          ) : null}
-        </section>
+                    return (
+                      <button
+                        key={movie.id}
+                        role="listitem"
+                        className="flex-shrink-0 w-28 snap-start text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-clay-accent"
+                        onClick={() => handleSimilarMovieClick(movie.id)}
+                        aria-label={`Load ${movie.title}${year ? ` (${year})` : ''}`}
+                      >
+                        {posterUrl ? (
+                          <img
+                            src={posterUrl}
+                            alt={`${movie.title} poster`}
+                            loading="lazy"
+                            className="w-full aspect-[2/3] object-cover"
+                          />
+                        ) : (
+                          <div className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center">
+                            <span className="text-clay-text-muted text-xs text-center px-1">
+                              {movie.title}
+                            </span>
+                          </div>
+                        )}
+                        <div className="p-2">
+                          <p className="text-clay-text text-xs font-medium line-clamp-2 leading-tight">
+                            {movie.title}
+                          </p>
+                          {year && (
+                            <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </section>
+          </div>
+        </div>
       )}
     </div>
   );

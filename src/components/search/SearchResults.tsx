@@ -1,6 +1,7 @@
 import { getPosterUrl } from '@/services/tmdb/client';
 import { ClaySkeletonCard } from '@/components/ui';
 import { MetalButton } from '@/components/ui';
+import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
 import type { TMDBMovie } from '@/types/movie';
 
 interface SearchResultsProps {
@@ -34,17 +35,14 @@ export function SearchResults({
     return 'bg-red-500/80 text-white';
   }
 
-  // Loading skeleton grid
+  // Loading state — movie-themed quotes with film-reel spinner (ANIM-06)
   if (isLoading && results.length === 0) {
     return (
       <div
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 p-4"
         aria-busy="true"
         aria-label="Loading search results"
       >
-        {Array.from({ length: 8 }, (_, i) => (
-          <ClaySkeletonCard key={i} hasImage lines={2} />
-        ))}
+        <LoadingQuotes size="sm" />
       </div>
     );
   }
