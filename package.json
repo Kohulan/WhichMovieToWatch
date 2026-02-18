@@ -9,8 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fontsource/poppins": "^5.0.0",
-    "@fontsource/righteous": "^5.0.0",
+    "@fontsource-variable/inter-tight": "^5.2.7",
     "idb": "^8.0.3",
     "lucide-react": "^0.469.0",
     "motion": "^11.0.0",
@@ -27,6 +26,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "tailwindcss": "^4.0.0",
     "typescript": "~5.7.0",
-    "vite": "^6.0.0"
+    "vite": "^6.0.0",
+    "vite-plugin-pwa": "^1.2.0"
   }
 }
