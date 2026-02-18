@@ -1,20 +1,5 @@
 import { create } from 'zustand';
-
-// TODO: Import TMDBMovie from @/types/movie once types are defined
-interface TMDBMovie {
-  id: number;
-  title: string;
-  overview: string;
-  poster_path: string | null;
-  backdrop_path: string | null;
-  release_date: string;
-  vote_average: number;
-  vote_count: number;
-  popularity: number;
-  genre_ids: number[];
-  original_language: string;
-  adult: boolean;
-}
+import type { TMDBMovie } from '@/types/movie';
 
 interface SearchState {
   query: string;
