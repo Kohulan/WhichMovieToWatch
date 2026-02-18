@@ -115,11 +115,14 @@ Plans:
   3. Interactive elements provide immediate visual feedback on hover, tap, and focus (color shifts, subtle scale)
   4. Dynamic content changes (grid reflows, list reordering) animate smoothly with layout animations
   5. All animations disable automatically when user sets prefers-reduced-motion in system settings
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
+- [ ] 05-01-PLAN.md — MotionProvider (reduced-motion), animations.css (glow pulse, material classes), Netflix-style splash screen
+- [ ] 05-02-PLAN.md — Page transitions (fade+slide+scale), morph transitions (Next Movie), backdrop crossfade, layoutId hero expand
+- [ ] 05-03-PLAN.md — ScrollReveal and StaggerContainer components, integration into Trending/Discovery/DinnerTime/FreeMovies
+- [ ] 05-04-PLAN.md — Animated action icons (heart/check/X), TabBar sliding indicator, SearchModal entrance, theme gradient animation
+- [ ] 05-05-PLAN.md — Skeuomorphic CSS material enhancements (specular highlights, deep tracks, accent glow, ceramic texture)
 
 ### Phase 6: Bento Grid Layouts
 **Goal**: Create animated bento grid layouts for hero section and feature showcases with responsive breakpoints.
@@ -189,8 +192,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 1. Foundation & Design System | 6/6 | Complete | 2026-02-17 |
 | 2. Data Layer | 5/5 | Complete    | 2026-02-18 |
 | 3. Core Features | 5/5 | Complete | 2026-02-18 |
-| 4. PWA Infrastructure | 2/2 | Complete   | 2026-02-18 |
-| 5. Animation Layer | 0/TBD | Not started | - |
+| 4. PWA Infrastructure | 2/2 | Complete    | 2026-02-18 |
+| 5. Animation Layer | 1/5 | In Progress|  |
 | 6. Bento Grid Layouts | 0/TBD | Not started | - |
 | 7. 3D Experience | 0/TBD | Not started | - |
 | 8. Polish & Optimization | 0/TBD | Not started | - |

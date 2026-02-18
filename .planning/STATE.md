@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Instantly discover your next movie with a visually immersive experience that makes browsing feel as cinematic as watching.
-**Current focus:** Phase 4 - PWA Infrastructure
+**Current focus:** Phase 5 - Animation Layer
 
 ## Current Position
 
-Phase: 4 of 8 (PWA Infrastructure) -- COMPLETE
-Plan: 2 of 2 in current phase (complete)
-Status: Phase 4 Complete
-Last activity: 2026-02-18 — Plan 04-02 complete (ReloadPrompt, InstallBanner, useInstallPrompt, App.tsx mounts)
+Phase: 5 of 8 (Animation Layer) -- IN PROGRESS
+Plan: 5 of 5 in current phase (complete)
+Status: Phase 5 Complete
+Last activity: 2026-02-18 — Plan 05-05 complete (skeuomorphic material enhancements: specular highlights, accent glow, ceramic ripple)
 
-Progress: [█████████████░] 40%
+Progress: [████████████████░] 50%
 
 ## Performance Metrics
 
@@ -41,6 +41,7 @@ Progress: [█████████████░] 40%
 | Phase 03-core-features P03 | 9 | 2 tasks | 14 files |
 | Phase 04-pwa-infrastructure P01 | 5 | 2 tasks | 11 files |
 | Phase 04-pwa-infrastructure P02 | 2 | 2 tasks | 4 files |
+| Phase 05-animation-layer P05 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,10 @@ Recent decisions affecting current work:
 - Plan 04-02: offlineReady auto-dismisses after 5s (informational); needRefresh persists until user acts (requires explicit reload)
 - Plan 04-02: wmtw-pwa-install-dismissed localStorage key enforces 7-day install banner dismissal cooldown
 - Plan 04-02: beforeinstallprompt e.preventDefault() defers native mini-infobar for user-controlled Chromium install
+- Plan 05-05: accent-glow-pulse @keyframes defined in metal.css (not a separate animations.css) for colocation with metal components
+- Plan 05-05: RotaryDial glow ring wraps the w-14 h-14 container div so glow surrounds full dial + indicator dots area
+- Plan 05-05: isDark derived inline as mode === 'dark' in ClayCard (themeStore has no computed isDark property)
+- Plan 05-05: Transient glow state pattern: useState boolean + useRef timer + clearTimeout on unmount for 2s interaction feedback
 
 ### Pending Todos
 
@@ -136,6 +141,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 04-02-PLAN.md (ReloadPrompt, InstallBanner, useInstallPrompt, App.tsx PWA mounts)
-Resume file: .planning/phases/04-pwa-infrastructure/04-02-SUMMARY.md
+Stopped at: Completed 05-05-PLAN.md (skeuomorphic material enhancements: specular highlights, accent glow, ceramic ripple)
+Resume file: .planning/phases/05-animation-layer/05-05-SUMMARY.md
 Dev server: http://localhost:5173/
