@@ -8,6 +8,7 @@ import { TabBar } from './components/layout/TabBar';
 import { useMigration } from './hooks/useMigration';
 import { ReloadPrompt } from '@/components/pwa/ReloadPrompt';
 import { InstallBanner } from '@/components/pwa/InstallBanner';
+import { MotionProvider } from '@/components/animation/MotionProvider';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -16,7 +17,7 @@ function App() {
   useMigration();
 
   return (
-    <>
+    <MotionProvider>
       {/* Toast notifications — mounted at app root so toasts appear in all views (INTR-05) */}
       <ToastProvider />
 
@@ -43,7 +44,7 @@ function App() {
       {/* PWA components — mounted outside splash guard so SW registers immediately (PWA-03, PWA-04) */}
       <ReloadPrompt />
       <InstallBanner />
-    </>
+    </MotionProvider>
   );
 }
 
