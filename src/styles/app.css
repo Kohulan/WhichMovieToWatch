@@ -2,6 +2,15 @@
 @import './clay.css';
 @import './metal.css';
 
+/* Hide scrollbar utility for horizontal scroll containers */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @theme inline {
   /* Colors — mapped to CSS variables, overridden per-theme */
   --color-clay-base: var(--clay-base);

@@ -36,7 +36,7 @@ export function FreeMoviesPage() {
   const displayTitle = tmdb?.title ?? movie?.title ?? '';
 
   return (
-    <div className="min-h-full flex flex-col">
+    <div className="min-h-[calc(100dvh-8rem)] flex flex-col">
       {/* Page header */}
       <div className="px-4 pt-4 pb-2">
         <h1 className="text-2xl font-display font-bold text-clay-text">
