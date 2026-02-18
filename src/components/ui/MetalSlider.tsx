@@ -148,7 +148,7 @@ export function MetalSlider({
         <div
           className="absolute inset-x-0 h-1 rounded-full bg-clay-base"
           style={{
-            boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.2), inset -1px -1px 2px rgba(255,255,255,0.1)',
+            boxShadow: 'inset 0 3px 5px rgba(0,0,0,0.35), inset 0 1px 3px rgba(0,0,0,0.25), inset 0 -1px 2px rgba(255,255,255,0.06)',
           }}
         />
 
@@ -160,10 +160,10 @@ export function MetalSlider({
 
         {/* Knob */}
         <motion.div
-          className="metal-knob absolute w-5 h-5 rounded-full cursor-grab active:cursor-grabbing"
+          className="metal-knob-enhanced absolute w-5 h-5 rounded-full cursor-grab active:cursor-grabbing"
           style={{
             x,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15)',
           }}
           drag="x"
           dragConstraints={railRef}
