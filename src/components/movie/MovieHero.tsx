@@ -1,13 +1,24 @@
-// Cinematic hero with full-bleed backdrop, poster, and metadata overlay
+// Two-column movie hero — poster left, info right on desktop; stacked on mobile
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
+import { motion } from 'motion/react';
 import { Film } from 'lucide-react';
-import { getBackdropUrl, getPosterUrl } from '@/services/tmdb/client';
+import { getPosterUrl } from '@/services/tmdb/client';
 import type { TMDBMovieDetails } from '@/types/movie';
 import { GenreBadges } from './GenreBadges';
 
 interface MovieHeroProps {
   movie: TMDBMovieDetails;
+  /** Content rendered below the poster (e.g. trailer button) */
+  posterFooter?: ReactNode;
+  /** Extra content rendered below the overview inside the info column */
+  children?: ReactNode;
+  /**
+   * Optional movie ID for layoutId — connects this hero poster to the similar-movie
+   * thumbnail via Framer Motion's shared layout animation (hero expand effect).
+   * Uses prefix `similar-poster-{movieId}` to match the thumbnail layoutId.
+   */
+  movieId?: number;
 }
 
 /** Format runtime from minutes to "Xh Ym" */
@@ -26,104 +37,93 @@ function extractYear(releaseDate: string): string {
 }
 
 /**
- * MovieHero — Cinematic full-bleed hero for a movie.
+ * MovieHero — Two-column layout with poster + info.
  *
- * Full-width backdrop with gradient overlay, poster thumbnail,
- * title, year, runtime, overview, and genre badges.
- * Uses lazy loading and ARIA attributes for accessibility (DISP-01, A11Y-02).
+ * Desktop: poster left (280px), info right in a grid.
+ * Mobile: single column, poster centered on top.
+ * posterFooter renders below the poster (trailer button).
+ * children render below the overview in the info column.
  */
-export function MovieHero({ movie }: MovieHeroProps) {
+export function MovieHero({ movie, posterFooter, children, movieId }: MovieHeroProps) {
   const [posterError, setPosterError] = useState(false);
 
-  const backdropUrl = getBackdropUrl(movie.backdrop_path, 'w1280');
   const posterUrl = getPosterUrl(movie.poster_path, 'w342');
   const year = extractYear(movie.release_date);
   const runtime = formatRuntime(movie.runtime);
 
+  // layoutId connects this hero poster to the similar-movie thumbnail for hero expand animation
+  const posterLayoutId = movieId ? `similar-poster-${movieId}` : undefined;
+
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl">
-      {/* Backdrop image */}
-      {backdropUrl ? (
-        <div
-          className="relative w-full"
-          role="img"
-          aria-label={`Backdrop image for ${movie.title}`}
-        >
-          <img
-            src={backdropUrl}
-            alt=""
+    <div className="w-full md:grid md:grid-cols-[280px_1fr] md:gap-8">
+      {/* Poster column */}
+      <div className="flex-shrink-0 mx-auto md:mx-0 mb-4 md:mb-0">
+        {posterUrl && !posterError ? (
+          <motion.img
+            layoutId={posterLayoutId}
+            src={posterUrl}
+            alt={`${movie.title} poster`}
             loading="lazy"
-            className="w-full h-64 sm:h-80 object-cover"
+            onError={() => setPosterError(true)}
+            className="w-48 md:w-[280px] aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl shadow-black/30 object-cover mx-auto md:mx-0 border border-white/10"
           />
-          {/* Gradient overlay — fades to clay surface at bottom */}
-          <div className="absolute inset-0 bg-gradient-to-t from-clay-base via-clay-base/80 to-transparent" />
-        </div>
-      ) : (
-        <div
-          className="w-full h-64 sm:h-80 bg-clay-surface flex items-center justify-center"
-          role="img"
-          aria-label={`No backdrop available for ${movie.title}`}
-        >
-          <Film className="w-16 h-16 text-clay-text-muted opacity-30" />
-        </div>
-      )}
+        ) : (
+          <motion.div
+            layoutId={posterLayoutId}
+            className="w-48 md:w-[280px] aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl shadow-black/30 bg-white/[0.06] backdrop-blur-xl border border-white/10 flex items-center justify-center mx-auto md:mx-0"
+            aria-label={`${movie.title} poster placeholder`}
+          >
+            <Film className="w-12 h-12 text-clay-text-muted opacity-50" />
+          </motion.div>
+        )}
 
-      {/* Content overlay — poster + metadata */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 flex gap-4 items-end">
-        {/* Poster */}
-        <div className="flex-shrink-0">
-          {posterUrl && !posterError ? (
-            <img
-              src={posterUrl}
-              alt={`${movie.title} poster`}
-              loading="lazy"
-              onError={() => setPosterError(true)}
-              className="w-20 sm:w-28 rounded-lg shadow-xl object-cover aspect-[2/3]"
-            />
-          ) : (
-            <div
-              className="w-20 sm:w-28 rounded-lg shadow-xl bg-clay-surface flex items-center justify-center aspect-[2/3]"
-              aria-label={`${movie.title} poster placeholder`}
-            >
-              <Film className="w-8 h-8 text-clay-text-muted opacity-50" />
-            </div>
-          )}
-        </div>
-
-        {/* Metadata */}
-        <div className="flex-1 min-w-0 pb-1">
-          <h1 className="font-heading text-2xl font-bold text-clay-text leading-tight truncate">
-            {movie.title}
-          </h1>
-
-          {/* Year + runtime */}
-          <div className="flex items-center gap-2 mt-1 text-sm text-clay-text-muted">
-            {year && <span>{year}</span>}
-            {runtime && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span>{runtime}</span>
-              </>
-            )}
+        {/* Below-poster slot (trailer button) */}
+        {posterFooter && (
+          <div className="mt-3 flex justify-center md:justify-start">
+            {posterFooter}
           </div>
-
-          {/* Genre badges */}
-          {movie.genres && movie.genres.length > 0 && (
-            <div className="mt-2">
-              <GenreBadges genres={movie.genres} />
-            </div>
-          )}
-        </div>
+        )}
       </div>
 
-      {/* Overview — below the hero */}
-      {movie.overview && (
-        <div className="px-4 pt-3 pb-4">
-          <p className="text-clay-text text-sm leading-relaxed line-clamp-4">
-            {movie.overview}
-          </p>
+      {/* Info column */}
+      <div className="flex flex-col justify-center min-w-0">
+        <h1 className="font-heading font-semibold text-2xl md:text-3xl text-clay-text leading-tight">
+          {movie.title}
+        </h1>
+
+        {/* Year + runtime meta pills */}
+        <div className="flex items-center gap-2 mt-3">
+          {year && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-clay-surface/80 backdrop-blur-sm border border-white/15 text-sm text-clay-text font-medium">
+              {year}
+            </span>
+          )}
+          {runtime && (
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-clay-surface/80 backdrop-blur-sm border border-white/15 text-sm text-clay-text font-medium">
+              {runtime}
+            </span>
+          )}
         </div>
-      )}
+
+        {/* Genre badges */}
+        {movie.genres && movie.genres.length > 0 && (
+          <div className="mt-3">
+            <GenreBadges genres={movie.genres} />
+          </div>
+        )}
+
+        {/* Overview with left border accent */}
+        {movie.overview && (
+          <div className="mt-4 border-l-2 border-accent pl-4">
+            <p className="text-clay-text font-light leading-relaxed text-sm line-clamp-5">
+              {movie.overview}
+            </p>
+          </div>
+        )}
+
+        {/* Slotted content — actions, ratings, providers, etc. */}
+        {children && <div className="mt-4 space-y-4">{children}</div>}
+      </div>
     </div>
   );
 }
