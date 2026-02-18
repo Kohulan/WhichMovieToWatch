@@ -37,6 +37,7 @@ Progress: [██████████░] 31%
 
 *Updated after each plan completion*
 | Phase 03 P02 | 6 | 2 tasks | 7 files |
+| Phase 03-core-features P03 | 9 | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -96,6 +97,10 @@ Recent decisions affecting current work:
 - [Phase 03-02]: DiscoverPage checks hasOnboarded via getState() snapshot — wizard only shows on first render, not reactively
 - [Phase 03-02]: OnboardingWizard X button treated as Skip — no forced onboarding, user can always skip (PREF-02)
 - [Phase 03-02]: Similar movies triggered by lovedMovieId state (null=hidden); clicking loads full movie via fetchMovieDetails (INTR-01)
+- [Phase 03-03]: SearchModal dual-path: text search uses /search/movie via useSearchMovies; advanced filters uses /discover/movie via tmdbFetch
+- [Phase 03-03]: DualRangeSlider uses two overlaid native inputs for native browser accessibility across platforms
+- [Phase 03-03]: useVoiceSearch declares custom SpeechRecognition interface inline to avoid @types/dom-speech-recognition dependency
+- [Phase 03-03]: FilterPresets reset-then-set pattern: resetAdvancedFilters() then setAdvancedFilters(preset.filters) for clean state
 
 ### Pending Todos
 

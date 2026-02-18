@@ -96,21 +96,21 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Search (Feature Parity)
 
-- [ ] **SRCH-01**: Basic movie search with debounced text input (300ms)
-- [ ] **SRCH-02**: Voice search via Web Speech API with visual feedback
-- [ ] **SRCH-03**: Search results with poster, title, year, rating
-- [ ] **SRCH-04**: Click search result to view full movie details
-- [ ] **SRCH-05**: Search modal with close on outside click and Escape key
+- [x] **SRCH-01**: Basic movie search with debounced text input (300ms)
+- [x] **SRCH-02**: Voice search via Web Speech API with visual feedback
+- [x] **SRCH-03**: Search results with poster, title, year, rating
+- [x] **SRCH-04**: Click search result to view full movie details
+- [x] **SRCH-05**: Search modal with close on outside click and Escape key
 
 ### Advanced Search (Feature Parity)
 
-- [ ] **ADVS-01**: Multi-criteria filters: genre, year range, rating range, runtime range
-- [ ] **ADVS-02**: Language and streaming service filters
-- [ ] **ADVS-03**: Sort options (popularity, rating, release date) with asc/desc
-- [ ] **ADVS-04**: Quick filter presets (90s classics, trending, short films, etc.)
-- [ ] **ADVS-05**: Search caching with Map for repeat queries
-- [ ] **ADVS-06**: Pagination for search results
-- [ ] **ADVS-07**: Dual-range sliders for year, rating, runtime filters
+- [x] **ADVS-01**: Multi-criteria filters: genre, year range, rating range, runtime range
+- [x] **ADVS-02**: Language and streaming service filters
+- [x] **ADVS-03**: Sort options (popularity, rating, release date) with asc/desc
+- [x] **ADVS-04**: Quick filter presets (90s classics, trending, short films, etc.)
+- [x] **ADVS-05**: Search caching with Map for repeat queries
+- [x] **ADVS-06**: Pagination for search results
+- [x] **ADVS-07**: Dual-range sliders for year, rating, runtime filters
 
 ### Trending (Feature Parity)
 
@@ -153,7 +153,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 - [ ] **A11Y-01**: WCAG 2.1 AA compliance across all components
 - [x] **A11Y-02**: ARIA labels on all interactive elements
-- [ ] **A11Y-03**: Keyboard navigation with visible focus rings
+- [x] **A11Y-03**: Keyboard navigation with visible focus rings
 - [x] **A11Y-04**: Screen reader optimized (semantic HTML, ARIA live regions)
 - [ ] **A11Y-05**: prefers-reduced-motion disables all animations
 - [ ] **A11Y-06**: Color contrast minimum 4.5:1 for text in both light and dark modes
@@ -162,7 +162,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 ### Security
 
 - [ ] **SECU-01**: Content Security Policy headers configured
-- [ ] **SECU-02**: Input sanitization for search queries
+- [x] **SECU-02**: Input sanitization for search queries
 - [ ] **SECU-03**: API keys injected at build time only (never in source code)
 - [x] **SECU-04**: Secure external links (rel="noopener noreferrer")
 
@@ -256,18 +256,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PREF-03 | Phase 3 | Complete |
 | PREF-04 | Phase 3 | Complete |
 | PREF-05 | Phase 3 | Complete |
-| SRCH-01 | Phase 3 | Pending |
-| SRCH-02 | Phase 3 | Pending |
-| SRCH-03 | Phase 3 | Pending |
-| SRCH-04 | Phase 3 | Pending |
-| SRCH-05 | Phase 3 | Pending |
-| ADVS-01 | Phase 3 | Pending |
-| ADVS-02 | Phase 3 | Pending |
-| ADVS-03 | Phase 3 | Pending |
-| ADVS-04 | Phase 3 | Pending |
-| ADVS-05 | Phase 3 | Pending |
-| ADVS-06 | Phase 3 | Pending |
-| ADVS-07 | Phase 3 | Pending |
+| SRCH-01 | Phase 3 | Complete |
+| SRCH-02 | Phase 3 | Complete |
+| SRCH-03 | Phase 3 | Complete |
+| SRCH-04 | Phase 3 | Complete |
+| SRCH-05 | Phase 3 | Complete |
+| ADVS-01 | Phase 3 | Complete |
+| ADVS-02 | Phase 3 | Complete |
+| ADVS-03 | Phase 3 | Complete |
+| ADVS-04 | Phase 3 | Complete |
+| ADVS-05 | Phase 3 | Complete |
+| ADVS-06 | Phase 3 | Complete |
+| ADVS-07 | Phase 3 | Complete |
 | TRND-01 | Phase 3 | Complete |
 | TRND-02 | Phase 3 | Complete |
 | TRND-03 | Phase 3 | Complete |
@@ -281,10 +281,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FREE-03 | Phase 3 | Complete |
 | FREE-04 | Phase 3 | Complete |
 | A11Y-02 | Phase 3 | Complete |
-| A11Y-03 | Phase 3 | Pending |
+| A11Y-03 | Phase 3 | Complete |
 | A11Y-04 | Phase 3 | Complete |
 | A11Y-07 | Phase 3 | Pending |
-| SECU-02 | Phase 3 | Pending |
+| SECU-02 | Phase 3 | Complete |
 | SECU-04 | Phase 3 | Complete |
 | PWA-01 | Phase 4 | Pending |
 | PWA-02 | Phase 4 | Pending |
