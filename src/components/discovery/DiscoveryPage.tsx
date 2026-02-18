@@ -1,6 +1,7 @@
 // Main discovery screen — cinematic hero, ratings, providers, actions, similar movies
 
 import { useEffect, useState, useCallback } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useDiscoveryStore } from '@/stores/discoveryStore';
 import { usePreferencesStore } from '@/stores/preferencesStore';
 import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
@@ -20,6 +21,8 @@ import { ClayCard } from '@/components/ui/ClayCard';
 import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { MetalButton } from '@/components/ui';
 import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
+import { ScrollReveal } from '@/components/animation/ScrollReveal';
+import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
 import { getPosterUrl, getBackdropUrl } from '@/services/tmdb/client';
 import type { TMDBMovieDetails } from '@/types/movie';
 
@@ -179,25 +182,40 @@ export function DiscoveryPage() {
     <div className="w-full">
       <Announcer />
 
-      {/* Fixed full-screen backdrop */}
+      {/* Fixed full-screen backdrop — crossfades between movies */}
       {backdropUrl && (
         <div className="fixed inset-0 z-0" aria-hidden="true">
-          <img
-            key={currentMovie.id}
-            src={backdropUrl}
-            alt=""
-            className="w-full h-full object-cover"
-          />
+          <AnimatePresence mode="wait">
+            <motion.img
+              key={currentMovie.id}
+              src={backdropUrl}
+              alt=""
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-t from-clay-base from-5% via-clay-base/80 via-35% to-clay-base/20" />
         </div>
       )}
 
-      {/* Hero section — fills viewport, content pinned to bottom */}
-      <section className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pt-4 pb-8">
+      {/* Hero section — morph transition on Next Movie */}
+      <AnimatePresence mode="wait">
+        <motion.section
+          key={currentMovie.id}
+          initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+          exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
+          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pt-4 pb-8"
+        >
         <div className="max-w-7xl mx-auto w-full">
           {/* Cinematic hero with all info in the right column (DISP-01) */}
           <MovieHero
             movie={currentMovie}
+            movieId={currentMovie.id}
             posterFooter={<TrailerLink videos={currentMovie.videos} />}
           >
             {/* Action buttons — immediately below title/overview (DISP-06) */}
@@ -221,11 +239,13 @@ export function DiscoveryPage() {
             <ProviderSection providers={providers} findMovieLink={findMovieLink} />
           </MovieHero>
         </div>
-      </section>
+        </motion.section>
+      </AnimatePresence>
 
       {/* Below-fold section — opaque bg covers the fixed backdrop as user scrolls */}
+      {/* ScrollReveal: section slides up when user scrolls to the "You might also like" area (ANIM-02) */}
       {lovedMovieId !== null && (
-        <div className="relative z-10 bg-clay-base">
+        <ScrollReveal travel={60} className="relative z-10 bg-clay-base">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <section aria-label="Similar movies you might enjoy">
               <h3 className="font-heading text-base font-semibold text-clay-text mb-3">
@@ -243,52 +263,61 @@ export function DiscoveryPage() {
                   ))}
                 </div>
               ) : similarMovies.length > 0 ? (
-                <div
+                /* StaggerContainer: horizontal slide-in from left for similar movie posters (ANIM-02) */
+                <StaggerContainer
                   className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
+                  direction="left"
+                  stagger={0.06}
                   role="list"
+                  aria-label="Similar movies"
                 >
                   {similarMovies.slice(0, 10).map((movie) => {
                     const posterUrl = getPosterUrl(movie.poster_path, 'w185');
                     const year = movie.release_date?.slice(0, 4) ?? '';
 
                     return (
-                      <button
-                        key={movie.id}
-                        role="listitem"
-                        className="flex-shrink-0 w-28 snap-start text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-clay-accent"
-                        onClick={() => handleSimilarMovieClick(movie.id)}
-                        aria-label={`Load ${movie.title}${year ? ` (${year})` : ''}`}
-                      >
-                        {posterUrl ? (
-                          <img
-                            src={posterUrl}
-                            alt={`${movie.title} poster`}
-                            loading="lazy"
-                            className="w-full aspect-[2/3] object-cover"
-                          />
-                        ) : (
-                          <div className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center">
-                            <span className="text-clay-text-muted text-xs text-center px-1">
-                              {movie.title}
-                            </span>
-                          </div>
-                        )}
-                        <div className="p-2">
-                          <p className="text-clay-text text-xs font-medium line-clamp-2 leading-tight">
-                            {movie.title}
-                          </p>
-                          {year && (
-                            <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                      <StaggerItem key={movie.id} direction="left" className="flex-shrink-0 snap-start">
+                        <button
+                          role="listitem"
+                          className="w-28 text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-clay-accent"
+                          onClick={() => handleSimilarMovieClick(movie.id)}
+                          aria-label={`Load ${movie.title}${year ? ` (${year})` : ''}`}
+                        >
+                          {posterUrl ? (
+                            <motion.img
+                              layoutId={`similar-poster-${movie.id}`}
+                              src={posterUrl}
+                              alt={`${movie.title} poster`}
+                              loading="lazy"
+                              className="w-full aspect-[2/3] object-cover"
+                            />
+                          ) : (
+                            <motion.div
+                              layoutId={`similar-poster-${movie.id}`}
+                              className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center"
+                            >
+                              <span className="text-clay-text-muted text-xs text-center px-1">
+                                {movie.title}
+                              </span>
+                            </motion.div>
                           )}
-                        </div>
-                      </button>
+                          <div className="p-2">
+                            <p className="text-clay-text text-xs font-medium line-clamp-2 leading-tight">
+                              {movie.title}
+                            </p>
+                            {year && (
+                              <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                            )}
+                          </div>
+                        </button>
+                      </StaggerItem>
                     );
                   })}
-                </div>
+                </StaggerContainer>
               ) : null}
             </section>
           </div>
-        </div>
+        </ScrollReveal>
       )}
     </div>
   );
