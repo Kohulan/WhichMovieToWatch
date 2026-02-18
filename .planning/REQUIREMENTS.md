@@ -70,13 +70,13 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Movie Display (Feature Parity)
 
-- [ ] **DISP-01**: Movie poster with lazy loading and error fallback placeholder
-- [ ] **DISP-02**: Movie metadata: title, year, runtime, genres, overview
-- [ ] **DISP-03**: Triple ratings display: TMDB percentage, IMDb rating, Rotten Tomatoes score
-- [ ] **DISP-04**: Streaming availability: Stream/Rent/Buy sections with provider logos (60+ services)
-- [ ] **DISP-05**: "Find Movie" cross-region availability search when not available locally
-- [ ] **DISP-06**: YouTube trailer link
-- [ ] **DISP-07**: Genre badges
+- [x] **DISP-01**: Movie poster with lazy loading and error fallback placeholder
+- [x] **DISP-02**: Movie metadata: title, year, runtime, genres, overview
+- [x] **DISP-03**: Triple ratings display: TMDB percentage, IMDb rating, Rotten Tomatoes score
+- [x] **DISP-04**: Streaming availability: Stream/Rent/Buy sections with provider logos (60+ services)
+- [x] **DISP-05**: "Find Movie" cross-region availability search when not available locally
+- [x] **DISP-06**: YouTube trailer link
+- [x] **DISP-07**: Genre badges
 
 ### User Interactions (Feature Parity)
 
@@ -84,7 +84,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 - [ ] **INTR-02**: "Watched" action — marks movie as seen, never shown again, fetches next
 - [ ] **INTR-03**: "Not Interested" action — skips movie, avoids similar, fetches next
 - [ ] **INTR-04**: Genre preference learning from Love interactions (weighted tracking)
-- [ ] **INTR-05**: Toast notification system for all user actions
+- [x] **INTR-05**: Toast notification system for all user actions
 
 ### Preferences (Feature Parity)
 
@@ -152,9 +152,9 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 ### Accessibility
 
 - [ ] **A11Y-01**: WCAG 2.1 AA compliance across all components
-- [ ] **A11Y-02**: ARIA labels on all interactive elements
+- [x] **A11Y-02**: ARIA labels on all interactive elements
 - [ ] **A11Y-03**: Keyboard navigation with visible focus rings
-- [ ] **A11Y-04**: Screen reader optimized (semantic HTML, ARIA live regions)
+- [x] **A11Y-04**: Screen reader optimized (semantic HTML, ARIA live regions)
 - [ ] **A11Y-05**: prefers-reduced-motion disables all animations
 - [ ] **A11Y-06**: Color contrast minimum 4.5:1 for text in both light and dark modes
 - [ ] **A11Y-07**: Skip navigation link
@@ -164,7 +164,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 - [ ] **SECU-01**: Content Security Policy headers configured
 - [ ] **SECU-02**: Input sanitization for search queries
 - [ ] **SECU-03**: API keys injected at build time only (never in source code)
-- [ ] **SECU-04**: Secure external links (rel="noopener noreferrer")
+- [x] **SECU-04**: Secure external links (rel="noopener noreferrer")
 
 ### Performance
 
@@ -239,18 +239,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DISC-02 | Phase 3 | Pending |
 | DISC-03 | Phase 3 | Pending |
 | DISC-04 | Phase 3 | Pending |
-| DISP-01 | Phase 3 | Pending |
-| DISP-02 | Phase 3 | Pending |
-| DISP-03 | Phase 3 | Pending |
-| DISP-04 | Phase 3 | Pending |
-| DISP-05 | Phase 3 | Pending |
-| DISP-06 | Phase 3 | Pending |
-| DISP-07 | Phase 3 | Pending |
+| DISP-01 | Phase 3 | Complete |
+| DISP-02 | Phase 3 | Complete |
+| DISP-03 | Phase 3 | Complete |
+| DISP-04 | Phase 3 | Complete |
+| DISP-05 | Phase 3 | Complete |
+| DISP-06 | Phase 3 | Complete |
+| DISP-07 | Phase 3 | Complete |
 | INTR-01 | Phase 3 | Pending |
 | INTR-02 | Phase 3 | Pending |
 | INTR-03 | Phase 3 | Pending |
 | INTR-04 | Phase 3 | Pending |
-| INTR-05 | Phase 3 | Pending |
+| INTR-05 | Phase 3 | Complete |
 | PREF-01 | Phase 3 | Pending |
 | PREF-02 | Phase 3 | Pending |
 | PREF-03 | Phase 3 | Pending |
@@ -280,12 +280,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FREE-02 | Phase 3 | Pending |
 | FREE-03 | Phase 3 | Pending |
 | FREE-04 | Phase 3 | Pending |
-| A11Y-02 | Phase 3 | Pending |
+| A11Y-02 | Phase 3 | Complete |
 | A11Y-03 | Phase 3 | Pending |
-| A11Y-04 | Phase 3 | Pending |
+| A11Y-04 | Phase 3 | Complete |
 | A11Y-07 | Phase 3 | Pending |
 | SECU-02 | Phase 3 | Pending |
-| SECU-04 | Phase 3 | Pending |
+| SECU-04 | Phase 3 | Complete |
 | PWA-01 | Phase 4 | Pending |
 | PWA-02 | Phase 4 | Pending |
 | PWA-03 | Phase 4 | Pending |

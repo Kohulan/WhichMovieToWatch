@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Instantly discover your next movie with a visually immersive experience that makes browsing feel as cinematic as watching.
-**Current focus:** Phase 2 - Data Layer
+**Current focus:** Phase 3 - Core Features
 
 ## Current Position
 
-Phase: 2 of 8 (Data Layer) -- COMPLETE
-Plan: 5 of 5 in current phase
-Status: Phase 2 Complete
-Last activity: 2026-02-18 — Plan 02-05 complete (React hooks)
+Phase: 3 of 8 (Core Features) -- IN PROGRESS
+Plan: 1 of 5 in current phase (complete)
+Status: Phase 3 In Progress
+Last activity: 2026-02-18 — Plan 03-01 complete (movie display components + shared infrastructure)
 
-Progress: [█████████░] 28%
+Progress: [██████████░] 31%
 
 ## Performance Metrics
 
@@ -29,9 +29,10 @@ Progress: [█████████░] 28%
 |-------|-------|-------|----------|--------|
 | 01-foundation-design-system | 6 | 24 min | 4 min | Complete |
 | 02-data-layer | 5/5 | 13 min | 2.6 min | Complete |
+| 03-core-features | 1/5 | 4 min | 4 min | In Progress |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (2 min), 02-02 (2 min), 02-03 (3 min), 02-04 (2 min), 02-05 (5 min)
+- Last 5 plans: 02-02 (2 min), 02-03 (3 min), 02-04 (2 min), 02-05 (5 min), 03-01 (4 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -80,9 +81,12 @@ Recent decisions affecting current work:
 - Plan 02-04: OMDB returns any cached value (stale or fresh) to conserve 1000/day API quota
 - Plan 02-04: Discover filter relaxation is cumulative (each step merges onto previous relaxed state)
 - Plan 02-04: IPInfo uses unauthenticated free tier; navigator.language fallback for country detection
-- Plan 02-05: useRandomMovie casts TMDBMovieDetails to Record<string, unknown> for discoveryStore placeholder type compat
+- Plan 02-05: useRandomMovie cast to Record<string, unknown> removed in Plan 03-01 (discoveryStore now uses real TMDBMovieDetails type)
 - Plan 02-05: useTrending uses useRef for region in interval to avoid stale closure
 - Plan 02-05: useRegion invalidates providers- cache prefix on manual override for stale regional data
+- [Phase 03-core-features]: ExternalLink wrapper enforces rel=noopener noreferrer site-wide with no escape hatch (SECU-04)
+- [Phase 03-core-features]: ToastProvider uses CSS var() references for automatic adaptation to all 6 claymorphism theme variants
+- [Phase 03-core-features]: useAnnounce returns [announce, AnnouncerComponent] tuple so callers don't manage ARIA state
 
 ### Pending Todos
 
@@ -106,6 +110,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 02-05-PLAN.md (Phase 2 complete)
-Resume file: .planning/phases/02-data-layer/02-05-SUMMARY.md
+Stopped at: Completed 03-01-PLAN.md (movie display components + shared infrastructure)
+Resume file: .planning/phases/03-core-features/03-01-SUMMARY.md
 Dev server: http://localhost:5173/
