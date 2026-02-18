@@ -13,7 +13,7 @@ Transform a fully functional vanilla JavaScript movie discovery PWA into a moder
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation & Design System** - Vite + React + TypeScript stack with claymorphism theme system
-- [ ] **Phase 2: Data Layer** - API services, caching strategy, state management foundation
+- [x] **Phase 2: Data Layer** - API services, caching strategy, state management foundation (completed 2026-02-18)
 - [ ] **Phase 3: Core Features** - All 25+ features from vanilla JS app with feature parity
 - [ ] **Phase 4: PWA Infrastructure** - Offline support, service worker, installability
 - [ ] **Phase 5: Animation Layer** - Framer Motion page transitions and micro-interactions
@@ -75,14 +75,14 @@ Plans:
   6. User can interact with movies (Love for similar recommendations, Watched to skip forever, Not Interested to avoid similar)
   7. User can set streaming provider and genre preferences on first visit, preferences persist and apply to all discovery
   8. Movie history prevents repeats across last 1,000 movies, deep linking works via ?movie=ID URL parameter
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
-- [ ] 03-04: TBD
-- [ ] 03-05: TBD
+- [ ] 03-01-PLAN.md — Movie display components, shared utilities, new hooks (sonner, ExternalLink, RatingBadges, ProviderSection, MovieHero, MovieActions)
+- [ ] 03-02-PLAN.md — Discovery page with cinematic hero, user interactions (Love/Watched/Not Interested), onboarding wizard
+- [ ] 03-03-PLAN.md — Search modal with debounced text, voice search, advanced filters, dual-range sliders, presets
+- [ ] 03-04-PLAN.md — Trending (Now Playing), Dinner Time (family-friendly), Free YouTube Movies pages
+- [ ] 03-05-PLAN.md — Tab navigation, routing, navbar search integration, toast provider, end-to-end verification
 
 ### Phase 4: PWA Infrastructure
 **Goal**: Transform app into installable PWA with offline support, update notifications, and multi-layer caching strategy.
@@ -187,8 +187,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Design System | 6/6 | Complete | 2026-02-17 |
-| 2. Data Layer | 1/5 | In progress | - |
-| 3. Core Features | 0/TBD | Not started | - |
+| 2. Data Layer | 1/5 | Complete    | 2026-02-18 |
+| 3. Core Features | 0/5 | Not started | - |
 | 4. PWA Infrastructure | 0/TBD | Not started | - |
 | 5. Animation Layer | 0/TBD | Not started | - |
 | 6. Bento Grid Layouts | 0/TBD | Not started | - |
