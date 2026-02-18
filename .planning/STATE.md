@@ -9,29 +9,29 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 2 of 8 (Data Layer)
-Plan: 4 of 5 in current phase
-Status: Executing Phase 2
-Last activity: 2026-02-18 — Plan 02-04 complete (API service clients)
+Phase: 2 of 8 (Data Layer) -- COMPLETE
+Plan: 5 of 5 in current phase
+Status: Phase 2 Complete
+Last activity: 2026-02-18 — Plan 02-05 complete (React hooks)
 
-Progress: [████████░░] 24%
+Progress: [█████████░] 28%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 3.4 min
-- Total execution time: 0.57 hours
+- Total execution time: 0.65 hours
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan | Status |
 |-------|-------|-------|----------|--------|
 | 01-foundation-design-system | 6 | 24 min | 4 min | Complete |
-| 02-data-layer | 4/5 | 8 min | 2 min | In progress |
+| 02-data-layer | 5/5 | 13 min | 2.6 min | Complete |
 
 **Recent Trend:**
-- Last 5 plans: 01-06 (3 min), 02-01 (2 min), 02-02 (2 min), 02-03 (3 min), 02-04 (2 min)
+- Last 5 plans: 02-01 (2 min), 02-02 (2 min), 02-03 (3 min), 02-04 (2 min), 02-05 (5 min)
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -80,6 +80,9 @@ Recent decisions affecting current work:
 - Plan 02-04: OMDB returns any cached value (stale or fresh) to conserve 1000/day API quota
 - Plan 02-04: Discover filter relaxation is cumulative (each step merges onto previous relaxed state)
 - Plan 02-04: IPInfo uses unauthenticated free tier; navigator.language fallback for country detection
+- Plan 02-05: useRandomMovie casts TMDBMovieDetails to Record<string, unknown> for discoveryStore placeholder type compat
+- Plan 02-05: useTrending uses useRef for region in interval to avoid stale closure
+- Plan 02-05: useRegion invalidates providers- cache prefix on manual override for stale regional data
 
 ### Pending Todos
 
@@ -103,6 +106,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 02-04-PLAN.md
-Resume file: .planning/phases/02-data-layer/02-04-SUMMARY.md
+Stopped at: Completed 02-05-PLAN.md (Phase 2 complete)
+Resume file: .planning/phases/02-data-layer/02-05-SUMMARY.md
 Dev server: http://localhost:5173/
