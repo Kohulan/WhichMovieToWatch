@@ -1,12 +1,13 @@
 import { NavLink, useLocation } from 'react-router';
 import { motion } from 'motion/react';
-import { Compass, TrendingUp, UtensilsCrossed, Film } from 'lucide-react';
+import { Home, Compass, TrendingUp, UtensilsCrossed, Film } from 'lucide-react';
 
 /**
- * TabBar — Fixed bottom navigation bar with 4 mode tabs.
+ * TabBar — Fixed bottom navigation bar with 5 mode tabs.
  *
  * Provides persistent navigation between:
- *   - Discover (/)
+ *   - Home (/)
+ *   - Discover (/discover)
  *   - Trending (/trending)
  *   - Dinner Time (/dinner-time)
  *   - Free Movies (/free-movies)
@@ -23,6 +24,12 @@ const tabs = [
   {
     to: '/',
     end: true,
+    icon: Home,
+    label: 'Home',
+  },
+  {
+    to: '/discover',
+    end: false,
     icon: Compass,
     label: 'Discover',
   },
@@ -77,7 +84,7 @@ export function TabBar() {
               end={end}
               className={[
                 'flex flex-col items-center justify-center gap-0.5',
-                'flex-1 h-full px-2',
+                'flex-1 h-full px-1',
                 'relative',
                 'outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset',
                 isActive ? 'text-accent' : 'text-clay-text-muted',
