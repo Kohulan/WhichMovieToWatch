@@ -161,7 +161,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Security
 
-- [ ] **SECU-01**: Content Security Policy headers configured
+- [x] **SECU-01**: Content Security Policy headers configured
 - [x] **SECU-02**: Input sanitization for search queries
 - [ ] **SECU-03**: API keys injected at build time only (never in source code)
 - [x] **SECU-04**: Secure external links (rel="noopener noreferrer")
@@ -176,8 +176,8 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Privacy & Analytics
 
-- [ ] **PRIV-01**: Privacy policy page
-- [ ] **PRIV-02**: Simple Analytics integration (privacy-focused)
+- [x] **PRIV-01**: Privacy policy page
+- [x] **PRIV-02**: Simple Analytics integration (privacy-focused)
 
 ## v2 Requirements
 
@@ -319,12 +319,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SOCL-03 | Phase 8 | Complete |
 | SOCL-04 | Phase 8 | Complete |
 | A11Y-01 | Phase 8 | Complete |
-| SECU-01 | Phase 8 | Pending |
+| SECU-01 | Phase 8 | Complete |
 | PERF-02 | Phase 8 | Complete |
 | PERF-03 | Phase 8 | Complete |
 | PERF-05 | Phase 8 | Complete |
-| PRIV-01 | Phase 8 | Pending |
-| PRIV-02 | Phase 8 | Pending |
+| PRIV-01 | Phase 8 | Complete |
+| PRIV-02 | Phase 8 | Complete |
 
 **Coverage:**
 - v1 requirements: 93 total

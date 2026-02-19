@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 8 of 8 (Polish & Optimization) -- IN PROGRESS
-Plan: 2 of 5 in current phase (complete)
-Status: Phase 8 in progress — 08-02 complete (image optimization + bundle verification)
-Last activity: 2026-02-19 — Plan 08-02 complete (responsive srcset, bundle 218 kB gzipped, API caching verified)
+Plan: 4 of 5 in current phase (complete)
+Status: Phase 8 in progress — 08-04 complete (privacy page, Simple Analytics, CSP)
+Last activity: 2026-02-19 — Plan 08-04 complete (privacy route at /privacy, cookieless analytics, CSP meta tag)
 
-Progress: [█████████████████████████░] 91%
+Progress: [█████████████████████████░] 94%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [███████████████████████
 | Phase 07-3d-experience P03 | 4 | 2 tasks | 4 files |
 | Phase 08-polish-optimization P03 | 3 | 2 tasks | 6 files |
 | Phase 08-polish-optimization P01 | 5 | 2 tasks | 9 files |
+| Phase 08-polish-optimization P04 | 5 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -187,6 +188,9 @@ Recent decisions affecting current work:
 - [Phase 08-01]: clay-text-muted in dark modes set to 0.72 oklch (up from 0.62-0.65) for WCAG AA 4.5:1 contrast on dark clay-base
 - [Phase 08-01]: Global :focus-visible CSS rule with outline-offset:2px overrides Tailwind defaults for consistent keyboard ring across all components
 - [Phase 08-01]: Route focus management skips initial mount (isFirstRender ref) — only fires on navigation, not page load; 150ms delay for animation settle
+- [Phase 08-polish-optimization]: Plan 08-04: Simple Analytics injected via useEffect manual script (not npm package) with data-mode=hash for HashRouter
+- [Phase 08-polish-optimization]: Plan 08-04: CSP meta tag placed AFTER inline FOUC script — meta-tag CSP only applies to content after it in document
+- [Phase 08-polish-optimization]: Plan 08-04: wasm-unsafe-eval added to CSP script-src for Spline WebAssembly modules
 
 ### Pending Todos
 
@@ -210,6 +214,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 08-02-PLAN.md (image optimization + bundle verification)
-Resume file: .planning/phases/08-polish-optimization/08-02-SUMMARY.md
+Stopped at: Completed 08-04-PLAN.md (privacy page, Simple Analytics, CSP)
+Resume file: .planning/phases/08-polish-optimization/08-04-SUMMARY.md
 Dev server: http://localhost:5173/
