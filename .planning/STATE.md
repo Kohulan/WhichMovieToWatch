@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 7 of 8 (3D Experience) -- COMPLETE
-Plan: 5 of 5 in current phase (complete)
-Status: Phase 7 complete — all 5 plans done + DINR-05 standalone fix
-Last activity: 2026-02-19 — Plan 07-05 approved (performance audit, Spline optimization, Lighthouse verification) + DINR-05 fix
+Phase: 8 of 8 (Polish & Optimization) -- IN PROGRESS
+Plan: 2 of 5 in current phase (complete)
+Status: Phase 8 in progress — 08-02 complete (image optimization + bundle verification)
+Last activity: 2026-02-19 — Plan 08-02 complete (responsive srcset, bundle 218 kB gzipped, API caching verified)
 
-Progress: [████████████████████████░] 88%
+Progress: [█████████████████████████░] 91%
 
 ## Performance Metrics
 
@@ -175,6 +175,10 @@ Recent decisions affecting current work:
 - [Standalone DINR-05]: useDinnerTime.setService no longer nulls movie — old movie stays visible during provider switch for smooth crossfade
 - [Standalone DINR-05]: DinnerTimePage uses lastBackdropRef to persist backdrop during loading, unified AnimatePresence for loading/error/movie states
 - [Standalone DINR-05]: Service brand color flash (12% opacity, 600ms) on provider switch via serviceFlash state + prevServiceRef comparison
+- Plan 08-02: TMDB does not serve WebP natively; responsive srcset (w185/w342/w500/w780 posters, w300/w780/w1280 backdrops) is correct PERF-02 implementation
+- Plan 08-02: All new TMDB img elements should import from useResponsiveImage and set srcSet + sizes + loading=lazy + decoding=async
+- Plan 08-02: motion.main variants={activeVariants} with string keys 'initial'/'animate'/'exit' avoids Framer Motion TS2590 union type complexity error
+- Plan 08-02: DinnerTimePage FEATURED_IDS.has() cast to 8|9|337 — DinnerTimeServiceId is widened to number, Set requires exact literal type
 - [Phase 08-03]: CORS proxy via corsproxy.io for TMDB poster fetch in canvas (canvas cannot use TMDB direct due to CORS)
 - [Phase 08-03]: React 19 native metadata hoisting (no react-helmet) — client-side OG/Twitter tags, accepted SPA limitation
 - [Phase 08-03]: StoryCardMovie interface separate from TMDBMovieDetails — share module decoupled from TMDB types
@@ -201,6 +205,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 7 complete (all 5 plans + DINR-05 fix). Next: Phase 8 (Polish & Optimization) — plan details TBD
-Resume file: .planning/phases/07-3d-experience/07-05-SUMMARY.md
+Stopped at: Completed 08-02-PLAN.md (image optimization + bundle verification)
+Resume file: .planning/phases/08-polish-optimization/08-02-SUMMARY.md
 Dev server: http://localhost:5173/

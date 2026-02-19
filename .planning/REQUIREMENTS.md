@@ -169,10 +169,10 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 ### Performance
 
 - [x] **PERF-01**: Three.js lazy loaded — not in initial bundle
-- [ ] **PERF-02**: Image optimization: WebP format, responsive srcset, lazy loading
-- [ ] **PERF-03**: Bundle size under 500KB gzipped (excluding lazy-loaded 3D)
+- [x] **PERF-02**: Image optimization: WebP format, responsive srcset, lazy loading
+- [x] **PERF-03**: Bundle size under 500KB gzipped (excluding lazy-loaded 3D)
 - [ ] **PERF-04**: Lighthouse performance score >= 90 on desktop
-- [ ] **PERF-05**: API response caching to minimize TMDB/OMDB requests
+- [x] **PERF-05**: API response caching to minimize TMDB/OMDB requests
 
 ### Privacy & Analytics
 
@@ -320,9 +320,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SOCL-04 | Phase 8 | Complete |
 | A11Y-01 | Phase 8 | Pending |
 | SECU-01 | Phase 8 | Pending |
-| PERF-02 | Phase 8 | Pending |
-| PERF-03 | Phase 8 | Pending |
-| PERF-05 | Phase 8 | Pending |
+| PERF-02 | Phase 8 | Complete |
+| PERF-03 | Phase 8 | Complete |
+| PERF-05 | Phase 8 | Complete |
 | PRIV-01 | Phase 8 | Pending |
 | PRIV-02 | Phase 8 | Pending |
 
