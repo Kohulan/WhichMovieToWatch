@@ -3,8 +3,10 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useLocation } from 'react-router';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStore } from '@/stores/themeStore';
+import { useScene3dStore } from '@/stores/scene3dStore';
 import { Navbar } from './Navbar';
 import { pageVariants, pageTransition } from '@/components/animation/PageTransition';
+import { ParallaxFallback } from '@/components/3d/ParallaxFallback';
 
 interface AppShellProps {
   children: ReactNode;
@@ -12,17 +14,28 @@ interface AppShellProps {
 
 /**
  * AppShell — Root layout wrapper with cinematic ambient gradient,
- * frosted-glass navbar, and smooth route transitions.
+ * frosted-glass navbar, smooth route transitions, and 3D/parallax background.
  *
  * ANIM-07: Ambient gradient blobs are motion.div elements keyed by preset.
  * AnimatePresence mode="sync" creates a smooth crossfade when switching
  * between color presets (warm-orange, gold, clean-white). The old blobs
  * fade/scale out while new blobs fade/scale in simultaneously.
+ *
+ * 3DXP-05 / 3DXP-07: A global 3D/parallax layer renders between the gradient
+ * blobs and page content. Opacity is route-controlled:
+ *   - HomePage (/): opacity 1  — 3D scene is the primary hero experience
+ *   - Feature pages: opacity 0.15 — poster backdrops take visual precedence
+ * The layer stays MOUNTED on all routes to support camera transitions (Plan 07-04).
  */
 export function AppShell({ children }: AppShellProps) {
   useTheme();
   const location = useLocation();
   const preset = useThemeStore((s) => s.preset);
+  const capability = useScene3dStore((s) => s.capability);
+
+  // HomePage is the primary 3D hero experience (user decision: "Hero scene on HomePage")
+  // Feature pages use their own poster backdrops — 3D/parallax layer fades behind them
+  const isHomePage = location.pathname === '/';
 
   return (
     <div className="min-h-screen bg-clay-base transition-colors duration-500 ease-in-out">
@@ -59,6 +72,29 @@ export function AppShell({ children }: AppShellProps) {
             transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
           />
         </AnimatePresence>
+      </div>
+
+      {/* 3D / Parallax background layer — renders globally for camera transitions,
+          but opacity is route-controlled:
+          - HomePage (/): opacity 1 — this IS the hero experience
+            (user decision: "Hero scene on HomePage — primary 3D experience")
+          - Feature pages (/trending, /dinner-time, /free-movies, /discover): opacity 0.15
+            -> poster backdrops take visual precedence; 3D scene stays subtly visible beneath
+            -> scene MUST remain mounted (not conditionally rendered) so that camera
+               transitions (Plan 07-04) can fire as the user navigates between routes
+          Per user decision: "3D camera movement transitions between pages"
+
+          While capability is null (GPU detection still in progress), the wrapper div
+          renders with no visible child — gradient blobs are sufficient in that window.
+
+          Plan 07-02 will add <SplineHero /> inside this div for full-3d / reduced-3d devices. */}
+      <div
+        className="fixed inset-0 transition-opacity duration-500"
+        style={{ opacity: isHomePage ? 1 : 0.15 }}
+        aria-hidden="true"
+      >
+        {capability === 'fallback-2d' && <ParallaxFallback />}
+        {/* Plan 07-02: capability === 'full-3d' || capability === 'reduced-3d' -> <SplineHero /> */}
       </div>
 
       {/* Skip navigation */}
