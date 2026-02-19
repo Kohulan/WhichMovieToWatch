@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Instantly discover your next movie with a visually immersive experience that makes browsing feel as cinematic as watching.
-**Current focus:** Phase 6 - Bento Grid Layouts
+**Current focus:** Phase 7 - 3D Experience
 
 ## Current Position
 
-Phase: 6 of 8 (Bento Grid Layouts) -- COMPLETE
-Plan: 3 of 3 in current phase (complete)
-Status: Phase Complete — Plans 06-01, 06-02, 06-03 all done
-Last activity: 2026-02-19 — Plan 06-03 complete (TrendingBentoHero, DinnerTimeBentoHero, FreeMoviesBentoHero compact bento sections above existing feature pages)
+Phase: 7 of 8 (3D Experience) -- IN PROGRESS
+Plan: 1 of 4 in current phase (complete)
+Status: Plan 07-01 complete — GPU detection infrastructure, parallax fallback, spline-vendor chunk, Scene3DProvider wired into AppShell
+Last activity: 2026-02-19 — Plan 07-01 complete (GPU tier detection, use3DCapability, scene3dStore, ParallaxFallback, Scene3DProvider, route-aware opacity in AppShell)
 
-Progress: [██████████████████░] 56%
+Progress: [████████████████████░] 62%
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Progress: [██████████████████░] 56%
 | Phase 05-animation-layer P02 | 5 | 2 tasks | 6 files |
 | Phase 06 P03 | 3 | 2 tasks | 6 files |
 | Phase 06 P02 | 2 | 2 tasks | 10 files |
+| Phase 07-3d-experience P01 | 4 | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -150,6 +151,11 @@ Recent decisions affecting current work:
 - [Phase 06-02]: StaggerItem wraps BentoCell at HomePage level — ensures StaggerContainer variants propagation reaches motion.div in StaggerItem correctly
 - [Phase 06-02]: ProviderLogosCell uses static TMDB logo paths — avoids runtime API call for decorative cell
 - [Phase 06-02]: DiscoverHeroCell uses gradient placeholder while loading — better visual continuity than grey shimmer for large hero backdrop area
+- Plan 07-01: useGpuTier uses module-level cache variable (not React state) so detection runs once per session even with multiple hook mounts
+- Plan 07-01: scene3dStore has no persist middleware — GPU capability re-detected each session (GPU drivers, browser settings, prefers-reduced-motion can change)
+- Plan 07-01: detect-gpu + @splinetool bundled together in spline-vendor chunk — share same lazy-loading boundary
+- Plan 07-01: 3D/parallax layer stays MOUNTED on all routes (opacity control, not conditional render) to support camera transitions in Plan 07-04
+- Plan 07-01: Scene3DProvider is a thin wrapper (not React context) — scene3dStore IS the context, avoiding React.createContext overhead
 
 ### Pending Todos
 
@@ -173,6 +179,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 06-01-PLAN.md (BentoGrid + BentoCell foundation components for bento grid layouts)
-Resume file: .planning/phases/06-bento-grid-layouts/06-01-SUMMARY.md
+Stopped at: Completed 07-01-PLAN.md (GPU detection, 3D capability hooks, scene3dStore, ParallaxFallback, Scene3DProvider, AppShell route-aware opacity)
+Resume file: .planning/phases/07-3d-experience/07-01-SUMMARY.md
 Dev server: http://localhost:5173/
