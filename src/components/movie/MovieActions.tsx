@@ -96,7 +96,7 @@ export function MovieActions({
   return (
     <div
       className="flex flex-wrap gap-2 mt-4"
-      role="group"
+      role="toolbar"
       aria-label="Movie actions"
     >
       <MetalButton
