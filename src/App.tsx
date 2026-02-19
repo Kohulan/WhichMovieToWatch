@@ -9,6 +9,7 @@ import { useMigration } from './hooks/useMigration';
 import { ReloadPrompt } from '@/components/pwa/ReloadPrompt';
 import { InstallBanner } from '@/components/pwa/InstallBanner';
 import { MotionProvider } from '@/components/animation/MotionProvider';
+import { Scene3DProvider } from '@/components/3d/Scene3DProvider';
 
 function App() {
   const [showSplash, setShowSplash] = useState(true);
@@ -31,14 +32,14 @@ function App() {
       </AnimatePresence>
 
       {!showSplash && (
-        <>
+        <Scene3DProvider>
           <AppShell>
             <Outlet />
           </AppShell>
 
           {/* Tab bar — persistent bottom navigation (DISC-03) */}
           <TabBar />
-        </>
+        </Scene3DProvider>
       )}
 
       {/* PWA components — mounted outside splash guard so SW registers immediately (PWA-03, PWA-04) */}
