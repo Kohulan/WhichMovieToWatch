@@ -134,11 +134,12 @@ Plans:
   3. Bento cards scale on hover with staggered reveal animations when entering viewport
   4. Bento grids stack vertically on mobile (375px), display 2 columns on tablet (768px), full grid on desktop (1024px+)
   5. Grid layout reflows smoothly when viewport resizes with Framer Motion layout animations
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md — BentoGrid + BentoCell foundation components (responsive grid, glass/clay materials, hover effects, layout animation)
+- [ ] 06-02-PLAN.md — HomePage with bento hero grid, 7 cell components, routing update, TabBar 5-tab navigation
+- [ ] 06-03-PLAN.md — Per-page bento hero sections for Trending, Dinner Time, and Free Movies pages
 
 ### Phase 7: 3D Experience
 **Goal**: Add React Three Fiber 3D scenes with floating movie posters, interactive gallery, and cinematic transitions with graceful mobile degradation.
@@ -193,7 +194,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 2. Data Layer | 5/5 | Complete    | 2026-02-18 |
 | 3. Core Features | 5/5 | Complete | 2026-02-18 |
 | 4. PWA Infrastructure | 2/2 | Complete    | 2026-02-18 |
-| 5. Animation Layer | 5/5 | Complete   | 2026-02-18 |
-| 6. Bento Grid Layouts | 0/TBD | Not started | - |
+| 5. Animation Layer | 5/5 | Complete    | 2026-02-18 |
+| 6. Bento Grid Layouts | 1/3 | In Progress|  |
 | 7. 3D Experience | 0/TBD | Not started | - |
 | 8. Polish & Optimization | 0/TBD | Not started | - |

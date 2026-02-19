@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Instantly discover your next movie with a visually immersive experience that makes browsing feel as cinematic as watching.
-**Current focus:** Phase 5 - Animation Layer
+**Current focus:** Phase 6 - Bento Grid Layouts
 
 ## Current Position
 
-Phase: 5 of 8 (Animation Layer) -- IN PROGRESS
-Plan: 4 of 5 in current phase (complete)
-Status: In Progress — Plan 05-04 complete
-Last activity: 2026-02-18 — Plan 05-04 complete (AnimatedActionIcon heart pulse/checkmark draw/X slide, TabBar layoutId sliding indicator + icon bounce, SearchModal backdrop blur entrance, AppShell blob crossfade on theme preset change)
+Phase: 6 of 8 (Bento Grid Layouts) -- IN PROGRESS
+Plan: 1 of 3 in current phase (complete)
+Status: In Progress — Plan 06-01 complete
+Last activity: 2026-02-19 — Plan 06-01 complete (BentoGrid responsive CSS Grid container, BentoCell glass/clay materials + hover/tap effects, barrel exports)
 
-Progress: [████████████████░] 50%
+Progress: [█████████████████░] 53%
 
 ## Performance Metrics
 
@@ -137,6 +137,11 @@ Recent decisions affecting current work:
 - Plan 05-04: TabBar active detection via useLocation() at component level (not NavLink callback) enables layoutId indicator render decision outside NavLink render prop scope
 - Plan 05-04: AppShell blobs use AnimatePresence mode=sync (not mode=wait) for simultaneous crossfade on theme preset change, matching CSS transition-colors duration-500 feel
 - Plan 05-04: SearchModal backdropFilter blur(0px→12px) animates the overlay's background blur separately from the panel's static backdrop-blur-2xl CSS class
+- Plan 06-01: Static Tailwind lookup objects for all col-span/row-span values — Tailwind v4 static analysis cannot detect template literal class names
+- Plan 06-01: Inline style borderRadius: 1rem on layout-animated motion.div — prevents FLIP scaleX/scaleY transform distortion
+- Plan 06-01: Mobile tap-to-expand: first tap shows overlay, second tap calls onClick, auto-collapses after 4s
+- Plan 06-01: lg:auto-rows-[minmax(120px,auto)] applied only at desktop breakpoint — mobile/tablet rows auto-size to content (avoids height collapse pitfall)
+- Plan 06-01: grid-flow-dense on BentoGrid — prevents gaps when large cells push smaller ones to next row
 
 ### Pending Todos
 
@@ -159,7 +164,7 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed 05-04-PLAN.md (micro-interactions: AnimatedActionIcon, TabBar layoutId indicator, SearchModal backdrop blur, AppShell blob crossfade)
-Resume file: .planning/phases/05-animation-layer/05-04-SUMMARY.md
+Last session: 2026-02-19
+Stopped at: Completed 06-01-PLAN.md (BentoGrid + BentoCell foundation components for bento grid layouts)
+Resume file: .planning/phases/06-bento-grid-layouts/06-01-SUMMARY.md
 Dev server: http://localhost:5173/

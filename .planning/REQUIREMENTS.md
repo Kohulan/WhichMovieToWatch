@@ -33,11 +33,11 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Bento Grids
 
-- [ ] **BENT-01**: Bento grid layout component with variable column/row spanning
+- [x] **BENT-01**: Bento grid layout component with variable column/row spanning
 - [ ] **BENT-02**: Animated bento grid hero section displaying trending movies, ratings, and providers
 - [ ] **BENT-03**: Bento grid for feature showcase sections (discovery, dinner mode, free movies, search)
-- [ ] **BENT-04**: Responsive bento grids that stack on mobile, 2-col on tablet, full on desktop
-- [ ] **BENT-05**: Hover scale effects and staggered reveal animations on bento cards
+- [x] **BENT-04**: Responsive bento grids that stack on mobile, 2-col on tablet, full on desktop
+- [x] **BENT-05**: Hover scale effects and staggered reveal animations on bento cards
 
 ### Animation
 
@@ -47,7 +47,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 - [x] **ANIM-04**: Layout animations for dynamic content changes (AnimatePresence, layoutId)
 - [x] **ANIM-05**: prefers-reduced-motion fully respected — all animations disabled when set
 - [x] **ANIM-06**: Loading animations with movie-themed content (quotes, film reel)
-- [ ] **ANIM-07**: Smooth animated transitions when switching color scheme presets
+- [x] **ANIM-07**: Smooth animated transitions when switching color scheme presets
 
 ### 3D Experience
 
@@ -298,13 +298,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ANIM-04 | Phase 5 | Complete |
 | ANIM-05 | Phase 5 | Complete |
 | ANIM-06 | Phase 5 | Complete |
-| ANIM-07 | Phase 5 | Pending |
+| ANIM-07 | Phase 5 | Complete |
 | A11Y-05 | Phase 5 | Complete |
-| BENT-01 | Phase 6 | Pending |
+| BENT-01 | Phase 6 | Complete |
 | BENT-02 | Phase 6 | Pending |
 | BENT-03 | Phase 6 | Pending |
-| BENT-04 | Phase 6 | Pending |
-| BENT-05 | Phase 6 | Pending |
+| BENT-04 | Phase 6 | Complete |
+| BENT-05 | Phase 6 | Complete |
 | 3DXP-01 | Phase 7 | Pending |
 | 3DXP-02 | Phase 7 | Pending |
 | 3DXP-03 | Phase 7 | Pending |
