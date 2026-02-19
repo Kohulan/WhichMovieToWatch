@@ -1,122 +1,74 @@
-import { NavLink, useLocation } from 'react-router';
-import { motion } from 'motion/react';
-import { Home, Compass, TrendingUp, UtensilsCrossed, Film } from 'lucide-react';
+import { Coffee, Github } from 'lucide-react';
 
 /**
- * TabBar — Fixed bottom navigation bar with 5 mode tabs.
+ * BottomBar — Fixed bottom bar with footer credits.
  *
- * Provides persistent navigation between:
- *   - Home (/)
- *   - Discover (/discover)
- *   - Trending (/trending)
- *   - Dinner Time (/dinner-time)
- *   - Free Movies (/free-movies)
- *
- * Uses NavLink for active state detection. Active tab shows accent color.
- * Includes iOS safe area padding for home indicator clearance.
- *
- * ANIM-03: Sliding indicator uses layoutId="tab-indicator" for smooth
- * spring-based inter-tab animation. Active icon bounces on tab switch.
+ * Displays "Made with coffee by Kohulan.R" with copyright,
+ * links to website, privacy policy, and GitHub repo.
+ * Matches the frosted-glass style of the top Navbar.
  */
-
-// Module-level constant for stability — array identity never changes across renders
-const tabs = [
-  {
-    to: '/',
-    end: true,
-    icon: Home,
-    label: 'Home',
-  },
-  {
-    to: '/discover',
-    end: false,
-    icon: Compass,
-    label: 'Discover',
-  },
-  {
-    to: '/trending',
-    end: false,
-    icon: TrendingUp,
-    label: 'Trending',
-  },
-  {
-    to: '/dinner-time',
-    end: false,
-    icon: UtensilsCrossed,
-    label: 'Dinner',
-  },
-  {
-    to: '/free-movies',
-    end: false,
-    icon: Film,
-    label: 'Free',
-  },
-];
-
 export function TabBar() {
-  const location = useLocation();
+  const year = new Date().getFullYear();
 
   return (
-    <nav
+    <footer
+      role="contentinfo"
       className="
         fixed bottom-0 left-0 right-0 z-40
         mx-3 sm:mx-5 mb-3
         rounded-2xl
         bg-clay-base/60 backdrop-blur-xl
         border border-white/[0.08]
-        h-14
         pb-[env(safe-area-inset-bottom)]
         transition-colors duration-500 ease-in-out
       "
-      aria-label="Main navigation"
     >
-      <div className="flex h-full items-center justify-around px-2 relative">
-        {tabs.map(({ to, end, icon: Icon, label }) => {
-          // Determine active state via location pathname for layoutId indicator
-          const isActive = end
-            ? location.pathname === to
-            : location.pathname.startsWith(to);
+      <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 text-xs text-clay-text-muted">
+        {/* Left: credit + GitHub */}
+        <div className="flex items-center gap-1.5">
+          <span>Made with</span>
+          <Coffee
+            className="w-3.5 h-3.5 text-accent animate-[steam_4s_ease-in-out_infinite]"
+            aria-label="coffee"
+          />
+          <span>by</span>
+          <a
+            href="https://kohulanr.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-clay-text hover:text-accent transition-colors duration-200"
+          >
+            Kohulan.R
+          </a>
+          <span className="text-clay-text-muted/30">|</span>
+          <a
+            href="https://github.com/Kohulan/WhichMovieToWatch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 hover:text-clay-text transition-colors duration-200"
+          >
+            <Github className="w-3 h-3" aria-hidden="true" />
+            <span className="hidden sm:inline">GitHub</span>
+          </a>
+        </div>
 
-          return (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={[
-                'flex flex-col items-center justify-center gap-0.5',
-                'flex-1 h-full px-1',
-                'relative',
-                'outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset',
-                isActive ? 'text-accent' : 'text-clay-text-muted',
-              ].join(' ')}
-              aria-label={label}
-            >
-              {/* Sliding background indicator — layoutId enables spring morph between tabs */}
-              {isActive && (
-                <motion.div
-                  layoutId="tab-indicator"
-                  className="absolute inset-1 rounded-xl bg-accent/10"
-                  transition={{ type: 'spring', stiffness: 350, damping: 30 }}
-                />
-              )}
-
-              {/* Icon with bounce animation on tab activation */}
-              <motion.div
-                animate={isActive ? { scale: [1, 1.15, 1] } : { scale: 1 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-              >
-                <Icon
-                  className="w-5 h-5"
-                  strokeWidth={isActive ? 2.5 : 1.5}
-                  aria-hidden="true"
-                />
-              </motion.div>
-
-              <span className="text-xs font-medium leading-none">{label}</span>
-            </NavLink>
-          );
-        })}
+        {/* Right: copyright + Privacy */}
+        <div className="flex items-center gap-2">
+          <span className="text-[10px] text-clay-text-muted/60 hidden sm:inline">
+            &copy; {year} Kohulan Rajan. All rights reserved.
+          </span>
+          <span className="text-[10px] text-clay-text-muted/60 sm:hidden">
+            &copy; {year}
+          </span>
+          <span className="text-clay-text-muted/30">|</span>
+          <a
+            href="/privacy.html"
+            className="hover:text-clay-text transition-colors duration-200"
+          >
+            Privacy
+          </a>
+        </div>
       </div>
-    </nav>
+    </footer>
   );
 }

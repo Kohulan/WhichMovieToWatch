@@ -4,6 +4,10 @@ import { useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import { Film } from 'lucide-react';
 import { getPosterUrl } from '@/services/tmdb/client';
+import {
+  tmdbPosterSrcSet,
+  posterSizes,
+} from '@/hooks/useResponsiveImage';
 import type { TMDBMovieDetails } from '@/types/movie';
 import { GenreBadges } from './GenreBadges';
 
@@ -55,15 +59,22 @@ export function MovieHero({ movie, posterFooter, children, movieId }: MovieHeroP
   const posterLayoutId = movieId ? `similar-poster-${movieId}` : undefined;
 
   return (
-    <div className="w-full md:grid md:grid-cols-[280px_1fr] md:gap-8">
+    <div
+      role="region"
+      aria-label={`Movie details: ${movie.title}`}
+      className="w-full md:grid md:grid-cols-[280px_1fr] md:gap-8"
+    >
       {/* Poster column */}
       <div className="flex-shrink-0 mx-auto md:mx-0 mb-4 md:mb-0">
         {posterUrl && !posterError ? (
           <motion.img
             layoutId={posterLayoutId}
             src={posterUrl}
+            srcSet={tmdbPosterSrcSet(movie.poster_path)}
+            sizes={posterSizes}
             alt={`${movie.title} poster`}
             loading="lazy"
+            decoding="async"
             onError={() => setPosterError(true)}
             className="w-48 md:w-[280px] aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl shadow-black/30 object-cover mx-auto md:mx-0 border border-white/10"
           />
