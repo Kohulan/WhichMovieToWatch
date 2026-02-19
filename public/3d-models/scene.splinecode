@@ -1,0 +1,12 @@
+PLACEHOLDER - Design your cinematic studio scene in Spline (app.spline.design) and export as .splinecode to replace this file.
+
+Steps:
+1. Open app.spline.design and create a new project
+2. Model film equipment props: clapperboard, film reel, movie camera, director chair, spotlights
+3. Add floating movie poster objects with atmospheric haze
+4. Configure camera states and variables for route transitions (Plan 07-04)
+5. File > Export > Code (.splinecode)
+6. Replace this file with the exported .splinecode file
+
+The SplineScene component will log a warning when it encounters this placeholder
+and gracefully show the gradient blob fallback instead.
