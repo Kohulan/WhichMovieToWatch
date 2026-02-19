@@ -34,8 +34,8 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 ### Bento Grids
 
 - [x] **BENT-01**: Bento grid layout component with variable column/row spanning
-- [ ] **BENT-02**: Animated bento grid hero section displaying trending movies, ratings, and providers
-- [ ] **BENT-03**: Bento grid for feature showcase sections (discovery, dinner mode, free movies, search)
+- [x] **BENT-02**: Animated bento grid hero section displaying trending movies, ratings, and providers
+- [x] **BENT-03**: Bento grid for feature showcase sections (discovery, dinner mode, free movies, search)
 - [x] **BENT-04**: Responsive bento grids that stack on mobile, 2-col on tablet, full on desktop
 - [x] **BENT-05**: Hover scale effects and staggered reveal animations on bento cards
 
@@ -301,8 +301,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ANIM-07 | Phase 5 | Complete |
 | A11Y-05 | Phase 5 | Complete |
 | BENT-01 | Phase 6 | Complete |
-| BENT-02 | Phase 6 | Pending |
-| BENT-03 | Phase 6 | Pending |
+| BENT-02 | Phase 6 | Complete |
+| BENT-03 | Phase 6 | Complete |
 | BENT-04 | Phase 6 | Complete |
 | BENT-05 | Phase 6 | Complete |
 | 3DXP-01 | Phase 7 | Pending |

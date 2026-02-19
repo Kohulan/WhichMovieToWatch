@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 
 ## Current Position
 
-Phase: 6 of 8 (Bento Grid Layouts) -- IN PROGRESS
-Plan: 1 of 3 in current phase (complete)
-Status: In Progress — Plan 06-01 complete
-Last activity: 2026-02-19 — Plan 06-01 complete (BentoGrid responsive CSS Grid container, BentoCell glass/clay materials + hover/tap effects, barrel exports)
+Phase: 6 of 8 (Bento Grid Layouts) -- COMPLETE
+Plan: 3 of 3 in current phase (complete)
+Status: Phase Complete — Plans 06-01, 06-02, 06-03 all done
+Last activity: 2026-02-19 — Plan 06-03 complete (TrendingBentoHero, DinnerTimeBentoHero, FreeMoviesBentoHero compact bento sections above existing feature pages)
 
-Progress: [█████████████████░] 53%
+Progress: [██████████████████░] 56%
 
 ## Performance Metrics
 
@@ -45,6 +45,8 @@ Progress: [█████████████████░] 53%
 | Phase 05-animation-layer P01 | 3 | 3 tasks | 9 files |
 | Phase 05-animation-layer P03 | 3 | 2 tasks | 6 files |
 | Phase 05-animation-layer P02 | 5 | 2 tasks | 6 files |
+| Phase 06 P03 | 3 | 2 tasks | 6 files |
+| Phase 06 P02 | 2 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -142,6 +144,12 @@ Recent decisions affecting current work:
 - Plan 06-01: Mobile tap-to-expand: first tap shows overlay, second tap calls onClick, auto-collapses after 4s
 - Plan 06-01: lg:auto-rows-[minmax(120px,auto)] applied only at desktop breakpoint — mobile/tablet rows auto-size to content (avoids height collapse pitfall)
 - Plan 06-01: grid-flow-dense on BentoGrid — prevents gaps when large cells push smaller ones to next row
+- [Phase 06]: DinnerTimePage and FreeMoviesPage heroes placed in Fragment: inner components use full-screen fixed backdrop, Fragment + own max-w-7xl wrapper for hero only keeps layout clean
+- [Phase 06]: TrendingBentoHero uses useTrending() hook for live data — both hero and TrendingPageComponent call useTrending but React shared hook state prevents double-fetching
+- [Phase 06-02]: SearchCell navigates to /discover as fallback — SearchModal open mechanism not accessible from static cell context without global store coupling
+- [Phase 06-02]: StaggerItem wraps BentoCell at HomePage level — ensures StaggerContainer variants propagation reaches motion.div in StaggerItem correctly
+- [Phase 06-02]: ProviderLogosCell uses static TMDB logo paths — avoids runtime API call for decorative cell
+- [Phase 06-02]: DiscoverHeroCell uses gradient placeholder while loading — better visual continuity than grey shimmer for large hero backdrop area
 
 ### Pending Todos
 
