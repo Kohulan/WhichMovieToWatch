@@ -21,6 +21,7 @@ import { ClayCard } from '@/components/ui/ClayCard';
 import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { ExternalLink } from '@/components/shared/ExternalLink';
 import { showToast } from '@/components/shared/Toast';
+import { useAnnounce } from '@/components/shared/ScreenReaderAnnouncer';
 import { getBackdropUrl } from '@/services/tmdb/client';
 import { tmdbBackdropSrcSet, backdropSizes } from '@/hooks/useResponsiveImage';
 
@@ -49,6 +50,7 @@ interface DinnerTimePageProps {
 
 export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePageProps) {
   const { movie, isLoading, error, nextMovie, setService, currentService } = dinnerTime;
+  const [announce, Announcer] = useAnnounce();
 
   const markDinnerLike = useMovieHistoryStore((s) => s.markDinnerLike);
   const markDinnerDislike = useMovieHistoryStore((s) => s.markDinnerDislike);
@@ -56,7 +58,7 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
   const imdbId = movie?.imdb_id ?? null;
   const { imdbRating, rottenTomatoes, metascore } = useOmdbRatings(imdbId);
 
-  const isCustomService = !FEATURED_IDS.has(currentService);
+  const isCustomService = !FEATURED_IDS.has(currentService as 8 | 9 | 337);
 
   // Find custom provider metadata for dynamic branding
   const customProvider = isCustomService
@@ -89,6 +91,13 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
     }
   }, [currentService]);
 
+  // A11Y-01: Announce movie title to screen readers when a new movie loads (A11Y-04)
+  useEffect(() => {
+    if (movie?.title) {
+      announce(`Now showing on ${serviceConfig.name}: ${movie.title}`);
+    }
+  }, [movie?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const watchUrl = movie ? serviceConfig.watchUrl(movie.title) : '#';
 
   function handleGreatPick() {
@@ -106,6 +115,8 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
 
   return (
     <div className="w-full">
+      <Announcer />
+
       {/* Fixed full-screen backdrop — persists during provider switch (DINR-05) */}
       {visibleBackdrop && (
         <div className="fixed inset-0 z-0" aria-hidden="true">
