@@ -1,4 +1,4 @@
-import { type ReactNode, lazy, Suspense } from 'react';
+import { Component, type ReactNode, type ErrorInfo, lazy, Suspense, useRef, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useLocation } from 'react-router';
 import { useTheme } from '../../hooks/useTheme';
@@ -12,6 +12,36 @@ import {
   pageTransition3D,
 } from '@/components/animation/PageTransition';
 import { ParallaxFallback } from '@/components/3d/ParallaxFallback';
+
+/**
+ * Catches Spline runtime errors (e.g. invalid .splinecode) that throw during
+ * React render and cannot be caught by the Spline onError callback.
+ * Falls back to ParallaxFallback so the app keeps working.
+ */
+class SplineErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean }
+> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.warn('[SplineErrorBoundary] 3D scene crashed, falling back to 2D parallax:', error.message, info.componentStack);
+    const store = useScene3dStore.getState();
+    store.setSceneError(true);
+    store.setSceneLoaded(false);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return <ParallaxFallback />;
+    }
+    return this.props.children;
+  }
+}
 
 /**
  * LazySplineHero — Code-split Spline 3D scene, loaded only on capable devices.
@@ -60,9 +90,11 @@ export function AppShell({ children }: AppShellProps) {
   const preset = useThemeStore((s) => s.preset);
   const capability = useScene3dStore((s) => s.capability);
   const sceneLoaded = useScene3dStore((s) => s.sceneLoaded);
+  const sceneError = useScene3dStore((s) => s.sceneError);
 
-  // HomePage is the primary 3D hero experience (user decision: "Hero scene on HomePage")
-  // Feature pages use their own poster backdrops — 3D/parallax layer fades behind them
+  // Show parallax when: explicitly fallback-2d, OR Spline failed/invalid scene
+  const showParallax = capability === 'fallback-2d' || sceneError;
+
   const isHomePage = location.pathname === '/';
 
   // 3D transitions are active when a capable GPU has a fully-loaded Spline scene.
@@ -74,6 +106,26 @@ export function AppShell({ children }: AppShellProps) {
   //   3D inactive → standard slide+scale+fade cinematic transitions
   const activeVariants = use3DTransitions ? pageVariants3D : pageVariants;
   const activeTransition = use3DTransitions ? pageTransition3D : pageTransition;
+
+  // A11Y-01: Ref to main content for programmatic focus on route change.
+  // tabIndex={-1} on the element allows focus() without entering the tab order.
+  const mainRef = useRef<HTMLElement>(null);
+
+  // A11Y-01: Move focus to main content after each route change so screen reader
+  // users hear the new page content. 150ms delay allows AnimatePresence to
+  // settle (pageTransition3D is 0.3s / pageTransition is ~0.5s) before focusing.
+  // Skip initial mount — only fire on subsequent route changes.
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    const timer = setTimeout(() => {
+      mainRef.current?.focus({ preventScroll: true });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-clay-base transition-colors duration-500 ease-in-out">
@@ -125,15 +177,17 @@ export function AppShell({ children }: AppShellProps) {
           While capability is null (GPU detection still in progress), the wrapper div
           renders with no visible child — gradient blobs are sufficient in that window. */}
       <div
-        className="fixed inset-0 transition-opacity duration-500"
-        style={{ opacity: isHomePage ? 1 : 0.15 }}
+        className="fixed inset-0 pointer-events-none transition-opacity duration-500"
+        style={{ opacity: isHomePage ? 0.6 : 0.1 }}
         aria-hidden="true"
       >
-        {capability === 'fallback-2d' && <ParallaxFallback />}
-        {(capability === 'full-3d' || capability === 'reduced-3d') && (
-          <Suspense fallback={null}>
-            <LazySplineHero reduced={capability === 'reduced-3d'} />
-          </Suspense>
+        {showParallax && <ParallaxFallback />}
+        {!sceneError && (capability === 'full-3d' || capability === 'reduced-3d') && (
+          <SplineErrorBoundary>
+            <Suspense fallback={null}>
+              <LazySplineHero reduced={capability === 'reduced-3d'} />
+            </Suspense>
+          </SplineErrorBoundary>
         )}
       </div>
 
@@ -157,20 +211,20 @@ export function AppShell({ children }: AppShellProps) {
 
       <Navbar />
 
-      <AnimatePresence mode="wait">
-        <motion.main
-          id="main-content"
-          key={location.pathname}
-          variants={activeVariants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          transition={activeTransition}
-          className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-screen"
-        >
-          {children}
-        </motion.main>
-      </AnimatePresence>
+      <motion.main
+        ref={mainRef}
+        id="main-content"
+        key={location.pathname}
+        tabIndex={-1}
+        variants={activeVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={activeTransition}
+        className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-screen outline-none"
+      >
+        {children}
+      </motion.main>
     </div>
   );
 }
