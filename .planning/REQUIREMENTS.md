@@ -151,7 +151,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Accessibility
 
-- [ ] **A11Y-01**: WCAG 2.1 AA compliance across all components
+- [x] **A11Y-01**: WCAG 2.1 AA compliance across all components
 - [x] **A11Y-02**: ARIA labels on all interactive elements
 - [x] **A11Y-03**: Keyboard navigation with visible focus rings
 - [x] **A11Y-04**: Screen reader optimized (semantic HTML, ARIA live regions)
@@ -318,7 +318,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SOCL-02 | Phase 8 | Complete |
 | SOCL-03 | Phase 8 | Complete |
 | SOCL-04 | Phase 8 | Complete |
-| A11Y-01 | Phase 8 | Pending |
+| A11Y-01 | Phase 8 | Complete |
 | SECU-01 | Phase 8 | Pending |
 | PERF-02 | Phase 8 | Complete |
 | PERF-03 | Phase 8 | Complete |

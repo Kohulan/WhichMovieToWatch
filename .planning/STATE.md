@@ -52,6 +52,7 @@ Progress: [███████████████████████
 | Phase 07-3d-experience P04 | 2 | 2 tasks | 4 files |
 | Phase 07-3d-experience P03 | 4 | 2 tasks | 4 files |
 | Phase 08-polish-optimization P03 | 3 | 2 tasks | 6 files |
+| Phase 08-polish-optimization P01 | 5 | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -182,6 +183,10 @@ Recent decisions affecting current work:
 - [Phase 08-03]: CORS proxy via corsproxy.io for TMDB poster fetch in canvas (canvas cannot use TMDB direct due to CORS)
 - [Phase 08-03]: React 19 native metadata hoisting (no react-helmet) — client-side OG/Twitter tags, accepted SPA limitation
 - [Phase 08-03]: StoryCardMovie interface separate from TMDBMovieDetails — share module decoupled from TMDB types
+- [Phase 08-01]: clay-text-muted in light modes set to 0.36 oklch (down from 0.46-0.50) for WCAG AA 4.5:1 contrast on light clay-base
+- [Phase 08-01]: clay-text-muted in dark modes set to 0.72 oklch (up from 0.62-0.65) for WCAG AA 4.5:1 contrast on dark clay-base
+- [Phase 08-01]: Global :focus-visible CSS rule with outline-offset:2px overrides Tailwind defaults for consistent keyboard ring across all components
+- [Phase 08-01]: Route focus management skips initial mount (isFirstRender ref) — only fires on navigation, not page load; 150ms delay for animation settle
 
 ### Pending Todos
 
