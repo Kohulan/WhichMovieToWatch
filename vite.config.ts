@@ -125,6 +125,9 @@ export default defineConfig({
           ) {
             return 'three-vendor';
           }
+          if (id.includes('node_modules/@splinetool') || id.includes('node_modules/detect-gpu')) {
+            return 'spline-vendor';
+          }
         },
       },
     },
