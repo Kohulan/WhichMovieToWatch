@@ -35,15 +35,16 @@ export function SplineScene({
   reduced = false,
 }: SplineSceneProps) {
   const [loaded, setLoaded] = useState(false);
-  const { setSplineApp, setSceneLoaded } = useScene3dStore.getState();
+  const { setSplineApp, setSceneLoaded, setSceneError } = useScene3dStore.getState();
 
   const handleLoad = useCallback(
     (splineApp: Application) => {
       setSplineApp(splineApp);
       setSceneLoaded(true);
+      setSceneError(false);
       setLoaded(true);
     },
-    [setSplineApp, setSceneLoaded],
+    [setSplineApp, setSceneLoaded, setSceneError],
   );
 
   const handleError = useCallback(
@@ -54,8 +55,9 @@ export function SplineScene({
         '\nIf you have not yet exported your scene from Spline, place the .splinecode file at public/3d-models/scene.splinecode',
       );
       setSceneLoaded(false);
+      setSceneError(true);
     },
-    [setSceneLoaded],
+    [setSceneLoaded, setSceneError],
   );
 
   return (

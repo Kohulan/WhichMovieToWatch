@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useLocation } from 'react-router';
 import { useTheme } from '../../hooks/useTheme';
@@ -7,6 +7,15 @@ import { useScene3dStore } from '@/stores/scene3dStore';
 import { Navbar } from './Navbar';
 import { pageVariants, pageTransition } from '@/components/animation/PageTransition';
 import { ParallaxFallback } from '@/components/3d/ParallaxFallback';
+
+/**
+ * LazySplineHero — Code-split Spline 3D scene, loaded only on capable devices.
+ * The Spline runtime + detect-gpu are isolated in the spline-vendor Vite chunk
+ * (configured in vite.config.ts), so neither package is in the initial bundle.
+ * Suspense fallback=null means gradient blobs show while Spline loads — seamless
+ * progressive enhancement with no visible loading indicator.
+ */
+const LazySplineHero = lazy(() => import('@/components/3d/SplineHero'));
 
 interface AppShellProps {
   children: ReactNode;
@@ -85,16 +94,18 @@ export function AppShell({ children }: AppShellProps) {
           Per user decision: "3D camera movement transitions between pages"
 
           While capability is null (GPU detection still in progress), the wrapper div
-          renders with no visible child — gradient blobs are sufficient in that window.
-
-          Plan 07-02 will add <SplineHero /> inside this div for full-3d / reduced-3d devices. */}
+          renders with no visible child — gradient blobs are sufficient in that window. */}
       <div
         className="fixed inset-0 transition-opacity duration-500"
         style={{ opacity: isHomePage ? 1 : 0.15 }}
         aria-hidden="true"
       >
         {capability === 'fallback-2d' && <ParallaxFallback />}
-        {/* Plan 07-02: capability === 'full-3d' || capability === 'reduced-3d' -> <SplineHero /> */}
+        {(capability === 'full-3d' || capability === 'reduced-3d') && (
+          <Suspense fallback={null}>
+            <LazySplineHero reduced={capability === 'reduced-3d'} />
+          </Suspense>
+        )}
       </div>
 
       {/* Skip navigation */}
