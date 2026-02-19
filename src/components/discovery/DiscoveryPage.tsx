@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
+import { SlidersHorizontal } from 'lucide-react';
 import { useDiscoveryStore } from '@/stores/discoveryStore';
 import { usePreferencesStore } from '@/stores/preferencesStore';
 import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
@@ -15,8 +16,11 @@ import { useAnnounce } from '@/components/shared/ScreenReaderAnnouncer';
 import { MovieHero } from '@/components/movie/MovieHero';
 import { RatingBadges } from '@/components/movie/RatingBadges';
 import { ProviderSection } from '@/components/movie/ProviderSection';
+import { GlobalAvailabilitySection } from '@/components/movie/GlobalAvailabilitySection';
 import { TrailerLink } from '@/components/movie/TrailerLink';
+import { TicketSearch } from '@/components/movie/TicketSearch';
 import { MovieActions } from '@/components/movie/MovieActions';
+import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
 import { ClayCard } from '@/components/ui/ClayCard';
 import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { MetalButton } from '@/components/ui';
@@ -24,26 +28,39 @@ import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
 import { ScrollReveal } from '@/components/animation/ScrollReveal';
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
 import { getPosterUrl, getBackdropUrl } from '@/services/tmdb/client';
+import { tmdbBackdropSrcSet, backdropSizes, tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
+import { ShareButton } from '@/components/share/ShareButton';
+import { MovieMetaTags } from '@/components/share/MovieMetaTags';
 import type { TMDBMovieDetails } from '@/types/movie';
 
 /**
  * DiscoveryPage — Main cinematic discovery screen.
  *
  * Composes MovieHero, RatingBadges, ProviderSection, TrailerLink, MovieActions.
+ * Shows onboarding wizard on first visit to set provider + genre preferences.
  * Handles deep links (?movie=ID), loading/error states, and the "You might also like"
  * similar movies section triggered by Love action. (DISC-01 through DISC-04, INTR-01 through INTR-04)
  */
 export function DiscoveryPage() {
   const [announce, Announcer] = useAnnounce();
   const [lovedMovieId, setLovedMovieId] = useState<number | null>(null);
+  const [globalProviders, setGlobalProviders] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { discover, isLoading, error, currentMovie: discoveryMovie } = useRandomMovie();
   const setCurrentMovie = useDiscoveryStore((s) => s.setCurrentMovie);
+  const setFilters = useDiscoveryStore((s) => s.setFilters);
   const markLoved = useMovieHistoryStore((s) => s.markLoved);
   const recordLove = usePreferencesStore((s) => s.recordLove);
 
+  // Onboarding state
+  const hasCompletedOnboarding = usePreferencesStore((s) => s.hasCompletedOnboarding);
+  const preferredProvider = usePreferencesStore((s) => s.preferredProvider);
+  const preferredGenre = usePreferencesStore((s) => s.preferredGenre);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+
   // Deep link support (DISC-04)
-  const { deepLinkMovieId, clearDeepLink } = useDeepLink();
+  const { deepLinkMovieId, showAllProviders, clearDeepLink } = useDeepLink();
   const { data: deepLinkMovie, isLoading: deepLinkLoading } = useMovieDetails(deepLinkMovieId);
 
   // Use deep link movie or the randomly discovered movie
@@ -65,16 +82,30 @@ export function DiscoveryPage() {
     ? getBackdropUrl(currentMovie.backdrop_path, 'original')
     : null;
 
-  // Load a random movie on first render if no deep link
+  // Initialize on mount: show onboarding for new users, apply persisted filters for returning users
   useEffect(() => {
-    if (!deepLinkMovieId && !discoveryMovie) {
-      discover();
+    if (!hasCompletedOnboarding && !deepLinkMovieId) {
+      setShowOnboarding(true);
+    } else if (hasCompletedOnboarding) {
+      setFilters({
+        providerId: preferredProvider ? Number(preferredProvider) : null,
+        genreId: preferredGenre,
+      });
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When deep link movie is loaded, set it as current movie in store and clear param
+  // Load a random movie on first render if no deep link and onboarding already done
+  useEffect(() => {
+    if (!deepLinkMovieId && !discoveryMovie && hasCompletedOnboarding) {
+      discover();
+    }
+  }, [hasCompletedOnboarding]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // When deep link movie is loaded, set it as current movie in store and clear param.
+  // Capture showAllProviders before clearing — URL params disappear after clearDeepLink().
   useEffect(() => {
     if (deepLinkMovie) {
+      setGlobalProviders(showAllProviders);
       setCurrentMovie(deepLinkMovie);
       clearDeepLink();
     }
@@ -87,9 +118,25 @@ export function DiscoveryPage() {
     }
   }, [currentMovie?.id, announce]);
 
-  // Handle Next action
+  // Onboarding complete — filters are already set by the wizard, trigger first discover
+  const handleOnboardingComplete = useCallback(() => {
+    setShowOnboarding(false);
+    // Discover with the newly set filters
+    discover();
+  }, [discover]);
+
+  // Settings saved — re-discover with new filters
+  const handleSettingsSaved = useCallback(() => {
+    setSettingsOpen(false);
+    setLovedMovieId(null);
+    setGlobalProviders(false);
+    discover();
+  }, [discover]);
+
+  // Handle Next action — resets global provider view back to regional
   const handleNext = useCallback(() => {
     setLovedMovieId(null);
+    setGlobalProviders(false);
     discover();
   }, [discover]);
 
@@ -131,6 +178,20 @@ export function DiscoveryPage() {
     : undefined;
 
   const showLoading = isLoading || deepLinkLoading;
+
+  // Onboarding modal
+  if (showOnboarding) {
+    return (
+      <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[60vh] px-4 py-6">
+        <Announcer />
+        <OnboardingWizard
+          isOpen
+          onComplete={handleOnboardingComplete}
+          mode="onboarding"
+        />
+      </div>
+    );
+  }
 
   // Loading state
   if (showLoading) {
@@ -182,6 +243,19 @@ export function DiscoveryPage() {
     <div className="w-full">
       <Announcer />
 
+      {/* Dynamic OG/Twitter Card meta tags — React 19 native hoisting (SOCL-02, SOCL-03) */}
+      <MovieMetaTags movie={currentMovie} />
+
+      {/* Floating share FAB — visible on Discovery page only when movie is loaded (SOCL-04) */}
+      <ShareButton movie={currentMovie} />
+
+      {/* Settings modal — same wizard in settings mode */}
+      <OnboardingWizard
+        isOpen={settingsOpen}
+        onComplete={handleSettingsSaved}
+        mode="settings"
+      />
+
       {/* Fixed full-screen backdrop — crossfades between movies */}
       {backdropUrl && (
         <div className="fixed inset-0 z-0" aria-hidden="true">
@@ -189,7 +263,11 @@ export function DiscoveryPage() {
             <motion.img
               key={currentMovie.id}
               src={backdropUrl}
+              srcSet={currentMovie.backdrop_path ? tmdbBackdropSrcSet(currentMovie.backdrop_path) : undefined}
+              sizes={backdropSizes}
               alt=""
+              loading="lazy"
+              decoding="async"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -216,7 +294,19 @@ export function DiscoveryPage() {
           <MovieHero
             movie={currentMovie}
             movieId={currentMovie.id}
-            posterFooter={<TrailerLink videos={currentMovie.videos} />}
+            posterFooter={
+              <div className="space-y-2 w-full">
+                <TrailerLink videos={currentMovie.videos} />
+                <button
+                  onClick={() => setSettingsOpen(true)}
+                  className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-xl bg-white/[0.06] backdrop-blur-md border border-white/10 text-clay-text-muted font-medium text-sm hover:bg-white/[0.10] hover:text-clay-text transition-colors cursor-pointer"
+                  aria-label="Change discovery preferences"
+                >
+                  <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+                  Preferences
+                </button>
+              </div>
+            }
           >
             {/* Action buttons — immediately below title/overview (DISP-06) */}
             <MovieActions
@@ -235,8 +325,18 @@ export function DiscoveryPage() {
               metascore={metascore}
             />
 
-            {/* Streaming providers (DISP-05) */}
-            <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+            {/* Streaming providers (DISP-05) — show global availability when navigating from Netflix search */}
+            {globalProviders ? (
+              <GlobalAvailabilitySection movieId={currentMovie.id} />
+            ) : (
+              <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+            )}
+
+            {/* Ticket search — Google search for showtimes/tickets */}
+            <TicketSearch
+              movieTitle={currentMovie.title}
+              releaseYear={currentMovie.release_date?.slice(0, 4)}
+            />
           </MovieHero>
         </div>
         </motion.section>
@@ -287,8 +387,11 @@ export function DiscoveryPage() {
                             <motion.img
                               layoutId={`similar-poster-${movie.id}`}
                               src={posterUrl}
+                              srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+                              sizes={posterSizes}
                               alt={`${movie.title} poster`}
                               loading="lazy"
+                              decoding="async"
                               className="w-full aspect-[2/3] object-cover"
                             />
                           ) : (

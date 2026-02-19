@@ -15,6 +15,7 @@ import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { ExternalLink } from '@/components/shared/ExternalLink';
 import { ScrollReveal } from '@/components/animation/ScrollReveal';
 import { getBackdropUrl } from '@/services/tmdb/client';
+import { tmdbBackdropSrcSet, backdropSizes } from '@/hooks/useResponsiveImage';
 import type { TMDBMovieDetails } from '@/types/movie';
 
 export function FreeMoviesPage() {
@@ -74,7 +75,11 @@ export function FreeMoviesPage() {
             <motion.img
               key={tmdb.id}
               src={backdropUrl}
+              srcSet={tmdb.backdrop_path ? tmdbBackdropSrcSet(tmdb.backdrop_path) : undefined}
+              sizes={backdropSizes}
               alt=""
+              loading="lazy"
+              decoding="async"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}

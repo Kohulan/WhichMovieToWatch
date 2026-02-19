@@ -1,17 +1,18 @@
-// Dinner Time — cinematic family-friendly movie finder (DINR-02, DINR-03, DINR-04)
+// Dinner Time — cinematic family-friendly movie finder (DINR-02, DINR-03, DINR-04, DINR-05)
 
+import { useRef, useEffect, useState } from 'react';
 import { ThumbsUp, ThumbsDown, SkipForward, AlertCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { ScrollReveal } from '@/components/animation/ScrollReveal';
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
 import {
-  useDinnerTime,
   DINNER_TIME_SERVICES,
-  type DinnerTimeServiceId,
+  type UseDinnerTimeReturn,
 } from '@/hooks/useDinnerTime';
 import { useOmdbRatings } from '@/hooks/useOmdbRatings';
 import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
 import { getServiceConfig, getServiceLogoUrl } from './ServiceBranding';
+import { ServiceRotaryDial } from './ServiceRotaryDial';
 import { MovieHero } from '@/components/movie/MovieHero';
 import { RatingBadges } from '@/components/movie/RatingBadges';
 import { TrailerLink } from '@/components/movie/TrailerLink';
@@ -21,6 +22,7 @@ import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { ExternalLink } from '@/components/shared/ExternalLink';
 import { showToast } from '@/components/shared/Toast';
 import { getBackdropUrl } from '@/services/tmdb/client';
+import { tmdbBackdropSrcSet, backdropSizes } from '@/hooks/useResponsiveImage';
 
 const SERVICES = [
   { id: DINNER_TIME_SERVICES.NETFLIX, label: 'Netflix' },
@@ -28,9 +30,25 @@ const SERVICES = [
   { id: DINNER_TIME_SERVICES.DISNEY_PLUS, label: 'Disney+' },
 ] as const;
 
-export function DinnerTimePage() {
-  const { movie, isLoading, error, nextMovie, setService, currentService } =
-    useDinnerTime();
+const FEATURED_IDS = new Set([
+  DINNER_TIME_SERVICES.NETFLIX,
+  DINNER_TIME_SERVICES.PRIME,
+  DINNER_TIME_SERVICES.DISNEY_PLUS,
+]);
+
+interface RegionProvider {
+  provider_id: number;
+  provider_name: string;
+  logo_path: string;
+}
+
+interface DinnerTimePageProps {
+  dinnerTime: UseDinnerTimeReturn;
+  regionProviders: RegionProvider[];
+}
+
+export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePageProps) {
+  const { movie, isLoading, error, nextMovie, setService, currentService } = dinnerTime;
 
   const markDinnerLike = useMovieHistoryStore((s) => s.markDinnerLike);
   const markDinnerDislike = useMovieHistoryStore((s) => s.markDinnerDislike);
@@ -38,11 +56,38 @@ export function DinnerTimePage() {
   const imdbId = movie?.imdb_id ?? null;
   const { imdbRating, rottenTomatoes, metascore } = useOmdbRatings(imdbId);
 
-  const serviceConfig = getServiceConfig(currentService);
+  const isCustomService = !FEATURED_IDS.has(currentService);
 
+  // Find custom provider metadata for dynamic branding
+  const customProvider = isCustomService
+    ? regionProviders.find((p) => p.provider_id === currentService)
+    : undefined;
+
+  const serviceConfig = getServiceConfig(
+    currentService,
+    customProvider?.provider_name,
+    customProvider?.logo_path,
+  );
+
+  // Persist the last valid backdrop so it stays visible during loading (DINR-05)
+  const lastBackdropRef = useRef<string | null>(null);
   const backdropUrl = movie?.backdrop_path
     ? getBackdropUrl(movie.backdrop_path, 'original')
     : null;
+  if (backdropUrl) lastBackdropRef.current = backdropUrl;
+  const visibleBackdrop = backdropUrl ?? lastBackdropRef.current;
+
+  // Service-change color flash — briefly tint overlay with new brand color (DINR-05)
+  const [serviceFlash, setServiceFlash] = useState(false);
+  const prevServiceRef = useRef(currentService);
+  useEffect(() => {
+    if (prevServiceRef.current !== currentService) {
+      prevServiceRef.current = currentService;
+      setServiceFlash(true);
+      const timer = setTimeout(() => setServiceFlash(false), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [currentService]);
 
   const watchUrl = movie ? serviceConfig.watchUrl(movie.title) : '#';
 
@@ -61,14 +106,18 @@ export function DinnerTimePage() {
 
   return (
     <div className="w-full">
-      {/* Fixed full-screen backdrop — crossfades between movies */}
-      {backdropUrl && (
+      {/* Fixed full-screen backdrop — persists during provider switch (DINR-05) */}
+      {visibleBackdrop && (
         <div className="fixed inset-0 z-0" aria-hidden="true">
           <AnimatePresence mode="wait">
             <motion.img
-              key={movie!.id}
-              src={backdropUrl}
+              key={backdropUrl ?? 'persisted'}
+              src={visibleBackdrop}
+              srcSet={movie?.backdrop_path ? tmdbBackdropSrcSet(movie.backdrop_path) : undefined}
+              sizes={backdropSizes}
               alt=""
+              loading="lazy"
+              decoding="async"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -77,6 +126,15 @@ export function DinnerTimePage() {
             />
           </AnimatePresence>
           <div className="absolute inset-0 bg-gradient-to-t from-clay-base from-5% via-clay-base/80 via-35% to-clay-base/20" />
+
+          {/* Service brand color flash overlay (DINR-05) */}
+          <div
+            className="absolute inset-0 transition-opacity duration-500 pointer-events-none"
+            style={{
+              backgroundColor: serviceConfig.color,
+              opacity: serviceFlash ? 0.12 : 0,
+            }}
+          />
         </div>
       )}
 
@@ -87,13 +145,12 @@ export function DinnerTimePage() {
             Dinner Time
           </h1>
           <p className="text-sm text-clay-text-muted font-light mt-1">
-            Pick a service, find the perfect family movie
+            Choose your service below
           </p>
         </div>
       </ScrollReveal>
 
-      {/* Service selector — centered, with provider logos */}
-      {/* StaggerContainer: 3 service buttons stagger their entrance (ANIM-02) */}
+      {/* Service selector — icon buttons + rotary knob */}
       <div className="relative z-10 px-4 sm:px-6 lg:px-8 pt-5 pb-4">
         <StaggerContainer
           className="flex items-center justify-center gap-3 sm:gap-4"
@@ -108,11 +165,10 @@ export function DinnerTimePage() {
             const config = getServiceConfig(service.id);
 
             return (
-              /* StaggerItem: each service button staggers its entrance from the container (ANIM-02) */
               <StaggerItem key={service.id} direction="up">
                 <motion.button
                   type="button"
-                  onClick={() => setService(service.id as DinnerTimeServiceId)}
+                  onClick={() => setService(service.id)}
                   aria-pressed={isActive}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
@@ -181,39 +237,62 @@ export function DinnerTimePage() {
               </StaggerItem>
             );
           })}
+
+          {/* Rotary knob — inline with the service icons */}
+          <StaggerItem direction="up">
+            <ServiceRotaryDial
+              currentService={currentService}
+              onServiceChange={setService}
+            />
+          </StaggerItem>
         </StaggerContainer>
       </div>
 
-      {/* Loading state */}
-      {isLoading && (
-        <div className="relative z-10 w-full px-4 py-6">
-          <ClaySkeletonCard hasImage lines={4} className="w-full max-w-7xl mx-auto" />
-        </div>
-      )}
-
-      {/* Error state */}
-      {!isLoading && error && (
-        <div className="relative z-10 w-full px-4 py-6">
-          <ClayCard className="max-w-7xl mx-auto">
-            <div className="p-6 text-center">
-              <AlertCircle className="w-12 h-12 text-yellow-400 mx-auto mb-3" aria-hidden="true" />
-              <p className="text-clay-text font-semibold mb-1">
-                No movies found on {serviceConfig.name}
-              </p>
-              <p className="text-clay-text-muted text-sm mb-4">{error}</p>
-              <MetalButton variant="secondary" size="sm" onClick={nextMovie}>
-                Try another
-              </MetalButton>
-            </div>
-          </ClayCard>
-        </div>
-      )}
-
-      {/* Movie hero — morph transition on Next Movie */}
+      {/* Unified content area — loading / error / movie crossfade (DINR-05) */}
       <AnimatePresence mode="wait">
+        {/* Loading state */}
+        {isLoading && (
+          <motion.div
+            key="loading"
+            initial={{ opacity: 0, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, filter: 'blur(6px)' }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="relative z-10 w-full px-4 py-6"
+          >
+            <ClaySkeletonCard hasImage lines={4} className="w-full max-w-7xl mx-auto" />
+          </motion.div>
+        )}
+
+        {/* Error state */}
+        {!isLoading && error && (
+          <motion.div
+            key="error"
+            initial={{ opacity: 0, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, filter: 'blur(6px)' }}
+            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            className="relative z-10 w-full px-4 py-6"
+          >
+            <ClayCard className="max-w-7xl mx-auto">
+              <div className="p-6 text-center">
+                <AlertCircle className="w-12 h-12 text-yellow-400 mx-auto mb-3" aria-hidden="true" />
+                <p className="text-clay-text font-semibold mb-1">
+                  No movies found on {serviceConfig.name}
+                </p>
+                <p className="text-clay-text-muted text-sm mb-4">{error}</p>
+                <MetalButton variant="secondary" size="sm" onClick={nextMovie}>
+                  Try another
+                </MetalButton>
+              </div>
+            </ClayCard>
+          </motion.div>
+        )}
+
+        {/* Movie hero — morph transition on Next Movie */}
         {!isLoading && !error && movie && (
           <motion.section
-            key={movie.id}
+            key={`movie-${movie.id}`}
             initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
             animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
             exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
@@ -235,7 +314,7 @@ export function DinnerTimePage() {
                     aria-label={`Watch ${movie.title} on ${serviceConfig.name}`}
                   >
                     {(() => {
-                      const logoUrl = getServiceLogoUrl(currentService);
+                      const logoUrl = getServiceLogoUrl(currentService, customProvider?.logo_path);
                       return logoUrl ? (
                         <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
                       ) : null;
