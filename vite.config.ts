@@ -41,7 +41,11 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Exclude spline-vendor chunk from precaching — it's a 4+ MB lazy-loaded
+        // 3D runtime that should only load on capable devices, not on every SW install.
+        // It is served via NetworkFirst runtime caching instead (see runtimeCaching below).
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globIgnores: ['**/spline-vendor-*.js', '**/SplineHero-*.js'],
         navigateFallback: '/offline.html',
         navigateFallbackDenylist: [/^\/api\//],
         cleanupOutdatedCaches: true,
