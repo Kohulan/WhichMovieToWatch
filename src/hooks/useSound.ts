@@ -21,7 +21,7 @@ export async function initAudio(): Promise<void> {
 
   try {
     audioContext = new AudioContext();
-    const response = await fetch('/sounds/dial-tick.mp3');
+    const response = await fetch(`${import.meta.env.BASE_URL}sounds/dial-tick.mp3`);
     const arrayBuffer = await response.arrayBuffer();
     tickBuffer = await audioContext.decodeAudioData(arrayBuffer);
     initialized = true;
