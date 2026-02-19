@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import Spline from '@splinetool/react-spline';
 import type { Application } from '@splinetool/runtime';
 import { useScene3dStore } from '@/stores/scene3dStore';
+import { useSplineTheme } from '@/hooks/useSplineTheme';
 
 interface SplineSceneProps {
   /** URL to the .splinecode scene file. Defaults to the self-hosted public asset. */
@@ -36,6 +37,10 @@ export function SplineScene({
 }: SplineSceneProps) {
   const [loaded, setLoaded] = useState(false);
   const { setSplineApp, setSceneLoaded, setSceneError } = useScene3dStore.getState();
+
+  // Sync theme preset and mode to Spline scene variables on every theme change.
+  // Hook runs as side effect only — no rendering impact.
+  useSplineTheme();
 
   const handleLoad = useCallback(
     (splineApp: Application) => {
