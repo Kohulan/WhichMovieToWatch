@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useMotionValue, useSpring, useTransform, motion } from 'motion/react';
 import Spline from '@splinetool/react-spline';
 import type { Application } from '@splinetool/runtime';
@@ -32,6 +32,10 @@ interface SplineSceneProps {
  *   - useSplineTheme: syncs theme preset/mode to Spline lighting variables
  *   - Gyroscope parallax: CSS perspective transform driven by device tilt on mobile
  *   - GyroscopeProvider: permission prompt UI (only on touch mobile devices)
+ *   - renderOnDemand: Spline only re-renders when the scene state changes (saves CPU/battery)
+ *   - requestIdleCallback deferred loading: Spline is not instantiated until browser is idle,
+ *     ensuring LCP and TTI are not blocked by the 3D runtime
+ *   - dispose() called on unmount to prevent memory leaks (WebGL contexts, event listeners)
  *
  * Default sceneUrl points to public/3d-models/scene.splinecode (self-hosted).
  * If user has not yet exported their scene, the component handles load failure gracefully.
@@ -42,6 +46,46 @@ export function SplineScene({
   reduced = false,
 }: SplineSceneProps) {
   const [loaded, setLoaded] = useState(false);
+
+  // Deferred loading: Spline is not instantiated until the browser is idle.
+  // This ensures the Spline runtime does not compete with LCP and TTI.
+  // - requestIdleCallback fires after initial paint and main-thread quiet period
+  // - setTimeout(1000) fallback for Safari/Firefox (no requestIdleCallback)
+  // - timeout:3000 ensures Spline loads within 3 seconds even under sustained load
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    let id: number | ReturnType<typeof setTimeout>;
+    if ('requestIdleCallback' in window) {
+      id = requestIdleCallback(() => setShouldLoad(true), { timeout: 3000 });
+    } else {
+      id = setTimeout(() => setShouldLoad(true), 1000);
+    }
+    return () => {
+      if ('requestIdleCallback' in window) {
+        cancelIdleCallback(id as number);
+      } else {
+        clearTimeout(id as ReturnType<typeof setTimeout>);
+      }
+    };
+  }, []);
+
+  // Cleanup: dispose() releases WebGL context, removes Spline's internal event
+  // listeners, and frees GPU memory. Called on component unmount.
+  useEffect(() => {
+    return () => {
+      const app = useScene3dStore.getState().splineApp;
+      if (app) {
+        try {
+          app.dispose();
+        } catch {
+          // dispose may throw if the WebGL context was already lost
+        }
+        useScene3dStore.getState().setSplineApp(null);
+      }
+    };
+  }, []);
+
   const { setSplineApp, setSceneLoaded, setSceneError } = useScene3dStore.getState();
 
   // Sync theme preset and mode to Spline scene variables on every theme change.
@@ -129,7 +173,8 @@ export function SplineScene({
           On mobile without permission: same — static passthrough.
           On mobile with permission: perspective 1000px + spring-eased ±3deg tilt.
 
-          Reduced-3d scale is applied here too (75% to reduce GPU fill rate).
+          Reduced-3d: will-change:transform promotes to compositor thread (GPU layer).
+          Scale 0.75 reduces fill rate — canvas renders at 75% viewport, CSS scales it up.
         */}
         <motion.div
           style={{
@@ -139,16 +184,31 @@ export function SplineScene({
             rotateX: useGyroscopeParallax ? tiltX : 0,
             rotateY: useGyroscopeParallax ? tiltY : 0,
             // Reduced-3d mode: 75% scale lowers GPU fill rate while keeping scene visible
+            // will-change:transform promotes the layer to GPU compositor for smooth animation
             scale: reduced ? 0.75 : 1,
             transformOrigin: 'center center',
+            willChange: reduced ? 'transform' : undefined,
           }}
         >
-          <Spline
-            scene={sceneUrl}
-            onLoad={handleLoad}
-            onError={handleError}
-            style={{ width: '100%', height: '100%' }}
-          />
+          {/*
+            Only instantiate the Spline component after the browser is idle.
+            shouldLoad is set by requestIdleCallback (or setTimeout fallback).
+            This ensures Spline's heavy JS evaluation does not block LCP/TTI.
+
+            renderOnDemand={true}: Spline only re-renders the WebGL canvas when
+            the scene state changes (camera moves, animations, variable updates).
+            Without this flag, Spline renders at 60fps continuously — burning CPU
+            and battery even when the scene is visually idle.
+          */}
+          {shouldLoad && (
+            <Spline
+              scene={sceneUrl}
+              onLoad={handleLoad}
+              onError={handleError}
+              renderOnDemand={true}
+              style={{ width: '100%', height: '100%' }}
+            />
+          )}
         </motion.div>
       </div>
 
