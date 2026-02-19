@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router';
 import { AnimatePresence } from 'motion/react';
 import { AppShell } from './components/layout/AppShell';
@@ -16,6 +16,32 @@ function App() {
 
   // Run legacy localStorage migration on mount (Plan 02-02)
   useMigration();
+
+  // Simple Analytics — cookieless, GDPR-compliant page view tracking (Plan 08-04, PRIV-02)
+  // Manual script injection with hash mode for HashRouter navigation tracking.
+  // Loaded outside splash guard so analytics fires immediately regardless of onboarding state.
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://scripts.simpleanalyticscdn.com/latest.js';
+    script.async = true;
+    script.defer = true;
+    script.dataset.mode = 'hash';
+    document.body.appendChild(script);
+
+    // noscript fallback pixel for non-JS environments
+    const noscriptImg = document.createElement('img');
+    noscriptImg.src = 'https://queue.simpleanalyticscdn.com/noscript.gif';
+    noscriptImg.alt = '';
+    noscriptImg.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
+    noscriptImg.style.display = 'none';
+    document.body.appendChild(noscriptImg);
+
+    return () => {
+      // Cleanup on unmount (dev StrictMode double-invoke guard)
+      if (document.body.contains(script)) document.body.removeChild(script);
+      if (document.body.contains(noscriptImg)) document.body.removeChild(noscriptImg);
+    };
+  }, []);
 
   return (
     <MotionProvider>

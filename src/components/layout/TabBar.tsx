@@ -1,4 +1,5 @@
 import { Coffee, Github } from 'lucide-react';
+import { Link } from 'react-router';
 
 /**
  * BottomBar — Fixed bottom bar with footer credits.
@@ -61,12 +62,12 @@ export function TabBar() {
             &copy; {year}
           </span>
           <span className="text-clay-text-muted/30">|</span>
-          <a
-            href="/privacy.html"
+          <Link
+            to="/privacy"
             className="hover:text-clay-text transition-colors duration-200"
           >
             Privacy
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
