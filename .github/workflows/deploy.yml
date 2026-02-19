@@ -34,6 +34,15 @@ jobs:
           VITE_TMDB_API_KEY: ${{ secrets.API_KEY }}
           VITE_OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
 
+      - name: Lighthouse audit
+        uses: treosh/lighthouse-ci-action@v12
+        with:
+          staticDistDir: dist
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 1
+        continue-on-error: true
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
