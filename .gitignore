@@ -193,3 +193,11 @@ demo.html
 
 # PRD documentation (internal)
 PRDs/
+
+# Legacy vanilla JS website (replaced by React/Vite app in src/)
+scripts/
+css/
+index.old.html
+service-worker.js
+site.webmanifest
+privacy.html

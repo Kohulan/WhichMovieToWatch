@@ -1,19 +1,16 @@
 // SearchCell — Feature CTA for Advanced Search.
 //
 // Designed as col-span-4, row-span-1 on desktop.
-// Clay material cell. Click navigates to /discover (fallback — SearchModal
-// open mechanism not directly accessible from a cell component context).
+// Clay material cell. Dispatches 'open-search' event to trigger the
+// SpotlightSearch overlay (rendered in Navbar) instead of navigating away.
 
-import { useNavigate } from 'react-router';
 import { Search, ArrowRight } from 'lucide-react';
 
 export function SearchCell() {
-  const navigate = useNavigate();
-
   return (
     <div
       className="w-full h-full flex items-center gap-4 p-4"
-      onClick={() => navigate('/discover')}
+      onClick={() => window.dispatchEvent(new CustomEvent('open-search'))}
     >
       {/* Icon */}
       <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center">

@@ -1,8 +1,8 @@
-// ScrollReveal — whileInView wrapper with replay-aware animation (ANIM-02)
+// ScrollReveal — scroll-triggered or mount-triggered reveal animation (ANIM-02)
 //
-// First appearance: full animation (60-100px travel, 0.6s duration)
-// Re-entry (after initial reveal): shorter duration (0.3s) and reduced travel (40%)
-// This satisfies the "replay on scroll-back with shorter duration" user decision.
+// When once=true (above-fold content): animates immediately on mount via initial+animate.
+// When once=false (below-fold content): uses whileInView for scroll-triggered reveal with
+// replay on scroll-back using shorter duration and reduced travel.
 
 import { motion, type Variants } from 'motion/react';
 import { useState, type ReactNode } from 'react';
@@ -14,7 +14,9 @@ interface ScrollRevealProps {
   travel?: number;
   /** Delay before animation starts in seconds (default 0) */
   delay?: number;
-  /** Only animate once — no replay on scroll-back (default false) */
+  /** Only animate once — no replay on scroll-back (default false).
+   *  When true, uses animate-on-mount instead of whileInView to avoid
+   *  content staying invisible behind fixed backdrops. */
   once?: boolean;
 }
 
@@ -45,12 +47,18 @@ export function ScrollReveal({
     },
   };
 
+  const animationProps = once
+    ? { initial: 'hidden' as const, animate: 'visible' as const }
+    : {
+        initial: 'hidden' as const,
+        whileInView: 'visible' as const,
+        viewport: { amount: 0.2 },
+      };
+
   return (
     <motion.div
       className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ amount: 0.2, once }}
+      {...animationProps}
       variants={variants}
       onAnimationComplete={() => setHasAnimated(true)}
     >

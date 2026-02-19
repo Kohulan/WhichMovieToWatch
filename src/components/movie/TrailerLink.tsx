@@ -1,7 +1,6 @@
 // Trailer link — finds YouTube trailer from movie videos (DISP-03)
 
-import { Play } from 'lucide-react';
-import { MetalButton } from '@/components/ui';
+import { PlayCircle } from 'lucide-react';
 import { ExternalLink } from '@/components/shared/ExternalLink';
 import type { TMDBMovieDetails } from '@/types/movie';
 
@@ -26,11 +25,10 @@ function findYouTubeVideo(
 }
 
 /**
- * TrailerLink — Renders a YouTube trailer button.
+ * TrailerLink — Prominent YouTube trailer button with play icon.
  *
- * Finds the first YouTube trailer from videos.results.
- * Falls back to any YouTube video if no trailer type found.
- * Renders nothing if no YouTube videos are available.
+ * Designed to sit below the movie poster. Full-width with a large
+ * play circle icon for clear affordance.
  */
 export function TrailerLink({ videos }: TrailerLinkProps) {
   const videoKey = findYouTubeVideo(videos);
@@ -40,11 +38,11 @@ export function TrailerLink({ videos }: TrailerLinkProps) {
   const youtubeUrl = `https://www.youtube.com/watch?v=${videoKey}`;
 
   return (
-    <ExternalLink href={youtubeUrl} className="inline-flex">
-      <MetalButton variant="ghost" size="sm" aria-label="Watch trailer on YouTube">
-        <Play className="w-4 h-4" aria-hidden="true" />
+    <ExternalLink href={youtubeUrl} className="block w-full">
+      <div className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-xl bg-white/[0.08] backdrop-blur-md border border-white/10 text-clay-text font-medium text-sm hover:bg-white/[0.12] transition-colors">
+        <PlayCircle className="w-5 h-5 text-red-500" aria-hidden="true" />
         Watch Trailer
-      </MetalButton>
+      </div>
     </ExternalLink>
   );
 }

@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { useThemeStore } from '../stores/themeStore';
-import type { ColorPreset } from '../stores/themeStore';
+import { useThemeStore, type ColorPreset } from '@/stores/themeStore';
 
-const PRESET_CLASSES: ColorPreset[] = ['cinema-gold', 'ocean-blue', 'neon-purple'];
+const PRESET_CLASSES: ColorPreset[] = ['warm-orange', 'gold', 'clean-white'];
 const MEDIA_QUERY = '(prefers-color-scheme: dark)';
 
 export function useTheme() {
@@ -23,14 +22,12 @@ export function useTheme() {
   useEffect(() => {
     const root = document.documentElement;
 
-    // Toggle dark class
     if (mode === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
 
-    // Remove all preset classes, then add the current one
     for (const p of PRESET_CLASSES) {
       root.classList.remove(`theme-${p}`);
     }
@@ -52,7 +49,6 @@ export function useTheme() {
     return () => mediaQuery.removeEventListener('change', handler);
   }, [setMode]);
 
-  // Wrap toggleMode to track manual toggles
   const handleToggleMode = () => {
     hasManuallyToggled.current = true;
     toggleMode();

@@ -67,7 +67,7 @@ export function ClayModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
-            className={`relative bg-clay-elevated clay-texture clay-shadow-lg rounded-clay-xl max-w-lg w-full mx-auto max-h-[90vh] overflow-y-auto transition-colors duration-300 ${className}`}
+            className={`relative bg-clay-base/80 backdrop-blur-2xl border border-white/10 rounded-2xl max-w-lg w-full mx-auto max-h-[90vh] overflow-y-auto transition-colors duration-300 ${className}`}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{
               scale: 1,
@@ -97,7 +97,7 @@ export function ClayModal({
               <button
                 onClick={onClose}
                 autoFocus
-                className="ml-auto p-2 rounded-clay bg-clay-surface text-clay-text-muted hover:text-clay-text hover:bg-clay-base transition-colors"
+                className="ml-auto p-2 rounded-xl bg-white/[0.08] border border-white/10 text-clay-text-muted hover:text-clay-text hover:bg-white/[0.12] transition-colors"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />

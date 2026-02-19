@@ -3,58 +3,68 @@ import { useMotionValue, useSpring, useTransform, motion } from 'motion/react';
 import Spline from '@splinetool/react-spline';
 import type { Application } from '@splinetool/runtime';
 import { useScene3dStore } from '@/stores/scene3dStore';
+import { useThemeStore } from '@/stores/themeStore';
 import { useSplineTheme } from '@/hooks/useSplineTheme';
 import { useDeviceOrientation } from '@/hooks/useDeviceOrientation';
 import { GyroscopeProvider } from './GyroscopeProvider';
 
 interface SplineSceneProps {
-  /** URL to the .splinecode scene file. Defaults to the self-hosted public asset. */
   sceneUrl?: string;
-  /** Additional class names applied to the wrapper container. */
   className?: string;
-  /**
-   * When true, renders at lower fidelity for reduced-3d capability tier.
-   * Currently applies a 75% scale transform to reduce GPU fill rate.
-   */
   reduced?: boolean;
 }
 
 /**
- * SplineScene — Core Spline component with:
- *   - Fixed fullscreen container (CLS-free: container dimensions set before scene loads)
- *   - Opacity fade-in transition (0 → 1 over 0.8s) on scene load
- *   - splineApp reference stored in scene3dStore for camera control (Plans 07-03/07-04)
- *   - Error handling: logs warning and marks sceneLoaded(false) on load failure
- *   - aria-hidden + pointer-events-none so clicks pass through to content layer
- *   - Spline's built-in mouse tracking provides parallax depth (uses global mousemove,
- *     not click events, so pointer-events-none does not break parallax)
- *   - reduced prop: scales canvas to 75% to lower GPU fill rate on reduced-3d devices
- *   - useSplineTheme: syncs theme preset/mode to Spline lighting variables
- *   - Gyroscope parallax: CSS perspective transform driven by device tilt on mobile
- *   - GyroscopeProvider: permission prompt UI (only on touch mobile devices)
- *   - renderOnDemand: Spline only re-renders when the scene state changes (saves CPU/battery)
- *   - requestIdleCallback deferred loading: Spline is not instantiated until browser is idle,
- *     ensuring LCP and TTI are not blocked by the 3D runtime
- *   - dispose() called on unmount to prevent memory leaks (WebGL contexts, event listeners)
- *
- * Default sceneUrl points to public/3d-models/scene.splinecode (self-hosted).
- * If user has not yet exported their scene, the component handles load failure gracefully.
+ * Pre-validates the .splinecode file before mounting Spline.
+ * For local files: fetches first 16 bytes to detect ASCII placeholder vs real binary.
+ * For remote URLs (CDN): assumes valid — let the Spline component handle errors.
  */
+async function validateSceneFile(url: string): Promise<boolean> {
+  // Remote CDN URLs (prod.spline.design, etc.) — trust them, skip byte check
+  if (url.startsWith('http://') || url.startsWith('https://')) return true;
+
+  try {
+    const res = await fetch(url, { method: 'GET', headers: { Range: 'bytes=0-15' } });
+    if (!res.ok) return false;
+    const buf = await res.arrayBuffer();
+    if (buf.byteLength < 4) return false;
+    // Check if the response starts with ASCII text (our placeholder)
+    const firstBytes = new Uint8Array(buf);
+    const isAsciiText = firstBytes.every((b) => b >= 0x20 && b < 0x7f);
+    return !isAsciiText; // Binary = valid scene, ASCII text = placeholder
+  } catch {
+    return false;
+  }
+}
+
 export function SplineScene({
-  sceneUrl = `${import.meta.env.BASE_URL}3d-models/scene.splinecode`,
+  sceneUrl = 'https://prod.spline.design/2fWjKvs9eEHSzk0P/scene.splinecode',
   className = '',
   reduced = false,
 }: SplineSceneProps) {
   const [loaded, setLoaded] = useState(false);
+  // null = checking, true = valid binary scene, false = placeholder/missing
+  const [sceneValid, setSceneValid] = useState<boolean | null>(null);
 
-  // Deferred loading: Spline is not instantiated until the browser is idle.
-  // This ensures the Spline runtime does not compete with LCP and TTI.
-  // - requestIdleCallback fires after initial paint and main-thread quiet period
-  // - setTimeout(1000) fallback for Safari/Firefox (no requestIdleCallback)
-  // - timeout:3000 ensures Spline loads within 3 seconds even under sustained load
+  // Validate scene file before attempting to mount Spline.
+  // Prevents the crash cascade from invalid/placeholder .splinecode files.
+  useEffect(() => {
+    let cancelled = false;
+    validateSceneFile(sceneUrl).then((valid) => {
+      if (cancelled) return;
+      setSceneValid(valid);
+      if (!valid) {
+        useScene3dStore.getState().setSceneError(true);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [sceneUrl]);
+
+  // Deferred loading: Spline not instantiated until browser is idle + scene is validated.
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
+    if (sceneValid !== true) return; // Only defer-load when scene is validated
     let id: number | ReturnType<typeof setTimeout>;
     if ('requestIdleCallback' in window) {
       id = requestIdleCallback(() => setShouldLoad(true), { timeout: 3000 });
@@ -62,25 +72,17 @@ export function SplineScene({
       id = setTimeout(() => setShouldLoad(true), 1000);
     }
     return () => {
-      if ('requestIdleCallback' in window) {
-        cancelIdleCallback(id as number);
-      } else {
-        clearTimeout(id as ReturnType<typeof setTimeout>);
-      }
+      if ('requestIdleCallback' in window) cancelIdleCallback(id as number);
+      else clearTimeout(id as ReturnType<typeof setTimeout>);
     };
-  }, []);
+  }, [sceneValid]);
 
-  // Cleanup: dispose() releases WebGL context, removes Spline's internal event
-  // listeners, and frees GPU memory. Called on component unmount.
+  // Cleanup: dispose WebGL context on unmount
   useEffect(() => {
     return () => {
       const app = useScene3dStore.getState().splineApp;
       if (app) {
-        try {
-          app.dispose();
-        } catch {
-          // dispose may throw if the WebGL context was already lost
-        }
+        try { app.dispose(); } catch { /* WebGL context may already be lost */ }
         useScene3dStore.getState().setSplineApp(null);
       }
     };
@@ -88,31 +90,22 @@ export function SplineScene({
 
   const { setSplineApp, setSceneLoaded, setSceneError } = useScene3dStore.getState();
 
-  // Sync theme preset and mode to Spline scene variables on every theme change.
-  // Hook runs as side effect only — no rendering impact.
+  // Theme sync — only runs side effects when splineApp is set
   useSplineTheme();
 
-  // Gyroscope orientation for mobile parallax
+  // Gyroscope for mobile parallax
   const { orientation, permissionState } = useDeviceOrientation();
-
-  // Detect touch device (ref avoids re-renders)
   const isMobileRef = useRef(
     typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0,
   );
 
-  // Spring-smoothed motion values for gyroscope parallax
-  // useMotionValue feeds into useSpring for smooth easing
   const rawRotateX = useMotionValue(0);
   const rawRotateY = useMotionValue(0);
   const springRotateX = useSpring(rawRotateX, { stiffness: 50, damping: 20 });
   const springRotateY = useSpring(rawRotateY, { stiffness: 50, damping: 20 });
-
-  // Map spring values to ±3 degrees of perspective tilt
   const tiltX = useTransform(springRotateX, [-1, 1], [3, -3]);
   const tiltY = useTransform(springRotateY, [-1, 1], [-3, 3]);
 
-  // Update spring motion values when orientation changes (mobile with granted permission)
-  // This runs on every render where orientation changes — intentional reactive update
   if (isMobileRef.current && permissionState === 'granted') {
     rawRotateX.set(orientation.betaNorm);
     rawRotateY.set(orientation.gammaNorm);
@@ -130,52 +123,36 @@ export function SplineScene({
 
   const handleError = useCallback(
     (error: unknown) => {
-      console.warn(
-        '[SplineScene] Failed to load 3D scene:',
-        error,
-        '\nIf you have not yet exported your scene from Spline, place the .splinecode file at public/3d-models/scene.splinecode',
-      );
+      console.warn('[SplineScene] Failed to load 3D scene:', error);
       setSceneLoaded(false);
       setSceneError(true);
     },
     [setSceneLoaded, setSceneError],
   );
 
-  // Whether to apply gyroscope perspective transform
-  // Only on mobile with granted permission — desktop uses Spline's native mouse parallax
   const useGyroscopeParallax = isMobileRef.current && permissionState === 'granted';
+
+  const mode = useThemeStore((s) => s.mode);
+  const sceneOffset = mode === 'light' ? 'translateX(-10%)' : 'translateX(15%)';
+  const sceneScale = mode === 'light' ? 1.2 : 1;
+
+  // If scene is invalid/placeholder, render nothing — AppShell will show ParallaxFallback
+  if (sceneValid === false) return <GyroscopeProvider />;
 
   return (
     <>
-      {/* Outer container: fixed fullscreen, CLS-free, opacity-controlled */}
       <div
         className={`fixed inset-0 ${className}`}
         style={{
           width: '100vw',
           height: '100vh',
-          // Opacity transitions from 0 → 1 once scene signals onLoad
-          // The fixed-size container is rendered immediately, preventing CLS
           opacity: loaded ? 1 : 0,
           transition: 'opacity 0.8s ease-out',
-          // Clicks pass through to content layer beneath — Spline parallax uses
-          // global mousemove so pointer-events:none does not break mouse tracking
           pointerEvents: 'none',
+          transform: sceneOffset,
         }}
-        // Purely decorative — screen readers should not announce this layer
         aria-hidden="true"
       >
-        {/*
-          Gyroscope parallax wrapper (mobile only, granted permission):
-          CSS perspective transform driven by device tilt.
-          motion.div applies spring-smoothed rotateX/rotateY based on betaNorm/gammaNorm.
-
-          On desktop: this is a static passthrough div (no transform applied).
-          On mobile without permission: same — static passthrough.
-          On mobile with permission: perspective 1000px + spring-eased ±3deg tilt.
-
-          Reduced-3d: will-change:transform promotes to compositor thread (GPU layer).
-          Scale 0.75 reduces fill rate — canvas renders at 75% viewport, CSS scales it up.
-        */}
         <motion.div
           style={{
             width: '100%',
@@ -183,23 +160,11 @@ export function SplineScene({
             perspective: useGyroscopeParallax ? '1000px' : undefined,
             rotateX: useGyroscopeParallax ? tiltX : 0,
             rotateY: useGyroscopeParallax ? tiltY : 0,
-            // Reduced-3d mode: 75% scale lowers GPU fill rate while keeping scene visible
-            // will-change:transform promotes the layer to GPU compositor for smooth animation
-            scale: reduced ? 0.75 : 1,
+            scale: reduced ? sceneScale * 0.75 : sceneScale,
             transformOrigin: 'center center',
             willChange: reduced ? 'transform' : undefined,
           }}
         >
-          {/*
-            Only instantiate the Spline component after the browser is idle.
-            shouldLoad is set by requestIdleCallback (or setTimeout fallback).
-            This ensures Spline's heavy JS evaluation does not block LCP/TTI.
-
-            renderOnDemand={true}: Spline only re-renders the WebGL canvas when
-            the scene state changes (camera moves, animations, variable updates).
-            Without this flag, Spline renders at 60fps continuously — burning CPU
-            and battery even when the scene is visually idle.
-          */}
           {shouldLoad && (
             <Spline
               scene={sceneUrl}
@@ -211,17 +176,7 @@ export function SplineScene({
           )}
         </motion.div>
       </div>
-
-      {/*
-        GyroscopeProvider: permission prompt UI for mobile users.
-        Rendered as a sibling (outside the aria-hidden container) so it is accessible.
-        This component is nested inside SplineScene, meaning:
-          - fallback-2d devices never mount SplineScene → never see this prompt
-          - The prompt only appears on full-3d / reduced-3d capable devices
-      */}
       <GyroscopeProvider />
     </>
   );
 }
-
-export default SplineScene;

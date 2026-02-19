@@ -229,7 +229,7 @@ export async function generateStoryCard(
   ctx.font = '34px Arial, sans-serif';
   ctx.fillStyle = accentColor;
   ctx.textAlign = 'center';
-  ctx.fillText('whichmovieto.watch', CARD_W / 2, LINK_Y);
+  ctx.fillText('whichmovietowatch.online', CARD_W / 2, LINK_Y);
 
   // Brand name
   ctx.font = 'bold 44px Arial, sans-serif';
@@ -248,6 +248,153 @@ export async function generateStoryCard(
 }
 
 /**
+ * Generate a 1080x1080 post card PNG blob for the given movie and theme.
+ * Square format optimised for Instagram/Facebook feed posts.
+ */
+export async function generatePostCard(
+  movie: StoryCardMovie,
+  preset: ColorPreset,
+  mode: 'light' | 'dark',
+): Promise<Blob | null> {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1080;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  const W = 1080;
+  const H = 1080;
+  const gradientColors = THEME_GRADIENTS[preset][mode];
+  const accentColor = THEME_ACCENTS[preset][mode];
+  const textColors = TEXT_COLORS[mode];
+
+  // --- Background gradient ---
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, gradientColors[0]);
+  bg.addColorStop(1, gradientColors[1]);
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  // --- Subtle dot overlay ---
+  ctx.globalAlpha = 0.1;
+  for (let i = 0; i < 40; i++) {
+    const x = Math.random() * W;
+    const y = Math.random() * H;
+    const size = Math.random() * 3 + 1;
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    ctx.arc(x, y, size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // --- Poster (left side) ---
+  const POSTER_W = 420;
+  const POSTER_H = 630;
+  const POSTER_X = 60;
+  const POSTER_Y = (H - POSTER_H) / 2 - 30;
+
+  ctx.shadowColor = 'rgba(0,0,0,0.5)';
+  ctx.shadowBlur = 30;
+  ctx.shadowOffsetY = 12;
+
+  let posterLoaded = false;
+  if (movie.poster_path) {
+    const tmdbUrl = `https://image.tmdb.org/t/p/w780${movie.poster_path}`;
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(tmdbUrl)}`;
+    try {
+      const img = await loadImageFromSrc(proxyUrl);
+      ctx.save();
+      drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 16);
+      ctx.clip();
+      ctx.shadowColor = 'transparent';
+      ctx.drawImage(img, POSTER_X, POSTER_Y, POSTER_W, POSTER_H);
+      ctx.restore();
+      posterLoaded = true;
+    } catch {
+      // fallback below
+    }
+  }
+
+  if (!posterLoaded) {
+    ctx.save();
+    drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 16);
+    const pg = ctx.createLinearGradient(POSTER_X, POSTER_Y, POSTER_X + POSTER_W, POSTER_Y + POSTER_H);
+    pg.addColorStop(0, mode === 'dark' ? '#2d3561' : '#c8d6e8');
+    pg.addColorStop(1, mode === 'dark' ? '#0f3460' : '#8faac6');
+    ctx.fillStyle = pg;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetY = 0;
+
+  // --- Right-side info ---
+  const TEXT_X = POSTER_X + POSTER_W + 50;
+  const TEXT_MAX_W = W - TEXT_X - 60;
+
+  // Title (word-wrapped)
+  ctx.font = 'bold 52px Arial, sans-serif';
+  ctx.fillStyle = textColors.primary;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'alphabetic';
+
+  const words = movie.title.split(' ');
+  let line = '';
+  const lines: string[] = [];
+  for (const word of words) {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > TEXT_MAX_W) {
+      if (line) lines.push(line);
+      line = word;
+    } else {
+      line = test;
+    }
+  }
+  if (line) lines.push(line);
+
+  let ty = POSTER_Y + 40;
+  for (const l of lines) {
+    ctx.fillText(l, TEXT_X, ty);
+    ty += 62;
+  }
+  ty += 10;
+
+  // Year + rating
+  const year = movie.release_date ? new Date(movie.release_date).getFullYear().toString() : '';
+  const rating = movie.vote_average ? `★ ${movie.vote_average.toFixed(1)}` : '';
+  const infoText = [year, rating].filter(Boolean).join('  ·  ');
+  ctx.font = '38px Arial, sans-serif';
+  ctx.fillStyle = textColors.secondary;
+  ctx.fillText(infoText, TEXT_X, ty);
+  ty += 55;
+
+  // Genres
+  if (movie.genres && movie.genres.length > 0) {
+    const genreText = movie.genres.slice(0, 3).map((g) => g.name).join(' • ');
+    ctx.font = '32px Arial, sans-serif';
+    ctx.fillStyle = textColors.secondary;
+    ctx.fillText(genreText, TEXT_X, ty);
+  }
+
+  // --- Bottom branding ---
+  ctx.font = '30px Arial, sans-serif';
+  ctx.fillStyle = accentColor;
+  ctx.textAlign = 'center';
+  ctx.fillText('whichmovietowatch.online', W / 2, H - 70);
+
+  ctx.font = 'bold 36px Arial, sans-serif';
+  ctx.fillStyle = textColors.primary;
+  ctx.fillText('Which Movie To Watch', W / 2, H - 30);
+
+  return new Promise<Blob | null>((resolve) => {
+    canvas.toBlob((blob) => resolve(blob), 'image/png');
+  });
+}
+
+/**
  * Trigger a download of the story card blob as a PNG file.
  */
 export function downloadStoryCard(blob: Blob, movieTitle: string): void {
@@ -260,4 +407,52 @@ export function downloadStoryCard(blob: Blob, movieTitle: string): void {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+/**
+ * Tiered image share: native file share → clipboard copy → download.
+ * Returns a user-facing status message.
+ */
+export async function shareImageBlob(
+  blob: Blob,
+  movieTitle: string,
+  filename: string,
+): Promise<'shared' | 'copied' | 'downloaded'> {
+  const file = new File([blob], filename, {
+    type: 'image/png',
+    lastModified: Date.now(),
+  });
+
+  // 1. Try native share with file (works on mobile)
+  if (navigator.share && navigator.canShare) {
+    const shareData = { files: [file] };
+    if (navigator.canShare(shareData)) {
+      try {
+        await navigator.share({
+          ...shareData,
+          title: movieTitle,
+          text: `Check out "${movieTitle}" — whichmovietowatch.online`,
+        });
+        return 'shared';
+      } catch (err) {
+        if (err instanceof Error && err.name === 'AbortError') return 'shared';
+        // fall through to clipboard
+      }
+    }
+  }
+
+  // 2. Try clipboard copy
+  try {
+    if (navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+      const item = new ClipboardItem({ 'image/png': blob });
+      await navigator.clipboard.write([item]);
+      return 'copied';
+    }
+  } catch {
+    // fall through to download
+  }
+
+  // 3. Fallback: download
+  downloadStoryCard(blob, movieTitle);
+  return 'downloaded';
 }

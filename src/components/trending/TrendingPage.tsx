@@ -23,7 +23,7 @@ export function TrendingPage() {
 
   function handleMovieClick(movieId: number) {
     // Navigate to discovery page with deep-link to load full movie details
-    navigate(`/discover?movie=${movieId}`);
+    navigate(`/discover?movie=${movieId}&source=trending`);
   }
 
   if (isLoading && movies.length === 0) {

@@ -63,18 +63,25 @@ export function useSplineTheme(): void {
       ['isDarkMode', modeValues.isDarkMode],
     ];
 
-    for (const [name, value] of variables) {
-      try {
-        splineApp.setVariable(name, value);
-        console.log(`[useSplineTheme] setVariable(${name}, ${value})`);
-      } catch (err) {
-        // Variable may not exist in the current .splinecode scene design — non-fatal
-        console.warn(
-          `[useSplineTheme] Failed to set Spline variable "${name}":`,
-          err,
-          '\nThis is expected if the .splinecode scene has not yet defined this variable.',
-        );
+    // Mute Spline SDK's expected "No variable named ..." warnings during batch update.
+    // The Spline runtime logs console.warn internally before returning/throwing when a
+    // variable doesn't exist in the scene. We suppress these to keep the console clean.
+    // Will become a no-op once the Spline scene defines all four variables.
+    const _warn = console.warn;
+    console.warn = (...args: unknown[]) => {
+      if (typeof args[0] === 'string' && args[0].includes('No variable named')) return;
+      _warn.apply(console, args);
+    };
+    try {
+      for (const [name, value] of variables) {
+        try {
+          splineApp.setVariable(name, value);
+        } catch {
+          // Variable doesn't exist in current scene — silently skip.
+        }
       }
+    } finally {
+      console.warn = _warn;
     }
   }, [preset, mode, splineApp]);
 }

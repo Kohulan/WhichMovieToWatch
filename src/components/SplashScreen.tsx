@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Film } from 'lucide-react';
+import logoSrc from '@/../assets/logo.png';
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -50,7 +50,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         />
       </motion.div>
 
-      {/* Film icon — dramatic spring entrance with rotation */}
+      {/* Logo — dramatic spring entrance with rotation */}
       <motion.div
         initial={{ scale: 0, rotate: -180, opacity: 0 }}
         animate={{ scale: 1, rotate: 0, opacity: 1 }}
@@ -62,11 +62,12 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         }}
         className="mb-6 relative z-10"
       >
-        <Film
-          className="w-16 h-16 text-accent"
-          strokeWidth={1.5}
+        <img
+          src={logoSrc}
+          alt="Which Movie To Watch"
+          className="w-20 h-20 object-contain"
         />
-        {/* Specular glow behind icon — blurred accent-colored halo */}
+        {/* Specular glow behind logo — blurred accent-colored halo */}
         <motion.div
           className="absolute inset-0 blur-xl pointer-events-none"
           style={{ backgroundColor: 'var(--accent)' }}

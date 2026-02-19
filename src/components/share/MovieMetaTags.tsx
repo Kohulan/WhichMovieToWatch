@@ -19,7 +19,7 @@ export function MovieMetaTags({ movie }: MovieMetaTagsProps) {
     ? `https://image.tmdb.org/t/p/w1280${movie.poster_path}`
     : '/assets/images/preview.png';
 
-  const pageUrl = `https://www.whichmovieto.watch/#/discover?movie=${movie.id}`;
+  const pageUrl = `https://www.whichmovietowatch.online/#/discover?movie=${movie.id}`;
 
   const year = movie.release_date?.slice(0, 4) ?? '';
   const snippet = movie.overview?.slice(0, 150) ?? 'Discover this movie';

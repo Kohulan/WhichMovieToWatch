@@ -16,18 +16,18 @@ function parseRating(raw: string | null): number | null {
   return parseFloat(raw.replace('%', ''));
 }
 
-/** Get Tailwind color classes based on a 0-100 score */
+/** Get Tailwind color classes based on a 0-100 score (light/dark adaptive) */
 function getScoreColor(score: number): string {
-  if (score >= 70) return 'bg-green-500/20 text-green-400';
-  if (score >= 50) return 'bg-yellow-500/20 text-yellow-400';
-  return 'bg-red-500/20 text-red-400';
+  if (score >= 70) return 'bg-green-500/20 text-green-700 dark:text-green-400';
+  if (score >= 50) return 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400';
+  return 'bg-red-500/20 text-red-700 dark:text-red-400';
 }
 
-/** Get Tailwind color classes for a 0-10 IMDB/TMDB score */
+/** Get Tailwind color classes for a 0-10 IMDB/TMDB score (light/dark adaptive) */
 function get10ScoreColor(score: number): string {
-  if (score >= 7.0) return 'bg-green-500/20 text-green-400';
-  if (score >= 5.0) return 'bg-yellow-500/20 text-yellow-400';
-  return 'bg-red-500/20 text-red-400';
+  if (score >= 7.0) return 'bg-green-500/20 text-green-700 dark:text-green-400';
+  if (score >= 5.0) return 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400';
+  return 'bg-red-500/20 text-red-700 dark:text-red-400';
 }
 
 /**

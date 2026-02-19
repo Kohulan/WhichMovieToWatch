@@ -109,8 +109,8 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
               borderRadius: '50%',
               background:
                 'radial-gradient(circle, color-mix(in oklch, var(--accent) 60%, transparent) 0%, transparent 70%)',
-              opacity: 0.06,
-              filter: 'blur(60px)',
+              opacity: 0.03,
+              filter: 'blur(80px)',
             }}
           />
         </div>
@@ -129,14 +129,14 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
         >
           {/* Film reel SVG: outer circle + 6 rectangular sprocket holes + inner hub */}
           <svg
-            width="400"
-            height="400"
+            width="240"
+            height="240"
             viewBox="0 0 100 100"
             className="film-reel-spin"
             style={{
-              opacity: 0.06,
+              opacity: 0.03,
               color: 'var(--accent)',
-              animationDuration: '20s',
+              animationDuration: '30s',
             }}
             fill="currentColor"
           >
@@ -175,8 +175,8 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
               height: '80%',
               background:
                 'radial-gradient(ellipse at 50% 0%, color-mix(in oklch, var(--accent) 30%, transparent) 0%, transparent 65%)',
-              opacity: 0.08,
-              filter: 'blur(20px)',
+              opacity: 0.04,
+              filter: 'blur(30px)',
             }}
           />
         </div>

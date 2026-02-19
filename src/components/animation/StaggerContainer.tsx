@@ -1,11 +1,17 @@
 // StaggerContainer + StaggerItem — parent/child staggered entrance animation (ANIM-02)
 //
-// StaggerContainer: whileInView wrapper that triggers staggered entrance for all children.
+// StaggerContainer: animate-on-mount wrapper that triggers staggered entrance for all children.
 // StaggerItem: child component that inherits timing from the parent via variants propagation.
 //
-// Key pattern: StaggerItem does NOT set its own initial/whileInView — it relies entirely
+// Key pattern: StaggerItem does NOT set its own initial/animate — it relies entirely
 // on the parent StaggerContainer's variants propagation. This is standard Framer Motion
 // stagger choreography.
+//
+// Uses initial="hidden" + animate="visible" (NOT whileInView) so the stagger animation
+// fires immediately on mount. This avoids a race condition where content stays at opacity:0
+// because the Intersection Observer doesn't fire reliably during page transitions —
+// particularly on pages with fixed full-viewport backdrops that render opaque while
+// animated content is still invisible.
 
 import { motion, type Variants } from 'motion/react';
 import type { ReactNode } from 'react';
@@ -77,8 +83,7 @@ export function StaggerContainer({
     <motion.div
       className={className}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ amount: 0.15 }}
+      animate="visible"
       variants={containerVariants}
       custom={stagger}
       role={role}

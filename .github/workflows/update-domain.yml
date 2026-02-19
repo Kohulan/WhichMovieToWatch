@@ -20,7 +20,7 @@ jobs:
 
       - name: Ensure CNAME file exists
         run: |
-          echo "www.whichmovieto.watch" > CNAME
+          echo "www.whichmovietowatch.online" > CNAME
 
       - name: Commit and push if changed
         run: |

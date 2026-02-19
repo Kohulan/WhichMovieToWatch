@@ -1,6 +1,6 @@
-import { Component, type ReactNode, type ErrorInfo, lazy, Suspense, useRef, useEffect } from 'react';
+import { Component, type ReactNode, type ErrorInfo, lazy, Suspense, useRef, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useLocation } from 'react-router';
+import { useLocation, useOutlet } from 'react-router';
 import { useTheme } from '../../hooks/useTheme';
 import { useThemeStore } from '@/stores/themeStore';
 import { useScene3dStore } from '@/stores/scene3dStore';
@@ -59,8 +59,29 @@ const LazySplineHero = lazy(() => import('@/components/3d/SplineHero'));
  */
 const LazyCameraTransitionManager = lazy(() => import('@/components/3d/CameraTransitionManager'));
 
-interface AppShellProps {
-  children: ReactNode;
+/**
+ * FrozenOutlet — Captures the router outlet at mount time and freezes it.
+ *
+ * Without this, AnimatePresence mode="wait" causes the EXITING motion.main
+ * to render the NEW route's content (because <Outlet /> reads from the live
+ * router context which has already updated). This triggers a mount→unmount→mount
+ * cycle on the new page component:
+ *   1. New page mounts inside the exiting wrapper (router context changed)
+ *   2. Exiting wrapper unmounts → new page unmounts, cleanup effects fire
+ *   3. Entering wrapper mounts → new page mounts again
+ * This double lifecycle can desynchronize motion's animation state machine,
+ * causing the entering page to stay at opacity:0 (initial state never
+ * transitions to animate state).
+ *
+ * By freezing the outlet with useState (captured once on mount, never updated),
+ * the exiting wrapper keeps rendering the OLD route's content during exit.
+ * The entering wrapper then gets a fresh FrozenOutlet that captures the
+ * NEW route's content — clean single-mount lifecycle, animation fires correctly.
+ */
+function FrozenOutlet() {
+  const outlet = useOutlet();
+  const [frozen] = useState(outlet);
+  return frozen;
 }
 
 /**
@@ -84,7 +105,7 @@ interface AppShellProps {
  * CameraTransitionManager handles the camera transition on route change.
  * Standard slide+scale+fade transitions (pageVariants) remain for fallback-2d.
  */
-export function AppShell({ children }: AppShellProps) {
+export function AppShell() {
   useTheme();
   const location = useLocation();
   const preset = useThemeStore((s) => s.preset);
@@ -95,6 +116,8 @@ export function AppShell({ children }: AppShellProps) {
   // Show parallax when: explicitly fallback-2d, OR Spline failed/invalid scene
   const showParallax = capability === 'fallback-2d' || sceneError;
 
+  // HomePage is the primary 3D hero experience (user decision: "Hero scene on HomePage")
+  // Feature pages use their own poster backdrops — 3D/parallax layer fades behind them
   const isHomePage = location.pathname === '/';
 
   // 3D transitions are active when a capable GPU has a fully-loaded Spline scene.
@@ -108,13 +131,14 @@ export function AppShell({ children }: AppShellProps) {
   const activeTransition = use3DTransitions ? pageTransition3D : pageTransition;
 
   // A11Y-01: Ref to main content for programmatic focus on route change.
-  // tabIndex={-1} on the element allows focus() without entering the tab order.
   const mainRef = useRef<HTMLElement>(null);
 
   // A11Y-01: Move focus to main content after each route change so screen reader
-  // users hear the new page content. 150ms delay allows AnimatePresence to
-  // settle (pageTransition3D is 0.3s / pageTransition is ~0.5s) before focusing.
-  // Skip initial mount — only fire on subsequent route changes.
+  // users hear the new page content. Delay must exceed exit + enter animation
+  // duration (~350ms) because AnimatePresence mode="wait" unmounts the old
+  // motion.main (detaching mainRef) before mounting the new one. At 150ms the
+  // ref was null. 500ms ensures the entering page's motion.main is mounted and
+  // the ref is attached.
   const isFirstRender = useRef(true);
   useEffect(() => {
     if (isFirstRender.current) {
@@ -123,7 +147,7 @@ export function AppShell({ children }: AppShellProps) {
     }
     const timer = setTimeout(() => {
       mainRef.current?.focus({ preventScroll: true });
-    }, 150);
+    }, 500);
     return () => clearTimeout(timer);
   }, [location.pathname]);
 
@@ -177,8 +201,8 @@ export function AppShell({ children }: AppShellProps) {
           While capability is null (GPU detection still in progress), the wrapper div
           renders with no visible child — gradient blobs are sufficient in that window. */}
       <div
-        className="fixed inset-0 pointer-events-none transition-opacity duration-500"
-        style={{ opacity: isHomePage ? 0.6 : 0.1 }}
+        className="fixed inset-0 transition-opacity duration-500"
+        style={{ opacity: isHomePage ? 1 : 0.15 }}
         aria-hidden="true"
       >
         {showParallax && <ParallaxFallback />}
@@ -211,20 +235,22 @@ export function AppShell({ children }: AppShellProps) {
 
       <Navbar />
 
-      <motion.main
-        ref={mainRef}
-        id="main-content"
-        key={location.pathname}
-        tabIndex={-1}
-        variants={activeVariants}
-        initial="initial"
-        animate="animate"
-        exit="exit"
-        transition={activeTransition}
-        className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-screen outline-none"
-      >
-        {children}
-      </motion.main>
+      <AnimatePresence mode="wait">
+        <motion.main
+          ref={mainRef}
+          id="main-content"
+          key={location.pathname}
+          tabIndex={-1}
+          variants={activeVariants}
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          transition={activeTransition}
+          className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-screen outline-none"
+        >
+          <FrozenOutlet />
+        </motion.main>
+      </AnimatePresence>
     </div>
   );
 }

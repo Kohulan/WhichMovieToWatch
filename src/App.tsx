@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Outlet } from 'react-router';
 import { AnimatePresence } from 'motion/react';
 import { AppShell } from './components/layout/AppShell';
 import { SplashScreen } from './components/SplashScreen';
@@ -20,6 +19,9 @@ function App() {
   // Simple Analytics — cookieless, GDPR-compliant page view tracking (Plan 08-04, PRIV-02)
   // Manual script injection with hash mode for HashRouter navigation tracking.
   // Loaded outside splash guard so analytics fires immediately regardless of onboarding state.
+  // Note: The noscript.gif pixel is NOT injected here — it only works in a static <noscript> tag
+  // for non-JS environments. Since this is a React SPA that requires JS, it serves no purpose.
+  // Ad blockers block it (ERR_BLOCKED_BY_CLIENT) creating console noise.
   useEffect(() => {
     const script = document.createElement('script');
     script.src = 'https://scripts.simpleanalyticscdn.com/latest.js';
@@ -28,18 +30,8 @@ function App() {
     script.dataset.mode = 'hash';
     document.body.appendChild(script);
 
-    // noscript fallback pixel for non-JS environments
-    const noscriptImg = document.createElement('img');
-    noscriptImg.src = 'https://queue.simpleanalyticscdn.com/noscript.gif';
-    noscriptImg.alt = '';
-    noscriptImg.setAttribute('referrerpolicy', 'no-referrer-when-downgrade');
-    noscriptImg.style.display = 'none';
-    document.body.appendChild(noscriptImg);
-
     return () => {
-      // Cleanup on unmount (dev StrictMode double-invoke guard)
       if (document.body.contains(script)) document.body.removeChild(script);
-      if (document.body.contains(noscriptImg)) document.body.removeChild(noscriptImg);
     };
   }, []);
 
@@ -59,9 +51,7 @@ function App() {
 
       {!showSplash && (
         <Scene3DProvider>
-          <AppShell>
-            <Outlet />
-          </AppShell>
+          <AppShell />
 
           {/* Tab bar — persistent bottom navigation (DISC-03) */}
           <TabBar />

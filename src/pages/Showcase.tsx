@@ -10,8 +10,8 @@ import {
   MetalSlider,
   MetalCheckbox,
   MetalDropdown,
-  RotaryDial,
   ThemeToggle,
+  RotaryDial,
 } from '../components/ui';
 
 const streamingProviders = [
@@ -65,7 +65,7 @@ export function Showcase() {
         </h1>
         <p className="font-body text-base md:text-lg text-clay-text-muted max-w-2xl mx-auto">
           Every component in the WhichMovieToWatch design system.
-          Try the rotary dial and theme toggle in the navbar to see all 6 theme variants.
+          Toggle the theme switch in the navbar to see dark and light variants.
         </p>
       </header>
 
@@ -267,27 +267,20 @@ export function Showcase() {
         <div className="md:col-span-2 lg:col-span-3">
           <ClayCard>
             <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start">
-              {/* RotaryDial showcase */}
               <div className="flex flex-col items-center gap-3 text-center">
                 <h3 className="font-heading text-lg text-clay-text">RotaryDial</h3>
                 <RotaryDial />
                 <p className="font-body text-xs text-clay-text-muted max-w-[200px]">
-                  Click to cycle through Cinema Gold, Ocean Blue, and Neon Purple.
-                  Listen for the tick sound.
+                  Switch between Warm Orange, Gold, and White themes.
                 </p>
               </div>
-
-              {/* Divider */}
               <div className="hidden md:block w-px h-32 bg-clay-text-muted/20" />
               <div className="md:hidden w-32 h-px bg-clay-text-muted/20" />
-
-              {/* ThemeToggle showcase */}
               <div className="flex flex-col items-center gap-3 text-center">
                 <h3 className="font-heading text-lg text-clay-text">ThemeToggle</h3>
                 <ThemeToggle />
                 <p className="font-body text-xs text-clay-text-muted max-w-[200px]">
                   Toggle between dark and light modes.
-                  Dark mode feels like dark-colored clay, not dimmed.
                 </p>
               </div>
             </div>

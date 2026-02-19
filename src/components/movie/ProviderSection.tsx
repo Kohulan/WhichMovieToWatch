@@ -7,6 +7,7 @@ import type { MovieProviders, ProviderInfo } from '@/types/provider';
 interface ProviderSectionProps {
   providers: MovieProviders;
   findMovieLink?: string;
+  children?: React.ReactNode;
 }
 
 interface ProviderTierProps {
@@ -79,7 +80,7 @@ function getFreeProviders(providers: MovieProviders): ProviderInfo[] {
  * Shows "Not available" message with a Find Movie link if no providers. (DISP-05)
  * ARIA labeled for screen readers. (A11Y-02)
  */
-export function ProviderSection({ providers, findMovieLink }: ProviderSectionProps) {
+export function ProviderSection({ providers, findMovieLink, children }: ProviderSectionProps) {
   const freeProviders = getFreeProviders(providers);
   const hasProviders = hasAnyProviders(providers);
 
@@ -88,6 +89,8 @@ export function ProviderSection({ providers, findMovieLink }: ProviderSectionPro
       <h3 className="font-heading text-base font-semibold text-clay-text mb-3">
         Where to Watch
       </h3>
+
+      {children}
 
       {hasProviders ? (
         <div>

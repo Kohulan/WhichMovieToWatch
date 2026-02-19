@@ -13,11 +13,13 @@ interface PreferencesState {
   preferredGenre: string | null;
   myServices: number[];
   tasteProfile: TasteProfile;
+  hasCompletedOnboarding: boolean;
 
   setPreferredProvider: (provider: string | null) => void;
   setPreferredGenre: (genre: string | null) => void;
   setMyServices: (services: number[]) => void;
   toggleMyService: (providerId: number) => void;
+  completeOnboarding: () => void;
   recordLove: (genres: number[], decade: string, directorId?: number) => void;
   recordNotInterested: (
     genres: number[],
@@ -45,6 +47,7 @@ export const usePreferencesStore = create<PreferencesState>()(
       preferredGenre: null,
       myServices: [],
       tasteProfile: { ...EMPTY_TASTE_PROFILE },
+      hasCompletedOnboarding: false,
 
       setPreferredProvider: (provider) => set({ preferredProvider: provider }),
       setPreferredGenre: (genre) => set({ preferredGenre: genre }),
@@ -59,6 +62,8 @@ export const usePreferencesStore = create<PreferencesState>()(
               : [...state.myServices, providerId],
           };
         }),
+
+      completeOnboarding: () => set({ hasCompletedOnboarding: true }),
 
       recordLove: (genres, decade, directorId) =>
         set((state) => {
