@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 7 of 8 (3D Experience) -- IN PROGRESS
-Plan: 1 of 4 in current phase (complete)
-Status: Plan 07-01 complete — GPU detection infrastructure, parallax fallback, spline-vendor chunk, Scene3DProvider wired into AppShell
-Last activity: 2026-02-19 — Plan 07-01 complete (GPU tier detection, use3DCapability, scene3dStore, ParallaxFallback, Scene3DProvider, route-aware opacity in AppShell)
+Plan: 2 of 4 in current phase (complete)
+Status: Plan 07-02 complete — SplineScene + SplineHero lazy-loaded into AppShell, splineApp stored in scene3dStore, Workbox precache exclusion for 4.62 MB Spline chunk
+Last activity: 2026-02-19 — Plan 07-02 complete (SplineScene CLS-free container, SplineHero React.lazy wrapper, AppShell Suspense integration, scene3dStore sceneError state)
 
-Progress: [████████████████████░] 62%
+Progress: [█████████████████████░] 65%
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Progress: [████████████████████░] 62%
 | Phase 06 P03 | 3 | 2 tasks | 6 files |
 | Phase 06 P02 | 2 | 2 tasks | 10 files |
 | Phase 07-3d-experience P01 | 4 | 3 tasks | 7 files |
+| Phase 07-3d-experience P02 | 4 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -156,6 +157,10 @@ Recent decisions affecting current work:
 - Plan 07-01: detect-gpu + @splinetool bundled together in spline-vendor chunk — share same lazy-loading boundary
 - Plan 07-01: 3D/parallax layer stays MOUNTED on all routes (opacity control, not conditional render) to support camera transitions in Plan 07-04
 - Plan 07-01: Scene3DProvider is a thin wrapper (not React context) — scene3dStore IS the context, avoiding React.createContext overhead
+- Plan 07-02: Workbox globIgnores excludes spline-vendor and SplineHero chunks from SW precache — 4.62 MB 3D runtime is lazy-loaded per capability tier, not for all users
+- Plan 07-02: Suspense fallback=null in AppShell — gradient blobs visible during Spline load window, seamless progressive enhancement
+- Plan 07-02: scene3dStore.splineApp typed as Application | null (from @splinetool/runtime) — enables type-safe camera control in Plans 07-03/07-04
+- Plan 07-02: sceneError boolean added to scene3dStore — allows future Plans to detect scene failure and skip camera/theme operations gracefully
 
 ### Pending Todos
 
@@ -179,6 +184,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 07-01-PLAN.md (GPU detection, 3D capability hooks, scene3dStore, ParallaxFallback, Scene3DProvider, AppShell route-aware opacity)
-Resume file: .planning/phases/07-3d-experience/07-01-SUMMARY.md
+Stopped at: Completed 07-02-PLAN.md (SplineScene CLS-free container, SplineHero React.lazy, AppShell Suspense integration, scene3dStore sceneError, Workbox precache exclusion)
+Resume file: .planning/phases/07-3d-experience/07-02-SUMMARY.md
 Dev server: http://localhost:5173/
