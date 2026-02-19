@@ -67,6 +67,12 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
       ref={containerRef}
       className={`fixed inset-0 overflow-hidden pointer-events-none ${className}`}
       aria-hidden="true"
+      style={{
+        // contain:layout paint isolates this decorative layer from the main document
+        // layout flow, preventing repaints in the 3D container from triggering full
+        // page layout recalculations. Improves Lighthouse CLS and rendering performance.
+        contain: 'layout paint',
+      }}
     >
       {/* Perspective container with mouse-responsive tilt */}
       <motion.div
@@ -77,6 +83,10 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
           height: '100%',
           rotateX: tiltX,
           rotateY: tiltY,
+          // will-change:transform promotes this div to its own GPU compositor layer.
+          // The continuous spring-animated rotateX/rotateY are compositor-thread
+          // animations (transform only), so this hint enables zero-jank parallax.
+          willChange: 'transform',
         }}
       >
         {/* Layer 1 — deepest: large ambient gradient circle (accent color) */}
@@ -88,6 +98,8 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            // Compositor-thread transform (translateZ) — no layout triggers
+            willChange: 'transform',
           }}
         >
           <div
@@ -112,6 +124,7 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            willChange: 'transform',
           }}
         >
           {/* Film reel SVG: outer circle + 6 rectangular sprocket holes + inner hub */}
@@ -149,6 +162,7 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
             transform: 'translateZ(-60px)',
             position: 'absolute',
             inset: 0,
+            willChange: 'transform',
           }}
         >
           <div
@@ -173,6 +187,7 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
             transform: 'translateZ(-20px)',
             position: 'absolute',
             inset: 0,
+            willChange: 'transform',
           }}
         >
           {DUST_PARTICLES.map((p) => (

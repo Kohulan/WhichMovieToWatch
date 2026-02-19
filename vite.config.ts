@@ -129,7 +129,17 @@ export default defineConfig({
           ) {
             return 'three-vendor';
           }
-          if (id.includes('node_modules/@splinetool') || id.includes('node_modules/detect-gpu')) {
+          // detect-gpu is separated from spline-vendor:
+          //   - detect-gpu (~10 KB gzipped) runs at app startup to determine GPU tier.
+          //     It MUST load before AppShell decides whether to mount SplineHero at all.
+          //   - Bundling detect-gpu into spline-vendor would mean it only loads
+          //     lazily (when SplineHero imports), but AppShell needs the result first.
+          //   - A dedicated gpu-detect chunk loads early without bringing in the full
+          //     Spline runtime (4+ MB), avoiding a circular lazy-load dependency.
+          if (id.includes('node_modules/detect-gpu')) {
+            return 'gpu-detect';
+          }
+          if (id.includes('node_modules/@splinetool')) {
             return 'spline-vendor';
           }
         },
