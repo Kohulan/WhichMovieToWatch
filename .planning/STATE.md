@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 7 of 8 (3D Experience) -- IN PROGRESS
-Plan: 2 of 4 in current phase (complete)
-Status: Plan 07-02 complete — SplineScene + SplineHero lazy-loaded into AppShell, splineApp stored in scene3dStore, Workbox precache exclusion for 4.62 MB Spline chunk
-Last activity: 2026-02-19 — Plan 07-02 complete (SplineScene CLS-free container, SplineHero React.lazy wrapper, AppShell Suspense integration, scene3dStore sceneError state)
+Plan: 4 of 5 in current phase (complete)
+Status: Plan 07-04 complete — CameraTransitionManager with ROUTE_CAMERA_MAP, scene3dStore triggerCameraTransition, AppShell 3D-aware page transition variants
+Last activity: 2026-02-19 — Plan 07-04 complete (CameraTransitionManager renderless route-watcher, pageVariants3D fade-only, AppShell dynamically selects variants based on capability + sceneLoaded)
 
-Progress: [█████████████████████░] 65%
+Progress: [█████████████████████░] 68%
 
 ## Performance Metrics
 
@@ -49,6 +49,8 @@ Progress: [█████████████████████░] 6
 | Phase 06 P02 | 2 | 2 tasks | 10 files |
 | Phase 07-3d-experience P01 | 4 | 3 tasks | 7 files |
 | Phase 07-3d-experience P02 | 4 | 2 tasks | 6 files |
+| Phase 07-3d-experience P04 | 2 | 2 tasks | 4 files |
+| Phase 07-3d-experience P03 | 4 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -161,6 +163,14 @@ Recent decisions affecting current work:
 - Plan 07-02: Suspense fallback=null in AppShell — gradient blobs visible during Spline load window, seamless progressive enhancement
 - Plan 07-02: scene3dStore.splineApp typed as Application | null (from @splinetool/runtime) — enables type-safe camera control in Plans 07-03/07-04
 - Plan 07-02: sceneError boolean added to scene3dStore — allows future Plans to detect scene failure and skip camera/theme operations gracefully
+- Plan 07-04: CameraTransitionManager lazy-loaded via React.lazy (Suspense fallback=null) — adds only 0.50 kB chunk, preserves code-splitting boundary
+- Plan 07-04: currentCameraState deduplication in scene3dStore — avoids firing redundant Spline transitions on re-renders without route changes
+- Plan 07-04: pageTransition3D at 0.3s (faster than camera 0.4s) — content fades in while camera settles, creating layered cinematic feel
+- Plan 07-04: triggerCameraTransition updates currentCameraState even on error — prevents repeated failed transitions to same state on subsequent renders
+- [Phase 07-03]: useSplineTheme wraps each splineApp.setVariable in try/catch — variables may not exist in placeholder .splinecode scene without crashing
+- [Phase 07-03]: GyroscopeProvider nested inside SplineScene ensures fallback-2d devices (who never mount SplineScene) never see the gyroscope prompt
+- [Phase 07-03]: CSS perspective transform approach for gyroscope parallax — simpler than splineApp.emitEvent, works regardless of Spline scene design
+- [Phase 07-03]: useSpring stiffness:50 damping:20 matches ParallaxFallback pattern for visual consistency between 2D fallback and 3D gyroscope modes
 
 ### Pending Todos
 
@@ -184,6 +194,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 07-02-PLAN.md (SplineScene CLS-free container, SplineHero React.lazy, AppShell Suspense integration, scene3dStore sceneError, Workbox precache exclusion)
-Resume file: .planning/phases/07-3d-experience/07-02-SUMMARY.md
+Stopped at: Completed 07-04-PLAN.md (CameraTransitionManager renderless route-watcher, scene3dStore triggerCameraTransition, pageVariants3D fade-only, AppShell 3D-aware transition selection)
+Resume file: .planning/phases/07-3d-experience/07-04-SUMMARY.md
 Dev server: http://localhost:5173/

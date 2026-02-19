@@ -51,13 +51,13 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### 3D Experience
 
-- [ ] **3DXP-01**: React Three Fiber 3D hero scene with floating movie posters in 3D space
+- [x] **3DXP-01**: React Three Fiber 3D hero scene with floating movie posters in 3D space
 - [ ] **3DXP-02**: Interactive 3D movie poster gallery with parallax depth and camera movement
-- [ ] **3DXP-03**: 3D transitions between movie views (cinematic camera movements)
-- [ ] **3DXP-04**: 3D background effects (particle systems, ambient motion)
-- [ ] **3DXP-05**: Graceful degradation on low-end devices (detect WebGL capability, fallback to 2D)
-- [ ] **3DXP-06**: Mobile-optimized 3D (<100 draw calls, LOD, instancing)
-- [ ] **3DXP-07**: Lazy-loaded 3D scenes (not in main bundle, loaded on demand)
+- [x] **3DXP-03**: 3D transitions between movie views (cinematic camera movements)
+- [x] **3DXP-04**: 3D background effects (particle systems, ambient motion)
+- [x] **3DXP-05**: Graceful degradation on low-end devices (detect WebGL capability, fallback to 2D)
+- [x] **3DXP-06**: Mobile-optimized 3D (<100 draw calls, LOD, instancing)
+- [x] **3DXP-07**: Lazy-loaded 3D scenes (not in main bundle, loaded on demand)
 
 ### Movie Discovery (Feature Parity)
 
@@ -168,7 +168,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Performance
 
-- [ ] **PERF-01**: Three.js lazy loaded — not in initial bundle
+- [x] **PERF-01**: Three.js lazy loaded — not in initial bundle
 - [ ] **PERF-02**: Image optimization: WebP format, responsive srcset, lazy loading
 - [ ] **PERF-03**: Bundle size under 500KB gzipped (excluding lazy-loaded 3D)
 - [ ] **PERF-04**: Lighthouse performance score >= 90 on desktop
@@ -305,14 +305,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BENT-03 | Phase 6 | Complete |
 | BENT-04 | Phase 6 | Complete |
 | BENT-05 | Phase 6 | Complete |
-| 3DXP-01 | Phase 7 | Pending |
+| 3DXP-01 | Phase 7 | Complete |
 | 3DXP-02 | Phase 7 | Pending |
-| 3DXP-03 | Phase 7 | Pending |
-| 3DXP-04 | Phase 7 | Pending |
-| 3DXP-05 | Phase 7 | Pending |
-| 3DXP-06 | Phase 7 | Pending |
-| 3DXP-07 | Phase 7 | Pending |
-| PERF-01 | Phase 7 | Pending |
+| 3DXP-03 | Phase 7 | Complete |
+| 3DXP-04 | Phase 7 | Complete |
+| 3DXP-05 | Phase 7 | Complete |
+| 3DXP-06 | Phase 7 | Complete |
+| 3DXP-07 | Phase 7 | Complete |
+| PERF-01 | Phase 7 | Complete |
 | PERF-04 | Phase 7 | Pending |
 | SOCL-01 | Phase 8 | Pending |
 | SOCL-02 | Phase 8 | Pending |
