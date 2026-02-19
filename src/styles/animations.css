@@ -1,0 +1,131 @@
+/* ============================================================
+   ANIMATIONS.CSS — CSS keyframes and animation utilities.
+
+   Covers: glow pulse, film-reel spinner, material enhancements,
+   and reduced-motion overrides for CSS-driven animations.
+   Framer Motion animations are handled via MotionProvider (ANIM-05).
+   ============================================================ */
+
+/* --------------------------------
+   Accent Glow Pulse
+   Gentle breathing box-shadow glow on active controls.
+   Uses will-change: box-shadow for GPU compositing hint.
+   -------------------------------- */
+@keyframes accent-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 8px var(--accent),
+      0 0 16px color-mix(in oklch, var(--accent) 40%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 12px var(--accent),
+      0 0 24px color-mix(in oklch, var(--accent) 50%, transparent);
+  }
+}
+
+.accent-glow-active {
+  animation: accent-glow-pulse 2s ease-in-out infinite;
+  will-change: box-shadow;
+}
+
+/* --------------------------------
+   Film Reel Spin
+   Continuous rotation for the LoadingQuotes film-reel spinner.
+   -------------------------------- */
+@keyframes film-reel-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.film-reel-spin {
+  animation: film-reel-spin 1.2s linear infinite;
+  will-change: transform;
+}
+
+/* --------------------------------
+   Ceramic Ripple Texture (light-mode clay cards)
+   Subtle concentric ring texture inspired by the Kosma
+   porcelain panel reference. Opacity 0.04 keeps it nearly
+   invisible — texture, not pattern.
+   -------------------------------- */
+.ceramic-ripple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.04;
+  background:
+    radial-gradient(circle at 50% 40%, transparent 30%, rgba(0,0,0,0.02) 35%, transparent 40%),
+    radial-gradient(circle at 50% 40%, transparent 50%, rgba(0,0,0,0.015) 55%, transparent 60%),
+    radial-gradient(circle at 50% 40%, transparent 70%, rgba(0,0,0,0.01) 75%, transparent 80%);
+}
+
+/* --------------------------------
+   Metal Knob Enhanced
+   Specular highlight at 35% 25% simulating a top-left light
+   source on the glossy metallic knob surface.
+   -------------------------------- */
+.metal-knob-enhanced {
+  background:
+    radial-gradient(
+      ellipse at 35% 25%,
+      rgba(255,255,255,0.5) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 40% 30%,
+      var(--metal-shine) 0%,
+      var(--metal-base) 55%,
+      var(--metal-dark) 100%
+    );
+}
+
+/* --------------------------------
+   Metal Track Deep
+   Deeper inset shadow for toggle and slider tracks.
+   Creates more convincing recessed channel feel.
+   -------------------------------- */
+.metal-track-deep {
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(0,0,0,0.3),
+    inset 0 -1px 2px rgba(255,255,255,0.08),
+    0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* --------------------------------
+   Steam — gentle bob for coffee icon in footer.
+   -------------------------------- */
+@keyframes steam {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(1deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-1px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* ============================================================
+   REDUCED MOTION OVERRIDES
+
+   Disables all CSS-driven animations when the user has enabled
+   prefers-reduced-motion. Framer Motion transforms are handled
+   by MotionProvider's reducedMotion="user". This block covers
+   CSS @keyframes and transitions that MotionConfig cannot reach.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  /* Disable the accent glow pulse specifically */
+  .accent-glow-active {
+    animation: none;
+  }
+
+  /* Kill all other CSS animations and transitions globally */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

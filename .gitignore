@@ -1,3 +1,16 @@
+# Planning docs (local only)
+.planning/*.*
+Claude.md
+
+# Vite / Node
+node_modules/
+dist/
+dev-dist/
+*.local
+*.tsbuildinfo
+.env.local
+.env.*.local
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -15,6 +28,7 @@ downloads/
 eggs/
 .eggs/
 lib/
+!src/lib/
 lib64/
 parts/
 sdist/
@@ -179,3 +193,11 @@ demo.html
 
 # PRD documentation (internal)
 PRDs/
+
+# Legacy vanilla JS website (replaced by React/Vite app in src/)
+scripts/
+css/
+index.old.html
+service-worker.js
+site.webmanifest
+privacy.html

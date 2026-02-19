@@ -1,0 +1,166 @@
+/* ============================================================
+   METAL HARDWARE STYLES
+   Premium skeuomorphic metal using subtle gradients and
+   multi-directional layered box-shadows for true 3D depth.
+   Inspired by pre-iOS7 Apple design language.
+   ============================================================ */
+
+/* --- Metal Gradient ---
+   Simple top-to-bottom gradient: lighter at top (light catch),
+   darker at bottom (natural shadow). NOT stripy — elegant.
+*/
+.metal-gradient {
+  background-image: linear-gradient(
+    to bottom,
+    var(--metal-shine) 0%,
+    var(--metal-base) 45%,
+    var(--metal-dark) 100%
+  );
+  border: 1px solid var(--metal-dark);
+}
+
+/* --- Metal Shadow Presets ---
+   Multi-directional shadows: light above, dark below,
+   inner glow for beveled edge realism.
+*/
+
+/* Resting — floating on surface */
+.metal-shadow {
+  box-shadow:
+    0 4px 3px 1px rgba(255, 255, 255, 0.15),
+    0 6px 8px rgba(0, 0, 0, 0.12),
+    0 -2px 4px rgba(255, 255, 255, 0.06),
+    inset 0 1px 1px rgba(255, 255, 255, 0.35),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* Hover — lifted */
+.metal-shadow-hover {
+  box-shadow:
+    0 6px 6px 1px rgba(255, 255, 255, 0.15),
+    0 10px 14px rgba(0, 0, 0, 0.15),
+    0 -2px 6px rgba(255, 255, 255, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Active — pressed into surface */
+.metal-shadow-pressed {
+  box-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.1),
+    0 2px 3px rgba(0, 0, 0, 0.08),
+    inset 0 2px 6px rgba(0, 0, 0, 0.2),
+    inset 0 0 4px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Metal Text ---
+   Light emboss: white shadow below, subtle dark above.
+*/
+.metal-text {
+  color: var(--clay-text);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Dark mode metal text — reversed emboss */
+.dark .metal-text {
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* --- Metal Knob ---
+   Radial gradient dome with ring shadow.
+*/
+.metal-knob {
+  background:
+    radial-gradient(
+      ellipse at 40% 30%,
+      var(--metal-shine) 0%,
+      var(--metal-base) 55%,
+      var(--metal-dark) 100%
+    );
+  box-shadow:
+    inset 0 2px 3px rgba(255, 255, 255, 0.35),
+    inset 0 -2px 3px rgba(0, 0, 0, 0.2),
+    0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* --- Brushed Metal Texture (optional overlay) --- */
+.metal-brushed {
+  position: relative;
+}
+.metal-brushed::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* --- Enhanced Metal Knob — Specular Highlight ---
+   Overlays a bright top-left highlight spot on existing
+   metal-knob radial gradient, simulating a top-right light source
+   and creating a glossy sphere-like surface appearance.
+   (From skeu-toggle-dark.png Dribbble reference)
+*/
+.metal-knob-enhanced {
+  background:
+    radial-gradient(ellipse at 35% 25%, rgba(255,255,255,0.5) 0%, transparent 30%),
+    radial-gradient(ellipse at 40% 30%, var(--metal-shine) 0%, var(--metal-base) 55%, var(--metal-dark) 100%);
+}
+
+/* --- Deep Track Shadow ---
+   More physically recessed appearance than default inset shadows.
+   Used on toggle and slider tracks to create carved-in depth.
+   (From skeu-toggle-dark.png reference)
+*/
+.metal-track-deep {
+  box-shadow:
+    inset 0 3px 6px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(0,0,0,0.3),
+    inset 0 -1px 2px rgba(255,255,255,0.08),
+    0 1px 0 rgba(255,255,255,0.05);
+}
+
+/* --- Metal Knob Rim Light ---
+   Rim light effect: light wrapping around bottom of a sphere,
+   stronger inner top highlight for 3D dome feel.
+*/
+.metal-knob-rim {
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.35),
+    0 4px 8px rgba(0,0,0,0.15),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset 0 -1px 2px rgba(0,0,0,0.15);
+}
+
+/* --- Accent Glow (Active State) ---
+   Pulsing accent-colored glow applied to controls in checked/active state.
+   Simulates a power indicator LED glow. 2s cycle, gentle pulse.
+*/
+@keyframes accent-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      inset 0 3px 6px rgba(0,0,0,0.4),
+      inset 0 1px 3px rgba(0,0,0,0.3),
+      inset 0 -1px 2px rgba(255,255,255,0.08),
+      0 1px 0 rgba(255,255,255,0.05),
+      0 0 8px var(--accent),
+      0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 3px 6px rgba(0,0,0,0.4),
+      inset 0 1px 3px rgba(0,0,0,0.3),
+      inset 0 -1px 2px rgba(255,255,255,0.08),
+      0 1px 0 rgba(255,255,255,0.05),
+      0 0 12px var(--accent),
+      0 0 24px color-mix(in srgb, var(--accent) 60%, transparent);
+  }
+}
+
+.accent-glow-active {
+  animation: accent-glow-pulse 2s ease-in-out infinite;
+}

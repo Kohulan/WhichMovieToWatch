@@ -1,0 +1,167 @@
+@import "tailwindcss";
+@import './clay.css';
+@import './metal.css';
+@import './animations.css';
+
+/* Enable class-based dark mode — the app uses .dark on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Hide scrollbar utility for horizontal scroll containers */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ============================================================
+   GLOBAL FOCUS RING
+   High-contrast focus-visible ring using the accent color.
+   outline-offset: 2px provides breathing room from the element edge.
+   :focus-visible only activates for keyboard navigation — not mouse clicks.
+   Meets WCAG 2.4.11 (Focus Appearance) by ensuring visible ring on all
+   interactive elements across all 6 theme variants.
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@theme inline {
+  /* Colors — mapped to CSS variables, overridden per-theme */
+  --color-clay-base: var(--clay-base);
+  --color-clay-surface: var(--clay-surface);
+  --color-clay-elevated: var(--clay-elevated);
+  --color-clay-shadow: var(--clay-shadow);
+  --color-clay-highlight: var(--clay-highlight);
+  --color-clay-text: var(--clay-text);
+  --color-clay-text-muted: var(--clay-text-muted);
+  --color-metal-base: var(--metal-base);
+  --color-metal-shine: var(--metal-shine);
+  --color-metal-dark: var(--metal-dark);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+
+  /* Border radius */
+  --radius-clay: 1.5rem;
+  --radius-clay-lg: 2rem;
+  --radius-clay-xl: 3rem;
+
+  /* Fonts */
+  --font-heading: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+  --font-body: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+}
+
+/* ============================================================
+   THEME SYSTEM: 3 presets x 2 modes = 6 variants
+   All colors use oklch() for perceptual uniformity.
+   Text colors meet WCAG AA minimum 4.5:1 contrast ratio.
+
+   WCAG AA contrast targets (verified 2026-02-19, Phase 08-01):
+   - Light modes: clay-text-muted at ≤0.38 lightness → 4.5:1 on clay-base (≥0.95)
+   - Dark modes: clay-text-muted at ≥0.72 lightness → 4.5:1 on clay-base (≤0.17)
+   ============================================================ */
+
+/* --- Warm Orange — Stōkt-inspired, vivid orange accent, cinematic --- */
+
+:root,
+.theme-warm-orange {
+  --clay-base: oklch(0.95 0.01 70);
+  --clay-surface: oklch(0.97 0.008 70);
+  --clay-elevated: oklch(0.99 0.004 70);
+  --clay-shadow: oklch(0.78 0.015 60);
+  --clay-highlight: oklch(1.00 0.003 60);
+  --clay-text: oklch(0.15 0.01 50);
+  /* Raised from 0.48 → 0.36 for WCAG AA 4.5:1 on light clay-base (0.95) */
+  --clay-text-muted: oklch(0.36 0.015 50);
+  --metal-base: oklch(0.72 0.06 70);
+  --metal-shine: oklch(0.90 0.035 75);
+  --metal-dark: oklch(0.50 0.06 65);
+  --accent: oklch(0.67 0.22 38);
+  --accent-hover: oklch(0.62 0.24 38);
+}
+
+.dark.theme-warm-orange {
+  --clay-base: oklch(0.13 0.005 60);
+  --clay-surface: oklch(0.17 0.005 60);
+  --clay-elevated: oklch(0.21 0.006 60);
+  --clay-shadow: oklch(0.06 0.003 60);
+  --clay-highlight: oklch(0.25 0.006 60);
+  --clay-text: oklch(0.95 0.01 60);
+  /* Raised from 0.65 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.13) */
+  --clay-text-muted: oklch(0.72 0.015 60);
+  --metal-base: oklch(0.55 0.07 70);
+  --metal-shine: oklch(0.75 0.06 75);
+  --metal-dark: oklch(0.32 0.05 65);
+  --accent: oklch(0.70 0.22 38);
+  --accent-hover: oklch(0.75 0.20 38);
+}
+
+/* --- Gold — Warm luxury, rich gold accent, brass metal --- */
+
+.theme-gold {
+  --clay-base: oklch(0.95 0.012 75);
+  --clay-surface: oklch(0.97 0.01 75);
+  --clay-elevated: oklch(0.99 0.006 75);
+  --clay-shadow: oklch(0.76 0.02 65);
+  --clay-highlight: oklch(1.00 0.004 70);
+  --clay-text: oklch(0.18 0.015 55);
+  /* Raised from 0.46 → 0.36 for WCAG AA 4.5:1 on light clay-base (0.95) */
+  --clay-text-muted: oklch(0.36 0.02 55);
+  --metal-base: oklch(0.74 0.08 75);
+  --metal-shine: oklch(0.92 0.04 80);
+  --metal-dark: oklch(0.52 0.08 70);
+  --accent: oklch(0.68 0.14 80);
+  --accent-hover: oklch(0.63 0.16 80);
+}
+
+.dark.theme-gold {
+  --clay-base: oklch(0.14 0.008 65);
+  --clay-surface: oklch(0.18 0.008 65);
+  --clay-elevated: oklch(0.22 0.01 65);
+  --clay-shadow: oklch(0.07 0.004 65);
+  --clay-highlight: oklch(0.26 0.01 65);
+  --clay-text: oklch(0.94 0.01 70);
+  /* Raised from 0.66 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.14) */
+  --clay-text-muted: oklch(0.72 0.015 65);
+  --metal-base: oklch(0.52 0.08 75);
+  --metal-shine: oklch(0.72 0.07 80);
+  --metal-dark: oklch(0.30 0.06 70);
+  --accent: oklch(0.74 0.14 80);
+  --accent-hover: oklch(0.79 0.12 80);
+}
+
+/* --- Clean White — Minimal, neutral, crisp --- */
+
+.theme-clean-white {
+  --clay-base: oklch(0.97 0.003 250);
+  --clay-surface: oklch(0.98 0.002 250);
+  --clay-elevated: oklch(1.00 0.001 250);
+  --clay-shadow: oklch(0.82 0.006 250);
+  --clay-highlight: oklch(1.00 0.001 250);
+  --clay-text: oklch(0.15 0.005 250);
+  /* Raised from 0.50 → 0.36 for WCAG AA 4.5:1 on near-white clay-base (0.97) */
+  --clay-text-muted: oklch(0.36 0.008 250);
+  --metal-base: oklch(0.78 0.005 250);
+  --metal-shine: oklch(0.94 0.003 250);
+  --metal-dark: oklch(0.58 0.006 250);
+  --accent: oklch(0.45 0.01 250);
+  --accent-hover: oklch(0.38 0.012 250);
+}
+
+.dark.theme-clean-white {
+  --clay-base: oklch(0.12 0.005 250);
+  --clay-surface: oklch(0.16 0.005 250);
+  --clay-elevated: oklch(0.20 0.006 250);
+  --clay-shadow: oklch(0.06 0.003 250);
+  --clay-highlight: oklch(0.24 0.006 250);
+  --clay-text: oklch(0.96 0.004 250);
+  /* Raised from 0.62 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.12) */
+  --clay-text-muted: oklch(0.72 0.008 250);
+  --metal-base: oklch(0.50 0.005 250);
+  --metal-shine: oklch(0.70 0.004 250);
+  --metal-dark: oklch(0.28 0.005 250);
+  --accent: oklch(0.88 0.003 250);
+  --accent-hover: oklch(0.95 0.002 250);
+}
