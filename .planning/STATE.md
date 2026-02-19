@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-15)
 
 **Core value:** Instantly discover your next movie with a visually immersive experience that makes browsing feel as cinematic as watching.
-**Current focus:** Phase 7 - 3D Experience
+**Current focus:** Phase 8 - Polish & Optimization (Phase 7 complete)
 
 ## Current Position
 
-Phase: 7 of 8 (3D Experience) -- IN PROGRESS
-Plan: 4 of 5 in current phase (complete)
-Status: Plan 07-04 complete — CameraTransitionManager with ROUTE_CAMERA_MAP, scene3dStore triggerCameraTransition, AppShell 3D-aware page transition variants
-Last activity: 2026-02-19 — Plan 07-04 complete (CameraTransitionManager renderless route-watcher, pageVariants3D fade-only, AppShell dynamically selects variants based on capability + sceneLoaded)
+Phase: 7 of 8 (3D Experience) -- COMPLETE
+Plan: 5 of 5 in current phase (complete)
+Status: Phase 7 complete — all 5 plans done + DINR-05 standalone fix
+Last activity: 2026-02-19 — Plan 07-05 approved (performance audit, Spline optimization, Lighthouse verification) + DINR-05 fix
 
-Progress: [█████████████████████░] 68%
+Progress: [████████████████████████░] 88%
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [█████████████████████░] 6
 | Phase 07-3d-experience P02 | 4 | 2 tasks | 6 files |
 | Phase 07-3d-experience P04 | 2 | 2 tasks | 4 files |
 | Phase 07-3d-experience P03 | 4 | 2 tasks | 4 files |
+| Phase 08-polish-optimization P03 | 3 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -171,6 +172,12 @@ Recent decisions affecting current work:
 - [Phase 07-03]: GyroscopeProvider nested inside SplineScene ensures fallback-2d devices (who never mount SplineScene) never see the gyroscope prompt
 - [Phase 07-03]: CSS perspective transform approach for gyroscope parallax — simpler than splineApp.emitEvent, works regardless of Spline scene design
 - [Phase 07-03]: useSpring stiffness:50 damping:20 matches ParallaxFallback pattern for visual consistency between 2D fallback and 3D gyroscope modes
+- [Standalone DINR-05]: useDinnerTime.setService no longer nulls movie — old movie stays visible during provider switch for smooth crossfade
+- [Standalone DINR-05]: DinnerTimePage uses lastBackdropRef to persist backdrop during loading, unified AnimatePresence for loading/error/movie states
+- [Standalone DINR-05]: Service brand color flash (12% opacity, 600ms) on provider switch via serviceFlash state + prevServiceRef comparison
+- [Phase 08-03]: CORS proxy via corsproxy.io for TMDB poster fetch in canvas (canvas cannot use TMDB direct due to CORS)
+- [Phase 08-03]: React 19 native metadata hoisting (no react-helmet) — client-side OG/Twitter tags, accepted SPA limitation
+- [Phase 08-03]: StoryCardMovie interface separate from TMDBMovieDetails — share module decoupled from TMDB types
 
 ### Pending Todos
 
@@ -194,6 +201,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 07-04-PLAN.md (CameraTransitionManager renderless route-watcher, scene3dStore triggerCameraTransition, pageVariants3D fade-only, AppShell 3D-aware transition selection)
-Resume file: .planning/phases/07-3d-experience/07-04-SUMMARY.md
+Stopped at: Phase 7 complete (all 5 plans + DINR-05 fix). Next: Phase 8 (Polish & Optimization) — plan details TBD
+Resume file: .planning/phases/07-3d-experience/07-05-SUMMARY.md
 Dev server: http://localhost:5173/

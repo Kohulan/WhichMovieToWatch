@@ -1,5 +1,6 @@
 // Free Movies — cinematic YouTube movie discovery with TMDB metadata (FREE-01 through FREE-04)
 
+import { useEffect } from 'react';
 import { Youtube, SkipForward, AlertCircle } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
 import { useFreeMovies } from '@/hooks/useFreeMovies';
@@ -14,12 +15,14 @@ import { ClayCard } from '@/components/ui/ClayCard';
 import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
 import { ExternalLink } from '@/components/shared/ExternalLink';
 import { ScrollReveal } from '@/components/animation/ScrollReveal';
+import { useAnnounce } from '@/components/shared/ScreenReaderAnnouncer';
 import { getBackdropUrl } from '@/services/tmdb/client';
 import { tmdbBackdropSrcSet, backdropSizes } from '@/hooks/useResponsiveImage';
 import type { TMDBMovieDetails } from '@/types/movie';
 
 export function FreeMoviesPage() {
   const { movie, isLoading, error, nextMovie } = useFreeMovies();
+  const [announce, Announcer] = useAnnounce();
 
   const tmdb = movie?.tmdbDetails ?? null;
   const imdbId = tmdb?.imdb_id ?? null;
@@ -39,6 +42,13 @@ export function FreeMoviesPage() {
   const findMovieLink = tmdb
     ? `https://www.themoviedb.org/movie/${tmdb.id}`
     : undefined;
+
+  // A11Y-01: Announce movie title to screen readers when a new free movie loads (A11Y-04)
+  useEffect(() => {
+    if (displayTitle) {
+      announce(`Now showing free movie: ${displayTitle}`);
+    }
+  }, [movie?.youtubeId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Build a TMDBMovieDetails-compatible object for MovieHero
   // When tmdb is null, create a minimal stub with the movie title
@@ -68,6 +78,8 @@ export function FreeMoviesPage() {
 
   return (
     <div className="w-full">
+      <Announcer />
+
       {/* Fixed full-screen backdrop — crossfades between movies */}
       {backdropUrl && tmdb && (
         <div className="fixed inset-0 z-0" aria-hidden="true">

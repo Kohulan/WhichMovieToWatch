@@ -52,7 +52,7 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 ### 3D Experience
 
 - [x] **3DXP-01**: React Three Fiber 3D hero scene with floating movie posters in 3D space
-- [ ] **3DXP-02**: Interactive 3D movie poster gallery with parallax depth and camera movement
+- [x] **3DXP-02**: Interactive 3D movie poster gallery with parallax depth and camera movement
 - [x] **3DXP-03**: 3D transitions between movie views (cinematic camera movements)
 - [x] **3DXP-04**: 3D background effects (particle systems, ambient motion)
 - [x] **3DXP-05**: Graceful degradation on low-end devices (detect WebGL capability, fallback to 2D)
@@ -135,10 +135,10 @@ Requirements for the complete React rewrite. Each maps to roadmap phases.
 
 ### Social Sharing (Feature Parity)
 
-- [ ] **SOCL-01**: Instagram story card generator (canvas-based, 1080x1920)
-- [ ] **SOCL-02**: Dynamic Open Graph meta tags per movie
-- [ ] **SOCL-03**: Dynamic Twitter Card meta tags per movie
-- [ ] **SOCL-04**: Share buttons on movie cards
+- [x] **SOCL-01**: Instagram story card generator (canvas-based, 1080x1920)
+- [x] **SOCL-02**: Dynamic Open Graph meta tags per movie
+- [x] **SOCL-03**: Dynamic Twitter Card meta tags per movie
+- [x] **SOCL-04**: Share buttons on movie cards
 
 ### PWA (Feature Parity)
 
@@ -306,7 +306,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BENT-04 | Phase 6 | Complete |
 | BENT-05 | Phase 6 | Complete |
 | 3DXP-01 | Phase 7 | Complete |
-| 3DXP-02 | Phase 7 | Pending |
+| 3DXP-02 | Phase 7 | Complete |
 | 3DXP-03 | Phase 7 | Complete |
 | 3DXP-04 | Phase 7 | Complete |
 | 3DXP-05 | Phase 7 | Complete |
@@ -314,10 +314,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | 3DXP-07 | Phase 7 | Complete |
 | PERF-01 | Phase 7 | Complete |
 | PERF-04 | Phase 7 | Pending |
-| SOCL-01 | Phase 8 | Pending |
-| SOCL-02 | Phase 8 | Pending |
-| SOCL-03 | Phase 8 | Pending |
-| SOCL-04 | Phase 8 | Pending |
+| SOCL-01 | Phase 8 | Complete |
+| SOCL-02 | Phase 8 | Complete |
+| SOCL-03 | Phase 8 | Complete |
+| SOCL-04 | Phase 8 | Complete |
 | A11Y-01 | Phase 8 | Pending |
 | SECU-01 | Phase 8 | Pending |
 | PERF-02 | Phase 8 | Pending |

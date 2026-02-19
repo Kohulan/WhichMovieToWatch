@@ -178,12 +178,14 @@ Plans:
   4. User can generate Instagram story cards (1080x1920 canvas) and share movies via Open Graph / Twitter Card meta tags
   5. GitHub Actions deployment workflow automatically builds, injects API keys, and deploys to GitHub Pages on main branch push
   6. Simple Analytics integration tracks usage while respecting user privacy, privacy policy page is accessible
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
+- [ ] 08-01-PLAN.md — WCAG 2.1 AA accessibility audit (color contrast, keyboard nav, focus management, ARIA)
+- [ ] 08-02-PLAN.md — Performance optimization (responsive srcset images, bundle size, API caching verification)
+- [ ] 08-03-PLAN.md — Social sharing (story card generator, share button, OG/Twitter meta tags)
+- [ ] 08-04-PLAN.md — Privacy policy page, Simple Analytics integration, Content Security Policy
+- [ ] 08-05-PLAN.md — Deployment pipeline (Lighthouse CI), default OG tags, final verification checkpoint
 
 ## Progress
 
@@ -198,5 +200,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 4. PWA Infrastructure | 2/2 | Complete    | 2026-02-18 |
 | 5. Animation Layer | 5/5 | Complete    | 2026-02-18 |
 | 6. Bento Grid Layouts | 3/3 | Complete   | 2026-02-19 |
-| 7. 3D Experience | 4/5 | In Progress|  |
+| 7. 3D Experience | 5/5 | Complete   | 2026-02-19 |
 | 8. Polish & Optimization | 0/TBD | Not started | - |
