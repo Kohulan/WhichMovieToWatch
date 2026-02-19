@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: PWA Infrastructure** - Offline support, service worker, installability (completed 2026-02-18)
 - [x] **Phase 5: Animation Layer** - Framer Motion page transitions and micro-interactions (completed 2026-02-18)
 - [x] **Phase 6: Bento Grid Layouts** - Animated bento grid hero and feature showcases (completed 2026-02-19)
-- [ ] **Phase 7: 3D Experience** - React Three Fiber 3D scenes with graceful degradation
+- [ ] **Phase 7: 3D Experience** - Spline 3D cinematic scenes with graceful degradation
 - [ ] **Phase 8: Polish & Optimization** - Accessibility, performance, deployment automation
 
 ## Phase Details
@@ -142,7 +142,7 @@ Plans:
 - [ ] 06-03-PLAN.md — Per-page bento hero sections for Trending, Dinner Time, and Free Movies pages
 
 ### Phase 7: 3D Experience
-**Goal**: Add React Three Fiber 3D scenes with floating movie posters, interactive gallery, and cinematic transitions with graceful mobile degradation.
+**Goal**: Add Spline 3D cinematic studio scene with theme-adaptive lighting, camera page transitions, gyroscope parallax, and graceful degradation to 2D parallax on low-end devices.
 **Depends on**: Phase 6
 **Requirements**: 3DXP-01, 3DXP-02, 3DXP-03, 3DXP-04, 3DXP-05, 3DXP-06, 3DXP-07, PERF-01, PERF-04
 **Success Criteria** (what must be TRUE):
@@ -152,12 +152,14 @@ Plans:
   4. 3D scenes are lazy-loaded via code-splitting (not in main bundle), reducing initial load time
   5. Low-end devices automatically receive simplified 3D or fallback to 2D experience based on WebGL capability detection
   6. Mobile 3D maintains 30+ fps with reduced draw calls (<100), LOD, and instancing optimizations
-**Plans**: TBD
+**Plans**: 5 plans
 
 Plans:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
-- [ ] 07-03: TBD
+- [ ] 07-01-PLAN.md — GPU detection, 3D capability hooks, scene3d store, 2D parallax fallback, Vite chunk config
+- [ ] 07-02-PLAN.md — Spline scene integration (SplineHero, SplineScene), progressive loading, AppShell background layer
+- [ ] 07-03-PLAN.md — Theme-to-3D sync (useSplineTheme), mobile gyroscope parallax (useDeviceOrientation, GyroscopeProvider)
+- [ ] 07-04-PLAN.md — Camera page transitions (CameraTransitionManager), 3D-aware Framer Motion variants
+- [ ] 07-05-PLAN.md — Performance audit, Spline optimization, Lighthouse verification, human visual checkpoint
 
 ### Phase 8: Polish & Optimization
 **Goal**: Finalize accessibility compliance (WCAG 2.1 AA), optimize performance, configure security headers, and automate deployment.
@@ -196,5 +198,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8
 | 4. PWA Infrastructure | 2/2 | Complete    | 2026-02-18 |
 | 5. Animation Layer | 5/5 | Complete    | 2026-02-18 |
 | 6. Bento Grid Layouts | 3/3 | Complete   | 2026-02-19 |
-| 7. 3D Experience | 0/TBD | Not started | - |
+| 7. 3D Experience | 0/5 | Not started | - |
 | 8. Polish & Optimization | 0/TBD | Not started | - |
