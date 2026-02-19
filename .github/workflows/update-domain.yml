@@ -1,27 +1,23 @@
 name: Update GitHub Pages Custom Domain
-
 on:
   push:
     branches:
       - main
-
 permissions:
   contents: write
-
 jobs:
   update-domain:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GH_PAGES_TOKEN }}
-
+      
       - name: Ensure CNAME file exists
         run: |
-          echo "www.whichmovietowatch.online" > CNAME
-
+          echo "whichmovietowatch.online" > CNAME
+      
       - name: Commit and push if changed
         run: |
           git config --global user.name "github-actions[bot]"
