@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-02-15)
 ## Current Position
 
 Phase: 5 of 8 (Animation Layer) -- IN PROGRESS
-Plan: 5 of 5 in current phase (complete)
-Status: Phase 5 Complete
-Last activity: 2026-02-18 — Plan 05-02 complete (page transitions PageTransition.tsx, morph dissolve+backdrop crossfade across Discovery/DinnerTime/FreeMovies, layoutId hero expand)
+Plan: 4 of 5 in current phase (complete)
+Status: In Progress — Plan 05-04 complete
+Last activity: 2026-02-18 — Plan 05-04 complete (AnimatedActionIcon heart pulse/checkmark draw/X slide, TabBar layoutId sliding indicator + icon bounce, SearchModal backdrop blur entrance, AppShell blob crossfade on theme preset change)
 
 Progress: [████████████████░] 50%
 
@@ -133,6 +133,10 @@ Recent decisions affecting current work:
 - [Phase 05-animation-layer]: Plan 05-02: Morph transition uses tween with cubic-bezier [0.25,0.1,0.25,1] for smooth controlled dissolve (not bouncy spring)
 - [Phase 05-animation-layer]: Plan 05-02: layoutId prefix similar-poster-{movieId} avoids collisions; FreeMoviesPage keys on youtubeId (tmdb.id can be 0 for stubs)
 - [Phase 05-animation-layer]: Plan 05-02: Gradient overlay stays outside AnimatePresence — remains constant while backdrop crossfades beneath
+- Plan 05-04: animatingAction setTimeout timing (love=600ms, watched=500ms, skip=400ms) decouples icon animation from action side-effect, ensuring animation is visible before movie changes
+- Plan 05-04: TabBar active detection via useLocation() at component level (not NavLink callback) enables layoutId indicator render decision outside NavLink render prop scope
+- Plan 05-04: AppShell blobs use AnimatePresence mode=sync (not mode=wait) for simultaneous crossfade on theme preset change, matching CSS transition-colors duration-500 feel
+- Plan 05-04: SearchModal backdropFilter blur(0px→12px) animates the overlay's background blur separately from the panel's static backdrop-blur-2xl CSS class
 
 ### Pending Todos
 
@@ -156,6 +160,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 05-02-PLAN.md (page transitions, morph transitions, backdrop crossfade, layoutId hero expand)
-Resume file: .planning/phases/05-animation-layer/05-01-SUMMARY.md
+Stopped at: Completed 05-04-PLAN.md (micro-interactions: AnimatedActionIcon, TabBar layoutId indicator, SearchModal backdrop blur, AppShell blob crossfade)
+Resume file: .planning/phases/05-animation-layer/05-04-SUMMARY.md
 Dev server: http://localhost:5173/
