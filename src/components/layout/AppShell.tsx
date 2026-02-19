@@ -5,7 +5,12 @@ import { useTheme } from '../../hooks/useTheme';
 import { useThemeStore } from '@/stores/themeStore';
 import { useScene3dStore } from '@/stores/scene3dStore';
 import { Navbar } from './Navbar';
-import { pageVariants, pageTransition } from '@/components/animation/PageTransition';
+import {
+  pageVariants,
+  pageTransition,
+  pageVariants3D,
+  pageTransition3D,
+} from '@/components/animation/PageTransition';
 import { ParallaxFallback } from '@/components/3d/ParallaxFallback';
 
 /**
@@ -16,6 +21,13 @@ import { ParallaxFallback } from '@/components/3d/ParallaxFallback';
  * progressive enhancement with no visible loading indicator.
  */
 const LazySplineHero = lazy(() => import('@/components/3d/SplineHero'));
+
+/**
+ * LazyCameraTransitionManager — Watches route changes and fires Spline camera
+ * state transitions (lateral track for sibling pages, dolly push for home→feature).
+ * Renderless — returns null. Only mounted when 3D scene is fully loaded.
+ */
+const LazyCameraTransitionManager = lazy(() => import('@/components/3d/CameraTransitionManager'));
 
 interface AppShellProps {
   children: ReactNode;
@@ -35,16 +47,33 @@ interface AppShellProps {
  *   - HomePage (/): opacity 1  — 3D scene is the primary hero experience
  *   - Feature pages: opacity 0.15 — poster backdrops take visual precedence
  * The layer stays MOUNTED on all routes to support camera transitions (Plan 07-04).
+ *
+ * 3DXP-03 (Plan 07-04): When 3D scene is loaded and capable, page transitions
+ * simplify to fade-only (pageVariants3D) so the Spline camera movement provides
+ * the spatial feedback — no competing slide/scale transforms on content.
+ * CameraTransitionManager handles the camera transition on route change.
+ * Standard slide+scale+fade transitions (pageVariants) remain for fallback-2d.
  */
 export function AppShell({ children }: AppShellProps) {
   useTheme();
   const location = useLocation();
   const preset = useThemeStore((s) => s.preset);
   const capability = useScene3dStore((s) => s.capability);
+  const sceneLoaded = useScene3dStore((s) => s.sceneLoaded);
 
   // HomePage is the primary 3D hero experience (user decision: "Hero scene on HomePage")
   // Feature pages use their own poster backdrops — 3D/parallax layer fades behind them
   const isHomePage = location.pathname === '/';
+
+  // 3D transitions are active when a capable GPU has a fully-loaded Spline scene.
+  // fallback-2d users continue to use standard slide+scale+fade page transitions.
+  const use3DTransitions = (capability === 'full-3d' || capability === 'reduced-3d') && sceneLoaded;
+
+  // Select transition variants based on 3D state:
+  //   3D active  → fade-only (camera movement provides spatial context)
+  //   3D inactive → standard slide+scale+fade cinematic transitions
+  const activeVariants = use3DTransitions ? pageVariants3D : pageVariants;
+  const activeTransition = use3DTransitions ? pageTransition3D : pageTransition;
 
   return (
     <div className="min-h-screen bg-clay-base transition-colors duration-500 ease-in-out">
@@ -108,6 +137,16 @@ export function AppShell({ children }: AppShellProps) {
         )}
       </div>
 
+      {/* CameraTransitionManager — renderless, watches route changes, fires Spline camera
+          state transitions. Only mounted when 3D scene is loaded and capable.
+          Placed outside AnimatePresence — it watches routes globally, not per-page.
+          Suspense fallback=null — no UI impact if chunk loads slowly. */}
+      {use3DTransitions && (
+        <Suspense fallback={null}>
+          <LazyCameraTransitionManager />
+        </Suspense>
+      )}
+
       {/* Skip navigation */}
       <a
         href="#main-content"
@@ -122,11 +161,11 @@ export function AppShell({ children }: AppShellProps) {
         <motion.main
           id="main-content"
           key={location.pathname}
-          variants={pageVariants}
+          variants={activeVariants}
           initial="initial"
           animate="animate"
           exit="exit"
-          transition={pageTransition}
+          transition={activeTransition}
           className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-screen"
         >
           {children}
