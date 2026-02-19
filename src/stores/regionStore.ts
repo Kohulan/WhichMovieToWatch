@@ -17,7 +17,7 @@ interface RegionState {
 export const useRegionStore = create<RegionState>()(
   persist(
     (set, get) => ({
-      detectedCountry: 'DE',
+      detectedCountry: 'US',
       manualOverride: null,
       lastDetected: 0,
 
@@ -42,7 +42,12 @@ export const useRegionStore = create<RegionState>()(
     {
       name: 'wmtw-region',
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
+      migrate: () => ({
+        detectedCountry: 'US',
+        manualOverride: null,
+        lastDetected: 0,
+      }),
       partialize: (state) => ({
         detectedCountry: state.detectedCountry,
         manualOverride: state.manualOverride,

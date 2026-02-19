@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { NavLink, useLocation } from 'react-router';
 import { motion } from 'motion/react';
 import { Film, Search, Home, Compass, TrendingUp, UtensilsCrossed } from 'lucide-react';
+import logoSrc from '@/../assets/logo.png';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { RotaryDial } from '../ui/RotaryDial';
 import { SpotlightSearch } from '../search/SpotlightSearch';
@@ -66,13 +67,14 @@ export function Navbar() {
             aria-label="Home"
             className="flex items-center gap-1.5 flex-shrink-0 mr-2 sm:mr-3 cursor-pointer group"
           >
-            <motion.div
+            <motion.img
+              src={logoSrc}
+              alt="Which Movie To Watch"
+              className="w-6 h-6 object-contain drop-shadow-[0_0_6px_var(--accent)]"
               whileHover={{ rotate: -8, scale: 1.1 }}
               whileTap={{ scale: 0.92 }}
               transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            >
-              <Film className="w-5 h-5 text-accent drop-shadow-[0_0_6px_var(--accent)]" strokeWidth={2} />
-            </motion.div>
+            />
             <span className={`hidden lg:inline ${brandTextClass}`}>
               WhichMovieToWatch
             </span>

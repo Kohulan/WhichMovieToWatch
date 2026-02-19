@@ -4,6 +4,7 @@
 // Clay material cell. Click navigates to /free-movies.
 
 import { useNavigate } from 'react-router';
+import { motion } from 'motion/react';
 import { Film, ArrowRight } from 'lucide-react';
 
 export function FreeMoviesCell() {
@@ -14,10 +15,14 @@ export function FreeMoviesCell() {
       className="w-full h-full flex items-center gap-4 p-4"
       onClick={() => navigate('/free-movies')}
     >
-      {/* Icon */}
-      <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center">
+      {/* Icon with film reel spin */}
+      <motion.div
+        className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center"
+        whileHover={{ rotate: 360 }}
+        transition={{ duration: 0.6, ease: 'easeInOut' }}
+      >
         <Film className="w-6 h-6 text-accent" aria-hidden="true" />
-      </div>
+      </motion.div>
 
       {/* Text content */}
       <div className="flex-1 min-w-0">

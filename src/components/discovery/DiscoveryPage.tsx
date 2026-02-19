@@ -45,6 +45,7 @@ export function DiscoveryPage() {
   const [announce, Announcer] = useAnnounce();
   const [lovedMovieId, setLovedMovieId] = useState<number | null>(null);
   const [globalProviders, setGlobalProviders] = useState(false);
+  const [showTickets, setShowTickets] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { discover, isLoading, error, currentMovie: discoveryMovie } = useRandomMovie();
@@ -60,7 +61,7 @@ export function DiscoveryPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Deep link support (DISC-04)
-  const { deepLinkMovieId, showAllProviders, clearDeepLink } = useDeepLink();
+  const { deepLinkMovieId, showAllProviders, isTrendingSource, clearDeepLink } = useDeepLink();
   const { data: deepLinkMovie, isLoading: deepLinkLoading } = useMovieDetails(deepLinkMovieId);
 
   // Use deep link movie or the randomly discovered movie
@@ -106,6 +107,7 @@ export function DiscoveryPage() {
   useEffect(() => {
     if (deepLinkMovie) {
       setGlobalProviders(showAllProviders);
+      setShowTickets(isTrendingSource);
       setCurrentMovie(deepLinkMovie);
       clearDeepLink();
     }
@@ -125,18 +127,22 @@ export function DiscoveryPage() {
     discover();
   }, [discover]);
 
-  // Settings saved — re-discover with new filters
+  // Settings saved — clear old movie and re-discover with new filters.
+  // Clearing currentMovie ensures the error state can render if discovery fails.
   const handleSettingsSaved = useCallback(() => {
     setSettingsOpen(false);
     setLovedMovieId(null);
     setGlobalProviders(false);
+    setShowTickets(false);
+    setCurrentMovie(null);
     discover();
-  }, [discover]);
+  }, [discover, setCurrentMovie]);
 
   // Handle Next action — resets global provider view back to regional
   const handleNext = useCallback(() => {
     setLovedMovieId(null);
     setGlobalProviders(false);
+    setShowTickets(false);
     discover();
   }, [discover]);
 
@@ -203,19 +209,17 @@ export function DiscoveryPage() {
     );
   }
 
-  // Error state
+  // Error state — open preferences with a warning so the user can pick different filters
   if (error && !currentMovie) {
     return (
-      <div className="relative z-10 w-full px-4 py-6">
+      <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[60vh] px-4 py-6">
         <Announcer />
-        <ClayCard className="max-w-7xl mx-auto">
-          <div className="p-6 text-center">
-            <p className="text-clay-text-muted mb-4">{error}</p>
-            <MetalButton variant="primary" size="md" onClick={discover}>
-              Try Again
-            </MetalButton>
-          </div>
-        </ClayCard>
+        <OnboardingWizard
+          isOpen
+          onComplete={handleSettingsSaved}
+          mode="settings"
+          warningMessage={error}
+        />
       </div>
     );
   }
@@ -245,9 +249,6 @@ export function DiscoveryPage() {
 
       {/* Dynamic OG/Twitter Card meta tags — React 19 native hoisting (SOCL-02, SOCL-03) */}
       <MovieMetaTags movie={currentMovie} />
-
-      {/* Floating share FAB — visible on Discovery page only when movie is loaded (SOCL-04) */}
-      <ShareButton movie={currentMovie} />
 
       {/* Settings modal — same wizard in settings mode */}
       <OnboardingWizard
@@ -305,6 +306,7 @@ export function DiscoveryPage() {
                   <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
                   Preferences
                 </button>
+                <ShareButton movie={currentMovie} />
               </div>
             }
           >
@@ -329,14 +331,16 @@ export function DiscoveryPage() {
             {globalProviders ? (
               <GlobalAvailabilitySection movieId={currentMovie.id} />
             ) : (
-              <ProviderSection providers={providers} findMovieLink={findMovieLink} />
+              <ProviderSection providers={providers} findMovieLink={findMovieLink}>
+                {/* Ticket search — only shown for trending (now playing) movies */}
+                {showTickets && (
+                  <TicketSearch
+                    movieTitle={currentMovie.title}
+                    releaseYear={currentMovie.release_date?.slice(0, 4)}
+                  />
+                )}
+              </ProviderSection>
             )}
-
-            {/* Ticket search — Google search for showtimes/tickets */}
-            <TicketSearch
-              movieTitle={currentMovie.title}
-              releaseYear={currentMovie.release_date?.slice(0, 4)}
-            />
           </MovieHero>
         </div>
         </motion.section>

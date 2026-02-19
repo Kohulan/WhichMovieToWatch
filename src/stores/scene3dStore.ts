@@ -15,6 +15,7 @@ import type { Capability } from '@/hooks/use3DCapability';
  *   sceneError          — true if the Spline scene failed to load (placeholder file, network error, etc.)
  *   splineApp           — reference to the Spline Application instance for camera control
  *   currentCameraState  — current camera state name (tracks which view the camera is at)
+ *   cameraAvailable     — null (not probed), true (Camera object found), false (missing in scene)
  *
  * Actions:
  *   setCapability           — called by Scene3DProvider once detection completes
@@ -33,6 +34,8 @@ interface Scene3dState {
   sceneError: boolean;
   splineApp: Application | null;
   currentCameraState: string;
+  /** null = not yet probed, true = camera found, false = camera missing in scene */
+  cameraAvailable: boolean | null;
   setCapability: (capability: Capability) => void;
   setLoading: (loading: boolean) => void;
   setSceneLoaded: (loaded: boolean) => void;
@@ -49,37 +52,50 @@ export const useScene3dStore = create<Scene3dState>()((set, get) => ({
   sceneError: false,
   splineApp: null,
   currentCameraState: 'home-view',
+  cameraAvailable: null,
   setCapability: (capability) => set({ capability, loading: false }),
   setLoading: (loading) => set({ loading }),
   setSceneLoaded: (sceneLoaded) => set({ sceneLoaded }),
   setSceneError: (sceneError) => set({ sceneError }),
-  setSplineApp: (splineApp) => set({ splineApp }),
+  setSplineApp: (splineApp) => set({ splineApp, cameraAvailable: null }),
   setCameraState: (currentCameraState) => set({ currentCameraState }),
   triggerCameraTransition: (targetState) => {
-    const { splineApp } = get();
+    const { splineApp, cameraAvailable } = get();
 
     if (splineApp === null) {
-      // 3D scene not loaded yet — skip transition silently
+      // 3D scene not loaded yet — skip silently
+      return;
+    }
+
+    // Once we've determined the scene lacks a Camera object, skip all future attempts
+    // until a new scene loads (setSplineApp resets cameraAvailable to null).
+    if (cameraAvailable === false) {
+      set({ currentCameraState: targetState });
       return;
     }
 
     try {
-      // Attempt to find the camera object in the Spline scene
       const camera = splineApp.findObjectByName('Camera');
-      if (camera) {
-        // TransitionParams: { to: string, from?: string, duration: number, delay?: number, easing?: string }
-        // 400ms ≈ 350ms page transition, EASE_IN_OUT for cinematic feel
-        camera.transition({ to: targetState, duration: 0.4, easing: 'EASE_IN_OUT' });
-        console.debug('[3D] Camera transition → %s (400ms EASE_IN_OUT)', targetState);
-      } else {
-        console.warn('[3D] Camera object not found in Spline scene — transition skipped');
+      if (!camera) {
+        // First probe failed — cache the result so we never warn again for this scene.
+        // Camera states will work once the Spline scene defines a "Camera" object
+        // with named states (home-view, discover-view, etc.) per Plans 07-03/07-04.
+        set({ cameraAvailable: false, currentCameraState: targetState });
+        return;
       }
-    } catch (err) {
-      // Camera states may not exist in the current .splinecode — graceful degradation
-      console.warn('[3D] Camera transition to "%s" failed (camera states may not be defined in scene):', targetState, err);
+
+      // Camera found — cache success and fire transition
+      if (cameraAvailable === null) {
+        set({ cameraAvailable: true });
+      }
+
+      camera.transition({ to: targetState, duration: 0.4, easing: 'EASE_IN_OUT' });
+    } catch {
+      // Camera states may not exist in the current .splinecode — graceful degradation.
+      // Don't disable cameraAvailable here — the Camera object exists but the
+      // target state name might be missing. Other states may still work.
     }
 
-    // Always update local state tracker so CameraTransitionManager avoids redundant calls
     set({ currentCameraState: targetState });
   },
 }));

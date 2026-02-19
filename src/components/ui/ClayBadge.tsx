@@ -11,9 +11,9 @@ interface ClayBadgeProps {
 }
 
 const variantStyles: Record<BadgeVariant, string> = {
-  default: 'bg-clay-surface text-clay-text',
-  accent: 'bg-accent text-clay-base',
-  muted: 'bg-clay-base text-clay-text-muted',
+  default: 'bg-white/[0.08] backdrop-blur-sm border border-white/10 text-clay-text',
+  accent: 'bg-accent/80 text-white border border-accent/20',
+  muted: 'bg-clay-surface/70 text-clay-text border border-white/15',
 };
 
 const sizeStyles: Record<BadgeSize, string> = {
@@ -22,11 +22,7 @@ const sizeStyles: Record<BadgeSize, string> = {
 };
 
 /**
- * ClayBadge — Small clay surface for labels, tags, and ratings.
- *
- * Compact clay element with subtle shadow and texture.
- * Supports default, accent, and muted variants in sm/md sizes.
- * Automatically adapts to theme via CSS variables.
+ * ClayBadge — Glassmorphic badge for labels, tags, and ratings.
  */
 export function ClayBadge({
   children,
@@ -38,16 +34,15 @@ export function ClayBadge({
     <span
       className={`
         inline-flex items-center
-        rounded-clay clay-shadow-sm clay-texture-subtle
+        rounded-full
         font-body font-medium
-        relative overflow-hidden
         transition-colors duration-300
         ${variantStyles[variant]}
         ${sizeStyles[size]}
         ${className}
       `}
     >
-      <span className="relative z-10">{children}</span>
+      {children}
     </span>
   );
 }

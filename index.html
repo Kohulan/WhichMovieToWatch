@@ -13,8 +13,8 @@
     <!-- Open Graph -->
     <meta property="og:title" content="Which Movie To Watch - Find Your Next Movie" />
     <meta property="og:description" content="Discover your next favorite movie with a visually immersive experience that makes browsing feel as cinematic as watching." />
-    <meta property="og:image" content="https://www.whichmovieto.watch/favicon_io/android-chrome-512x512.png" />
-    <meta property="og:url" content="https://www.whichmovieto.watch/" />
+    <meta property="og:image" content="https://www.whichmovietowatch.online/favicon_io/android-chrome-512x512.png" />
+    <meta property="og:url" content="https://www.whichmovietowatch.online/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Which Movie To Watch" />
 
@@ -22,7 +22,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Which Movie To Watch - Find Your Next Movie" />
     <meta name="twitter:description" content="Discover your next favorite movie with a visually immersive experience." />
-    <meta name="twitter:image" content="https://www.whichmovieto.watch/favicon_io/android-chrome-512x512.png" />
+    <meta name="twitter:image" content="https://www.whichmovietowatch.online/favicon_io/android-chrome-512x512.png" />
 
     <title>Which Movie To Watch!</title>
     <script>
@@ -46,8 +46,24 @@
       })();
     </script>
     <!-- CSP meta tag placed AFTER the inline FOUC script so it does not block the theme initialiser.
-         Meta-tag CSP only applies to content loaded after this tag in the document. -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://scripts.simpleanalyticscdn.com; style-src 'self' 'unsafe-inline'; img-src 'self' https://image.tmdb.org data: blob: https://*.simpleanalyticscdn.com; font-src 'self'; connect-src 'self' https://api.themoviedb.org https://www.omdbapi.com https://ipinfo.io https://corsproxy.io https://queue.simpleanalyticscdn.com https://prod.spline.design; media-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';">
+         Meta-tag CSP only applies to content loaded after this tag in the document.
+
+         Resource inventory (why each origin is allowed):
+           script-src:  unsafe-eval — Spline runtime (third-party) uses dynamic code generation internally
+                        wasm-unsafe-eval — Spline WebAssembly modules
+                        simpleanalyticscdn — cookieless analytics
+           worker-src:  blob: — Spline creates blob: Workers for sort/decode pipelines
+           style-src:   unsafe-inline — Tailwind v4 and Framer Motion inject inline styles at runtime
+                        fonts.googleapis.com — Google Fonts CSS loaded by Spline 3D text objects
+           font-src:    fonts.gstatic.com — Google Fonts WOFF2 files served from gstatic CDN,
+                        data: — Spline runtime embeds scene fonts as base64 data URIs
+           img-src:     image.tmdb.org — movie posters/backdrops, data: — SVG clay textures,
+                        blob: — story card canvas export
+           connect-src: api.themoviedb.org — TMDB API, omdbapi — ratings, ipinfo — geolocation,
+                        corsproxy — story card CORS poster fetch, simpleanalyticscdn — analytics beacon,
+                        prod.spline.design — .splinecode scene files, unpkg.com — detect-gpu benchmarks
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://scripts.simpleanalyticscdn.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https://image.tmdb.org data: blob: https://*.simpleanalyticscdn.com; connect-src 'self' https://api.themoviedb.org https://www.omdbapi.com https://ipinfo.io https://corsproxy.io https://queue.simpleanalyticscdn.com https://prod.spline.design https://unpkg.com; media-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';">
   </head>
   <body>
     <div id="root"></div>

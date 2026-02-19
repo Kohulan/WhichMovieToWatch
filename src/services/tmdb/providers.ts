@@ -73,6 +73,25 @@ export async function fetchMovieProviders(
   return countryData;
 }
 
+export async function fetchAllMovieProviders(
+  movieId: number,
+): Promise<Record<string, WatchProviderCountry>> {
+  const cacheKey = `providers-movie-${movieId}-all`;
+
+  const cached = await getCached<Record<string, WatchProviderCountry>>(cacheKey);
+  if (cached.value && !cached.isStale) {
+    return cached.value;
+  }
+
+  const response = await tmdbFetch<TMDBMovieProviderResponse>(
+    `/movie/${movieId}/watch/providers`,
+  );
+
+  await setCache(cacheKey, response.results, TTL.PROVIDER_LIST);
+
+  return response.results;
+}
+
 export async function fetchAvailableRegions(): Promise<TMDBRegionResult[]> {
   const cacheKey = 'provider-regions';
 

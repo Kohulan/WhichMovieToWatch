@@ -22,7 +22,7 @@ export function FreeMoviesBentoHero() {
     <StaggerContainer stagger={0.12} className="mb-6">
       <BentoGrid columns={6}>
         {/* Cell 1 — YouTube branding: red gradient + "Free on YouTube" + Film icon */}
-        <StaggerItem direction="up">
+        <StaggerItem direction="up" className="md:col-span-2 lg:col-span-3">
           <BentoCell
             colSpan={{ tablet: 2, desktop: 3 }}
             rowSpan={1}
@@ -80,7 +80,7 @@ export function FreeMoviesBentoHero() {
         </StaggerItem>
 
         {/* Cell 2 — Movie count stat */}
-        <StaggerItem direction="up">
+        <StaggerItem direction="up" className="md:col-span-2 lg:col-span-3">
           <BentoCell
             colSpan={{ tablet: 2, desktop: 3 }}
             rowSpan={1}

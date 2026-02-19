@@ -37,15 +37,14 @@ export const ClayInput = forwardRef<HTMLInputElement, ClayInputProps>(
             aria-invalid={error ? 'true' : undefined}
             aria-describedby={error ? errorId : undefined}
             className={`
-              w-full px-4 py-3 rounded-clay
-              bg-clay-base clay-texture clay-shadow-inset
-              font-body text-clay-text
+              w-full px-4 py-2.5 rounded-xl
+              bg-white/[0.06] backdrop-blur-sm border border-white/10
+              font-body text-clay-text text-sm
               placeholder:text-clay-text-muted
               transition-all duration-200
               outline-none
-              focus:ring-2 focus:ring-accent
-              focus:shadow-[inset_6px_6px_12px_var(--clay-shadow),inset_-3px_-3px_8px_var(--clay-highlight)]
-              ${error ? 'ring-2 ring-red-500 shadow-[inset_6px_6px_12px_var(--clay-shadow),inset_-3px_-3px_8px_var(--clay-highlight)]' : ''}
+              focus:ring-2 focus:ring-accent/50 focus:border-accent/30
+              ${error ? 'ring-2 ring-red-500/50 border-red-500/30' : ''}
               ${className}
             `}
             {...inputProps}

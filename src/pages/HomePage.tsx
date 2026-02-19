@@ -4,14 +4,21 @@
 // BentoGrid + BentoCell from the bento system. StaggerContainer wraps the grid
 // so all cells fade up on scroll entry with a 0.12s stagger between cells.
 //
+// Drives the shared featuredStore timer: every 5s the featured movie index
+// advances, causing DiscoverHeroCell, TrendingPreviewCell, and RatingShowcaseCell
+// to all shuffle in sync.
+//
 // Layout (desktop 12-column):
 // | Discover CTA (6 cols, 2 rows, glass) | Trending (3 cols, 2 rows, glass) | Rating (3 cols, 1 row, clay) |
 // |                                       |                                   | Providers (3 cols, 1 row)    |
 // | Dinner Time (4 cols, 1 row, clay)     | Free Movies (4 cols, 1 row, clay) | Search (4 cols, 1 row, clay) |
 
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { BentoGrid, BentoCell } from '@/components/bento';
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
-import { useNavigate } from 'react-router';
+import { useTopStreaming } from '@/hooks/useTopStreaming';
+import { useFeaturedStore } from '@/stores/featuredStore';
 
 import { DiscoverHeroCell } from '@/components/bento/cells/DiscoverHeroCell';
 import { TrendingPreviewCell } from '@/components/bento/cells/TrendingPreviewCell';
@@ -21,8 +28,25 @@ import { DinnerTimeCell } from '@/components/bento/cells/DinnerTimeCell';
 import { FreeMoviesCell } from '@/components/bento/cells/FreeMoviesCell';
 import { SearchCell } from '@/components/bento/cells/SearchCell';
 
+const CYCLE_INTERVAL = 5000; // 5 seconds between movie changes
+
 export function HomePage() {
   const navigate = useNavigate();
+  const { movies } = useTopStreaming();
+  const setTotal = useFeaturedStore((s) => s.setTotal);
+  const next = useFeaturedStore((s) => s.next);
+
+  // Sync the store total when the trending list loads or changes
+  useEffect(() => {
+    if (movies.length > 0) setTotal(movies.length);
+  }, [movies.length, setTotal]);
+
+  // Drive the cycling timer — advances all synced cells every 5s
+  useEffect(() => {
+    if (movies.length < 2) return;
+    const timer = setInterval(next, CYCLE_INTERVAL);
+    return () => clearInterval(timer);
+  }, [movies.length, next]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
@@ -44,7 +68,7 @@ export function HomePage() {
       >
         <BentoGrid columns={12}>
           {/* Discover CTA — glass hero, 6 cols, 2 rows */}
-          <StaggerItem direction="up">
+          <StaggerItem direction="up" className="md:col-span-2 lg:col-span-6 lg:row-span-2">
             <BentoCell
               material="glass"
               colSpan={{ tablet: 2, desktop: 6 }}
@@ -61,7 +85,7 @@ export function HomePage() {
           </StaggerItem>
 
           {/* Trending Preview — glass, 3 cols, 2 rows */}
-          <StaggerItem direction="up">
+          <StaggerItem direction="up" className="lg:col-span-3 lg:row-span-2">
             <BentoCell
               material="glass"
               colSpan={{ desktop: 3 }}
@@ -78,7 +102,7 @@ export function HomePage() {
           </StaggerItem>
 
           {/* Rating Showcase — clay, 3 cols, 1 row */}
-          <StaggerItem direction="up">
+          <StaggerItem direction="up" className="lg:col-span-3">
             <BentoCell
               material="clay"
               colSpan={{ desktop: 3 }}
@@ -89,7 +113,7 @@ export function HomePage() {
           </StaggerItem>
 
           {/* Provider Logos — clay, 3 cols, 1 row, hidden on mobile */}
-          <StaggerItem direction="up">
+          <StaggerItem direction="up" className="lg:col-span-3 hidden md:block">
             <BentoCell
               material="clay"
               colSpan={{ desktop: 3 }}
@@ -100,7 +124,7 @@ export function HomePage() {
           </StaggerItem>
 
           {/* Dinner Time — clay, 4 cols, 1 row */}
-          <StaggerItem direction="up">
+          <StaggerItem direction="up" className="lg:col-span-4">
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
@@ -116,7 +140,7 @@ export function HomePage() {
           </StaggerItem>
 
           {/* Free Movies — clay, 4 cols, 1 row */}
-          <StaggerItem direction="up">
+          <StaggerItem direction="up" className="lg:col-span-4">
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
@@ -131,15 +155,15 @@ export function HomePage() {
             </BentoCell>
           </StaggerItem>
 
-          {/* Search — clay, 4 cols, 1 row */}
-          <StaggerItem direction="up">
+          {/* Search — clay, 4 cols, 1 row — opens search overlay */}
+          <StaggerItem direction="up" className="lg:col-span-4">
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
-              onClick={() => navigate('/discover')}
+              onClick={() => window.dispatchEvent(new CustomEvent('open-search'))}
               overlay={
                 <div className="w-full p-3 text-xs text-clay-text-muted font-medium bg-clay-base/40 backdrop-blur-sm">
-                  Tap to explore
+                  Tap to search
                 </div>
               }
             >

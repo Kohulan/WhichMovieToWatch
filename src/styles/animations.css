@@ -95,6 +95,17 @@
     0 1px 0 rgba(255,255,255,0.05);
 }
 
+/* --------------------------------
+   Steam — gentle bob for coffee icon in footer.
+   -------------------------------- */
+@keyframes steam {
+  0% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-2px) rotate(1deg); }
+  50% { transform: translateY(0) rotate(0deg); }
+  75% { transform: translateY(-1px) rotate(-1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
 /* ============================================================
    REDUCED MOTION OVERRIDES
 

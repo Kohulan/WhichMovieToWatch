@@ -1,98 +1,107 @@
-// Streaming service branding — themed badge + URLs for Netflix, Prime, Disney+ (DINR-03)
+// Streaming service branding — logos, colors, URLs for Netflix, Prime, Disney+ (DINR-03)
 
-import { Tv } from 'lucide-react';
+import { PROVIDER_LOGOS_BASE } from '@/lib/provider-registry';
 
 interface ServiceBrandingConfig {
   name: string;
   color: string;
-  bgColor: string;
-  gradientFrom: string;
-  gradientTo: string;
+  logoPath: string;
   watchUrl: (title: string) => string;
 }
 
 const SERVICE_MAP: Record<number, ServiceBrandingConfig> = {
-  // Netflix
   8: {
     name: 'Netflix',
     color: '#E50914',
-    bgColor: 'bg-red-600',
-    gradientFrom: 'from-red-900/20',
-    gradientTo: 'to-red-800/10',
+    logoPath: '/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg',
     watchUrl: (title) =>
       `https://www.netflix.com/search?q=${encodeURIComponent(title)}`,
   },
-  // Amazon Prime Video
   9: {
     name: 'Prime Video',
     color: '#00A8E1',
-    bgColor: 'bg-sky-500',
-    gradientFrom: 'from-sky-900/20',
-    gradientTo: 'to-sky-800/10',
+    logoPath: '/emthp39XA2YScoYL1p0sdbAH2WA.jpg',
     watchUrl: (title) =>
       `https://www.amazon.com/s?k=${encodeURIComponent(title)}&i=instant-video`,
   },
-  // Amazon Prime Video (alternate ID used in some regions)
   119: {
     name: 'Prime Video',
     color: '#00A8E1',
-    bgColor: 'bg-sky-500',
-    gradientFrom: 'from-sky-900/20',
-    gradientTo: 'to-sky-800/10',
+    logoPath: '/emthp39XA2YScoYL1p0sdbAH2WA.jpg',
     watchUrl: (title) =>
       `https://www.amazon.com/s?k=${encodeURIComponent(title)}&i=instant-video`,
   },
-  // Disney+
   337: {
     name: 'Disney+',
     color: '#113CCF',
-    bgColor: 'bg-blue-700',
-    gradientFrom: 'from-blue-900/20',
-    gradientTo: 'to-purple-900/10',
+    logoPath: '/7rwgEs15tFwyR9NPQ5vpzxTj19Q.jpg',
     watchUrl: (title) =>
       `https://www.disneyplus.com/search/${encodeURIComponent(title)}`,
   },
 };
 
-// Fallback for unknown services
 const FALLBACK_SERVICE: ServiceBrandingConfig = {
   name: 'Streaming Service',
   color: '#6B7280',
-  bgColor: 'bg-gray-500',
-  gradientFrom: 'from-gray-900/20',
-  gradientTo: 'to-gray-800/10',
+  logoPath: '',
   watchUrl: (title) =>
     `https://www.google.com/search?q=${encodeURIComponent(title)}+streaming`,
 };
 
-interface ServiceBrandingProps {
-  serviceId: number;
+/**
+ * Get branding for a service. For known services (Netflix, Prime, Disney+),
+ * returns curated branding. For arbitrary TMDB providers, constructs branding
+ * from the provided metadata (name + logo path).
+ */
+export function getServiceConfig(
+  serviceId: number,
+  providerName?: string,
+  logoPath?: string,
+): ServiceBrandingConfig {
+  const known = SERVICE_MAP[serviceId];
+  if (known) return known;
+
+  // Build dynamic config from TMDB metadata when available
+  if (providerName) {
+    return {
+      name: providerName,
+      color: FALLBACK_SERVICE.color,
+      logoPath: logoPath ?? '',
+      watchUrl: (title) =>
+        `https://www.google.com/search?q=${encodeURIComponent(title)}+watch+on+${encodeURIComponent(providerName)}`,
+    };
+  }
+
+  return FALLBACK_SERVICE;
 }
 
-/**
- * ServiceBranding — Renders a themed service badge for Netflix, Prime Video, or Disney+.
- *
- * Shows the service name styled with service-appropriate colors.
- * Used in DinnerTimePage to indicate which service has the movie. (DINR-03)
- */
-export function ServiceBranding({ serviceId }: ServiceBrandingProps) {
-  const config = SERVICE_MAP[serviceId] ?? FALLBACK_SERVICE;
+export function getServiceLogoUrl(serviceId: number, logoPath?: string): string | null {
+  const config = SERVICE_MAP[serviceId];
+  const path = config?.logoPath ?? logoPath;
+  if (!path) return null;
+  return `${PROVIDER_LOGOS_BASE}${path}`;
+}
+
+interface ServiceBrandingProps {
+  serviceId: number;
+  providerName?: string;
+  logoPath?: string;
+}
+
+export function ServiceBranding({ serviceId, providerName, logoPath }: ServiceBrandingProps) {
+  const config = getServiceConfig(serviceId, providerName, logoPath);
+  const logoUrl = getServiceLogoUrl(serviceId, logoPath);
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg ${config.bgColor} text-white text-sm font-semibold shadow-md`}
+      className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-white text-sm font-semibold shadow-md"
+      style={{ backgroundColor: config.color }}
       aria-label={`Available on ${config.name}`}
     >
-      <Tv className="w-3.5 h-3.5" aria-hidden="true" />
+      {logoUrl && (
+        <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
+      )}
       {config.name}
     </div>
   );
-}
-
-/**
- * getServiceConfig — Returns branding config (name, color, watchUrl) for a service ID.
- * Used by DinnerTimePage to get the watch URL and gradient colors.
- */
-export function getServiceConfig(serviceId: number): ServiceBrandingConfig {
-  return SERVICE_MAP[serviceId] ?? FALLBACK_SERVICE;
 }

@@ -160,7 +160,7 @@ export function BentoCell({
       // by Framer Motion automatically.
       style={{ borderRadius: '1rem' }}
       className={[
-        'relative overflow-hidden',
+        'relative overflow-hidden h-full',
         materialClasses[material],
         colSpanClasses,
         // Enable group hover for overlay reveal

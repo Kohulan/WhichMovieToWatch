@@ -1,4 +1,10 @@
 import { SplineScene } from './SplineScene';
+import { useThemeStore, type ThemeMode } from '@/stores/themeStore';
+
+const SCENE_URLS: Record<ThemeMode, string> = {
+  dark:  'https://prod.spline.design/2fWjKvs9eEHSzk0P/scene.splinecode',
+  light: 'https://prod.spline.design/uc2Zl43KCHmTStn5/scene.splinecode',
+};
 
 interface SplineHeroProps {
   /**
@@ -19,9 +25,13 @@ interface SplineHeroProps {
  * This component exists as a separate default export so React.lazy can load it
  * as a standalone chunk (the spline-vendor chunk from vite.config.ts).
  *
- * Hero-specific logic (camera state management, route-based camera transitions)
- * will be added here in Plans 07-03 and 07-04.
+ * Scene URL is mode-dependent — dark and light each have their own .splinecode
+ * scene. Keying SplineScene on the URL ensures React fully unmounts the old
+ * WebGL context and mounts a fresh scene when the user toggles mode.
  */
 export default function SplineHero({ reduced = false }: SplineHeroProps) {
-  return <SplineScene reduced={reduced} />;
+  const mode = useThemeStore((s) => s.mode);
+  const sceneUrl = SCENE_URLS[mode];
+
+  return <SplineScene key={sceneUrl} sceneUrl={sceneUrl} reduced={reduced} />;
 }

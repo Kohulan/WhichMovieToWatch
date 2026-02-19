@@ -1,13 +1,17 @@
 /**
  * ShareMenu.tsx
- * Desktop fallback share menu with copy link, Instagram story, Twitter/X, WhatsApp.
- * Appears when native Web Share API is unavailable or as fallback.
+ * Custom share menu with copy link, Instagram story, create post, Twitter/X, WhatsApp.
+ * Shown on desktop (or when native Web Share API is unavailable).
  */
 
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Link, Download, Twitter, MessageCircle, X } from 'lucide-react';
-import { generateStoryCard, downloadStoryCard } from './StoryCardGenerator';
+import { Link, Image, Square, Twitter, MessageCircle, X } from 'lucide-react';
+import {
+  generateStoryCard,
+  generatePostCard,
+  shareImageBlob,
+} from './StoryCardGenerator';
 import type { StoryCardMovie } from './StoryCardGenerator';
 import { useShare } from '@/hooks/useShare';
 import { useThemeStore } from '@/stores/themeStore';
@@ -18,12 +22,13 @@ interface ShareMenuProps {
   onClose: () => void;
 }
 
-const SHARE_URL_BASE = 'https://www.whichmovieto.watch/#/discover?movie=';
+const SHARE_URL_BASE = 'https://www.whichmovietowatch.online/#/discover?movie=';
 
 export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   const { copyToClipboard } = useShare();
   const { preset, mode } = useThemeStore();
-  const [generatingCard, setGeneratingCard] = useState(false);
+  const [generatingStory, setGeneratingStory] = useState(false);
+  const [generatingPost, setGeneratingPost] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
   const shareUrl = `${SHARE_URL_BASE}${movie.id}`;
@@ -50,19 +55,47 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   }
 
   async function handleStoryCard() {
-    setGeneratingCard(true);
+    setGeneratingStory(true);
     try {
       const blob = await generateStoryCard(movie, preset, mode);
-      if (blob) {
-        downloadStoryCard(blob, movie.title);
-        showToast('Story card downloaded! Share it on Instagram.', 'success');
-      } else {
+      if (!blob) {
         showToast('Failed to generate story card.', 'error');
+        return;
+      }
+      const slug = movie.title.replace(/\s+/g, '-').toLowerCase();
+      const result = await shareImageBlob(blob, movie.title, `${slug}-story.png`);
+      if (result === 'copied') {
+        showToast('Story card copied! Paste it into Instagram.', 'success');
+      } else if (result === 'downloaded') {
+        showToast('Story card downloaded! Upload it to Instagram.', 'success');
       }
     } catch {
       showToast('Failed to generate story card.', 'error');
     } finally {
-      setGeneratingCard(false);
+      setGeneratingStory(false);
+      onClose();
+    }
+  }
+
+  async function handlePostCard() {
+    setGeneratingPost(true);
+    try {
+      const blob = await generatePostCard(movie, preset, mode);
+      if (!blob) {
+        showToast('Failed to generate post card.', 'error');
+        return;
+      }
+      const slug = movie.title.replace(/\s+/g, '-').toLowerCase();
+      const result = await shareImageBlob(blob, movie.title, `${slug}-post.png`);
+      if (result === 'copied') {
+        showToast('Post card copied! Paste it into your feed.', 'success');
+      } else if (result === 'downloaded') {
+        showToast('Post card downloaded! Upload it to your feed.', 'success');
+      }
+    } catch {
+      showToast('Failed to generate post card.', 'error');
+    } finally {
+      setGeneratingPost(false);
       onClose();
     }
   }
@@ -108,10 +141,10 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b border-clay-border">
-          <span className="text-clay-text font-semibold text-sm">Share "{movie.title}"</span>
+          <span className="text-clay-text font-semibold text-sm">Share &ldquo;{movie.title}&rdquo;</span>
           <button
             onClick={onClose}
-            className="text-clay-text-muted hover:text-clay-text transition-colors p-1 rounded-lg"
+            className="text-clay-text-muted hover:text-clay-text transition-colors p-1 rounded-lg cursor-pointer"
             aria-label="Close share menu"
           >
             <X className="w-4 h-4" />
@@ -126,10 +159,18 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
             onClick={handleCopyLink}
           />
           <ShareMenuItem
-            icon={<Download className="w-5 h-5" />}
-            label={generatingCard ? 'Generating...' : 'Instagram Story'}
+            icon={<Image className="w-5 h-5" />}
+            label={generatingStory ? 'Generating...' : 'Instagram Story'}
+            subtitle="9:16 story card"
             onClick={handleStoryCard}
-            disabled={generatingCard}
+            disabled={generatingStory}
+          />
+          <ShareMenuItem
+            icon={<Square className="w-5 h-5" />}
+            label={generatingPost ? 'Generating...' : 'Create Post'}
+            subtitle="1:1 square card"
+            onClick={handlePostCard}
+            disabled={generatingPost}
           />
           <ShareMenuItem
             icon={<Twitter className="w-5 h-5" />}
@@ -150,11 +191,12 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
 interface ShareMenuItemProps {
   icon: React.ReactNode;
   label: string;
+  subtitle?: string;
   onClick: () => void;
   disabled?: boolean;
 }
 
-function ShareMenuItem({ icon, label, onClick, disabled = false }: ShareMenuItemProps) {
+function ShareMenuItem({ icon, label, subtitle, onClick, disabled = false }: ShareMenuItemProps) {
   return (
     <button
       onClick={onClick}
@@ -162,7 +204,12 @@ function ShareMenuItem({ icon, label, onClick, disabled = false }: ShareMenuItem
       className="flex items-center gap-4 w-full px-5 py-3.5 text-clay-text hover:bg-clay-base/60 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <span className="text-clay-accent flex-shrink-0">{icon}</span>
-      <span className="text-sm font-medium">{label}</span>
+      <div className="text-left">
+        <span className="text-sm font-medium block">{label}</span>
+        {subtitle && (
+          <span className="text-xs text-clay-text-muted">{subtitle}</span>
+        )}
+      </div>
     </button>
   );
 }

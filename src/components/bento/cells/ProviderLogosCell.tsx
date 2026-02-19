@@ -1,49 +1,83 @@
-// ProviderLogosCell — Streaming provider logos grid.
+// ProviderLogosCell — Animated provider logo shuffle.
 //
+// Fetches all streaming providers for the user's region, shows 3 at a time,
+// and shuffles to the next 3 every 2.5 seconds with a crossfade animation.
 // Designed as col-span-3, row-span-1 on desktop. hideOnMobile=true (decorative).
-// Shows top 6 streaming provider logos using known TMDB provider IDs.
-// Clay material cell.
 
-// Static provider data — well-known services with TMDB logo paths
-const PROVIDERS = [
-  { id: 8, name: 'Netflix', logo: '/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg' },
-  { id: 337, name: 'Disney+', logo: '/7rwgEs15tFwyR9NPQ5vpzxTj19Q.jpg' },
-  { id: 9, name: 'Amazon Prime', logo: '/emthp39XA2YScoY2NXdzmugugiU.jpg' },
-  { id: 350, name: 'Apple TV+', logo: '/6uhKBfmtzFqOcLousHwZuzcrScK.jpg' },
-  { id: 384, name: 'HBO Max', logo: '/Ajqyt5oPwR6fSMPY5V1lNMWaEQX.jpg' },
-  { id: 531, name: 'Paramount+', logo: '/fi83B1oztoS47xxcemFdPMhIzK.jpg' },
-] as const;
+import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useRegionProviders } from '@/hooks/useWatchProviders';
 
 const TMDB_LOGO_BASE = 'https://image.tmdb.org/t/p/original';
+const VISIBLE_COUNT = 3;
+const CYCLE_MS = 2500;
 
 export function ProviderLogosCell() {
+  const { providers, isLoading } = useRegionProviders();
+  const [offset, setOffset] = useState(0);
+
+  // Shuffle the providers once on load so the order varies per session
+  const shuffled = useMemo(() => {
+    if (providers.length === 0) return [];
+    const copy = [...providers];
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+    return copy;
+  }, [providers]);
+
+  // Advance the window every CYCLE_MS
+  useEffect(() => {
+    if (shuffled.length <= VISIBLE_COUNT) return;
+    const timer = setInterval(() => {
+      setOffset((prev) => (prev + VISIBLE_COUNT) % shuffled.length);
+    }, CYCLE_MS);
+    return () => clearInterval(timer);
+  }, [shuffled.length]);
+
+  // Current 3 visible providers (wraps around)
+  const visible = useMemo(() => {
+    if (shuffled.length === 0) return [];
+    const result = [];
+    for (let i = 0; i < VISIBLE_COUNT; i++) {
+      result.push(shuffled[(offset + i) % shuffled.length]);
+    }
+    return result;
+  }, [shuffled, offset]);
+
   return (
     <div className="w-full h-full flex flex-col justify-center p-4 gap-3">
       {/* Label */}
       <span className="text-xs font-semibold text-clay-text-muted uppercase tracking-wide">
-        60+ Streaming Services
+        {isLoading ? 'Loading...' : `${providers.length}+ Streaming Services`}
       </span>
 
-      {/* Provider logo grid */}
+      {/* Animated logo slots */}
       <div className="grid grid-cols-3 gap-2">
-        {PROVIDERS.map((provider) => (
-          <div
-            key={provider.id}
-            className="aspect-square rounded-lg overflow-hidden bg-white/10 flex items-center justify-center"
-            title={provider.name}
-          >
-            <img
-              src={`${TMDB_LOGO_BASE}${provider.logo}`}
-              alt={provider.name}
-              className="w-full h-full object-cover"
-              loading="lazy"
-              onError={(e) => {
-                // Hide broken provider logos gracefully
-                (e.currentTarget as HTMLImageElement).style.display = 'none';
-              }}
-            />
-          </div>
-        ))}
+        <AnimatePresence mode="popLayout">
+          {visible.map((provider) => (
+            <motion.div
+              key={provider.provider_id}
+              className="aspect-square rounded-lg overflow-hidden bg-white/10 flex items-center justify-center"
+              title={provider.provider_name}
+              initial={{ opacity: 0, scale: 0.7, rotateY: 90 }}
+              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
+              exit={{ opacity: 0, scale: 0.7, rotateY: -90 }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+            >
+              <img
+                src={`${TMDB_LOGO_BASE}${provider.logo_path}`}
+                alt={provider.provider_name}
+                className="w-full h-full object-cover"
+                loading="lazy"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </div>
   );

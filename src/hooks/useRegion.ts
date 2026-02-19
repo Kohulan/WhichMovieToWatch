@@ -11,12 +11,8 @@ export function useRegion() {
   const region = useRegionStore((s) => s.effectiveRegion)();
   const [isDetecting, setIsDetecting] = useState(false);
 
-  // Auto-detect country on first load (when needsDetection returns true)
+  // Auto-detect country on every app load so it always reflects current location
   useEffect(() => {
-    const store = useRegionStore.getState();
-
-    if (!store.needsDetection()) return;
-
     let cancelled = false;
 
     async function detect() {
@@ -28,7 +24,7 @@ export function useRegion() {
           useRegionStore.getState().setDetectedCountry(country);
         }
       } catch (err) {
-        // Detection failed — keep default (DE)
+        // Detection failed — keep existing value
         console.warn('[region] Country detection failed:', err);
       } finally {
         if (!cancelled) {

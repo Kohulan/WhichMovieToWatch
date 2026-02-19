@@ -1,122 +1,513 @@
-// Multi-step first-visit onboarding wizard for provider + genre preferences
+// Cinematic 2-step onboarding wizard for provider + genre preferences
+// Supports both first-visit onboarding and re-edit settings mode.
 
-import { useState } from 'react';
-import { ClayModal } from '@/components/ui/ClayModal';
+import { useState, useCallback, useRef, useEffect, useId } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Tv, Sparkles, ArrowLeft, X } from 'lucide-react';
 import { MetalButton } from '@/components/ui';
 import { usePreferencesStore } from '@/stores/preferencesStore';
-import { ProviderSelector } from './ProviderSelector';
-import { GenreSelector } from './GenreSelector';
+import { useDiscoveryStore } from '@/stores/discoveryStore';
+import { useRegionProviders } from '@/hooks/useWatchProviders';
+import { getProviderLogoUrl } from '@/lib/provider-registry';
+import { getAllGenres } from '@/lib/genre-map';
 
 interface OnboardingWizardProps {
   isOpen: boolean;
   onComplete: () => void;
+  /** When true, shows "Save" instead of "Get Started" and pre-fills current preferences */
+  mode?: 'onboarding' | 'settings';
+  /** Optional warning shown at the top of the modal (e.g. when previous filters returned no results) */
+  warningMessage?: string | null;
 }
 
+/** Top streaming services shown first (by TMDB provider ID) */
+const TOP_PROVIDER_IDS = new Set([8, 337, 9, 119, 15, 384, 350, 531, 386, 283, 2, 3, 10]);
+
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 80 : -80,
+    opacity: 0,
+    filter: 'blur(4px)',
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    filter: 'blur(0px)',
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -80 : 80,
+    opacity: 0,
+    filter: 'blur(4px)',
+  }),
+};
+
 /**
- * OnboardingWizard - 2-step modal wizard for first-visit preferences.
+ * OnboardingWizard — Cinematic 2-step preference setup.
  *
- * Step 1: Provider selection (streaming services).
- * Step 2: Genre selection (preferred genre or "Any").
- * Progress shown as 2 dots at the top.
- * Skip closes without saving. Get Started persists selections. (PREF-01 through PREF-05, INTR-02, INTR-03)
+ * Step 1: Pick ONE default streaming provider (single-select logo grid).
+ *         Auto-advances to step 2 after selection.
+ * Step 2: Pick ONE genre or "Any" (single-select pill chips).
+ *
+ * Footer with Skip/Back and action buttons is always pinned to the bottom.
  */
-export function OnboardingWizard({ isOpen, onComplete }: OnboardingWizardProps) {
+export function OnboardingWizard({
+  isOpen,
+  onComplete,
+  mode = 'onboarding',
+  warningMessage,
+}: OnboardingWizardProps) {
+  const currentProvider = usePreferencesStore((s) => s.preferredProvider);
+  const currentGenre = usePreferencesStore((s) => s.preferredGenre);
+
   const [step, setStep] = useState<1 | 2>(1);
-  const [selectedProviderIds, setSelectedProviderIds] = useState<number[]>([]);
-  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  const [direction, setDirection] = useState(1);
+  const [selectedProvider, setSelectedProvider] = useState<number | null>(
+    mode === 'settings' && currentProvider ? Number(currentProvider) : null,
+  );
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(
+    mode === 'settings' ? currentGenre : null,
+  );
 
-  const setMyServices = usePreferencesStore((s) => s.setMyServices);
+  const setPreferredProvider = usePreferencesStore((s) => s.setPreferredProvider);
   const setPreferredGenre = usePreferencesStore((s) => s.setPreferredGenre);
+  const completeOnboarding = usePreferencesStore((s) => s.completeOnboarding);
+  const setFilters = useDiscoveryStore((s) => s.setFilters);
 
-  function handleNext() {
-    setStep(2);
-  }
+  const { providers, isLoading: providersLoading } = useRegionProviders();
+  const genres = getAllGenres();
+  const titleId = useId();
 
-  function handleSkip() {
-    onComplete();
-  }
+  // Track auto-advance timer so we can cancel on unmount
+  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function handleGetStarted() {
-    setMyServices(selectedProviderIds);
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
+    };
+  }, []);
+
+  // Sort providers: top ones first, then alphabetical
+  const sortedProviders = [...providers].sort((a, b) => {
+    const aTop = TOP_PROVIDER_IDS.has(a.provider_id);
+    const bTop = TOP_PROVIDER_IDS.has(b.provider_id);
+    if (aTop && !bTop) return -1;
+    if (!aTop && bTop) return 1;
+    return a.provider_name.localeCompare(b.provider_name);
+  });
+
+  // Select provider and auto-advance to genres after a brief delay
+  const handleProviderSelect = useCallback((providerId: number) => {
+    setSelectedProvider((prev) => {
+      const newVal = prev === providerId ? null : providerId;
+
+      // Clear any pending auto-advance
+      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
+
+      // Auto-advance to genre step when a provider is selected
+      if (newVal !== null) {
+        autoAdvanceTimer.current = setTimeout(() => {
+          setDirection(1);
+          setStep(2);
+        }, 350);
+      }
+
+      return newVal;
+    });
+  }, []);
+
+  const handleBack = useCallback(() => {
+    setDirection(-1);
+    setStep(1);
+  }, []);
+
+  const handleSave = useCallback(() => {
+    setPreferredProvider(selectedProvider ? String(selectedProvider) : null);
     setPreferredGenre(selectedGenre);
-    onComplete();
-  }
 
-  function handleClose() {
-    handleSkip();
-  }
+    setFilters({
+      providerId: selectedProvider,
+      genreId: selectedGenre,
+    });
+
+    if (mode === 'onboarding') {
+      completeOnboarding();
+    }
+
+    onComplete();
+  }, [
+    selectedProvider,
+    selectedGenre,
+    setPreferredProvider,
+    setPreferredGenre,
+    setFilters,
+    completeOnboarding,
+    mode,
+    onComplete,
+  ]);
+
+  const handleSkip = useCallback(() => {
+    if (mode === 'onboarding') {
+      completeOnboarding();
+    }
+    onComplete();
+  }, [mode, completeOnboarding, onComplete]);
+
+  // Close on Escape key and lock body scroll
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleSkip();
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = originalOverflow;
+    };
+  }, [isOpen, handleSkip]);
+
+  // Reset step when opening in settings mode
+  useEffect(() => {
+    if (isOpen) {
+      setStep(1);
+      if (mode === 'settings') {
+        setSelectedProvider(currentProvider ? Number(currentProvider) : null);
+        setSelectedGenre(currentGenre);
+      }
+    }
+  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const isSettingsMode = mode === 'settings';
+  const ctaLabel = isSettingsMode ? 'Save' : 'Get Started';
 
   return (
-    <ClayModal isOpen={isOpen} onClose={handleClose}>
-      <div className="flex flex-col max-h-[calc(90vh-3rem)]">
-        {/* Fixed header: progress dots + title */}
-        <div className="flex-shrink-0 space-y-3 pb-3">
-          <div
-            className="flex items-center justify-center gap-2"
-            aria-label={`Step ${step} of 2`}
-          >
-            <div
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                step >= 1 ? 'bg-clay-accent scale-125' : 'bg-clay-base'
-              }`}
-              aria-hidden="true"
-            />
-            <div
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                step >= 2 ? 'bg-clay-accent scale-125' : 'bg-clay-base'
-              }`}
-              aria-hidden="true"
-            />
-          </div>
-
-          <div>
-            <h2 className="font-heading text-xl font-bold text-clay-text text-center">
-              {step === 1 ? 'Choose Your Streaming Services' : 'What genres do you enjoy?'}
-            </h2>
-            <p className="text-clay-text-muted text-sm text-center mt-1">
-              {step === 1 ? "We'll find movies on your platforms" : 'Select your favorites or choose Any'}
-            </p>
-          </div>
-        </div>
-
-        {/* Scrollable content area */}
-        <div className="flex-1 overflow-y-auto min-h-0 py-2">
-          {step === 1 && (
-            <ProviderSelector
-              selectedIds={selectedProviderIds}
-              onSelectionChange={setSelectedProviderIds}
-            />
-          )}
-
-          {step === 2 && (
-            <GenreSelector
-              selectedGenre={selectedGenre}
-              onGenreChange={setSelectedGenre}
-            />
-          )}
-        </div>
-
-        {/* Fixed footer: Skip + action button */}
-        <div className="flex-shrink-0 flex items-center justify-between pt-4 border-t border-clay-base/30">
-          <button
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
+          <motion.div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={handleSkip}
-            className="text-sm text-clay-text-muted hover:text-clay-text transition-colors underline underline-offset-2"
-            aria-label="Skip onboarding setup"
-          >
-            Skip
-          </button>
+            aria-hidden="true"
+          />
 
-          {step === 1 ? (
-            <MetalButton variant="primary" size="md" onClick={handleNext}>
-              Next
-            </MetalButton>
-          ) : (
-            <MetalButton variant="primary" size="md" onClick={handleGetStarted}>
-              Get Started
-            </MetalButton>
-          )}
+          {/* Modal panel — flex column, overflow managed internally */}
+          <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            className="relative bg-clay-base/90 backdrop-blur-2xl border border-white/10 rounded-2xl max-w-xl w-full mx-auto max-h-[85vh] flex flex-col overflow-hidden transition-colors duration-300"
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{
+              scale: 1,
+              opacity: 1,
+              transition: { type: 'spring', stiffness: 300, damping: 22 },
+            }}
+            exit={{
+              scale: 0.95,
+              opacity: 0,
+              transition: { duration: 0.15 },
+            }}
+          >
+            {/* Sticky header: warning + close button + progress bar */}
+            <div className="flex-shrink-0 p-5 pb-0">
+              {/* Warning banner when previous filters returned no results */}
+              {warningMessage && (
+                <div className="mb-3 px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-center">
+                  <p className="text-red-400 text-sm font-medium">{warningMessage}</p>
+                </div>
+              )}
+
+              {/* Close button */}
+              <div className="flex justify-end mb-3">
+                <button
+                  onClick={handleSkip}
+                  autoFocus
+                  className="p-2 rounded-xl bg-white/[0.08] border border-white/10 text-clay-text-muted hover:text-clay-text hover:bg-white/[0.12] transition-colors cursor-pointer"
+                  aria-label="Close"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Progress bar */}
+              <div className="mb-4">
+                <div className="h-1 w-full bg-clay-surface rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-accent rounded-full"
+                    animate={{ width: step === 1 ? '50%' : '100%' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                  />
+                </div>
+                <div className="flex justify-between mt-1.5 px-0.5">
+                  <span
+                    className={`text-[11px] font-medium transition-colors ${
+                      step === 1 ? 'text-accent' : 'text-clay-text-muted'
+                    }`}
+                  >
+                    1. Streaming
+                  </span>
+                  <span
+                    className={`text-[11px] font-medium transition-colors ${
+                      step === 2 ? 'text-accent' : 'text-clay-text-muted'
+                    }`}
+                  >
+                    2. Genre
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Scrollable content area — only this part scrolls */}
+            <div className="flex-1 overflow-y-auto min-h-0 px-5">
+              <AnimatePresence mode="wait" custom={direction}>
+                {step === 1 && (
+                  <motion.div
+                    key="step-1"
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+                  >
+                    {/* Step 1 Header */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center flex-shrink-0">
+                        <Tv className="w-5 h-5 text-accent" />
+                      </div>
+                      <div>
+                        <h2
+                          id={titleId}
+                          className="font-heading text-lg font-bold text-clay-text"
+                        >
+                          {isSettingsMode ? 'Change Streaming Service' : 'Where do you watch?'}
+                        </h2>
+                        <p className="text-clay-text-muted text-xs">
+                          Tap your go-to platform
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Provider grid — single select, auto-advances */}
+                    {providersLoading ? (
+                      <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 pb-4">
+                        {Array.from({ length: 10 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="aspect-square rounded-xl bg-clay-surface animate-pulse"
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <div
+                        className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 pb-4"
+                        role="radiogroup"
+                        aria-label="Streaming service selection"
+                      >
+                        {sortedProviders.map((provider) => {
+                          const isSelected = selectedProvider === provider.provider_id;
+                          return (
+                            <motion.button
+                              key={provider.provider_id}
+                              onClick={() => handleProviderSelect(provider.provider_id)}
+                              role="radio"
+                              aria-checked={isSelected}
+                              aria-label={provider.provider_name}
+                              title={provider.provider_name}
+                              className="group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent rounded-xl p-1"
+                              whileHover={{ scale: 1.05 }}
+                              whileTap={{ scale: 0.95 }}
+                              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                            >
+                              <div
+                                className={`
+                                  relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200
+                                  ${isSelected
+                                    ? 'ring-[3px] ring-accent shadow-[0_0_16px_rgba(var(--accent-rgb,255,140,50),0.35)] opacity-100'
+                                    : 'ring-1 ring-white/10 opacity-60 group-hover:opacity-85'
+                                  }
+                                `}
+                              >
+                                {provider.logo_path ? (
+                                  <img
+                                    src={getProviderLogoUrl(provider.logo_path)}
+                                    alt=""
+                                    loading="lazy"
+                                    className="w-full h-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-full h-full bg-clay-surface flex items-center justify-center">
+                                    <span className="text-clay-text-muted text-xs font-medium">
+                                      {provider.provider_name.slice(0, 3)}
+                                    </span>
+                                  </div>
+                                )}
+                                {isSelected && (
+                                  <motion.div
+                                    className="absolute inset-0 bg-accent/20 flex items-center justify-center"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.15 }}
+                                  >
+                                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center shadow-lg">
+                                      <svg
+                                        width="12"
+                                        height="12"
+                                        viewBox="0 0 12 12"
+                                        fill="none"
+                                        className="text-white"
+                                      >
+                                        <path
+                                          d="M2 6L5 9L10 3"
+                                          stroke="currentColor"
+                                          strokeWidth="2"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                        />
+                                      </svg>
+                                    </div>
+                                  </motion.div>
+                                )}
+                              </div>
+                              <span
+                                className={`text-[10px] leading-tight text-center line-clamp-1 max-w-full transition-colors ${
+                                  isSelected ? 'text-accent font-semibold' : 'text-clay-text-muted'
+                                }`}
+                              >
+                                {provider.provider_name}
+                              </span>
+                            </motion.button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+                {step === 2 && (
+                  <motion.div
+                    key="step-2"
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{ duration: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+                  >
+                    {/* Step 2 Header */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-10 h-10 rounded-xl bg-accent/15 flex items-center justify-center flex-shrink-0">
+                        <Sparkles className="w-5 h-5 text-accent" />
+                      </div>
+                      <div>
+                        <h2 className="font-heading text-lg font-bold text-clay-text">
+                          {isSettingsMode ? 'Change Genre' : 'What are you in the mood for?'}
+                        </h2>
+                        <p className="text-clay-text-muted text-xs">
+                          Pick a genre or leave it on Any
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Genre pills — single select */}
+                    <div
+                      className="flex flex-wrap gap-2 pb-4"
+                      role="radiogroup"
+                      aria-label="Genre selection"
+                    >
+                      {/* "Any" option */}
+                      <motion.button
+                        role="radio"
+                        aria-checked={selectedGenre === null}
+                        onClick={() => setSelectedGenre(null)}
+                        className="focus:outline-none focus:ring-2 focus:ring-accent rounded-full cursor-pointer"
+                        whileHover={{ scale: 1.06 }}
+                        whileTap={{ scale: 0.94 }}
+                      >
+                        <span
+                          className={`
+                            inline-flex items-center px-4 py-2 rounded-full font-body font-semibold text-sm
+                            transition-all duration-200 select-none
+                            ${selectedGenre === null
+                              ? 'bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]'
+                              : 'bg-clay-surface/70 text-clay-text-muted border border-white/10 hover:border-white/20'
+                            }
+                          `}
+                        >
+                          Any Genre
+                        </span>
+                      </motion.button>
+
+                      {genres.map((genre) => {
+                        const isSelected = selectedGenre === String(genre.id);
+                        return (
+                          <motion.button
+                            key={genre.id}
+                            role="radio"
+                            aria-checked={isSelected}
+                            onClick={() =>
+                              setSelectedGenre(isSelected ? null : String(genre.id))
+                            }
+                            className="focus:outline-none focus:ring-2 focus:ring-accent rounded-full cursor-pointer"
+                            whileHover={{ scale: 1.06 }}
+                            whileTap={{ scale: 0.94 }}
+                          >
+                            <span
+                              className={`
+                                inline-flex items-center px-4 py-2 rounded-full font-body font-medium text-sm
+                                transition-all duration-200 select-none
+                                ${isSelected
+                                  ? 'bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]'
+                                  : 'bg-clay-surface/70 text-clay-text border border-white/10 hover:border-white/20'
+                                }
+                              `}
+                            >
+                              {genre.name}
+                            </span>
+                          </motion.button>
+                        );
+                      })}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Sticky footer — always pinned to bottom of modal */}
+            <div className="flex-shrink-0 flex items-center justify-between p-5 border-t border-white/[0.06] bg-clay-base/80 backdrop-blur-md">
+              {step === 1 ? (
+                <button
+                  onClick={handleSkip}
+                  className="text-sm text-clay-text-muted hover:text-clay-text transition-colors underline underline-offset-2 cursor-pointer"
+                >
+                  {isSettingsMode ? 'Cancel' : 'Skip'}
+                </button>
+              ) : (
+                <MetalButton variant="ghost" size="sm" onClick={handleBack}>
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  Back
+                </MetalButton>
+              )}
+
+              {step === 2 && (
+                <MetalButton variant="primary" size="md" onClick={handleSave}>
+                  {ctaLabel}
+                </MetalButton>
+              )}
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </ClayModal>
+      )}
+    </AnimatePresence>
   );
 }
