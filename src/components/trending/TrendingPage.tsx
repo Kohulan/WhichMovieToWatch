@@ -1,8 +1,10 @@
 // Trending (Now Playing) page — horizontal scroll strip with auto-refresh (TRND-01, TRND-02, TRND-03, TRND-04)
 
+import { useNavigate } from 'react-router';
 import { RefreshCw, Clock, AlertCircle } from 'lucide-react';
 import { useTrending } from '@/hooks/useTrending';
 import { getPosterUrl } from '@/services/tmdb/client';
+import { tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
 import { ClaySkeletonCard } from '@/components/ui';
 import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
 import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
@@ -17,10 +19,11 @@ import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerCon
  */
 export function TrendingPage() {
   const { movies, isLoading, error, refresh } = useTrending();
+  const navigate = useNavigate();
 
   function handleMovieClick(movieId: number) {
     // Navigate to discovery page with deep-link to load full movie details
-    window.location.hash = `/?movie=${movieId}`;
+    navigate(`/discover?movie=${movieId}`);
   }
 
   if (isLoading && movies.length === 0) {
@@ -108,13 +111,12 @@ export function TrendingPage() {
             : null;
           const ratingPercent = Math.round(movie.vote_average * 10);
 
-          // Rating badge color
-          const ratingColor =
-            ratingPercent >= 70
-              ? 'bg-green-500/80 text-white'
-              : ratingPercent >= 50
-                ? 'bg-yellow-500/80 text-white'
-                : 'bg-red-500/80 text-white';
+          let ratingColor = 'bg-red-500/80 text-white';
+          if (ratingPercent >= 70) {
+            ratingColor = 'bg-green-500/80 text-white';
+          } else if (ratingPercent >= 50) {
+            ratingColor = 'bg-yellow-500/80 text-white';
+          }
 
           return (
             <StaggerItem key={movie.id} direction="up" className="flex-shrink-0 snap-start w-40 md:w-full">
@@ -129,9 +131,12 @@ export function TrendingPage() {
                   {posterUrl ? (
                     <img
                       src={posterUrl}
+                      srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+                      sizes={posterSizes}
                       alt={`${movie.title} poster`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
+                      decoding="async"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-clay-surface">
