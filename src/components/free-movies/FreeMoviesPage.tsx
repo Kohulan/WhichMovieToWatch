@@ -28,7 +28,7 @@ export function FreeMoviesPage() {
   const imdbId = tmdb?.imdb_id ?? null;
   const { imdbRating, rottenTomatoes, metascore } = useOmdbRatings(imdbId);
 
-  const { providers } = useWatchProviders(tmdb?.id ?? null);
+  const { providers } = useWatchProviders(tmdb?.id ?? null, tmdb?.title ?? "");
 
   const youtubeUrl = movie
     ? `https://www.youtube.com/watch?v=${movie.youtubeId}`
