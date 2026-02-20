@@ -239,7 +239,7 @@ export function RegionPicker({
                 className="
                   fixed bottom-0 left-0 right-0 z-[60]
                   rounded-t-3xl
-                  bg-clay-base/95 backdrop-blur-2xl
+                  bg-clay-base/95 backdrop-blur-md
                   border-t border-x border-white/[0.12]
                   shadow-[0_-8px_40px_rgba(0,0,0,0.25)]
                   pb-[env(safe-area-inset-bottom)]

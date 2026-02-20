@@ -67,7 +67,7 @@ export function ClayModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
-            className={`relative bg-clay-base/80 backdrop-blur-2xl border border-white/10 rounded-2xl max-w-lg w-full mx-auto max-h-[90vh] overflow-y-auto transition-colors duration-300 ${className}`}
+            className={`relative bg-clay-base/95 backdrop-blur-md sm:bg-clay-base/80 sm:backdrop-blur-2xl border border-white/10 rounded-2xl max-w-lg w-full mx-auto max-h-[90vh] overflow-y-auto transition-colors duration-300 ${className}`}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{
               scale: 1,

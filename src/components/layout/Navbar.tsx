@@ -87,7 +87,7 @@ export function Navbar() {
           "relative flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg cursor-pointer",
           "text-[11px] font-medium tracking-wide",
           "outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-1 focus-visible:ring-offset-clay-base/50",
-          "transition-all duration-200",
+          "transition-colors duration-200",
           isActive
             ? "text-accent"
             : "text-clay-text-muted hover:text-clay-text",
@@ -118,7 +118,7 @@ export function Navbar() {
           className="relative z-[1]"
         >
           <Icon
-            className={`w-3.5 h-3.5 transition-all duration-200 ${isActive ? "drop-shadow-[0_0_4px_var(--accent)]" : ""}`}
+            className={`w-3.5 h-3.5 transition-colors duration-200 ${isActive ? "drop-shadow-[0_0_4px_var(--accent)]" : ""}`}
             strokeWidth={isActive ? 2.5 : 1.5}
             aria-hidden="true"
           />
@@ -136,12 +136,12 @@ export function Navbar() {
           fixed top-0 left-0 right-0 z-40
           mx-2 sm:mx-4 mt-2 sm:mt-3
           rounded-2xl
-          bg-clay-base/50 backdrop-blur-2xl backdrop-saturate-[1.8]
+          bg-clay-base/70 backdrop-blur-md sm:bg-clay-base/50 sm:backdrop-blur-2xl sm:backdrop-saturate-[1.8]
           border border-white/[0.12]
           shadow-[0_8px_32px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.06)]
           h-12 flex items-center
           px-2.5 sm:px-4
-          transition-all duration-500 ease-in-out
+          transition-colors duration-500 ease-in-out
         "
       >
         {/* Left: Brand + Nav */}

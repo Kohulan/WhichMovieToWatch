@@ -262,7 +262,7 @@ export function SpotlightSearch({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/60 backdrop-blur-[16px]"
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm sm:bg-black/60 sm:backdrop-blur-[16px]"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -291,7 +291,7 @@ export function SpotlightSearch({
               className={`
                 w-full max-w-2xl
                 max-h-[90vh] sm:max-h-[80vh]
-                bg-clay-base/80 backdrop-blur-2xl
+                bg-clay-base/95 backdrop-blur-md sm:bg-clay-base/80 sm:backdrop-blur-2xl
                 rounded-2xl
                 border ${netflixMode ? "border-[#E50914]/20" : "border-white/10"}
                 flex flex-col

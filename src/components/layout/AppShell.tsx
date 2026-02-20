@@ -237,10 +237,10 @@ export function AppShell() {
         <div className="absolute inset-0 bg-clay-base" />
 
         <AnimatePresence mode="sync">
-          {/* Blob 1 — top-right large warm glow */}
+          {/* Blob 1 — top-right large warm glow (reduced blur on mobile for GPU perf) */}
           <motion.div
             key={`blob-1-${preset}`}
-            className="absolute top-[-20%] right-[-10%] w-[80%] h-[70%] rounded-full bg-accent/[0.14] blur-[140px]"
+            className="absolute top-[-20%] right-[-10%] w-[80%] h-[70%] rounded-full bg-accent/[0.14] blur-[60px] sm:blur-[140px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
@@ -249,7 +249,7 @@ export function AppShell() {
           {/* Blob 2 — bottom-left mid glow */}
           <motion.div
             key={`blob-2-${preset}`}
-            className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/[0.06] blur-[120px]"
+            className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/[0.06] blur-[40px] sm:blur-[120px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
@@ -258,7 +258,7 @@ export function AppShell() {
           {/* Blob 3 — center-left subtle accent */}
           <motion.div
             key={`blob-3-${preset}`}
-            className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full bg-accent/[0.04] blur-[100px]"
+            className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full bg-accent/[0.04] blur-[30px] sm:blur-[100px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
