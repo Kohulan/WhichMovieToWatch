@@ -1,6 +1,6 @@
 // Genre badges rendered as clay-styled pills (DISP-07)
 
-import { ClayBadge } from '@/components/ui';
+import { ClayBadge } from "@/components/ui";
 
 interface Genre {
   id: number;
@@ -26,7 +26,11 @@ export function GenreBadges({ genres, maxVisible = 4 }: GenreBadgesProps) {
   const overflow = genres.length - maxVisible;
 
   return (
-    <div className="flex flex-wrap gap-1.5" role="list" aria-label="Movie genres">
+    <div
+      className="flex flex-wrap gap-1.5"
+      role="list"
+      aria-label="Movie genres"
+    >
       {visible.map((genre) => (
         <span key={genre.id} role="listitem">
           <ClayBadge variant="muted" size="sm">

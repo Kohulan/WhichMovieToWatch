@@ -4,26 +4,26 @@
 // Subscribes to featuredStore index so it cycles in sync with
 // DiscoverHeroCell and RatingShowcaseCell.
 
-import { useMemo } from 'react';
-import { useNavigate } from 'react-router';
-import { motion, AnimatePresence } from 'motion/react';
-import { TrendingUp } from 'lucide-react';
-import { useTrending } from '@/hooks/useTrending';
-import { useFeaturedStore } from '@/stores/featuredStore';
-import { tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
+import { useMemo } from "react";
+import { useNavigate } from "react-router";
+import { motion, AnimatePresence } from "motion/react";
+import { TrendingUp } from "lucide-react";
+import { useTrending } from "@/hooks/useTrending";
+import { useFeaturedStore } from "@/stores/featuredStore";
+import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 
 // Gradient fallbacks for cards without poster images
 const POSTER_GRADIENTS = [
-  'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-  'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+  "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+  "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
+  "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
 ] as const;
 
 // Position configs for the 3-card fan: [left, center, right]
 const POSITIONS = [
-  { x: -28, rotate: -10, scale: 0.82, z: 0, opacity: 0.7 },  // left
-  { x: 0,   rotate: 0,   scale: 1,    z: 3, opacity: 1 },    // center
-  { x: 28,  rotate: 10,  scale: 0.82, z: 0, opacity: 0.7 },  // right
+  { x: -28, rotate: -10, scale: 0.82, z: 0, opacity: 0.7 }, // left
+  { x: 0, rotate: 0, scale: 1, z: 3, opacity: 1 }, // center
+  { x: 28, rotate: 10, scale: 0.82, z: 0, opacity: 0.7 }, // right
 ] as const;
 
 // Maps each movie in the 3-item window to a visual slot: center, right, left
@@ -48,7 +48,7 @@ export function TrendingPreviewCell() {
   return (
     <div
       className="w-full h-full min-h-[180px] flex flex-col p-4 gap-3"
-      onClick={() => navigate('/trending')}
+      onClick={() => navigate("/trending")}
     >
       {/* Label with live dot */}
       <div className="flex items-center gap-1.5">
@@ -59,7 +59,7 @@ export function TrendingPreviewCell() {
         <motion.span
           className="w-1.5 h-1.5 rounded-full bg-accent ml-auto"
           animate={{ opacity: [1, 0.3, 1] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           aria-hidden="true"
         />
       </div>
@@ -100,17 +100,21 @@ export function TrendingPreviewCell() {
                     }}
                     exit={{ opacity: 0, scale: 0.6 }}
                     transition={{
-                      type: 'spring',
+                      type: "spring",
                       stiffness: 200,
                       damping: 22,
                       mass: 0.8,
                     }}
-                    style={{ width: '55%', maxWidth: '90px' }}
+                    style={{ width: "55%", maxWidth: "90px" }}
                   >
                     {posterUrl ? (
                       <img
                         src={posterUrl}
-                        srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+                        srcSet={
+                          movie.poster_path
+                            ? tmdbPosterSrcSet(movie.poster_path)
+                            : undefined
+                        }
                         sizes={posterSizes}
                         alt={movie.title}
                         className="w-full aspect-[2/3] object-cover rounded-lg shadow-lg"

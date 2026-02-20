@@ -1,8 +1,8 @@
 // Search with pagination hook — debouncing is a UI concern (Phase 3)
 
-import { useCallback } from 'react';
-import { searchMovies } from '@/services/tmdb/search';
-import { useSearchStore } from '@/stores/searchStore';
+import { useCallback } from "react";
+import { searchMovies } from "@/services/tmdb/search";
+import { useSearchStore } from "@/stores/searchStore";
 
 export function useSearchMovies() {
   const query = useSearchStore((s) => s.query);
@@ -28,16 +28,18 @@ export function useSearchMovies() {
 
     try {
       const response = await searchMovies(trimmed, 1);
-      useSearchStore.getState().setResults(
-        response.results,
-        response.total_results,
-        response.total_pages,
-        response.page,
-      );
+      useSearchStore
+        .getState()
+        .setResults(
+          response.results,
+          response.total_results,
+          response.total_pages,
+          response.page,
+        );
     } catch (err) {
-      useSearchStore.getState().setError(
-        err instanceof Error ? err.message : 'Search failed',
-      );
+      useSearchStore
+        .getState()
+        .setError(err instanceof Error ? err.message : "Search failed");
     } finally {
       useSearchStore.getState().setLoading(false);
     }
@@ -54,9 +56,11 @@ export function useSearchMovies() {
       const response = await searchMovies(store.query, store.currentPage + 1);
       useSearchStore.getState().appendResults(response.results, response.page);
     } catch (err) {
-      useSearchStore.getState().setError(
-        err instanceof Error ? err.message : 'Failed to load more results',
-      );
+      useSearchStore
+        .getState()
+        .setError(
+          err instanceof Error ? err.message : "Failed to load more results",
+        );
     } finally {
       useSearchStore.getState().setLoading(false);
     }

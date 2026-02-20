@@ -1,5 +1,5 @@
-import { forwardRef, useId } from 'react';
-import type { InputHTMLAttributes } from 'react';
+import { forwardRef, useId } from "react";
+import type { InputHTMLAttributes } from "react";
 
 interface ClayInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -15,7 +15,7 @@ interface ClayInputProps extends InputHTMLAttributes<HTMLInputElement> {
  * Fully accessible with label/input linking and aria attributes.
  */
 export const ClayInput = forwardRef<HTMLInputElement, ClayInputProps>(
-  ({ label, error, className = '', id: propId, ...inputProps }, ref) => {
+  ({ label, error, className = "", id: propId, ...inputProps }, ref) => {
     const generatedId = useId();
     const inputId = propId || generatedId;
     const errorId = `${inputId}-error`;
@@ -34,7 +34,7 @@ export const ClayInput = forwardRef<HTMLInputElement, ClayInputProps>(
           <input
             ref={ref}
             id={inputId}
-            aria-invalid={error ? 'true' : undefined}
+            aria-invalid={error ? "true" : undefined}
             aria-describedby={error ? errorId : undefined}
             className={`
               w-full px-4 py-2.5 rounded-xl
@@ -44,20 +44,24 @@ export const ClayInput = forwardRef<HTMLInputElement, ClayInputProps>(
               transition-all duration-200
               outline-none
               focus:ring-2 focus:ring-accent/50 focus:border-accent/30
-              ${error ? 'ring-2 ring-red-500/50 border-red-500/30' : ''}
+              ${error ? "ring-2 ring-red-500/50 border-red-500/30" : ""}
               ${className}
             `}
             {...inputProps}
           />
         </div>
         {error && (
-          <p id={errorId} className="font-body text-xs text-red-500 mt-0.5" role="alert">
+          <p
+            id={errorId}
+            className="font-body text-xs text-red-500 mt-0.5"
+            role="alert"
+          >
             {error}
           </p>
         )}
       </div>
     );
-  }
+  },
 );
 
-ClayInput.displayName = 'ClayInput';
+ClayInput.displayName = "ClayInput";

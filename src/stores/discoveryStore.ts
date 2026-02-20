@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { TMDBMovieDetails } from '@/types/movie';
+import { create } from "zustand";
+import type { TMDBMovieDetails } from "@/types/movie";
 
 interface DiscoveryFilters {
   genreId: string | null;

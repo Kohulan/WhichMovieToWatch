@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X } from 'lucide-react';
-import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { VoiceSearchButton } from './VoiceSearchButton';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Search, X } from "lucide-react";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { VoiceSearchButton } from "./VoiceSearchButton";
 
 interface SpotlightInputProps {
   onSearch: (query: string) => void;
@@ -12,12 +12,12 @@ interface SpotlightInputProps {
 
 /** Strip HTML tags from input to prevent XSS (SECU-02) */
 function sanitizeInput(input: string): string {
-  return input.replace(/<[^>]*>/g, '').slice(0, 100);
+  return input.replace(/<[^>]*>/g, "").slice(0, 100);
 }
 
 export function SpotlightInput({
   onSearch,
-  initialValue = '',
+  initialValue = "",
   netflixMode = false,
   placeholder,
 }: SpotlightInputProps) {
@@ -44,7 +44,7 @@ export function SpotlightInput({
   }, []);
 
   const handleClear = useCallback(() => {
-    setInputValue('');
+    setInputValue("");
     inputRef.current?.focus();
   }, []);
 
@@ -54,8 +54,8 @@ export function SpotlightInput({
   }, []);
 
   const ringColor = netflixMode
-    ? 'focus-within:ring-[#E50914]/60'
-    : 'focus-within:ring-accent/60';
+    ? "focus-within:ring-[#E50914]/60"
+    : "focus-within:ring-accent/60";
 
   return (
     <div
@@ -86,8 +86,11 @@ export function SpotlightInput({
         type="search"
         value={inputValue}
         onChange={handleChange}
-        placeholder={placeholder ?? (netflixMode ? 'Search Netflix...' : 'Search movies...')}
-        aria-label={netflixMode ? 'Search Netflix movies' : 'Search movies'}
+        placeholder={
+          placeholder ??
+          (netflixMode ? "Search Netflix..." : "Search movies...")
+        }
+        aria-label={netflixMode ? "Search Netflix movies" : "Search movies"}
         maxLength={100}
         className="
           flex-1 bg-transparent outline-none

@@ -17,10 +17,10 @@
 // CRITICAL: All col-span/row-span classes use static lookup objects.
 // Dynamic class names like `lg:col-span-${n}` DO NOT work with Tailwind v4.
 
-import { motion, AnimatePresence } from 'motion/react';
-import { useState, useEffect, useCallback, type ReactNode } from 'react';
+import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect, useCallback, type ReactNode } from "react";
 
-export type CellMaterial = 'glass' | 'clay';
+export type CellMaterial = "glass" | "clay";
 
 export interface BentoCellProps {
   children: ReactNode;
@@ -47,38 +47,39 @@ export interface BentoCellProps {
 // NEVER construct these with template literals — Tailwind v4 static analysis won't detect them.
 
 const lgColSpanClasses: Record<number, string> = {
-  1: 'lg:col-span-1',
-  2: 'lg:col-span-2',
-  3: 'lg:col-span-3',
-  4: 'lg:col-span-4',
-  5: 'lg:col-span-5',
-  6: 'lg:col-span-6',
-  7: 'lg:col-span-7',
-  8: 'lg:col-span-8',
-  9: 'lg:col-span-9',
-  10: 'lg:col-span-10',
-  11: 'lg:col-span-11',
-  12: 'lg:col-span-12',
+  1: "lg:col-span-1",
+  2: "lg:col-span-2",
+  3: "lg:col-span-3",
+  4: "lg:col-span-4",
+  5: "lg:col-span-5",
+  6: "lg:col-span-6",
+  7: "lg:col-span-7",
+  8: "lg:col-span-8",
+  9: "lg:col-span-9",
+  10: "lg:col-span-10",
+  11: "lg:col-span-11",
+  12: "lg:col-span-12",
 };
 
 const mdColSpanClasses: Record<number, string> = {
-  1: 'md:col-span-1',
-  2: 'md:col-span-2',
+  1: "md:col-span-1",
+  2: "md:col-span-2",
 };
 
 const lgRowSpanClasses: Record<number, string> = {
-  1: '',
-  2: 'lg:row-span-2',
-  3: 'lg:row-span-3',
+  1: "",
+  2: "lg:row-span-2",
+  3: "lg:row-span-3",
 };
 
 // --- Material style definitions ---
 
 const materialClasses: Record<CellMaterial, string> = {
   // Glassmorphism — for hero/large cells with movie imagery beneath
-  glass: 'bg-white/[0.08] backdrop-blur-xl border border-white/10 shadow-lg shadow-black/10',
+  glass:
+    "bg-white/[0.08] backdrop-blur-xl border border-white/10 shadow-lg shadow-black/10",
   // Claymorphism — for supporting cells, reuses existing clay system
-  clay: 'bg-clay-surface border border-white/10 clay-shadow-md',
+  clay: "bg-clay-surface border border-white/10 clay-shadow-md",
 };
 
 /**
@@ -95,8 +96,8 @@ export function BentoCell({
   children,
   colSpan = { desktop: 3 },
   rowSpan = 1,
-  material = 'clay',
-  className = '',
+  material = "clay",
+  className = "",
   overlay,
   onClick,
   hideOnMobile = false,
@@ -112,7 +113,7 @@ export function BentoCell({
 
   const handleClick = useCallback(() => {
     // Mobile tap-to-expand: first tap shows overlay, second tap calls onClick
-    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
       if (!expanded) {
         setExpanded(true);
         return;
@@ -124,7 +125,7 @@ export function BentoCell({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         handleClick();
       }
@@ -135,16 +136,16 @@ export function BentoCell({
   // Build Tailwind class list from static lookup objects
   const colSpanClasses = [
     // Mobile: always col-span-1 (single column stack)
-    colSpan.mobile ? '' : 'col-span-1',
+    colSpan.mobile ? "" : "col-span-1",
     // Tablet: optional 1 or 2 column span
-    colSpan.tablet ? (mdColSpanClasses[colSpan.tablet] ?? '') : '',
+    colSpan.tablet ? (mdColSpanClasses[colSpan.tablet] ?? "") : "",
     // Desktop: configurable 1-12 column span
-    lgColSpanClasses[colSpan.desktop] ?? 'lg:col-span-3',
+    lgColSpanClasses[colSpan.desktop] ?? "lg:col-span-3",
     // Row span at desktop only
-    lgRowSpanClasses[rowSpan] ?? '',
+    lgRowSpanClasses[rowSpan] ?? "",
   ]
     .filter(Boolean)
-    .join(' ');
+    .join(" ");
 
   const isInteractive = Boolean(onClick);
 
@@ -152,36 +153,37 @@ export function BentoCell({
     <motion.div
       layout
       transition={{
-        layout: { type: 'spring', stiffness: 200, damping: 25 },
+        layout: { type: "spring", stiffness: 200, damping: 25 },
       }}
       // Inline borderRadius and boxShadow prevent FLIP animation distortion.
       // When layout prop animates via CSS transforms (scaleX/scaleY), CSS
       // class-based borderRadius appears stretched. Inline values are corrected
       // by Framer Motion automatically.
-      style={{ borderRadius: '1rem' }}
+      style={{ borderRadius: "1rem" }}
       className={[
-        'relative overflow-hidden h-full',
+        "relative overflow-hidden h-full",
         materialClasses[material],
         colSpanClasses,
         // Enable group hover for overlay reveal
-        'group',
+        "group",
         // Cursor and visibility
-        isInteractive ? 'cursor-pointer' : '',
-        hideOnMobile ? 'hidden md:block' : '',
+        isInteractive ? "cursor-pointer" : "",
+        hideOnMobile ? "hidden md:block" : "",
         className,
       ]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
       // Hover treatment: scale + elevated shadow + accent glow
       whileHover={{
         scale: 1.03,
-        boxShadow: '0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px oklch(var(--accent))',
-        transition: { type: 'spring', stiffness: 300, damping: 20 },
+        boxShadow:
+          "0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px oklch(var(--accent))",
+        transition: { type: "spring", stiffness: 300, damping: 20 },
       }}
       whileTap={{ scale: 0.98 }}
       onClick={isInteractive ? handleClick : undefined}
       onKeyDown={isInteractive ? handleKeyDown : undefined}
-      role={isInteractive ? 'button' : undefined}
+      role={isInteractive ? "button" : undefined}
       tabIndex={isInteractive ? 0 : undefined}
       aria-expanded={isInteractive && overlay ? expanded : undefined}
     >
@@ -192,10 +194,10 @@ export function BentoCell({
       {overlay && (
         <div
           className={[
-            'absolute inset-0 flex items-end',
+            "absolute inset-0 flex items-end",
             // Desktop: CSS-based hover reveal via group-hover
-            'opacity-0 group-hover:opacity-100 transition-opacity duration-200',
-          ].join(' ')}
+            "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+          ].join(" ")}
           aria-hidden={!expanded}
         >
           {overlay}
@@ -210,7 +212,7 @@ export function BentoCell({
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
             className="absolute inset-0 flex items-end md:hidden"
           >
             {overlay}

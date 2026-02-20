@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
-import { useRegisterSW } from 'virtual:pwa-register/react';
-import { AnimatePresence, motion } from 'motion/react';
-import { RefreshCw, X, Wifi } from 'lucide-react';
-import { MetalButton } from '@/components/ui/MetalButton';
+import { useEffect } from "react";
+import { useRegisterSW } from "virtual:pwa-register/react";
+import { AnimatePresence, motion } from "motion/react";
+import { RefreshCw, X, Wifi } from "lucide-react";
+import { MetalButton } from "@/components/ui/MetalButton";
 
 export function ReloadPrompt() {
   const {
@@ -13,13 +13,16 @@ export function ReloadPrompt() {
     onRegistered(registration) {
       if (registration) {
         // Check for updates every hour
-        setInterval(() => {
-          registration.update();
-        }, 60 * 60 * 1000);
+        setInterval(
+          () => {
+            registration.update();
+          },
+          60 * 60 * 1000,
+        );
       }
     },
     onRegisterError(error) {
-      console.error('SW registration error', error);
+      console.error("SW registration error", error);
     },
   });
 
@@ -45,7 +48,7 @@ export function ReloadPrompt() {
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 100, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
           className="fixed bottom-24 right-4 z-50"
         >
           <div className="bg-surface-clay/95 backdrop-blur-md border border-clay-border rounded-xl shadow-clay-md p-4 max-w-sm">
@@ -64,7 +67,9 @@ export function ReloadPrompt() {
                 <div className="text-accent shrink-0">
                   <Wifi size={20} />
                 </div>
-                <p className="text-sm text-clay-text">App ready to work offline</p>
+                <p className="text-sm text-clay-text">
+                  App ready to work offline
+                </p>
               </div>
             ) : needRefresh ? (
               /* Update available state */
@@ -73,7 +78,9 @@ export function ReloadPrompt() {
                   <div className="text-accent shrink-0">
                     <RefreshCw size={20} />
                   </div>
-                  <p className="text-sm font-semibold text-clay-text">New version available</p>
+                  <p className="text-sm font-semibold text-clay-text">
+                    New version available
+                  </p>
                 </div>
                 <MetalButton
                   variant="primary"

@@ -5,16 +5,16 @@
 // RatingShowcaseCell and TrendingPreviewCell.
 // Fetches watch providers for the featured movie and shows which service it's on.
 
-import { useState, useEffect, useRef, useMemo } from 'react';
-import { useNavigate } from 'react-router';
-import { motion, AnimatePresence } from 'motion/react';
-import { Play, Sparkles } from 'lucide-react';
-import { useTopStreaming } from '@/hooks/useTopStreaming';
-import { useWatchProviders } from '@/hooks/useWatchProviders';
-import { useFeaturedStore } from '@/stores/featuredStore';
-import { MetalButton } from '@/components/ui/MetalButton';
-import { getProviderLogoUrl } from '@/lib/provider-registry';
-import { tmdbBackdropSrcSet, backdropSizes } from '@/hooks/useResponsiveImage';
+import { useState, useEffect, useRef, useMemo } from "react";
+import { useNavigate } from "react-router";
+import { motion, AnimatePresence } from "motion/react";
+import { Play, Sparkles } from "lucide-react";
+import { useTopStreaming } from "@/hooks/useTopStreaming";
+import { useWatchProviders } from "@/hooks/useWatchProviders";
+import { useFeaturedStore } from "@/stores/featuredStore";
+import { MetalButton } from "@/components/ui/MetalButton";
+import { getProviderLogoUrl } from "@/lib/provider-registry";
+import { tmdbBackdropSrcSet, backdropSizes } from "@/hooks/useResponsiveImage";
 
 // TMDB provider IDs for the three target services
 const STREAMING_IDS = new Set([8, 9, 337]); // Netflix, Prime Video, Disney+
@@ -64,16 +64,20 @@ export function DiscoverHeroCell() {
           <motion.img
             key={backdropUrl}
             src={backdropUrl}
-            srcSet={movie?.backdrop_path ? tmdbBackdropSrcSet(movie.backdrop_path) : undefined}
+            srcSet={
+              movie?.backdrop_path
+                ? tmdbBackdropSrcSet(movie.backdrop_path)
+                : undefined
+            }
             sizes={backdropSizes}
-            alt={movie?.title ?? 'Movie backdrop'}
+            alt={movie?.title ?? "Movie backdrop"}
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
             decoding="async"
             initial={{ opacity: 0, scale: 1.08 }}
             animate={{ opacity: ready ? 1 : 0, scale: ready ? 1 : 1.08 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.9, ease: 'easeOut' }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
             onLoad={handleLoad}
           />
         )}
@@ -91,18 +95,22 @@ export function DiscoverHeroCell() {
       <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 45%, transparent 50%)',
-          backgroundSize: '200% 100%',
+          background:
+            "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 45%, transparent 50%)",
+          backgroundSize: "200% 100%",
         }}
-        animate={{ backgroundPositionX: ['100%', '-100%'] }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+        animate={{ backgroundPositionX: ["100%", "-100%"] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
       />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
-            <Sparkles className="w-4 h-4 text-accent drop-shadow-[0_0_8px_var(--accent)]" aria-hidden="true" />
+            <Sparkles
+              className="w-4 h-4 text-accent drop-shadow-[0_0_8px_var(--accent)]"
+              aria-hidden="true"
+            />
             <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
               Top on Streaming
             </span>
@@ -156,7 +164,7 @@ export function DiscoverHeroCell() {
           variant="primary"
           onClick={(e) => {
             e.stopPropagation();
-            navigate('/discover');
+            navigate("/discover");
           }}
           className="self-start"
         >

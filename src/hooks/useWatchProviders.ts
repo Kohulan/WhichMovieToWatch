@@ -1,12 +1,15 @@
 // Provider tiers for a movie hook — categorizes by flatrate/rent/buy/free/ads
 
-import { useState, useEffect, useMemo } from 'react';
-import { fetchMovieProviders, fetchRegionProviders } from '@/services/tmdb/providers';
-import { useRegionStore } from '@/stores/regionStore';
-import { usePreferencesStore } from '@/stores/preferencesStore';
-import { isFreeProvider } from '@/lib/provider-registry';
-import type { WatchProviderCountry, WatchProvider } from '@/types/movie';
-import type { MovieProviders, ProviderInfo } from '@/types/provider';
+import { useState, useEffect, useMemo } from "react";
+import {
+  fetchMovieProviders,
+  fetchRegionProviders,
+} from "@/services/tmdb/providers";
+import { useRegionStore } from "@/stores/regionStore";
+import { usePreferencesStore } from "@/stores/preferencesStore";
+import { isFreeProvider } from "@/lib/provider-registry";
+import type { WatchProviderCountry, WatchProvider } from "@/types/movie";
+import type { MovieProviders, ProviderInfo } from "@/types/provider";
 
 /** Map raw WatchProvider to ProviderInfo with isFree flag */
 function toProviderInfo(
@@ -55,7 +58,7 @@ export function useWatchProviders(movieId: number | null) {
         }
       } catch (err) {
         if (!cancelled) {
-          console.warn('[providers] Failed to fetch:', err);
+          console.warn("[providers] Failed to fetch:", err);
           setRawData(null);
         }
       } finally {
@@ -75,10 +78,10 @@ export function useWatchProviders(movieId: number | null) {
   // Derive categorized providers from raw data
   const providers: MovieProviders = useMemo(() => {
     if (!rawData) {
-      return { tmdb_link: '' };
+      return { tmdb_link: "" };
     }
 
-    const tmdbLink = rawData.link || '';
+    const tmdbLink = rawData.link || "";
 
     return {
       flatrate: mapProviders(rawData.flatrate, tmdbLink),
@@ -92,7 +95,7 @@ export function useWatchProviders(movieId: number | null) {
 
   // Filter providers to only those in user's myServices
   const myProviders: MovieProviders = useMemo(() => {
-    if (!rawData) return { tmdb_link: '' };
+    if (!rawData) return { tmdb_link: "" };
 
     const mySet = new Set(myServices);
     const filterByMyServices = (list: ProviderInfo[] | undefined) =>
@@ -146,7 +149,7 @@ export function useRegionProviders() {
         }
       } catch (err) {
         if (!cancelled) {
-          console.warn('[providers] Failed to fetch region providers:', err);
+          console.warn("[providers] Failed to fetch region providers:", err);
         }
       } finally {
         if (!cancelled) {

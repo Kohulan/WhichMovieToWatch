@@ -7,7 +7,7 @@
 // TMDB does not serve WebP natively. Responsive srcset with multiple resolution
 // breakpoints is the correct PERF-02 implementation strategy.
 
-const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
+const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p";
 
 /**
  * Build a TMDB image URL for a given size.
@@ -36,7 +36,7 @@ export function tmdbPosterSrcSet(path: string): string {
     `${TMDB_IMAGE_BASE}/w342${path} 342w`,
     `${TMDB_IMAGE_BASE}/w500${path} 500w`,
     `${TMDB_IMAGE_BASE}/w780${path} 780w`,
-  ].join(', ');
+  ].join(", ");
 }
 
 /**
@@ -54,7 +54,7 @@ export function tmdbBackdropSrcSet(path: string): string {
     `${TMDB_IMAGE_BASE}/w300${path} 300w`,
     `${TMDB_IMAGE_BASE}/w780${path} 780w`,
     `${TMDB_IMAGE_BASE}/w1280${path} 1280w`,
-  ].join(', ');
+  ].join(", ");
 }
 
 /**
@@ -64,7 +64,7 @@ export function tmdbBackdropSrcSet(path: string): string {
  * - Otherwise: 500px wide poster
  */
 export const posterSizes =
-  '(max-width: 640px) 185px, (max-width: 1024px) 342px, 500px';
+  "(max-width: 640px) 185px, (max-width: 1024px) 342px, 500px";
 
 /**
  * The `sizes` attribute for backdrop images.
@@ -73,4 +73,4 @@ export const posterSizes =
  * - Otherwise: 1280px wide backdrop
  */
 export const backdropSizes =
-  '(max-width: 640px) 300px, (max-width: 1024px) 780px, 1280px';
+  "(max-width: 640px) 300px, (max-width: 1024px) 780px, 1280px";

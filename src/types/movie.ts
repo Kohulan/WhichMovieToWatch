@@ -51,7 +51,7 @@ export interface TMDBMovieDetails extends TMDBMovie {
       name: string;
     }>;
   };
-  'watch/providers'?: {
+  "watch/providers"?: {
     results: Record<string, WatchProviderCountry>;
   };
 }

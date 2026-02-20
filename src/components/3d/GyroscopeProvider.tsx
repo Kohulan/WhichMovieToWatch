@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
-import { Smartphone } from 'lucide-react';
-import { useDeviceOrientation } from '@/hooks/useDeviceOrientation';
+import { useState, useEffect, useRef } from "react";
+import { Smartphone } from "lucide-react";
+import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
 
-const LS_KEY_DISMISSED = 'wmtw-gyro-dismissed';
+const LS_KEY_DISMISSED = "wmtw-gyro-dismissed";
 const AUTO_DISMISS_MS = 8000;
 
 /**
@@ -34,7 +34,7 @@ export function GyroscopeProvider() {
   const { permissionState, requestPermission } = useDeviceOrientation();
   const [dismissed, setDismissed] = useState<boolean>(() => {
     try {
-      return localStorage.getItem(LS_KEY_DISMISSED) === '1';
+      return localStorage.getItem(LS_KEY_DISMISSED) === "1";
     } catch {
       return false;
     }
@@ -44,14 +44,14 @@ export function GyroscopeProvider() {
 
   // Detect touch device once (ref avoids re-renders)
   const isMobileRef = useRef(
-    typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0,
+    typeof navigator !== "undefined" && navigator.maxTouchPoints > 0,
   );
 
   useEffect(() => {
     // Only show the prompt on mobile touch devices with iOS-style permission
     if (!isMobileRef.current) return;
     if (dismissed) return;
-    if (permissionState !== 'prompt') return;
+    if (permissionState !== "prompt") return;
 
     setVisible(true);
 
@@ -70,7 +70,7 @@ export function GyroscopeProvider() {
     setVisible(false);
     setDismissed(true);
     try {
-      localStorage.setItem(LS_KEY_DISMISSED, '1');
+      localStorage.setItem(LS_KEY_DISMISSED, "1");
     } catch {
       // localStorage may be unavailable in private browsing — non-fatal
     }
@@ -86,34 +86,36 @@ export function GyroscopeProvider() {
   // - not visible (dismissed or not yet triggered)
   // - already granted (no need for prompt)
   // - denied or unsupported
-  if (!visible || permissionState !== 'prompt') {
+  if (!visible || permissionState !== "prompt") {
     return null;
   }
 
   return (
     <div
       style={{
-        position: 'fixed',
-        bottom: '88px', // above TabBar (~72px) + margin
-        right: '16px',
+        position: "fixed",
+        bottom: "88px", // above TabBar (~72px) + margin
+        right: "16px",
         zIndex: 200,
         // Clay card styles (inline to avoid Tailwind purge issues in dynamic component)
-        background: 'color-mix(in oklch, var(--clay-base) 95%, transparent)',
-        borderRadius: '16px',
-        padding: '14px 16px',
+        background: "color-mix(in oklch, var(--clay-base) 95%, transparent)",
+        borderRadius: "16px",
+        padding: "14px 16px",
         boxShadow:
-          '0 8px 24px -4px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.15)',
-        border: '1px solid color-mix(in oklch, var(--clay-border) 60%, transparent)',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '10px',
-        maxWidth: '220px',
-        backdropFilter: 'blur(12px)',
-        WebkitBackdropFilter: 'blur(12px)',
+          "0 8px 24px -4px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.15)",
+        border:
+          "1px solid color-mix(in oklch, var(--clay-border) 60%, transparent)",
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        maxWidth: "220px",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
         // Pointer events enabled — this is an interactive prompt, not decorative
-        pointerEvents: 'auto',
+        pointerEvents: "auto",
         // Subtle entry animation via CSS
-        animation: 'gyro-prompt-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        animation:
+          "gyro-prompt-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
       }}
       role="dialog"
       aria-label="Enable gyroscope for immersive tilt"
@@ -129,18 +131,18 @@ export function GyroscopeProvider() {
       <div
         style={{
           flexShrink: 0,
-          width: '36px',
-          height: '36px',
-          borderRadius: '10px',
-          background: 'color-mix(in oklch, var(--accent) 15%, transparent)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          width: "36px",
+          height: "36px",
+          borderRadius: "10px",
+          background: "color-mix(in oklch, var(--accent) 15%, transparent)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <Smartphone
           size={18}
-          style={{ color: 'var(--accent)' }}
+          style={{ color: "var(--accent)" }}
           aria-hidden="true"
         />
       </div>
@@ -150,31 +152,31 @@ export function GyroscopeProvider() {
         <button
           onClick={handleEnable}
           style={{
-            background: 'none',
-            border: 'none',
+            background: "none",
+            border: "none",
             padding: 0,
-            cursor: 'pointer',
-            textAlign: 'left',
-            display: 'block',
-            width: '100%',
+            cursor: "pointer",
+            textAlign: "left",
+            display: "block",
+            width: "100%",
           }}
           aria-label="Enable immersive tilt — tap to grant gyroscope access"
         >
           <div
             style={{
-              fontSize: '13px',
+              fontSize: "13px",
               fontWeight: 600,
-              color: 'var(--foreground)',
+              color: "var(--foreground)",
               lineHeight: 1.3,
-              marginBottom: '2px',
+              marginBottom: "2px",
             }}
           >
             Immersive tilt
           </div>
           <div
             style={{
-              fontSize: '11px',
-              color: 'color-mix(in oklch, var(--foreground) 60%, transparent)',
+              fontSize: "11px",
+              color: "color-mix(in oklch, var(--foreground) 60%, transparent)",
               lineHeight: 1.3,
             }}
           >
@@ -188,20 +190,20 @@ export function GyroscopeProvider() {
         onClick={handleDismiss}
         style={{
           flexShrink: 0,
-          width: '20px',
-          height: '20px',
-          borderRadius: '50%',
-          background: 'color-mix(in oklch, var(--foreground) 10%, transparent)',
-          border: 'none',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px',
+          width: "20px",
+          height: "20px",
+          borderRadius: "50%",
+          background: "color-mix(in oklch, var(--foreground) 10%, transparent)",
+          border: "none",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: "12px",
           lineHeight: 1,
-          color: 'color-mix(in oklch, var(--foreground) 60%, transparent)',
+          color: "color-mix(in oklch, var(--foreground) 60%, transparent)",
           padding: 0,
-          alignSelf: 'flex-start',
+          alignSelf: "flex-start",
         }}
         aria-label="Dismiss gyroscope prompt"
       >

@@ -1,6 +1,10 @@
-import { useEffect } from 'react';
-import { useThemeStore, type ColorPreset, type ThemeMode } from '@/stores/themeStore';
-import { useScene3dStore } from '@/stores/scene3dStore';
+import { useEffect } from "react";
+import {
+  useThemeStore,
+  type ColorPreset,
+  type ThemeMode,
+} from "@/stores/themeStore";
+import { useScene3dStore } from "@/stores/scene3dStore";
 
 /**
  * Lighting configuration per color preset.
@@ -11,10 +15,13 @@ import { useScene3dStore } from '@/stores/scene3dStore';
  * gold:        rich golden tones (hue ~80°, subtle saturation)
  * clean-white: neutral studio white (hue ~250°, near-zero saturation)
  */
-const PRESET_LIGHTING: Record<ColorPreset, { hue: number; saturation: number }> = {
-  'warm-orange': { hue: 38, saturation: 0.22 },
-  'gold':        { hue: 80, saturation: 0.14 },
-  'clean-white': { hue: 250, saturation: 0.003 },
+const PRESET_LIGHTING: Record<
+  ColorPreset,
+  { hue: number; saturation: number }
+> = {
+  "warm-orange": { hue: 38, saturation: 0.22 },
+  gold: { hue: 80, saturation: 0.14 },
+  "clean-white": { hue: 250, saturation: 0.003 },
 };
 
 /**
@@ -22,9 +29,12 @@ const PRESET_LIGHTING: Record<ColorPreset, { hue: number; saturation: number }> 
  * dark:  noir atmosphere — reduced intensity, isDarkMode flag for scene logic
  * light: bright studio — full intensity, light mode flag
  */
-const MODE_LIGHTING: Record<ThemeMode, { intensity: number; isDarkMode: boolean }> = {
-  'dark':  { intensity: 0.7, isDarkMode: true },
-  'light': { intensity: 1.0, isDarkMode: false },
+const MODE_LIGHTING: Record<
+  ThemeMode,
+  { intensity: number; isDarkMode: boolean }
+> = {
+  dark: { intensity: 0.7, isDarkMode: true },
+  light: { intensity: 1.0, isDarkMode: false },
 };
 
 /**
@@ -57,10 +67,10 @@ export function useSplineTheme(): void {
     const modeValues = MODE_LIGHTING[mode];
 
     const variables: Array<[string, number | boolean]> = [
-      ['lightingHue', presetValues.hue],
-      ['lightingSaturation', presetValues.saturation],
-      ['lightingIntensity', modeValues.intensity],
-      ['isDarkMode', modeValues.isDarkMode],
+      ["lightingHue", presetValues.hue],
+      ["lightingSaturation", presetValues.saturation],
+      ["lightingIntensity", modeValues.intensity],
+      ["isDarkMode", modeValues.isDarkMode],
     ];
 
     // Mute Spline SDK's expected "No variable named ..." warnings during batch update.
@@ -69,7 +79,8 @@ export function useSplineTheme(): void {
     // Will become a no-op once the Spline scene defines all four variables.
     const _warn = console.warn;
     console.warn = (...args: unknown[]) => {
-      if (typeof args[0] === 'string' && args[0].includes('No variable named')) return;
+      if (typeof args[0] === "string" && args[0].includes("No variable named"))
+        return;
       _warn.apply(console, args);
     };
     try {

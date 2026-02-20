@@ -1,6 +1,6 @@
 // Secure external link wrapper — always applies noopener noreferrer (SECU-04)
 
-import type { AnchorHTMLAttributes, ReactNode } from 'react';
+import type { AnchorHTMLAttributes, ReactNode } from "react";
 
 interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
@@ -17,7 +17,7 @@ interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 export function ExternalLink({
   href,
   children,
-  className = '',
+  className = "",
   ...rest
 }: ExternalLinkProps) {
   return (

@@ -1,5 +1,5 @@
-import { MotionConfig } from 'motion/react';
-import type { ReactNode } from 'react';
+import { MotionConfig } from "motion/react";
+import type { ReactNode } from "react";
 
 interface MotionProviderProps {
   children: ReactNode;
@@ -15,9 +15,5 @@ interface MotionProviderProps {
  * for accessibility compliance across all animation components. (ANIM-05, A11Y-05)
  */
 export function MotionProvider({ children }: MotionProviderProps) {
-  return (
-    <MotionConfig reducedMotion="user">
-      {children}
-    </MotionConfig>
-  );
+  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
 }

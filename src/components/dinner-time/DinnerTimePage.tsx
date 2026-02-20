@@ -1,34 +1,37 @@
 // Dinner Time — cinematic family-friendly movie finder (DINR-02, DINR-03, DINR-04, DINR-05)
 
-import { useRef, useEffect, useState } from 'react';
-import { ThumbsUp, ThumbsDown, SkipForward, AlertCircle } from 'lucide-react';
-import { AnimatePresence, motion } from 'motion/react';
-import { ScrollReveal } from '@/components/animation/ScrollReveal';
-import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
+import { useRef, useEffect, useState } from "react";
+import { ThumbsUp, ThumbsDown, SkipForward, AlertCircle } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { ScrollReveal } from "@/components/animation/ScrollReveal";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/animation/StaggerContainer";
 import {
   DINNER_TIME_SERVICES,
   type UseDinnerTimeReturn,
-} from '@/hooks/useDinnerTime';
-import { useOmdbRatings } from '@/hooks/useOmdbRatings';
-import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
-import { getServiceConfig, getServiceLogoUrl } from './ServiceBranding';
-import { ServiceRotaryDial } from './ServiceRotaryDial';
-import { MovieHero } from '@/components/movie/MovieHero';
-import { RatingBadges } from '@/components/movie/RatingBadges';
-import { TrailerLink } from '@/components/movie/TrailerLink';
-import { MetalButton } from '@/components/ui/MetalButton';
-import { ClayCard } from '@/components/ui/ClayCard';
-import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
-import { ExternalLink } from '@/components/shared/ExternalLink';
-import { showToast } from '@/components/shared/Toast';
-import { useAnnounce } from '@/components/shared/ScreenReaderAnnouncer';
-import { getBackdropUrl } from '@/services/tmdb/client';
-import { tmdbBackdropSrcSet, backdropSizes } from '@/hooks/useResponsiveImage';
+} from "@/hooks/useDinnerTime";
+import { useOmdbRatings } from "@/hooks/useOmdbRatings";
+import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
+import { getServiceConfig, getServiceLogoUrl } from "./ServiceBranding";
+import { ServiceRotaryDial } from "./ServiceRotaryDial";
+import { MovieHero } from "@/components/movie/MovieHero";
+import { RatingBadges } from "@/components/movie/RatingBadges";
+import { TrailerLink } from "@/components/movie/TrailerLink";
+import { MetalButton } from "@/components/ui/MetalButton";
+import { ClayCard } from "@/components/ui/ClayCard";
+import { ClaySkeletonCard } from "@/components/ui/ClaySkeletonCard";
+import { ExternalLink } from "@/components/shared/ExternalLink";
+import { showToast } from "@/components/shared/Toast";
+import { useAnnounce } from "@/components/shared/ScreenReaderAnnouncer";
+import { getBackdropUrl } from "@/services/tmdb/client";
+import { tmdbBackdropSrcSet, backdropSizes } from "@/hooks/useResponsiveImage";
 
 const SERVICES = [
-  { id: DINNER_TIME_SERVICES.NETFLIX, label: 'Netflix' },
-  { id: DINNER_TIME_SERVICES.PRIME, label: 'Prime Video' },
-  { id: DINNER_TIME_SERVICES.DISNEY_PLUS, label: 'Disney+' },
+  { id: DINNER_TIME_SERVICES.NETFLIX, label: "Netflix" },
+  { id: DINNER_TIME_SERVICES.PRIME, label: "Prime Video" },
+  { id: DINNER_TIME_SERVICES.DISNEY_PLUS, label: "Disney+" },
 ] as const;
 
 const FEATURED_IDS = new Set([
@@ -48,8 +51,12 @@ interface DinnerTimePageProps {
   regionProviders: RegionProvider[];
 }
 
-export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePageProps) {
-  const { movie, isLoading, error, nextMovie, setService, currentService } = dinnerTime;
+export function DinnerTimePage({
+  dinnerTime,
+  regionProviders,
+}: DinnerTimePageProps) {
+  const { movie, isLoading, error, nextMovie, setService, currentService } =
+    dinnerTime;
   const [announce, Announcer] = useAnnounce();
 
   const markDinnerLike = useMovieHistoryStore((s) => s.markDinnerLike);
@@ -74,7 +81,7 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
   // Persist the last valid backdrop so it stays visible during loading (DINR-05)
   const lastBackdropRef = useRef<string | null>(null);
   const backdropUrl = movie?.backdrop_path
-    ? getBackdropUrl(movie.backdrop_path, 'original')
+    ? getBackdropUrl(movie.backdrop_path, "original")
     : null;
   if (backdropUrl) lastBackdropRef.current = backdropUrl;
   const visibleBackdrop = backdropUrl ?? lastBackdropRef.current;
@@ -98,12 +105,12 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
     }
   }, [movie?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const watchUrl = movie ? serviceConfig.watchUrl(movie.title) : '#';
+  const watchUrl = movie ? serviceConfig.watchUrl(movie.title) : "#";
 
   function handleGreatPick() {
     if (!movie) return;
     markDinnerLike(movie.id);
-    showToast(`Loved "${movie.title}"! Loading next...`, 'success');
+    showToast(`Loved "${movie.title}"! Loading next...`, "success");
     nextMovie();
   }
 
@@ -119,12 +126,19 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
 
       {/* Fixed full-screen backdrop — persists during provider switch (DINR-05) */}
       {visibleBackdrop && (
-        <div className="fixed inset-0 z-0" aria-hidden="true">
+        <div
+          className="fixed inset-0 z-0 pointer-events-none"
+          aria-hidden="true"
+        >
           <AnimatePresence mode="wait">
             <motion.img
-              key={backdropUrl ?? 'persisted'}
+              key={backdropUrl ?? "persisted"}
               src={visibleBackdrop}
-              srcSet={movie?.backdrop_path ? tmdbBackdropSrcSet(movie.backdrop_path) : undefined}
+              srcSet={
+                movie?.backdrop_path
+                  ? tmdbBackdropSrcSet(movie.backdrop_path)
+                  : undefined
+              }
               sizes={backdropSizes}
               alt=""
               loading="lazy"
@@ -150,7 +164,11 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
       )}
 
       {/* Page header — once: header near top of page, only animates on first view (ANIM-02) */}
-      <ScrollReveal travel={40} once className="relative z-10 px-4 sm:px-6 lg:px-8 pt-4">
+      <ScrollReveal
+        travel={40}
+        once
+        className="relative z-10 px-4 sm:px-6 lg:px-8 pt-4"
+      >
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-2xl sm:text-3xl font-heading font-semibold text-clay-text">
             Dinner Time
@@ -183,14 +201,15 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                   aria-pressed={isActive}
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
                   className={`
                     relative flex flex-col items-center gap-2 px-5 py-4 sm:px-8 sm:py-5
                     rounded-2xl border transition-all duration-300
                     outline-none focus-visible:ring-2 focus-visible:ring-accent
-                    ${isActive
-                      ? 'bg-white/[0.12] backdrop-blur-xl border-white/20 shadow-lg shadow-black/10'
-                      : 'bg-white/[0.04] backdrop-blur-sm border-white/[0.06] opacity-50 hover:opacity-80'
+                    ${
+                      isActive
+                        ? "bg-white/[0.12] backdrop-blur-sm border-white/20 shadow-lg shadow-black/10"
+                        : "bg-white/[0.04] border-white/[0.06] opacity-50 hover:opacity-80"
                     }
                   `}
                 >
@@ -202,7 +221,11 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                       style={{
                         boxShadow: `0 0 20px ${config.color}30, 0 0 40px ${config.color}15`,
                       }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                     />
                   )}
 
@@ -214,7 +237,7 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                       className={`
                         w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover
                         shadow-md transition-shadow duration-300
-                        ${isActive ? 'shadow-lg' : ''}
+                        ${isActive ? "shadow-lg" : ""}
                       `}
                       aria-hidden="true"
                     />
@@ -228,10 +251,12 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                   )}
 
                   {/* Label */}
-                  <span className={`
+                  <span
+                    className={`
                     text-xs sm:text-sm font-medium transition-colors duration-300
-                    ${isActive ? 'text-clay-text' : 'text-clay-text-muted'}
-                  `}>
+                    ${isActive ? "text-clay-text" : "text-clay-text-muted"}
+                  `}
+                  >
                     {service.label}
                   </span>
 
@@ -241,7 +266,11 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                       layoutId="service-dot"
                       className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: config.color }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 25,
+                      }}
                     />
                   )}
                 </motion.button>
@@ -265,13 +294,17 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
         {isLoading && (
           <motion.div
             key="loading"
-            initial={{ opacity: 0, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, filter: 'blur(6px)' }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             className="relative z-10 w-full px-4 py-6"
           >
-            <ClaySkeletonCard hasImage lines={4} className="w-full max-w-7xl mx-auto" />
+            <ClaySkeletonCard
+              hasImage
+              lines={4}
+              className="w-full max-w-7xl mx-auto"
+            />
           </motion.div>
         )}
 
@@ -279,15 +312,18 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
         {!isLoading && error && (
           <motion.div
             key="error"
-            initial={{ opacity: 0, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, filter: 'blur(6px)' }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
             className="relative z-10 w-full px-4 py-6"
           >
             <ClayCard className="max-w-7xl mx-auto">
               <div className="p-6 text-center">
-                <AlertCircle className="w-12 h-12 text-yellow-400 mx-auto mb-3" aria-hidden="true" />
+                <AlertCircle
+                  className="w-12 h-12 text-yellow-400 mx-auto mb-3"
+                  aria-hidden="true"
+                />
                 <p className="text-clay-text font-semibold mb-1">
                   No movies found on {serviceConfig.name}
                 </p>
@@ -304,10 +340,10 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
         {!isLoading && !error && movie && (
           <motion.section
             key={`movie-${movie.id}`}
-            initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
-            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
-            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            initial={{ opacity: 0, scale: 0.97, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 1.01, y: -6 }}
+            transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
             className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pb-8"
           >
             <div className="max-w-7xl mx-auto w-full">
@@ -325,9 +361,17 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                     aria-label={`Watch ${movie.title} on ${serviceConfig.name}`}
                   >
                     {(() => {
-                      const logoUrl = getServiceLogoUrl(currentService, customProvider?.logo_path);
+                      const logoUrl = getServiceLogoUrl(
+                        currentService,
+                        customProvider?.logo_path,
+                      );
                       return logoUrl ? (
-                        <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
+                        <img
+                          src={logoUrl}
+                          alt=""
+                          className="w-5 h-5 rounded object-cover"
+                          aria-hidden="true"
+                        />
                       ) : null;
                     })()}
                     Watch on {serviceConfig.name}
@@ -335,7 +379,11 @@ export function DinnerTimePage({ dinnerTime, regionProviders }: DinnerTimePagePr
                 </ExternalLink>
 
                 {/* Like / Dislike / Skip */}
-                <div className="flex gap-2 flex-wrap" role="group" aria-label="Movie actions">
+                <div
+                  className="flex gap-2 flex-wrap"
+                  role="group"
+                  aria-label="Movie actions"
+                >
                   <MetalButton
                     variant="secondary"
                     size="sm"

@@ -1,6 +1,6 @@
 // Streaming service branding — logos, colors, URLs for Netflix, Prime, Disney+ (DINR-03)
 
-import { PROVIDER_LOGOS_BASE } from '@/lib/provider-registry';
+import { PROVIDER_LOGOS_BASE } from "@/lib/provider-registry";
 
 interface ServiceBrandingConfig {
   name: string;
@@ -11,39 +11,39 @@ interface ServiceBrandingConfig {
 
 const SERVICE_MAP: Record<number, ServiceBrandingConfig> = {
   8: {
-    name: 'Netflix',
-    color: '#E50914',
-    logoPath: '/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg',
+    name: "Netflix",
+    color: "#E50914",
+    logoPath: "/t2yyOv40HZeVlLjYsCsPHnWLk4W.jpg",
     watchUrl: (title) =>
       `https://www.netflix.com/search?q=${encodeURIComponent(title)}`,
   },
   9: {
-    name: 'Prime Video',
-    color: '#00A8E1',
-    logoPath: '/emthp39XA2YScoYL1p0sdbAH2WA.jpg',
+    name: "Prime Video",
+    color: "#00A8E1",
+    logoPath: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg",
     watchUrl: (title) =>
       `https://www.amazon.com/s?k=${encodeURIComponent(title)}&i=instant-video`,
   },
   119: {
-    name: 'Prime Video',
-    color: '#00A8E1',
-    logoPath: '/emthp39XA2YScoYL1p0sdbAH2WA.jpg',
+    name: "Prime Video",
+    color: "#00A8E1",
+    logoPath: "/emthp39XA2YScoYL1p0sdbAH2WA.jpg",
     watchUrl: (title) =>
       `https://www.amazon.com/s?k=${encodeURIComponent(title)}&i=instant-video`,
   },
   337: {
-    name: 'Disney+',
-    color: '#113CCF',
-    logoPath: '/7rwgEs15tFwyR9NPQ5vpzxTj19Q.jpg',
+    name: "Disney+",
+    color: "#113CCF",
+    logoPath: "/7rwgEs15tFwyR9NPQ5vpzxTj19Q.jpg",
     watchUrl: (title) =>
       `https://www.disneyplus.com/search/${encodeURIComponent(title)}`,
   },
 };
 
 const FALLBACK_SERVICE: ServiceBrandingConfig = {
-  name: 'Streaming Service',
-  color: '#6B7280',
-  logoPath: '',
+  name: "Streaming Service",
+  color: "#6B7280",
+  logoPath: "",
   watchUrl: (title) =>
     `https://www.google.com/search?q=${encodeURIComponent(title)}+streaming`,
 };
@@ -66,7 +66,7 @@ export function getServiceConfig(
     return {
       name: providerName,
       color: FALLBACK_SERVICE.color,
-      logoPath: logoPath ?? '',
+      logoPath: logoPath ?? "",
       watchUrl: (title) =>
         `https://www.google.com/search?q=${encodeURIComponent(title)}+watch+on+${encodeURIComponent(providerName)}`,
     };
@@ -75,7 +75,10 @@ export function getServiceConfig(
   return FALLBACK_SERVICE;
 }
 
-export function getServiceLogoUrl(serviceId: number, logoPath?: string): string | null {
+export function getServiceLogoUrl(
+  serviceId: number,
+  logoPath?: string,
+): string | null {
   const config = SERVICE_MAP[serviceId];
   const path = config?.logoPath ?? logoPath;
   if (!path) return null;
@@ -88,7 +91,11 @@ interface ServiceBrandingProps {
   logoPath?: string;
 }
 
-export function ServiceBranding({ serviceId, providerName, logoPath }: ServiceBrandingProps) {
+export function ServiceBranding({
+  serviceId,
+  providerName,
+  logoPath,
+}: ServiceBrandingProps) {
   const config = getServiceConfig(serviceId, providerName, logoPath);
   const logoUrl = getServiceLogoUrl(serviceId, logoPath);
 
@@ -99,7 +106,12 @@ export function ServiceBranding({ serviceId, providerName, logoPath }: ServiceBr
       aria-label={`Available on ${config.name}`}
     >
       {logoUrl && (
-        <img src={logoUrl} alt="" className="w-5 h-5 rounded object-cover" aria-hidden="true" />
+        <img
+          src={logoUrl}
+          alt=""
+          className="w-5 h-5 rounded object-cover"
+          aria-hidden="true"
+        />
       )}
       {config.name}
     </div>

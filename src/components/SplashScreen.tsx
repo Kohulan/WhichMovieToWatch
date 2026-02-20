@@ -1,5 +1,5 @@
-import { motion } from 'motion/react';
-import logoSrc from '@/../assets/logo.png';
+import { motion } from "motion/react";
+import logoSrc from "@/../assets/logo.png";
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -16,7 +16,7 @@ interface SplashScreenProps {
  * Exit: opacity + scale + blur for cinematic screen-away feel.
  */
 export function SplashScreen({ onComplete }: SplashScreenProps) {
-  const words = ['Which', 'Movie', 'To', 'Watch'];
+  const words = ["Which", "Movie", "To", "Watch"];
 
   return (
     <motion.div
@@ -25,8 +25,8 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       exit={{
         opacity: 0,
         scale: 1.1,
-        filter: 'blur(12px)',
-        transition: { duration: 0.6, ease: 'easeInOut' },
+        filter: "blur(12px)",
+        transition: { duration: 0.6, ease: "easeInOut" },
       }}
     >
       {/* Dramatic ambient light sweep — accent-colored radial bloom */}
@@ -39,14 +39,15 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full"
           style={{
-            background: 'radial-gradient(circle, var(--accent) 0%, transparent 70%)',
+            background:
+              "radial-gradient(circle, var(--accent) 0%, transparent 70%)",
           }}
           initial={{ opacity: 0, scale: 0.3 }}
           animate={{
             opacity: [0, 0.4, 0.2],
             scale: [0.3, 1.5, 2],
           }}
-          transition={{ duration: 2.5, ease: 'easeOut' }}
+          transition={{ duration: 2.5, ease: "easeOut" }}
         />
       </motion.div>
 
@@ -55,7 +56,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         initial={{ scale: 0, rotate: -180, opacity: 0 }}
         animate={{ scale: 1, rotate: 0, opacity: 1 }}
         transition={{
-          type: 'spring',
+          type: "spring",
           stiffness: 180,
           damping: 14,
           delay: 0.2,
@@ -70,7 +71,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         {/* Specular glow behind logo — blurred accent-colored halo */}
         <motion.div
           className="absolute inset-0 blur-xl pointer-events-none"
-          style={{ backgroundColor: 'var(--accent)' }}
+          style={{ backgroundColor: "var(--accent)" }}
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 0.6, 0.3] }}
           transition={{ duration: 1.5, delay: 0.3 }}
@@ -94,13 +95,13 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             key={word}
             className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-white"
             variants={{
-              hidden: { opacity: 0, y: 30, filter: 'blur(12px)' },
+              hidden: { opacity: 0, y: 30, filter: "blur(12px)" },
               visible: {
                 opacity: 1,
                 y: 0,
-                filter: 'blur(0px)',
+                filter: "blur(0px)",
                 transition: {
-                  y: { type: 'spring', stiffness: 250, damping: 18 },
+                  y: { type: "spring", stiffness: 250, damping: 18 },
                   opacity: { duration: 0.4 },
                   filter: { duration: 0.5 },
                 },
@@ -131,8 +132,8 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       >
         <motion.div
           className="h-full rounded-full bg-accent"
-          initial={{ width: '0%' }}
-          animate={{ width: '100%' }}
+          initial={{ width: "0%" }}
+          animate={{ width: "100%" }}
           transition={{ delay: 1.0, duration: 1.3, ease: [0.4, 0, 0.2, 1] }}
           onAnimationComplete={onComplete}
         />

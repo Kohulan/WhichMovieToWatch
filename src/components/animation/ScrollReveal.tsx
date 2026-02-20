@@ -4,8 +4,8 @@
 // When once=false (below-fold content): uses whileInView for scroll-triggered reveal with
 // replay on scroll-back using shorter duration and reduced travel.
 
-import { motion, type Variants } from 'motion/react';
-import { useState, type ReactNode } from 'react';
+import { motion, type Variants } from "motion/react";
+import { useState, type ReactNode } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -22,7 +22,7 @@ interface ScrollRevealProps {
 
 export function ScrollReveal({
   children,
-  className = '',
+  className = "",
   travel = 80,
   delay = 0,
   once = false,
@@ -48,10 +48,10 @@ export function ScrollReveal({
   };
 
   const animationProps = once
-    ? { initial: 'hidden' as const, animate: 'visible' as const }
+    ? { initial: "hidden" as const, animate: "visible" as const }
     : {
-        initial: 'hidden' as const,
-        whileInView: 'visible' as const,
+        initial: "hidden" as const,
+        whileInView: "visible" as const,
         viewport: { amount: 0.2 },
       };
 

@@ -1,4 +1,4 @@
-import type { TasteProfile } from '@/types/preferences';
+import type { TasteProfile } from "@/types/preferences";
 
 interface MovieForScoring {
   genre_ids?: number[];
@@ -16,7 +16,7 @@ export function getDecadeFromYear(year: number): string {
 /** Extract decade string from a TMDB release_date ("YYYY-MM-DD" -> "2020s") */
 export function getDecadeFromReleaseDate(releaseDate: string): string {
   const year = parseInt(releaseDate.slice(0, 4), 10);
-  if (isNaN(year)) return 'unknown';
+  if (isNaN(year)) return "unknown";
   return getDecadeFromYear(year);
 }
 
@@ -31,14 +31,20 @@ export function getDecadeFromReleaseDate(releaseDate: string): string {
  * - Decade: profile weight for the movie's release decade
  * - Director: profile weight for the movie's director (weighted 2x as a strong signal)
  */
-export function scoreTasteMatch(profile: TasteProfile, movie: MovieForScoring): number {
+export function scoreTasteMatch(
+  profile: TasteProfile,
+  movie: MovieForScoring,
+): number {
   // Extract genre IDs
   const genreIds = movie.genre_ids ?? movie.genres?.map((g) => g.id) ?? [];
 
   // Genre score: average of profile weights across movie's genres
   let genreScore = 0;
   if (genreIds.length > 0) {
-    const sum = genreIds.reduce((acc, id) => acc + (profile.genres[id] || 0), 0);
+    const sum = genreIds.reduce(
+      (acc, id) => acc + (profile.genres[id] || 0),
+      0,
+    );
     genreScore = sum / genreIds.length;
   }
 
@@ -52,7 +58,7 @@ export function scoreTasteMatch(profile: TasteProfile, movie: MovieForScoring): 
   // Director score (2x weight — strong preference signal)
   let directorScore = 0;
   if (movie.credits?.crew) {
-    const director = movie.credits.crew.find((c) => c.job === 'Director');
+    const director = movie.credits.crew.find((c) => c.job === "Director");
     if (director) {
       directorScore = profile.directors[director.id] || 0;
     }

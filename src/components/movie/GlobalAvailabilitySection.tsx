@@ -1,8 +1,8 @@
 // Netflix global availability — shows all countries where a movie is on Netflix
 
-import { useState, useEffect } from 'react';
-import { fetchAllMovieProviders } from '@/services/tmdb/providers';
-import { getCountryName } from '@/lib/country-names';
+import { useState, useEffect } from "react";
+import { fetchAllMovieProviders } from "@/services/tmdb/providers";
+import { getCountryName } from "@/lib/country-names";
 
 const NETFLIX_PROVIDER_ID = 8;
 
@@ -10,8 +10,12 @@ interface GlobalAvailabilitySectionProps {
   movieId: number;
 }
 
-export function GlobalAvailabilitySection({ movieId }: GlobalAvailabilitySectionProps) {
-  const [countries, setCountries] = useState<Array<{ code: string; name: string }>>([]);
+export function GlobalAvailabilitySection({
+  movieId,
+}: GlobalAvailabilitySectionProps) {
+  const [countries, setCountries] = useState<
+    Array<{ code: string; name: string }>
+  >([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -25,7 +29,9 @@ export function GlobalAvailabilitySection({ movieId }: GlobalAvailabilitySection
 
         const netflixCountries: Array<{ code: string; name: string }> = [];
         for (const [code, data] of Object.entries(allProviders)) {
-          if (data.flatrate?.some((p) => p.provider_id === NETFLIX_PROVIDER_ID)) {
+          if (
+            data.flatrate?.some((p) => p.provider_id === NETFLIX_PROVIDER_ID)
+          ) {
             netflixCountries.push({ code, name: getCountryName(code) });
           }
         }
@@ -40,14 +46,18 @@ export function GlobalAvailabilitySection({ movieId }: GlobalAvailabilitySection
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [movieId]);
 
   if (isLoading) {
     return (
       <section aria-label="Netflix availability worldwide" className="mt-4">
         <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
-          <span className="text-[#E50914] font-bold text-lg leading-none">N</span>
+          <span className="text-[#E50914] font-bold text-lg leading-none">
+            N
+          </span>
           Netflix Availability
         </h3>
         <div className="flex flex-wrap gap-2">
@@ -67,7 +77,9 @@ export function GlobalAvailabilitySection({ movieId }: GlobalAvailabilitySection
     return (
       <section aria-label="Netflix availability worldwide" className="mt-4">
         <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
-          <span className="text-[#E50914] font-bold text-lg leading-none">N</span>
+          <span className="text-[#E50914] font-bold text-lg leading-none">
+            N
+          </span>
           Netflix Availability
         </h3>
         <p className="text-clay-text-muted text-sm">
@@ -81,7 +93,8 @@ export function GlobalAvailabilitySection({ movieId }: GlobalAvailabilitySection
     <section aria-label="Netflix availability worldwide" className="mt-4">
       <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
         <span className="text-[#E50914] font-bold text-lg leading-none">N</span>
-        Available on Netflix in {countries.length} {countries.length === 1 ? 'Country' : 'Countries'}
+        Available on Netflix in {countries.length}{" "}
+        {countries.length === 1 ? "Country" : "Countries"}
       </h3>
       <div className="flex flex-wrap gap-1.5 max-h-[300px] overflow-y-auto pr-1">
         {countries.map(({ code, name }) => (

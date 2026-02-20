@@ -1,12 +1,12 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
-import { useMotionValue, useSpring, useTransform, motion } from 'motion/react';
-import Spline from '@splinetool/react-spline';
-import type { Application } from '@splinetool/runtime';
-import { useScene3dStore } from '@/stores/scene3dStore';
-import { useThemeStore } from '@/stores/themeStore';
-import { useSplineTheme } from '@/hooks/useSplineTheme';
-import { useDeviceOrientation } from '@/hooks/useDeviceOrientation';
-import { GyroscopeProvider } from './GyroscopeProvider';
+import { useState, useCallback, useRef, useEffect } from "react";
+import { useMotionValue, useSpring, useTransform, motion } from "motion/react";
+import Spline from "@splinetool/react-spline";
+import type { Application } from "@splinetool/runtime";
+import { useScene3dStore } from "@/stores/scene3dStore";
+import { useThemeStore } from "@/stores/themeStore";
+import { useSplineTheme } from "@/hooks/useSplineTheme";
+import { useDeviceOrientation } from "@/hooks/useDeviceOrientation";
+import { GyroscopeProvider } from "./GyroscopeProvider";
 
 interface SplineSceneProps {
   sceneUrl?: string;
@@ -21,10 +21,13 @@ interface SplineSceneProps {
  */
 async function validateSceneFile(url: string): Promise<boolean> {
   // Remote CDN URLs (prod.spline.design, etc.) — trust them, skip byte check
-  if (url.startsWith('http://') || url.startsWith('https://')) return true;
+  if (url.startsWith("http://") || url.startsWith("https://")) return true;
 
   try {
-    const res = await fetch(url, { method: 'GET', headers: { Range: 'bytes=0-15' } });
+    const res = await fetch(url, {
+      method: "GET",
+      headers: { Range: "bytes=0-15" },
+    });
     if (!res.ok) return false;
     const buf = await res.arrayBuffer();
     if (buf.byteLength < 4) return false;
@@ -38,8 +41,8 @@ async function validateSceneFile(url: string): Promise<boolean> {
 }
 
 export function SplineScene({
-  sceneUrl = 'https://prod.spline.design/2fWjKvs9eEHSzk0P/scene.splinecode',
-  className = '',
+  sceneUrl = "https://prod.spline.design/2fWjKvs9eEHSzk0P/scene.splinecode",
+  className = "",
   reduced = false,
 }: SplineSceneProps) {
   const [loaded, setLoaded] = useState(false);
@@ -57,7 +60,9 @@ export function SplineScene({
         useScene3dStore.getState().setSceneError(true);
       }
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [sceneUrl]);
 
   // Deferred loading: Spline not instantiated until browser is idle + scene is validated.
@@ -66,13 +71,13 @@ export function SplineScene({
   useEffect(() => {
     if (sceneValid !== true) return; // Only defer-load when scene is validated
     let id: number | ReturnType<typeof setTimeout>;
-    if ('requestIdleCallback' in window) {
+    if ("requestIdleCallback" in window) {
       id = requestIdleCallback(() => setShouldLoad(true), { timeout: 3000 });
     } else {
       id = setTimeout(() => setShouldLoad(true), 1000);
     }
     return () => {
-      if ('requestIdleCallback' in window) cancelIdleCallback(id as number);
+      if ("requestIdleCallback" in window) cancelIdleCallback(id as number);
       else clearTimeout(id as ReturnType<typeof setTimeout>);
     };
   }, [sceneValid]);
@@ -82,13 +87,18 @@ export function SplineScene({
     return () => {
       const app = useScene3dStore.getState().splineApp;
       if (app) {
-        try { app.dispose(); } catch { /* WebGL context may already be lost */ }
+        try {
+          app.dispose();
+        } catch {
+          /* WebGL context may already be lost */
+        }
         useScene3dStore.getState().setSplineApp(null);
       }
     };
   }, []);
 
-  const { setSplineApp, setSceneLoaded, setSceneError } = useScene3dStore.getState();
+  const { setSplineApp, setSceneLoaded, setSceneError } =
+    useScene3dStore.getState();
 
   // Theme sync — only runs side effects when splineApp is set
   useSplineTheme();
@@ -96,7 +106,7 @@ export function SplineScene({
   // Gyroscope for mobile parallax
   const { orientation, permissionState } = useDeviceOrientation();
   const isMobileRef = useRef(
-    typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0,
+    typeof navigator !== "undefined" && navigator.maxTouchPoints > 0,
   );
 
   const rawRotateX = useMotionValue(0);
@@ -106,7 +116,7 @@ export function SplineScene({
   const tiltX = useTransform(springRotateX, [-1, 1], [3, -3]);
   const tiltY = useTransform(springRotateY, [-1, 1], [-3, 3]);
 
-  if (isMobileRef.current && permissionState === 'granted') {
+  if (isMobileRef.current && permissionState === "granted") {
     rawRotateX.set(orientation.betaNorm);
     rawRotateY.set(orientation.gammaNorm);
   }
@@ -123,18 +133,19 @@ export function SplineScene({
 
   const handleError = useCallback(
     (error: unknown) => {
-      console.warn('[SplineScene] Failed to load 3D scene:', error);
+      console.warn("[SplineScene] Failed to load 3D scene:", error);
       setSceneLoaded(false);
       setSceneError(true);
     },
     [setSceneLoaded, setSceneError],
   );
 
-  const useGyroscopeParallax = isMobileRef.current && permissionState === 'granted';
+  const useGyroscopeParallax =
+    isMobileRef.current && permissionState === "granted";
 
   const mode = useThemeStore((s) => s.mode);
-  const sceneOffset = mode === 'light' ? 'translateX(-10%)' : 'translateX(15%)';
-  const sceneScale = mode === 'light' ? 1.2 : 1;
+  const sceneOffset = mode === "light" ? "translateX(-10%)" : "translateX(15%)";
+  const sceneScale = mode === "light" ? 1.2 : 1;
 
   // If scene is invalid/placeholder, render nothing — AppShell will show ParallaxFallback
   if (sceneValid === false) return <GyroscopeProvider />;
@@ -144,25 +155,25 @@ export function SplineScene({
       <div
         className={`fixed inset-0 ${className}`}
         style={{
-          width: '100vw',
-          height: '100vh',
+          width: "100vw",
+          height: "100vh",
           opacity: loaded ? 1 : 0,
-          transition: 'opacity 0.8s ease-out',
-          pointerEvents: 'none',
+          transition: "opacity 0.8s ease-out",
+          pointerEvents: "none",
           transform: sceneOffset,
         }}
         aria-hidden="true"
       >
         <motion.div
           style={{
-            width: '100%',
-            height: '100%',
-            perspective: useGyroscopeParallax ? '1000px' : undefined,
+            width: "100%",
+            height: "100%",
+            perspective: useGyroscopeParallax ? "1000px" : undefined,
             rotateX: useGyroscopeParallax ? tiltX : 0,
             rotateY: useGyroscopeParallax ? tiltY : 0,
             scale: reduced ? sceneScale * 0.75 : sceneScale,
-            transformOrigin: 'center center',
-            willChange: reduced ? 'transform' : undefined,
+            transformOrigin: "center center",
+            willChange: reduced ? "transform" : undefined,
           }}
         >
           {shouldLoad && (
@@ -171,7 +182,7 @@ export function SplineScene({
               onLoad={handleLoad}
               onError={handleError}
               renderOnDemand={true}
-              style={{ width: '100%', height: '100%' }}
+              style={{ width: "100%", height: "100%" }}
             />
           )}
         </motion.div>

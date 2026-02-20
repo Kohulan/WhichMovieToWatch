@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 export interface TasteProfile {
   genres: Record<number, number>;
@@ -111,7 +111,7 @@ export const usePreferencesStore = create<PreferencesState>()(
         set({ tasteProfile: { ...EMPTY_TASTE_PROFILE } }),
     }),
     {
-      name: 'wmtw-preferences',
+      name: "wmtw-preferences",
       storage: createJSONStorage(() => localStorage),
       version: 1,
     },

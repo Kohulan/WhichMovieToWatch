@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import type { Application } from '@splinetool/runtime';
-import type { Capability } from '@/hooks/use3DCapability';
+import { create } from "zustand";
+import type { Application } from "@splinetool/runtime";
+import type { Capability } from "@/hooks/use3DCapability";
 
 /**
  * scene3dStore — Runtime store for the 3D experience layer.
@@ -51,7 +51,7 @@ export const useScene3dStore = create<Scene3dState>()((set, get) => ({
   sceneLoaded: false,
   sceneError: false,
   splineApp: null,
-  currentCameraState: 'home-view',
+  currentCameraState: "home-view",
   cameraAvailable: null,
   setCapability: (capability) => set({ capability, loading: false }),
   setLoading: (loading) => set({ loading }),
@@ -75,7 +75,7 @@ export const useScene3dStore = create<Scene3dState>()((set, get) => ({
     }
 
     try {
-      const camera = splineApp.findObjectByName('Camera');
+      const camera = splineApp.findObjectByName("Camera");
       if (!camera) {
         // First probe failed — cache the result so we never warn again for this scene.
         // Camera states will work once the Spline scene defines a "Camera" object
@@ -89,7 +89,11 @@ export const useScene3dStore = create<Scene3dState>()((set, get) => ({
         set({ cameraAvailable: true });
       }
 
-      camera.transition({ to: targetState, duration: 0.4, easing: 'EASE_IN_OUT' });
+      camera.transition({
+        to: targetState,
+        duration: 0.4,
+        easing: "EASE_IN_OUT",
+      });
     } catch {
       // Camera states may not exist in the current .splinecode — graceful degradation.
       // Don't disable cameraAvailable here — the Camera object exists but the

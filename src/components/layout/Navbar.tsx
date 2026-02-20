@@ -1,22 +1,30 @@
-import { useState, useEffect, useCallback } from 'react';
-import { NavLink, useLocation } from 'react-router';
-import { motion } from 'motion/react';
-import { Film, Search, Home, Compass, TrendingUp, UtensilsCrossed } from 'lucide-react';
-import logoSrc from '@/../assets/logo.png';
-import { ThemeToggle } from '../ui/ThemeToggle';
-import { RotaryDial } from '../ui/RotaryDial';
-import { SpotlightSearch } from '../search/SpotlightSearch';
-import { RegionPicker } from './RegionPicker';
+import { useState, useEffect, useCallback } from "react";
+import { NavLink, useLocation } from "react-router";
+import { motion } from "motion/react";
+import {
+  Film,
+  Search,
+  Home,
+  Compass,
+  TrendingUp,
+  UtensilsCrossed,
+} from "lucide-react";
+import logoSrc from "@/../assets/logo.png";
+import { ThemeToggle } from "../ui/ThemeToggle";
+import { RotaryDial } from "../ui/RotaryDial";
+import { SpotlightSearch } from "../search/SpotlightSearch";
+import { RegionPicker } from "./RegionPicker";
 
 const tabs = [
-  { to: '/', end: true, icon: Home, label: 'Home' },
-  { to: '/discover', end: false, icon: Compass, label: 'Discover' },
-  { to: '/trending', end: false, icon: TrendingUp, label: 'Trending' },
-  { to: '/dinner-time', end: false, icon: UtensilsCrossed, label: 'Dinner' },
-  { to: '/free-movies', end: false, icon: Film, label: 'Free' },
+  { to: "/", end: true, icon: Home, label: "Home" },
+  { to: "/discover", end: false, icon: Compass, label: "Discover" },
+  { to: "/trending", end: false, icon: TrendingUp, label: "Trending" },
+  { to: "/dinner-time", end: false, icon: UtensilsCrossed, label: "Dinner" },
+  { to: "/free-movies", end: false, icon: Film, label: "Free" },
 ];
 
-const brandTextClass = 'text-[10px] font-bold tracking-[0.15em] text-clay-text/80 uppercase group-hover:text-clay-text transition-colors duration-200';
+const brandTextClass =
+  "text-[10px] font-bold tracking-[0.15em] text-clay-text/80 uppercase group-hover:text-clay-text transition-colors duration-200";
 
 export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -40,8 +48,8 @@ export function Navbar() {
 
   // Listen for 'open-search' events from SearchCell (or other components)
   useEffect(() => {
-    window.addEventListener('open-search', openSearch);
-    return () => window.removeEventListener('open-search', openSearch);
+    window.addEventListener("open-search", openSearch);
+    return () => window.removeEventListener("open-search", openSearch);
   }, [openSearch]);
 
   return (
@@ -73,7 +81,7 @@ export function Navbar() {
               className="w-6 h-6 object-contain drop-shadow-[0_0_6px_var(--accent)]"
               whileHover={{ rotate: -8, scale: 1.1 }}
               whileTap={{ scale: 0.92 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
             />
             <span className={`hidden lg:inline ${brandTextClass}`}>
               WhichMovieToWatch
@@ -97,14 +105,14 @@ export function Navbar() {
                   to={to}
                   end={end}
                   className={[
-                    'relative flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg cursor-pointer',
-                    'text-[11px] font-medium tracking-wide',
-                    'outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-1 focus-visible:ring-offset-clay-base/50',
-                    'transition-all duration-200',
+                    "relative flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg cursor-pointer",
+                    "text-[11px] font-medium tracking-wide",
+                    "outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-1 focus-visible:ring-offset-clay-base/50",
+                    "transition-all duration-200",
                     isActive
-                      ? 'text-accent'
-                      : 'text-clay-text-muted hover:text-clay-text',
-                  ].join(' ')}
+                      ? "text-accent"
+                      : "text-clay-text-muted hover:text-clay-text",
+                  ].join(" ")}
                   aria-label={label}
                 >
                   {isActive && (
@@ -112,9 +120,14 @@ export function Navbar() {
                       layoutId="nav-indicator"
                       className="absolute inset-0 rounded-lg bg-accent/[0.12] border border-accent/[0.15]"
                       style={{
-                        boxShadow: '0 0 16px color-mix(in oklch, var(--accent) 35%, transparent), inset 0 1px 0 rgba(255,255,255,0.08)',
+                        boxShadow:
+                          "0 0 16px color-mix(in oklch, var(--accent) 35%, transparent), inset 0 1px 0 rgba(255,255,255,0.08)",
                       }}
-                      transition={{ type: 'spring', stiffness: 380, damping: 26 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 26,
+                      }}
                     />
                   )}
                   {!isActive && (
@@ -122,16 +135,18 @@ export function Navbar() {
                   )}
                   <motion.div
                     animate={isActive ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
                     className="relative z-[1]"
                   >
                     <Icon
-                      className={`w-3.5 h-3.5 transition-all duration-200 ${isActive ? 'drop-shadow-[0_0_4px_var(--accent)]' : ''}`}
+                      className={`w-3.5 h-3.5 transition-all duration-200 ${isActive ? "drop-shadow-[0_0_4px_var(--accent)]" : ""}`}
                       strokeWidth={isActive ? 2.5 : 1.5}
                       aria-hidden="true"
                     />
                   </motion.div>
-                  <span className="relative z-[1] hidden sm:inline">{label}</span>
+                  <span className="relative z-[1] hidden sm:inline">
+                    {label}
+                  </span>
                 </NavLink>
               );
             })}

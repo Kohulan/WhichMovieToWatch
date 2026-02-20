@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X } from 'lucide-react';
-import { useDebouncedValue } from '@/hooks/useDebouncedValue';
-import { VoiceSearchButton } from './VoiceSearchButton';
+import { useState, useEffect, useRef, useCallback } from "react";
+import { Search, X } from "lucide-react";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { VoiceSearchButton } from "./VoiceSearchButton";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -10,7 +10,7 @@ interface SearchBarProps {
 
 /** Strip HTML tags from input to prevent XSS (SECU-02) */
 function sanitizeInput(input: string): string {
-  return input.replace(/<[^>]*>/g, '').slice(0, 100);
+  return input.replace(/<[^>]*>/g, "").slice(0, 100);
 }
 
 /**
@@ -24,7 +24,7 @@ function sanitizeInput(input: string): string {
  * Clear button (X) appears when input is non-empty.
  * Visible focus ring on keyboard navigation (A11Y-03).
  */
-export function SearchBar({ onSearch, initialValue = '' }: SearchBarProps) {
+export function SearchBar({ onSearch, initialValue = "" }: SearchBarProps) {
   const [inputValue, setInputValue] = useState(initialValue);
   const debouncedValue = useDebouncedValue(inputValue, 300);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -45,7 +45,7 @@ export function SearchBar({ onSearch, initialValue = '' }: SearchBarProps) {
   }, []);
 
   const handleClear = useCallback(() => {
-    setInputValue('');
+    setInputValue("");
     inputRef.current?.focus();
   }, []);
 

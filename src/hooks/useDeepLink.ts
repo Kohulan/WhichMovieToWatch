@@ -1,6 +1,6 @@
 // Deep link hook — reads ?movie=ID, ?providers=all, and ?source=trending from URL
 
-import { useSearchParams } from 'react-router';
+import { useSearchParams } from "react-router";
 
 /**
  * useDeepLink — Reads the ?movie=ID deep link param from URL.
@@ -15,20 +15,20 @@ import { useSearchParams } from 'react-router';
 export function useDeepLink() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const rawId = searchParams.get('movie');
+  const rawId = searchParams.get("movie");
   const parsed = rawId !== null ? parseInt(rawId, 10) : NaN;
   const deepLinkMovieId = Number.isFinite(parsed) ? parsed : null;
 
-  const showAllProviders = searchParams.get('providers') === 'all';
-  const isTrendingSource = searchParams.get('source') === 'trending';
+  const showAllProviders = searchParams.get("providers") === "all";
+  const isTrendingSource = searchParams.get("source") === "trending";
 
   function clearDeepLink() {
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev);
-        next.delete('movie');
-        next.delete('providers');
-        next.delete('source');
+        next.delete("movie");
+        next.delete("providers");
+        next.delete("source");
         return next;
       },
       { replace: true },

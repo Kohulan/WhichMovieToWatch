@@ -1,11 +1,11 @@
-import { useState, useCallback } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { useSearchStore } from '@/stores/searchStore';
-import { MetalCheckbox, MetalDropdown, MetalButton } from '@/components/ui';
-import { DualRangeSlider } from '@/components/shared/DualRangeSlider';
-import { getAllGenres } from '@/lib/genre-map';
-import { useRegionProviders } from '@/hooks/useWatchProviders';
+import { useState, useCallback } from "react";
+import { ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { useSearchStore } from "@/stores/searchStore";
+import { MetalCheckbox, MetalDropdown, MetalButton } from "@/components/ui";
+import { DualRangeSlider } from "@/components/shared/DualRangeSlider";
+import { getAllGenres } from "@/lib/genre-map";
+import { useRegionProviders } from "@/hooks/useWatchProviders";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -19,26 +19,26 @@ function formatRuntime(minutes: number): string {
 }
 
 const LANGUAGES = [
-  { value: '', label: 'Any language' },
-  { value: 'en', label: 'English' },
-  { value: 'es', label: 'Spanish' },
-  { value: 'fr', label: 'French' },
-  { value: 'de', label: 'German' },
-  { value: 'ja', label: 'Japanese' },
-  { value: 'ko', label: 'Korean' },
-  { value: 'hi', label: 'Hindi' },
-  { value: 'zh', label: 'Chinese' },
-  { value: 'it', label: 'Italian' },
-  { value: 'pt', label: 'Portuguese' },
+  { value: "", label: "Any language" },
+  { value: "en", label: "English" },
+  { value: "es", label: "Spanish" },
+  { value: "fr", label: "French" },
+  { value: "de", label: "German" },
+  { value: "ja", label: "Japanese" },
+  { value: "ko", label: "Korean" },
+  { value: "hi", label: "Hindi" },
+  { value: "zh", label: "Chinese" },
+  { value: "it", label: "Italian" },
+  { value: "pt", label: "Portuguese" },
 ];
 
 const SORT_OPTIONS = [
-  { value: 'popularity.desc', label: 'Most Popular' },
-  { value: 'popularity.asc', label: 'Least Popular' },
-  { value: 'vote_average.desc', label: 'Highest Rated' },
-  { value: 'vote_average.asc', label: 'Lowest Rated' },
-  { value: 'primary_release_date.desc', label: 'Newest' },
-  { value: 'primary_release_date.asc', label: 'Oldest' },
+  { value: "popularity.desc", label: "Most Popular" },
+  { value: "popularity.asc", label: "Least Popular" },
+  { value: "vote_average.desc", label: "Highest Rated" },
+  { value: "vote_average.asc", label: "Lowest Rated" },
+  { value: "primary_release_date.desc", label: "Newest" },
+  { value: "primary_release_date.asc", label: "Oldest" },
 ];
 
 /**
@@ -70,7 +70,7 @@ export function AdvancedFilters() {
 
   // Provider options: "Any" + region providers
   const providerOptions = [
-    { value: '', label: 'Any service' },
+    { value: "", label: "Any service" },
     ...regionProviders.map((p) => ({
       value: String(p.provider_id),
       label: p.provider_name,
@@ -90,7 +90,7 @@ export function AdvancedFilters() {
 
   const handleClearFilters = useCallback(() => {
     resetAdvancedFilters();
-    setSortBy('popularity.desc');
+    setSortBy("popularity.desc");
   }, [resetAdvancedFilters, setSortBy]);
 
   const hasActiveFilters =
@@ -121,7 +121,7 @@ export function AdvancedFilters() {
       >
         <motion.span
           animate={{ rotate: isExpanded ? 180 : 0 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
           <ChevronDown className="w-4 h-4" aria-hidden="true" />
         </motion.span>
@@ -140,9 +140,9 @@ export function AdvancedFilters() {
           <motion.div
             id="advanced-filters-panel"
             initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
+            animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="overflow-hidden"
           >
             <div className="space-y-5 py-3">
@@ -156,7 +156,9 @@ export function AdvancedFilters() {
                     <MetalCheckbox
                       key={genre.id}
                       checked={advancedFilters.genres.includes(genre.id)}
-                      onChange={(checked) => handleGenreToggle(genre.id, checked)}
+                      onChange={(checked) =>
+                        handleGenreToggle(genre.id, checked)
+                      }
                       label={genre.name}
                     />
                   ))}
@@ -191,7 +193,9 @@ export function AdvancedFilters() {
                 max={300}
                 step={15}
                 value={advancedFilters.runtimeRange}
-                onChange={(range) => setAdvancedFilters({ runtimeRange: range })}
+                onChange={(range) =>
+                  setAdvancedFilters({ runtimeRange: range })
+                }
                 formatValue={formatRuntime}
               />
 
@@ -199,9 +203,9 @@ export function AdvancedFilters() {
               <MetalDropdown
                 label="Language"
                 options={LANGUAGES}
-                value={advancedFilters.language ?? ''}
+                value={advancedFilters.language ?? ""}
                 onChange={(val) =>
-                  setAdvancedFilters({ language: val === '' ? null : val })
+                  setAdvancedFilters({ language: val === "" ? null : val })
                 }
                 placeholder="Any language"
               />
@@ -210,9 +214,15 @@ export function AdvancedFilters() {
               <MetalDropdown
                 label="Streaming Service"
                 options={providerOptions}
-                value={advancedFilters.providerId ? String(advancedFilters.providerId) : ''}
+                value={
+                  advancedFilters.providerId
+                    ? String(advancedFilters.providerId)
+                    : ""
+                }
                 onChange={(val) =>
-                  setAdvancedFilters({ providerId: val === '' ? null : Number(val) })
+                  setAdvancedFilters({
+                    providerId: val === "" ? null : Number(val),
+                  })
                 }
                 placeholder="Any service"
               />

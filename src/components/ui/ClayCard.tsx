@@ -1,8 +1,8 @@
-import { motion, type HTMLMotionProps } from 'motion/react';
-import type { ReactNode } from 'react';
-import { useThemeStore } from '@/stores/themeStore';
+import { motion, type HTMLMotionProps } from "motion/react";
+import type { ReactNode } from "react";
+import { useThemeStore } from "@/stores/themeStore";
 
-type ClayCardElement = 'div' | 'section' | 'article';
+type ClayCardElement = "div" | "section" | "article";
 
 interface ClayCardProps {
   children: ReactNode;
@@ -17,12 +17,14 @@ interface ClayCardProps {
  */
 export function ClayCard({
   children,
-  className = '',
+  className = "",
   elevated = true,
-  as = 'div',
+  as = "div",
 }: ClayCardProps) {
-  const MotionComponent = motion[as] as React.ComponentType<HTMLMotionProps<typeof as>>;
-  const isDark = useThemeStore((s) => s.mode === 'dark');
+  const MotionComponent = motion[as] as React.ComponentType<
+    HTMLMotionProps<typeof as>
+  >;
+  const isDark = useThemeStore((s) => s.mode === "dark");
 
   return (
     <MotionComponent
@@ -32,18 +34,18 @@ export function ClayCard({
         rounded-2xl
         relative overflow-hidden
         transition-colors duration-300
-        ${elevated ? 'shadow-lg shadow-black/10' : ''}
-        ${!isDark ? 'ceramic-ripple' : ''}
+        ${elevated ? "shadow-lg shadow-black/10" : ""}
+        ${!isDark ? "ceramic-ripple" : ""}
         ${className}
       `}
       whileHover={{
         y: -2,
-        transition: { type: 'spring', stiffness: 300, damping: 20 },
+        transition: { type: "spring", stiffness: 300, damping: 20 },
       }}
       whileTap={{
         y: 1,
         scale: 0.99,
-        transition: { type: 'spring', stiffness: 400, damping: 25 },
+        transition: { type: "spring", stiffness: 400, damping: 25 },
       }}
     >
       {children}

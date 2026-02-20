@@ -2,7 +2,7 @@
 // Each icon plays a unique animation when the action is triggered.
 // ANIM-03: micro-interaction animations for action buttons.
 
-import { motion } from 'motion/react';
+import { motion } from "motion/react";
 
 interface AnimatedIconProps {
   /** When true, plays the animation sequence. When false, renders a static icon. */
@@ -32,7 +32,7 @@ export function HeartPulseIcon({ animate, className }: AnimatedIconProps) {
           ? {
               duration: 0.5,
               times: [0, 0.5, 1],
-              type: 'spring',
+              type: "spring",
               stiffness: 400,
               damping: 15,
             }
@@ -49,9 +49,7 @@ export function HeartPulseIcon({ animate, className }: AnimatedIconProps) {
         initial={{ pathLength: animate ? 0 : 1 }}
         animate={{ pathLength: 1 }}
         transition={
-          animate
-            ? { duration: 0.4, ease: 'easeOut' }
-            : { duration: 0 }
+          animate ? { duration: 0.4, ease: "easeOut" } : { duration: 0 }
         }
       />
     </motion.svg>
@@ -83,9 +81,7 @@ export function CheckDrawIcon({ animate, className }: AnimatedIconProps) {
         initial={{ pathLength: animate ? 0 : 1 }}
         animate={{ pathLength: 1 }}
         transition={
-          animate
-            ? { duration: 0.4, ease: 'easeOut' }
-            : { duration: 0 }
+          animate ? { duration: 0.4, ease: "easeOut" } : { duration: 0 }
         }
       />
     </motion.svg>
@@ -114,7 +110,7 @@ export function XSlideIcon({ animate, className }: AnimatedIconProps) {
           ? {
               duration: 0.4,
               times: [0, 0.5, 1],
-              type: 'spring',
+              type: "spring",
               stiffness: 350,
               damping: 22,
             }
@@ -132,9 +128,7 @@ export function XSlideIcon({ animate, className }: AnimatedIconProps) {
         initial={{ pathLength: animate ? 0 : 1 }}
         animate={{ pathLength: 1 }}
         transition={
-          animate
-            ? { duration: 0.3, ease: 'easeOut' }
-            : { duration: 0 }
+          animate ? { duration: 0.3, ease: "easeOut" } : { duration: 0 }
         }
       />
       <motion.line
@@ -149,7 +143,7 @@ export function XSlideIcon({ animate, className }: AnimatedIconProps) {
         animate={{ pathLength: 1 }}
         transition={
           animate
-            ? { duration: 0.3, ease: 'easeOut', delay: 0.05 }
+            ? { duration: 0.3, ease: "easeOut", delay: 0.05 }
             : { duration: 0 }
         }
       />

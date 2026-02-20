@@ -4,25 +4,25 @@
  * Shown on desktop (or when native Web Share API is unavailable).
  */
 
-import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { Link, Image, Square, Twitter, MessageCircle, X } from 'lucide-react';
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Link, Image, Square, Twitter, MessageCircle, X } from "lucide-react";
 import {
   generateStoryCard,
   generatePostCard,
   shareImageBlob,
-} from './StoryCardGenerator';
-import type { StoryCardMovie } from './StoryCardGenerator';
-import { useShare } from '@/hooks/useShare';
-import { useThemeStore } from '@/stores/themeStore';
-import { showToast } from '@/components/shared/Toast';
+} from "./StoryCardGenerator";
+import type { StoryCardMovie } from "./StoryCardGenerator";
+import { useShare } from "@/hooks/useShare";
+import { useThemeStore } from "@/stores/themeStore";
+import { showToast } from "@/components/shared/Toast";
 
 interface ShareMenuProps {
   movie: StoryCardMovie;
   onClose: () => void;
 }
 
-const SHARE_URL_BASE = 'https://www.whichmovietowatch.online/#/discover?movie=';
+const SHARE_URL_BASE = "https://www.whichmovietowatch.online/#/discover?movie=";
 
 export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   const { copyToClipboard } = useShare();
@@ -36,21 +36,24 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   // Close on Escape key
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     }
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   // Focus trap — move focus into panel on mount
   useEffect(() => {
-    const firstButton = panelRef.current?.querySelector('button');
+    const firstButton = panelRef.current?.querySelector("button");
     firstButton?.focus();
   }, []);
 
   async function handleCopyLink() {
     const ok = await copyToClipboard(shareUrl);
-    showToast(ok ? 'Link copied!' : 'Failed to copy link', ok ? 'success' : 'error');
+    showToast(
+      ok ? "Link copied!" : "Failed to copy link",
+      ok ? "success" : "error",
+    );
     onClose();
   }
 
@@ -59,18 +62,22 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
     try {
       const blob = await generateStoryCard(movie, preset, mode);
       if (!blob) {
-        showToast('Failed to generate story card.', 'error');
+        showToast("Failed to generate story card.", "error");
         return;
       }
-      const slug = movie.title.replace(/\s+/g, '-').toLowerCase();
-      const result = await shareImageBlob(blob, movie.title, `${slug}-story.png`);
-      if (result === 'copied') {
-        showToast('Story card copied! Paste it into Instagram.', 'success');
-      } else if (result === 'downloaded') {
-        showToast('Story card downloaded! Upload it to Instagram.', 'success');
+      const slug = movie.title.replace(/\s+/g, "-").toLowerCase();
+      const result = await shareImageBlob(
+        blob,
+        movie.title,
+        `${slug}-story.png`,
+      );
+      if (result === "copied") {
+        showToast("Story card copied! Paste it into Instagram.", "success");
+      } else if (result === "downloaded") {
+        showToast("Story card downloaded! Upload it to Instagram.", "success");
       }
     } catch {
-      showToast('Failed to generate story card.', 'error');
+      showToast("Failed to generate story card.", "error");
     } finally {
       setGeneratingStory(false);
       onClose();
@@ -82,18 +89,22 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
     try {
       const blob = await generatePostCard(movie, preset, mode);
       if (!blob) {
-        showToast('Failed to generate post card.', 'error');
+        showToast("Failed to generate post card.", "error");
         return;
       }
-      const slug = movie.title.replace(/\s+/g, '-').toLowerCase();
-      const result = await shareImageBlob(blob, movie.title, `${slug}-post.png`);
-      if (result === 'copied') {
-        showToast('Post card copied! Paste it into your feed.', 'success');
-      } else if (result === 'downloaded') {
-        showToast('Post card downloaded! Upload it to your feed.', 'success');
+      const slug = movie.title.replace(/\s+/g, "-").toLowerCase();
+      const result = await shareImageBlob(
+        blob,
+        movie.title,
+        `${slug}-post.png`,
+      );
+      if (result === "copied") {
+        showToast("Post card copied! Paste it into your feed.", "success");
+      } else if (result === "downloaded") {
+        showToast("Post card downloaded! Upload it to your feed.", "success");
       }
     } catch {
-      showToast('Failed to generate post card.', 'error');
+      showToast("Failed to generate post card.", "error");
     } finally {
       setGeneratingPost(false);
       onClose();
@@ -101,15 +112,21 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   }
 
   function handleTwitter() {
-    const text = encodeURIComponent(`Check out ${movie.title} on Which Movie To Watch!`);
+    const text = encodeURIComponent(
+      `Check out ${movie.title} on Which Movie To Watch!`,
+    );
     const url = encodeURIComponent(shareUrl);
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener');
+    window.open(
+      `https://twitter.com/intent/tweet?text=${text}&url=${url}`,
+      "_blank",
+      "noopener",
+    );
     onClose();
   }
 
   function handleWhatsApp() {
     const text = encodeURIComponent(`Check out ${movie.title}! ${shareUrl}`);
-    window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener');
+    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener");
     onClose();
   }
 
@@ -136,12 +153,14 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 80, opacity: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 pt-4 pb-2 border-b border-clay-border">
-          <span className="text-clay-text font-semibold text-sm">Share &ldquo;{movie.title}&rdquo;</span>
+          <span className="text-clay-text font-semibold text-sm">
+            Share &ldquo;{movie.title}&rdquo;
+          </span>
           <button
             onClick={onClose}
             className="text-clay-text-muted hover:text-clay-text transition-colors p-1 rounded-lg cursor-pointer"
@@ -160,14 +179,14 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
           />
           <ShareMenuItem
             icon={<Image className="w-5 h-5" />}
-            label={generatingStory ? 'Generating...' : 'Instagram Story'}
+            label={generatingStory ? "Generating..." : "Instagram Story"}
             subtitle="9:16 story card"
             onClick={handleStoryCard}
             disabled={generatingStory}
           />
           <ShareMenuItem
             icon={<Square className="w-5 h-5" />}
-            label={generatingPost ? 'Generating...' : 'Create Post'}
+            label={generatingPost ? "Generating..." : "Create Post"}
             subtitle="1:1 square card"
             onClick={handlePostCard}
             disabled={generatingPost}
@@ -196,7 +215,13 @@ interface ShareMenuItemProps {
   disabled?: boolean;
 }
 
-function ShareMenuItem({ icon, label, subtitle, onClick, disabled = false }: ShareMenuItemProps) {
+function ShareMenuItem({
+  icon,
+  label,
+  subtitle,
+  onClick,
+  disabled = false,
+}: ShareMenuItemProps) {
   return (
     <button
       onClick={onClick}

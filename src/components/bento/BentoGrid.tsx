@@ -10,8 +10,8 @@
 // Key pitfall avoided: Do NOT apply lg:auto-rows on mobile/tablet — let rows
 // auto-size to content. Only apply minmax(120px,auto) at desktop breakpoint.
 
-import { motion } from 'motion/react';
-import type { ReactNode } from 'react';
+import { motion } from "motion/react";
+import type { ReactNode } from "react";
 
 interface BentoGridProps {
   children: ReactNode;
@@ -23,9 +23,9 @@ interface BentoGridProps {
 // Static Tailwind class lookup — NEVER construct these dynamically with template literals.
 // Tailwind v4 uses static analysis; dynamic class names are not detected.
 const desktopColClasses: Record<number, string> = {
-  4: 'lg:grid-cols-4',
-  6: 'lg:grid-cols-6',
-  12: 'lg:grid-cols-12',
+  4: "lg:grid-cols-4",
+  6: "lg:grid-cols-6",
+  12: "lg:grid-cols-12",
 };
 
 /**
@@ -39,27 +39,31 @@ const desktopColClasses: Record<number, string> = {
  * Uses Framer Motion layout animation for smooth reflow on breakpoint transitions.
  * `grid-flow-dense` prevents gaps when large cells push smaller ones to next row.
  */
-export function BentoGrid({ children, className = '', columns = 12 }: BentoGridProps) {
-  const desktopCols = desktopColClasses[columns] ?? 'lg:grid-cols-12';
+export function BentoGrid({
+  children,
+  className = "",
+  columns = 12,
+}: BentoGridProps) {
+  const desktopCols = desktopColClasses[columns] ?? "lg:grid-cols-12";
 
   return (
     <motion.div
       layout
       transition={{
-        layout: { type: 'spring', stiffness: 200, damping: 25 },
+        layout: { type: "spring", stiffness: 200, damping: 25 },
       }}
       className={[
-        'grid',
-        'grid-cols-1',
-        'md:grid-cols-2',
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
         desktopCols,
-        'lg:auto-rows-[minmax(120px,auto)]',
-        'grid-flow-dense',
-        'gap-4 lg:gap-5',
+        "lg:auto-rows-[minmax(120px,auto)]",
+        "grid-flow-dense",
+        "gap-4 lg:gap-5",
         className,
       ]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
     >
       {children}
     </motion.div>

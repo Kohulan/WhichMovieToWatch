@@ -1,15 +1,15 @@
-import { useEffect, useCallback, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { X } from 'lucide-react';
-import { useSearchMovies } from '@/hooks/useSearchMovies';
-import { useSearchStore } from '@/stores/searchStore';
-import { useRegionStore } from '@/stores/regionStore';
-import { tmdbFetch } from '@/services/tmdb/client';
-import { SearchBar } from './SearchBar';
-import { SearchResults } from './SearchResults';
-import { AdvancedFilters } from './AdvancedFilters';
-import { FilterPresets } from './FilterPresets';
-import type { TMDBDiscoverResponse } from '@/types/movie';
+import { useEffect, useCallback, useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { X } from "lucide-react";
+import { useSearchMovies } from "@/hooks/useSearchMovies";
+import { useSearchStore } from "@/stores/searchStore";
+import { useRegionStore } from "@/stores/regionStore";
+import { tmdbFetch } from "@/services/tmdb/client";
+import { SearchBar } from "./SearchBar";
+import { SearchResults } from "./SearchResults";
+import { AdvancedFilters } from "./AdvancedFilters";
+import { FilterPresets } from "./FilterPresets";
+import type { TMDBDiscoverResponse } from "@/types/movie";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ interface SearchModalProps {
 
 /** Check if any advanced filters are non-default */
 function hasNonDefaultFilters(
-  filters: ReturnType<typeof useSearchStore.getState>['advancedFilters'],
+  filters: ReturnType<typeof useSearchStore.getState>["advancedFilters"],
   sortBy: string,
 ): boolean {
   const currentYear = new Date().getFullYear();
@@ -33,7 +33,7 @@ function hasNonDefaultFilters(
     filters.runtimeRange[1] !== 300 ||
     filters.language !== null ||
     filters.providerId !== null ||
-    sortBy !== 'popularity.desc'
+    sortBy !== "popularity.desc"
   );
 }
 
@@ -47,7 +47,11 @@ function hasNonDefaultFilters(
  * Uses tmdbFetch /discover/movie when advanced filters are active.
  * onSelectMovie navigates to /#/?movie={id} for deep-link (SRCH-04).
  */
-export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalProps) {
+export function SearchModal({
+  isOpen,
+  onClose,
+  initialProviderId,
+}: SearchModalProps) {
   const { search, loadMore, results, isLoading, hasMore } = useSearchMovies();
   const advancedFilters = useSearchStore((s) => s.advancedFilters);
   const sortBy = useSearchStore((s) => s.sortBy);
@@ -61,7 +65,7 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
   const totalPages = useSearchStore((s) => s.totalPages);
 
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
-  const [currentQuery, setCurrentQuery] = useState('');
+  const [currentQuery, setCurrentQuery] = useState("");
   const region = useRegionStore((s) => s.effectiveRegion)();
 
   // Apply initialProviderId when modal opens with a preset
@@ -76,17 +80,17 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
     if (!isOpen) return;
 
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     }
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
   }, [isOpen, onClose]);
@@ -95,7 +99,7 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
   useEffect(() => {
     if (!isOpen) {
       reset();
-      setCurrentQuery('');
+      setCurrentQuery("");
       setActivePresetId(null);
     }
   }, [isOpen, reset]);
@@ -127,33 +131,35 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
     try {
       const params: Record<string, string | number | boolean> = {
         sort_by: sortBy,
-        include_adult: 'false',
+        include_adult: "false",
         page,
       };
 
       if (advancedFilters.genres.length > 0) {
-        params.with_genres = advancedFilters.genres.join(',');
+        params.with_genres = advancedFilters.genres.join(",");
       }
 
       if (advancedFilters.yearRange[0] !== 1900) {
-        params['primary_release_date.gte'] = `${advancedFilters.yearRange[0]}-01-01`;
+        params["primary_release_date.gte"] =
+          `${advancedFilters.yearRange[0]}-01-01`;
       }
       if (advancedFilters.yearRange[1] !== new Date().getFullYear()) {
-        params['primary_release_date.lte'] = `${advancedFilters.yearRange[1]}-12-31`;
+        params["primary_release_date.lte"] =
+          `${advancedFilters.yearRange[1]}-12-31`;
       }
 
       if (advancedFilters.ratingRange[0] !== 0) {
-        params['vote_average.gte'] = advancedFilters.ratingRange[0];
+        params["vote_average.gte"] = advancedFilters.ratingRange[0];
       }
       if (advancedFilters.ratingRange[1] !== 10) {
-        params['vote_average.lte'] = advancedFilters.ratingRange[1];
+        params["vote_average.lte"] = advancedFilters.ratingRange[1];
       }
 
       if (advancedFilters.runtimeRange[0] !== 0) {
-        params['with_runtime.gte'] = advancedFilters.runtimeRange[0];
+        params["with_runtime.gte"] = advancedFilters.runtimeRange[0];
       }
       if (advancedFilters.runtimeRange[1] !== 300) {
-        params['with_runtime.lte'] = advancedFilters.runtimeRange[1];
+        params["with_runtime.lte"] = advancedFilters.runtimeRange[1];
       }
 
       if (advancedFilters.language) {
@@ -166,7 +172,10 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
         params.watch_region = region;
       }
 
-      const response = await tmdbFetch<TMDBDiscoverResponse>('/discover/movie', params);
+      const response = await tmdbFetch<TMDBDiscoverResponse>(
+        "/discover/movie",
+        params,
+      );
 
       if (page === 1) {
         setResults(
@@ -179,7 +188,7 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
         appendResults(response.results, response.page);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Discover failed');
+      setError(err instanceof Error ? err.message : "Discover failed");
     } finally {
       setLoading(false);
     }
@@ -236,9 +245,9 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
           {/* Backdrop — click to close (SRCH-05). Animates backdrop-filter blur for cinematic entrance. */}
           <motion.div
             key="search-backdrop"
-            initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-            animate={{ opacity: 1, backdropFilter: 'blur(12px)' }}
-            exit={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
+            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-40 bg-black/60"
             onClick={onClose}
@@ -248,10 +257,10 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
           {/* Content panel — dramatic slide-up from bottom with spring entrance */}
           <motion.div
             key="search-panel"
-            initial={{ y: '100%', opacity: 0 }}
+            initial={{ y: "100%", opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: '100%', opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            exit={{ y: "100%", opacity: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="
               fixed inset-x-0 bottom-0 z-50
               bg-clay-base/80 backdrop-blur-2xl border-t border-white/10
@@ -266,7 +275,10 @@ export function SearchModal({ isOpen, onClose, initialProviderId }: SearchModalP
           >
             {/* Drag handle */}
             <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
-              <div className="w-10 h-1 rounded-full bg-white/20" aria-hidden="true" />
+              <div
+                className="w-10 h-1 rounded-full bg-white/20"
+                aria-hidden="true"
+              />
             </div>
 
             {/* Header: title + close button */}

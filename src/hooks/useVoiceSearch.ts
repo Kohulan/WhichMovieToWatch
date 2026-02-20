@@ -1,6 +1,6 @@
 // Web Speech API voice search hook with feature detection and cleanup
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect } from "react";
 
 // SpeechRecognition types — not available in all TypeScript lib configs
 // Declare minimal interface here to avoid needing @types/dom-speech-recognition
@@ -67,11 +67,11 @@ interface UseVoiceSearchReturn {
  */
 export function useVoiceSearch(): UseVoiceSearchReturn {
   const isSupported =
-    typeof window !== 'undefined' &&
+    typeof window !== "undefined" &&
     !!(window.SpeechRecognition || window.webkitSpeechRecognition);
 
   const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState('');
+  const [transcript, setTranscript] = useState("");
   const recognitionRef = useRef<ISpeechRecognition | null>(null);
 
   // Cleanup on unmount
@@ -106,13 +106,13 @@ export function useVoiceSearch(): UseVoiceSearchReturn {
     if (!SpeechRecognitionClass) return;
 
     const recognition = new SpeechRecognitionClass();
-    recognition.lang = 'en-US';
+    recognition.lang = "en-US";
     recognition.continuous = false;
     recognition.interimResults = true;
 
     recognition.onstart = () => {
       setIsListening(true);
-      setTranscript('');
+      setTranscript("");
     };
 
     recognition.onresult = (event: ISpeechRecognitionEvent) => {

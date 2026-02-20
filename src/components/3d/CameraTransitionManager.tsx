@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router';
-import { useScene3dStore } from '@/stores/scene3dStore';
+import { useEffect } from "react";
+import { useLocation } from "react-router";
+import { useScene3dStore } from "@/stores/scene3dStore";
 
 /**
  * Route → camera state mapping.
@@ -15,11 +15,11 @@ import { useScene3dStore } from '@/stores/scene3dStore';
  * Dolly push movement: home → feature page uses a forward camera push.
  */
 const ROUTE_CAMERA_MAP: Record<string, string> = {
-  '/':            'home-view',
-  '/discover':    'discover-view',
-  '/trending':    'trending-view',
-  '/dinner-time': 'dinner-view',
-  '/free-movies': 'free-view',
+  "/": "home-view",
+  "/discover": "discover-view",
+  "/trending": "trending-view",
+  "/dinner-time": "dinner-view",
+  "/free-movies": "free-view",
 };
 
 /**
@@ -42,7 +42,7 @@ export default function CameraTransitionManager() {
   const { currentCameraState, triggerCameraTransition } = useScene3dStore();
 
   useEffect(() => {
-    const targetState = ROUTE_CAMERA_MAP[location.pathname] ?? 'home-view';
+    const targetState = ROUTE_CAMERA_MAP[location.pathname] ?? "home-view";
 
     // Only fire transition when route actually maps to a different camera state
     if (targetState !== currentCameraState) {

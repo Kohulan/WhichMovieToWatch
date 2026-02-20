@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { fetchAllMovieProviders } from '@/services/tmdb/providers';
+import { useState, useEffect } from "react";
+import { fetchAllMovieProviders } from "@/services/tmdb/providers";
 
 const NETFLIX_PROVIDER_ID = 8;
 const MAX_CONCURRENT = 4;

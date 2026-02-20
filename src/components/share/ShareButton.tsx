@@ -4,22 +4,22 @@
  * Mobile: native Web Share API (link only). Desktop: custom ShareMenu.
  */
 
-import { useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { Share2 } from 'lucide-react';
-import { useShare } from '@/hooks/useShare';
-import { ShareMenu } from './ShareMenu';
-import type { StoryCardMovie } from './StoryCardGenerator';
+import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Share2 } from "lucide-react";
+import { useShare } from "@/hooks/useShare";
+import { ShareMenu } from "./ShareMenu";
+import type { StoryCardMovie } from "./StoryCardGenerator";
 
 interface ShareButtonProps {
   movie: StoryCardMovie;
 }
 
-const SHARE_URL_BASE = 'https://www.whichmovietowatch.online/#/discover?movie=';
+const SHARE_URL_BASE = "https://www.whichmovietowatch.online/#/discover?movie=";
 
 /** Touch device = mobile/tablet → use native share sheet */
 const isMobile =
-  typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0;
+  typeof navigator !== "undefined" && navigator.maxTouchPoints > 0;
 
 export function ShareButton({ movie }: ShareButtonProps) {
   const { canNativeShare, share } = useShare();

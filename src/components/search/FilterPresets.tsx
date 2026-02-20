@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
-import { useSearchStore } from '@/stores/searchStore';
-import type { AdvancedFilters } from '@/stores/searchStore';
+import { useCallback } from "react";
+import { useSearchStore } from "@/stores/searchStore";
+import type { AdvancedFilters } from "@/stores/searchStore";
 
 interface PresetDefinition {
   id: string;
@@ -11,46 +11,46 @@ interface PresetDefinition {
 
 const PRESETS: PresetDefinition[] = [
   {
-    id: '90s-classics',
-    label: '90s Classics',
+    id: "90s-classics",
+    label: "90s Classics",
     filters: { yearRange: [1990, 1999], ratingRange: [7, 10] },
-    sortBy: 'popularity.desc',
+    sortBy: "popularity.desc",
   },
   {
-    id: 'hidden-gems',
-    label: 'Hidden Gems',
+    id: "hidden-gems",
+    label: "Hidden Gems",
     filters: { ratingRange: [7, 10] },
-    sortBy: 'vote_average.desc',
+    sortBy: "vote_average.desc",
   },
   {
-    id: 'short-sweet',
-    label: 'Short & Sweet',
+    id: "short-sweet",
+    label: "Short & Sweet",
     filters: { runtimeRange: [0, 90] },
-    sortBy: 'popularity.desc',
+    sortBy: "popularity.desc",
   },
   {
-    id: 'epic-adventures',
-    label: 'Epic Adventures',
+    id: "epic-adventures",
+    label: "Epic Adventures",
     filters: { genres: [12], runtimeRange: [120, 300] },
-    sortBy: 'popularity.desc',
+    sortBy: "popularity.desc",
   },
   {
-    id: 'date-night',
-    label: 'Date Night',
+    id: "date-night",
+    label: "Date Night",
     filters: { genres: [10749], ratingRange: [6, 10] },
-    sortBy: 'popularity.desc',
+    sortBy: "popularity.desc",
   },
   {
-    id: 'family-fun',
-    label: 'Family Fun',
+    id: "family-fun",
+    label: "Family Fun",
     filters: { genres: [10751], ratingRange: [6, 10] },
-    sortBy: 'popularity.desc',
+    sortBy: "popularity.desc",
   },
   {
-    id: 'award-winners',
-    label: 'Award Winners',
+    id: "award-winners",
+    label: "Award Winners",
     filters: { ratingRange: [8, 10] },
-    sortBy: 'vote_average.desc',
+    sortBy: "vote_average.desc",
   },
 ];
 
@@ -66,7 +66,10 @@ interface FilterPresetsProps {
  * Active preset is visually highlighted. Tapping an active preset deselects it (resets).
  * Styled as ClayBadge-like interactive chips (ADVS-04).
  */
-export function FilterPresets({ activePresetId, onPresetSelect }: FilterPresetsProps) {
+export function FilterPresets({
+  activePresetId,
+  onPresetSelect,
+}: FilterPresetsProps) {
   const setAdvancedFilters = useSearchStore((s) => s.setAdvancedFilters);
   const resetAdvancedFilters = useSearchStore((s) => s.resetAdvancedFilters);
   const setSortBy = useSearchStore((s) => s.setSortBy);
@@ -76,7 +79,7 @@ export function FilterPresets({ activePresetId, onPresetSelect }: FilterPresetsP
       if (activePresetId === preset.id) {
         // Deselect: reset all filters
         resetAdvancedFilters();
-        setSortBy('popularity.desc');
+        setSortBy("popularity.desc");
         onPresetSelect(null);
       } else {
         // Apply preset
@@ -88,7 +91,13 @@ export function FilterPresets({ activePresetId, onPresetSelect }: FilterPresetsP
         onPresetSelect(preset.id);
       }
     },
-    [activePresetId, resetAdvancedFilters, setAdvancedFilters, setSortBy, onPresetSelect],
+    [
+      activePresetId,
+      resetAdvancedFilters,
+      setAdvancedFilters,
+      setSortBy,
+      onPresetSelect,
+    ],
   );
 
   return (
@@ -116,8 +125,8 @@ export function FilterPresets({ activePresetId, onPresetSelect }: FilterPresetsP
               outline-none focus-visible:ring-2 focus-visible:ring-accent
               ${
                 isActive
-                  ? 'bg-accent text-clay-base'
-                  : 'bg-clay-surface text-clay-text hover:bg-clay-elevated'
+                  ? "bg-accent text-clay-base"
+                  : "bg-clay-surface text-clay-text hover:bg-clay-elevated"
               }
             `}
           >

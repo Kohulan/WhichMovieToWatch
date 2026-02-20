@@ -1,9 +1,9 @@
 // Region detection and override hook — detects once, persists, invalidates cache on change
 
-import { useState, useEffect, useCallback } from 'react';
-import { detectCountry } from '@/services/ipinfo/client';
-import { useRegionStore } from '@/stores/regionStore';
-import { invalidateByPrefix } from '@/services/cache/cache-manager';
+import { useState, useEffect, useCallback } from "react";
+import { detectCountry } from "@/services/ipinfo/client";
+import { useRegionStore } from "@/stores/regionStore";
+import { invalidateByPrefix } from "@/services/cache/cache-manager";
 
 export function useRegion() {
   const detectedCountry = useRegionStore((s) => s.detectedCountry);
@@ -25,7 +25,7 @@ export function useRegion() {
         }
       } catch (err) {
         // Detection failed — keep existing value
-        console.warn('[region] Country detection failed:', err);
+        console.warn("[region] Country detection failed:", err);
       } finally {
         if (!cancelled) {
           setIsDetecting(false);
@@ -45,7 +45,7 @@ export function useRegion() {
     useRegionStore.getState().setManualOverride(country);
 
     // Invalidate provider-related caches so stale regional data is cleared
-    await invalidateByPrefix('providers-');
+    await invalidateByPrefix("providers-");
   }, []);
 
   return {

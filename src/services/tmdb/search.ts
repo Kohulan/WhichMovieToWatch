@@ -1,8 +1,8 @@
 // Movie search by query with pagination support
 
-import { tmdbFetch } from './client';
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
-import type { TMDBDiscoverResponse } from '@/types/movie';
+import { tmdbFetch } from "./client";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import type { TMDBDiscoverResponse } from "@/types/movie";
 
 export async function searchMovies(
   query: string,
@@ -17,7 +17,7 @@ export async function searchMovies(
     return cached.value;
   }
 
-  const response = await tmdbFetch<TMDBDiscoverResponse>('/search/movie', {
+  const response = await tmdbFetch<TMDBDiscoverResponse>("/search/movie", {
     query: normalizedQuery,
     page,
   });

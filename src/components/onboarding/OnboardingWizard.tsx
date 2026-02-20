@@ -1,43 +1,45 @@
 // Cinematic 2-step onboarding wizard for provider + genre preferences
 // Supports both first-visit onboarding and re-edit settings mode.
 
-import { useState, useCallback, useRef, useEffect, useId } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Tv, Sparkles, ArrowLeft, X } from 'lucide-react';
-import { MetalButton } from '@/components/ui';
-import { usePreferencesStore } from '@/stores/preferencesStore';
-import { useDiscoveryStore } from '@/stores/discoveryStore';
-import { useRegionProviders } from '@/hooks/useWatchProviders';
-import { getProviderLogoUrl } from '@/lib/provider-registry';
-import { getAllGenres } from '@/lib/genre-map';
+import { useState, useCallback, useRef, useEffect, useId } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Tv, Sparkles, ArrowLeft, X } from "lucide-react";
+import { MetalButton } from "@/components/ui";
+import { usePreferencesStore } from "@/stores/preferencesStore";
+import { useDiscoveryStore } from "@/stores/discoveryStore";
+import { useRegionProviders } from "@/hooks/useWatchProviders";
+import { getProviderLogoUrl } from "@/lib/provider-registry";
+import { getAllGenres } from "@/lib/genre-map";
 
 interface OnboardingWizardProps {
   isOpen: boolean;
   onComplete: () => void;
   /** When true, shows "Save" instead of "Get Started" and pre-fills current preferences */
-  mode?: 'onboarding' | 'settings';
+  mode?: "onboarding" | "settings";
   /** Optional warning shown at the top of the modal (e.g. when previous filters returned no results) */
   warningMessage?: string | null;
 }
 
 /** Top streaming services shown first (by TMDB provider ID) */
-const TOP_PROVIDER_IDS = new Set([8, 337, 9, 119, 15, 384, 350, 531, 386, 283, 2, 3, 10]);
+const TOP_PROVIDER_IDS = new Set([
+  8, 337, 9, 119, 15, 384, 350, 531, 386, 283, 2, 3, 10,
+]);
 
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 80 : -80,
     opacity: 0,
-    filter: 'blur(4px)',
+    filter: "blur(4px)",
   }),
   center: {
     x: 0,
     opacity: 1,
-    filter: 'blur(0px)',
+    filter: "blur(0px)",
   },
   exit: (direction: number) => ({
     x: direction > 0 ? -80 : 80,
     opacity: 0,
-    filter: 'blur(4px)',
+    filter: "blur(4px)",
   }),
 };
 
@@ -53,7 +55,7 @@ const slideVariants = {
 export function OnboardingWizard({
   isOpen,
   onComplete,
-  mode = 'onboarding',
+  mode = "onboarding",
   warningMessage,
 }: OnboardingWizardProps) {
   const currentProvider = usePreferencesStore((s) => s.preferredProvider);
@@ -62,13 +64,15 @@ export function OnboardingWizard({
   const [step, setStep] = useState<1 | 2>(1);
   const [direction, setDirection] = useState(1);
   const [selectedProvider, setSelectedProvider] = useState<number | null>(
-    mode === 'settings' && currentProvider ? Number(currentProvider) : null,
+    mode === "settings" && currentProvider ? Number(currentProvider) : null,
   );
   const [selectedGenre, setSelectedGenre] = useState<string | null>(
-    mode === 'settings' ? currentGenre : null,
+    mode === "settings" ? currentGenre : null,
   );
 
-  const setPreferredProvider = usePreferencesStore((s) => s.setPreferredProvider);
+  const setPreferredProvider = usePreferencesStore(
+    (s) => s.setPreferredProvider,
+  );
   const setPreferredGenre = usePreferencesStore((s) => s.setPreferredGenre);
   const completeOnboarding = usePreferencesStore((s) => s.completeOnboarding);
   const setFilters = useDiscoveryStore((s) => s.setFilters);
@@ -130,7 +134,7 @@ export function OnboardingWizard({
       genreId: selectedGenre,
     });
 
-    if (mode === 'onboarding') {
+    if (mode === "onboarding") {
       completeOnboarding();
     }
 
@@ -147,7 +151,7 @@ export function OnboardingWizard({
   ]);
 
   const handleSkip = useCallback(() => {
-    if (mode === 'onboarding') {
+    if (mode === "onboarding") {
       completeOnboarding();
     }
     onComplete();
@@ -158,15 +162,15 @@ export function OnboardingWizard({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') handleSkip();
+      if (e.key === "Escape") handleSkip();
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
   }, [isOpen, handleSkip]);
@@ -175,15 +179,15 @@ export function OnboardingWizard({
   useEffect(() => {
     if (isOpen) {
       setStep(1);
-      if (mode === 'settings') {
+      if (mode === "settings") {
         setSelectedProvider(currentProvider ? Number(currentProvider) : null);
         setSelectedGenre(currentGenre);
       }
     }
   }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const isSettingsMode = mode === 'settings';
-  const ctaLabel = isSettingsMode ? 'Save' : 'Get Started';
+  const isSettingsMode = mode === "settings";
+  const ctaLabel = isSettingsMode ? "Save" : "Get Started";
 
   return (
     <AnimatePresence>
@@ -210,7 +214,7 @@ export function OnboardingWizard({
             animate={{
               scale: 1,
               opacity: 1,
-              transition: { type: 'spring', stiffness: 300, damping: 22 },
+              transition: { type: "spring", stiffness: 300, damping: 22 },
             }}
             exit={{
               scale: 0.95,
@@ -223,7 +227,9 @@ export function OnboardingWizard({
               {/* Warning banner when previous filters returned no results */}
               {warningMessage && (
                 <div className="mb-3 px-3 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-center">
-                  <p className="text-red-400 text-sm font-medium">{warningMessage}</p>
+                  <p className="text-red-400 text-sm font-medium">
+                    {warningMessage}
+                  </p>
                 </div>
               )}
 
@@ -244,21 +250,21 @@ export function OnboardingWizard({
                 <div className="h-1 w-full bg-clay-surface rounded-full overflow-hidden">
                   <motion.div
                     className="h-full bg-accent rounded-full"
-                    animate={{ width: step === 1 ? '50%' : '100%' }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                    animate={{ width: step === 1 ? "50%" : "100%" }}
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 </div>
                 <div className="flex justify-between mt-1.5 px-0.5">
                   <span
                     className={`text-[11px] font-medium transition-colors ${
-                      step === 1 ? 'text-accent' : 'text-clay-text-muted'
+                      step === 1 ? "text-accent" : "text-clay-text-muted"
                     }`}
                   >
                     1. Streaming
                   </span>
                   <span
                     className={`text-[11px] font-medium transition-colors ${
-                      step === 2 ? 'text-accent' : 'text-clay-text-muted'
+                      step === 2 ? "text-accent" : "text-clay-text-muted"
                     }`}
                   >
                     2. Genre
@@ -290,7 +296,9 @@ export function OnboardingWizard({
                           id={titleId}
                           className="font-heading text-lg font-bold text-clay-text"
                         >
-                          {isSettingsMode ? 'Change Streaming Service' : 'Where do you watch?'}
+                          {isSettingsMode
+                            ? "Change Streaming Service"
+                            : "Where do you watch?"}
                         </h2>
                         <p className="text-clay-text-muted text-xs">
                           Tap your go-to platform
@@ -315,11 +323,14 @@ export function OnboardingWizard({
                         aria-label="Streaming service selection"
                       >
                         {sortedProviders.map((provider) => {
-                          const isSelected = selectedProvider === provider.provider_id;
+                          const isSelected =
+                            selectedProvider === provider.provider_id;
                           return (
                             <motion.button
                               key={provider.provider_id}
-                              onClick={() => handleProviderSelect(provider.provider_id)}
+                              onClick={() =>
+                                handleProviderSelect(provider.provider_id)
+                              }
                               role="radio"
                               aria-checked={isSelected}
                               aria-label={provider.provider_name}
@@ -327,14 +338,19 @@ export function OnboardingWizard({
                               className="group flex flex-col items-center gap-1.5 cursor-pointer focus:outline-none focus:ring-2 focus:ring-accent rounded-xl p-1"
                               whileHover={{ scale: 1.05 }}
                               whileTap={{ scale: 0.95 }}
-                              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+                              transition={{
+                                type: "spring",
+                                stiffness: 400,
+                                damping: 20,
+                              }}
                             >
                               <div
                                 className={`
                                   relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200
-                                  ${isSelected
-                                    ? 'ring-[3px] ring-accent shadow-[0_0_16px_rgba(var(--accent-rgb,255,140,50),0.35)] opacity-100'
-                                    : 'ring-1 ring-white/10 opacity-60 group-hover:opacity-85'
+                                  ${
+                                    isSelected
+                                      ? "ring-[3px] ring-accent shadow-[0_0_16px_rgba(var(--accent-rgb,255,140,50),0.35)] opacity-100"
+                                      : "ring-1 ring-white/10 opacity-60 group-hover:opacity-85"
                                   }
                                 `}
                               >
@@ -381,7 +397,9 @@ export function OnboardingWizard({
                               </div>
                               <span
                                 className={`text-[10px] leading-tight text-center line-clamp-1 max-w-full transition-colors ${
-                                  isSelected ? 'text-accent font-semibold' : 'text-clay-text-muted'
+                                  isSelected
+                                    ? "text-accent font-semibold"
+                                    : "text-clay-text-muted"
                                 }`}
                               >
                                 {provider.provider_name}
@@ -411,7 +429,9 @@ export function OnboardingWizard({
                       </div>
                       <div>
                         <h2 className="font-heading text-lg font-bold text-clay-text">
-                          {isSettingsMode ? 'Change Genre' : 'What are you in the mood for?'}
+                          {isSettingsMode
+                            ? "Change Genre"
+                            : "What are you in the mood for?"}
                         </h2>
                         <p className="text-clay-text-muted text-xs">
                           Pick a genre or leave it on Any
@@ -438,9 +458,10 @@ export function OnboardingWizard({
                           className={`
                             inline-flex items-center px-4 py-2 rounded-full font-body font-semibold text-sm
                             transition-all duration-200 select-none
-                            ${selectedGenre === null
-                              ? 'bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]'
-                              : 'bg-clay-surface/70 text-clay-text-muted border border-white/10 hover:border-white/20'
+                            ${
+                              selectedGenre === null
+                                ? "bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]"
+                                : "bg-clay-surface/70 text-clay-text-muted border border-white/10 hover:border-white/20"
                             }
                           `}
                         >
@@ -456,7 +477,9 @@ export function OnboardingWizard({
                             role="radio"
                             aria-checked={isSelected}
                             onClick={() =>
-                              setSelectedGenre(isSelected ? null : String(genre.id))
+                              setSelectedGenre(
+                                isSelected ? null : String(genre.id),
+                              )
                             }
                             className="focus:outline-none focus:ring-2 focus:ring-accent rounded-full cursor-pointer"
                             whileHover={{ scale: 1.06 }}
@@ -466,9 +489,10 @@ export function OnboardingWizard({
                               className={`
                                 inline-flex items-center px-4 py-2 rounded-full font-body font-medium text-sm
                                 transition-all duration-200 select-none
-                                ${isSelected
-                                  ? 'bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]'
-                                  : 'bg-clay-surface/70 text-clay-text border border-white/10 hover:border-white/20'
+                                ${
+                                  isSelected
+                                    ? "bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]"
+                                    : "bg-clay-surface/70 text-clay-text border border-white/10 hover:border-white/20"
                                 }
                               `}
                             >
@@ -490,7 +514,7 @@ export function OnboardingWizard({
                   onClick={handleSkip}
                   className="text-sm text-clay-text-muted hover:text-clay-text transition-colors underline underline-offset-2 cursor-pointer"
                 >
-                  {isSettingsMode ? 'Cancel' : 'Skip'}
+                  {isSettingsMode ? "Cancel" : "Skip"}
                 </button>
               ) : (
                 <MetalButton variant="ghost" size="sm" onClick={handleBack}>

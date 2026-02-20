@@ -1,8 +1,8 @@
 // Streaming provider grouped list — Stream/Rent/Buy/Free tiers (DISP-05)
 
-import { ExternalLink } from '@/components/shared/ExternalLink';
-import { getProviderLogoUrl } from '@/lib/provider-registry';
-import type { MovieProviders, ProviderInfo } from '@/types/provider';
+import { ExternalLink } from "@/components/shared/ExternalLink";
+import { getProviderLogoUrl } from "@/lib/provider-registry";
+import type { MovieProviders, ProviderInfo } from "@/types/provider";
 
 interface ProviderSectionProps {
   providers: MovieProviders;
@@ -80,7 +80,11 @@ function getFreeProviders(providers: MovieProviders): ProviderInfo[] {
  * Shows "Not available" message with a Find Movie link if no providers. (DISP-05)
  * ARIA labeled for screen readers. (A11Y-02)
  */
-export function ProviderSection({ providers, findMovieLink, children }: ProviderSectionProps) {
+export function ProviderSection({
+  providers,
+  findMovieLink,
+  children,
+}: ProviderSectionProps) {
   const freeProviders = getFreeProviders(providers);
   const hasProviders = hasAnyProviders(providers);
 

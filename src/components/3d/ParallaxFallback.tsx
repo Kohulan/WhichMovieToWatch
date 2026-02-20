@@ -1,10 +1,5 @@
-import { useEffect, useRef } from 'react';
-import {
-  useMotionValue,
-  useTransform,
-  useSpring,
-  motion,
-} from 'motion/react';
+import { useEffect, useRef } from "react";
+import { useMotionValue, useTransform, useSpring, motion } from "motion/react";
 
 interface ParallaxFallbackProps {
   className?: string;
@@ -29,11 +24,11 @@ interface ParallaxFallbackProps {
  *
  * Colors use CSS variables (--accent, --clay-base) for automatic theme adaptation.
  */
-export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
+export function ParallaxFallback({ className = "" }: ParallaxFallbackProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isTouchDevice = useRef(
-    typeof window !== 'undefined' &&
-      ('ontouchstart' in window || navigator.maxTouchPoints > 0),
+    typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0),
   );
 
   // Raw mouse position normalized to -1..1 range
@@ -58,8 +53,8 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
       rawRotateY.set((e.clientX / w - 0.5) * 2);
     }
 
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [rawRotateX, rawRotateY]);
 
   return (
@@ -71,46 +66,46 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
         // contain:layout paint isolates this decorative layer from the main document
         // layout flow, preventing repaints in the 3D container from triggering full
         // page layout recalculations. Improves Lighthouse CLS and rendering performance.
-        contain: 'layout paint',
+        contain: "layout paint",
       }}
     >
       {/* Perspective container with mouse-responsive tilt */}
       <motion.div
         style={{
-          perspective: '1000px',
-          transformStyle: 'preserve-3d',
-          width: '100%',
-          height: '100%',
+          perspective: "1000px",
+          transformStyle: "preserve-3d",
+          width: "100%",
+          height: "100%",
           rotateX: tiltX,
           rotateY: tiltY,
           // will-change:transform promotes this div to its own GPU compositor layer.
           // The continuous spring-animated rotateX/rotateY are compositor-thread
           // animations (transform only), so this hint enables zero-jank parallax.
-          willChange: 'transform',
+          willChange: "transform",
         }}
       >
         {/* Layer 1 — deepest: large ambient gradient circle (accent color) */}
         <div
           style={{
-            transform: 'translateZ(-200px)',
-            position: 'absolute',
+            transform: "translateZ(-200px)",
+            position: "absolute",
             inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
             // Compositor-thread transform (translateZ) — no layout triggers
-            willChange: 'transform',
+            willChange: "transform",
           }}
         >
           <div
             style={{
-              width: '80%',
-              height: '80%',
-              borderRadius: '50%',
+              width: "80%",
+              height: "80%",
+              borderRadius: "50%",
               background:
-                'radial-gradient(circle, color-mix(in oklch, var(--accent) 60%, transparent) 0%, transparent 70%)',
+                "radial-gradient(circle, color-mix(in oklch, var(--accent) 60%, transparent) 0%, transparent 70%)",
               opacity: 0.03,
-              filter: 'blur(80px)',
+              filter: "blur(80px)",
             }}
           />
         </div>
@@ -118,13 +113,13 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
         {/* Layer 2 — film reel silhouette SVG with slow rotation */}
         <div
           style={{
-            transform: 'translateZ(-120px)',
-            position: 'absolute',
+            transform: "translateZ(-120px)",
+            position: "absolute",
             inset: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            willChange: 'transform',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            willChange: "transform",
           }}
         >
           {/* Film reel SVG: outer circle + 6 rectangular sprocket holes + inner hub */}
@@ -135,13 +130,20 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
             className="film-reel-spin"
             style={{
               opacity: 0.03,
-              color: 'var(--accent)',
-              animationDuration: '30s',
+              color: "var(--accent)",
+              animationDuration: "30s",
             }}
             fill="currentColor"
           >
             {/* Outer ring */}
-            <circle cx="50" cy="50" r="48" fillOpacity="0" stroke="currentColor" strokeWidth="2" />
+            <circle
+              cx="50"
+              cy="50"
+              r="48"
+              fillOpacity="0"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
             {/* Inner hub circle */}
             <circle cx="50" cy="50" r="12" />
             {/* Center hole */}
@@ -159,24 +161,24 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
         {/* Layer 3 — spotlight beam radial gradient */}
         <div
           style={{
-            transform: 'translateZ(-60px)',
-            position: 'absolute',
+            transform: "translateZ(-60px)",
+            position: "absolute",
             inset: 0,
-            willChange: 'transform',
+            willChange: "transform",
           }}
         >
           <div
             style={{
-              position: 'absolute',
-              top: '-10%',
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '60%',
-              height: '80%',
+              position: "absolute",
+              top: "-10%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "60%",
+              height: "80%",
               background:
-                'radial-gradient(ellipse at 50% 0%, color-mix(in oklch, var(--accent) 30%, transparent) 0%, transparent 65%)',
+                "radial-gradient(ellipse at 50% 0%, color-mix(in oklch, var(--accent) 30%, transparent) 0%, transparent 65%)",
               opacity: 0.04,
-              filter: 'blur(30px)',
+              filter: "blur(30px)",
             }}
           />
         </div>
@@ -184,23 +186,23 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
         {/* Layer 4 — floating dust particles (closest layer) */}
         <div
           style={{
-            transform: 'translateZ(-20px)',
-            position: 'absolute',
+            transform: "translateZ(-20px)",
+            position: "absolute",
             inset: 0,
-            willChange: 'transform',
+            willChange: "transform",
           }}
         >
           {DUST_PARTICLES.map((p) => (
             <div
               key={p.id}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 left: `${p.x}%`,
                 bottom: `${p.startY}%`,
                 width: `${p.size}px`,
                 height: `${p.size}px`,
-                borderRadius: '50%',
-                background: 'var(--accent)',
+                borderRadius: "50%",
+                background: "var(--accent)",
                 opacity: p.opacity,
                 animation: `parallax-dust-drift ${p.duration}s ease-in-out ${p.delay}s infinite alternate`,
               }}
@@ -227,12 +229,44 @@ export function ParallaxFallback({ className = '' }: ParallaxFallbackProps) {
 // Static dust particle definitions for 8 particles
 // Defined outside component to avoid recreation on every render
 const DUST_PARTICLES = [
-  { id: 1, x: 15, startY: 10, size: 2,   opacity: 0.3, duration: 8,  delay: 0 },
+  { id: 1, x: 15, startY: 10, size: 2, opacity: 0.3, duration: 8, delay: 0 },
   { id: 2, x: 30, startY: 25, size: 1.5, opacity: 0.2, duration: 12, delay: 2 },
-  { id: 3, x: 50, startY: 5,  size: 3,   opacity: 0.25,duration: 10, delay: 1 },
-  { id: 4, x: 65, startY: 40, size: 1,   opacity: 0.15,duration: 15, delay: 3 },
-  { id: 5, x: 80, startY: 15, size: 2.5, opacity: 0.2, duration: 9,  delay: 0.5 },
-  { id: 6, x: 20, startY: 60, size: 1.5, opacity: 0.18,duration: 11, delay: 4 },
-  { id: 7, x: 45, startY: 70, size: 2,   opacity: 0.22,duration: 13, delay: 1.5 },
-  { id: 8, x: 70, startY: 50, size: 1,   opacity: 0.12,duration: 16, delay: 2.5 },
+  { id: 3, x: 50, startY: 5, size: 3, opacity: 0.25, duration: 10, delay: 1 },
+  { id: 4, x: 65, startY: 40, size: 1, opacity: 0.15, duration: 15, delay: 3 },
+  {
+    id: 5,
+    x: 80,
+    startY: 15,
+    size: 2.5,
+    opacity: 0.2,
+    duration: 9,
+    delay: 0.5,
+  },
+  {
+    id: 6,
+    x: 20,
+    startY: 60,
+    size: 1.5,
+    opacity: 0.18,
+    duration: 11,
+    delay: 4,
+  },
+  {
+    id: 7,
+    x: 45,
+    startY: 70,
+    size: 2,
+    opacity: 0.22,
+    duration: 13,
+    delay: 1.5,
+  },
+  {
+    id: 8,
+    x: 70,
+    startY: 50,
+    size: 1,
+    opacity: 0.12,
+    duration: 16,
+    delay: 2.5,
+  },
 ];

@@ -3,12 +3,12 @@
 // Subscribes to featuredStore index so the rating stays in sync with
 // DiscoverHeroCell and TrendingPreviewCell.
 
-import { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
-import { motion, AnimatePresence } from 'motion/react';
-import { Star } from 'lucide-react';
-import { useTopStreaming } from '@/hooks/useTopStreaming';
-import { useFeaturedStore } from '@/stores/featuredStore';
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router";
+import { motion, AnimatePresence } from "motion/react";
+import { Star } from "lucide-react";
+import { useTopStreaming } from "@/hooks/useTopStreaming";
+import { useFeaturedStore } from "@/stores/featuredStore";
 
 const ANIMATION_DURATION_MS = 600;
 const ANIMATION_STEPS = 20;
@@ -46,7 +46,7 @@ export function RatingShowcaseCell() {
   return (
     <div
       className="w-full h-full flex flex-col justify-center p-4 gap-1"
-      onClick={() => navigate('/trending')}
+      onClick={() => navigate("/trending")}
     >
       {/* Label */}
       <span className="text-xs font-semibold text-clay-text-muted uppercase tracking-wide">
@@ -55,7 +55,10 @@ export function RatingShowcaseCell() {
 
       {/* Large rating number + star */}
       <div className="flex items-center gap-2">
-        <Star className="w-5 h-5 text-accent fill-accent drop-shadow-[0_0_6px_var(--accent)]" aria-hidden="true" />
+        <Star
+          className="w-5 h-5 text-accent fill-accent drop-shadow-[0_0_6px_var(--accent)]"
+          aria-hidden="true"
+        />
         {isLoading ? (
           <div className="clay-shimmer h-9 w-16 rounded-md" />
         ) : (

@@ -4,13 +4,13 @@
 // Clay material cell. Dispatches 'open-search' event to trigger the
 // SpotlightSearch overlay (rendered in Navbar) instead of navigating away.
 
-import { Search, ArrowRight } from 'lucide-react';
+import { Search, ArrowRight } from "lucide-react";
 
 export function SearchCell() {
   return (
     <div
       className="w-full h-full flex items-center gap-4 p-4"
-      onClick={() => window.dispatchEvent(new CustomEvent('open-search'))}
+      onClick={() => window.dispatchEvent(new CustomEvent("open-search"))}
     >
       {/* Icon */}
       <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center">

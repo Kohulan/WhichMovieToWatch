@@ -4,11 +4,11 @@
 // and shuffles to the next 3 every 2.5 seconds with a crossfade animation.
 // Designed as col-span-3, row-span-1 on desktop. hideOnMobile=true (decorative).
 
-import { useState, useEffect, useMemo } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { useRegionProviders } from '@/hooks/useWatchProviders';
+import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { useRegionProviders } from "@/hooks/useWatchProviders";
 
-const TMDB_LOGO_BASE = 'https://image.tmdb.org/t/p/original';
+const TMDB_LOGO_BASE = "https://image.tmdb.org/t/p/original";
 const VISIBLE_COUNT = 3;
 const CYCLE_MS = 2500;
 
@@ -50,7 +50,7 @@ export function ProviderLogosCell() {
     <div className="w-full h-full flex flex-col justify-center p-4 gap-3">
       {/* Label */}
       <span className="text-xs font-semibold text-clay-text-muted uppercase tracking-wide">
-        {isLoading ? 'Loading...' : `${providers.length}+ Streaming Services`}
+        {isLoading ? "Loading..." : `${providers.length}+ Streaming Services`}
       </span>
 
       {/* Animated logo slots */}
@@ -64,7 +64,7 @@ export function ProviderLogosCell() {
               initial={{ opacity: 0, scale: 0.7, rotateY: 90 }}
               animate={{ opacity: 1, scale: 1, rotateY: 0 }}
               exit={{ opacity: 0, scale: 0.7, rotateY: -90 }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
             >
               <img
                 src={`${TMDB_LOGO_BASE}${provider.logo_path}`}
@@ -72,7 +72,7 @@ export function ProviderLogosCell() {
                 className="w-full h-full object-cover"
                 loading="lazy"
                 onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
+                  (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
               />
             </motion.div>

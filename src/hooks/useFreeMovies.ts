@@ -1,10 +1,10 @@
 // Free YouTube movies hook — parses movies.txt, picks random entries with TMDB enrichment (FREE-01, FREE-02)
 
-import { useState, useEffect, useCallback } from 'react';
-import { searchMovies } from '@/services/tmdb/search';
-import { fetchMovieDetails } from '@/services/tmdb/details';
-import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
-import type { TMDBMovieDetails } from '@/types/movie';
+import { useState, useEffect, useCallback } from "react";
+import { searchMovies } from "@/services/tmdb/search";
+import { fetchMovieDetails } from "@/services/tmdb/details";
+import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
+import type { TMDBMovieDetails } from "@/types/movie";
 
 interface FreeMovieEntry {
   youtubeId: string;
@@ -47,19 +47,19 @@ async function loadMoviesList(): Promise<FreeMovieEntry[]> {
       const text = await res.text();
 
       const lines = text
-        .split('\n')
+        .split("\n")
         .map((line) => line.trim())
         .filter(Boolean);
 
       // Skip header row ("YouTube ID\tTitle")
       const dataLines = lines.filter(
         (line) =>
-          !line.startsWith('YouTube ID') && !line.startsWith('YouTube_ID'),
+          !line.startsWith("YouTube ID") && !line.startsWith("YouTube_ID"),
       );
 
       const entries: FreeMovieEntry[] = dataLines
         .map((line) => {
-          const tabIndex = line.indexOf('\t');
+          const tabIndex = line.indexOf("\t");
           if (tabIndex === -1) return null;
           const youtubeId = line.slice(0, tabIndex).trim();
           const title = line.slice(tabIndex + 1).trim();
@@ -106,7 +106,7 @@ export function useFreeMovies(): UseFreeMoviesReturn {
       const entries = await loadMoviesList();
 
       if (entries.length === 0) {
-        setError('No free movies found in the list.');
+        setError("No free movies found in the list.");
         setMovie(null);
         return;
       }
@@ -149,7 +149,7 @@ export function useFreeMovies(): UseFreeMoviesReturn {
       });
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to load free movies list',
+        err instanceof Error ? err.message : "Failed to load free movies list",
       );
       setMovie(null);
     } finally {

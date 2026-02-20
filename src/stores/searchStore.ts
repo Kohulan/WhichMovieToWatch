@@ -1,13 +1,13 @@
-import { create } from 'zustand';
-import type { TMDBMovie } from '@/types/movie';
+import { create } from "zustand";
+import type { TMDBMovie } from "@/types/movie";
 
 export interface AdvancedFilters {
-  genres: number[];             // TMDB genre IDs
-  yearRange: [number, number];  // [1900, currentYear]
+  genres: number[]; // TMDB genre IDs
+  yearRange: [number, number]; // [1900, currentYear]
   ratingRange: [number, number]; // [0, 10]
   runtimeRange: [number, number]; // [0, 300] minutes
-  language: string | null;      // ISO 639-1 code
-  providerId: number | null;    // streaming provider
+  language: string | null; // ISO 639-1 code
+  providerId: number | null; // streaming provider
 }
 
 const DEFAULT_ADVANCED_FILTERS: AdvancedFilters = {
@@ -54,14 +54,14 @@ interface SearchState {
 }
 
 export const useSearchStore = create<SearchState>()((set, get) => ({
-  query: '',
+  query: "",
   results: [],
   totalResults: 0,
   currentPage: 1,
   totalPages: 0,
   isLoading: false,
   error: null,
-  sortBy: 'popularity.desc',
+  sortBy: "popularity.desc",
   advancedFilters: { ...DEFAULT_ADVANCED_FILTERS },
   searchCache: new Map<string, TMDBMovie[]>(),
 
@@ -78,14 +78,14 @@ export const useSearchStore = create<SearchState>()((set, get) => ({
   setError: (error) => set({ error }),
   reset: () =>
     set({
-      query: '',
+      query: "",
       results: [],
       totalResults: 0,
       currentPage: 1,
       totalPages: 0,
       isLoading: false,
       error: null,
-      sortBy: 'popularity.desc',
+      sortBy: "popularity.desc",
     }),
 
   setAdvancedFilters: (filters) =>

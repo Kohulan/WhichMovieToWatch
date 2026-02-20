@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Film } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "motion/react";
+import { Film } from "lucide-react";
 
 interface Quote {
   text: string;
@@ -9,24 +9,24 @@ interface Quote {
 
 /** Classic recognizable movie quotes for loading states (ANIM-06) */
 const QUOTES: Quote[] = [
-  { text: "Here's looking at you, kid.", film: 'Casablanca' },
-  { text: 'May the Force be with you.', film: 'Star Wars' },
-  { text: "I'll be back.", film: 'The Terminator' },
-  { text: 'To infinity and beyond!', film: 'Toy Story' },
-  { text: 'Life is like a box of chocolates.', film: 'Forrest Gump' },
-  { text: "After all, tomorrow is another day.", film: 'Gone with the Wind' },
-  { text: "There's no place like home.", film: 'The Wizard of Oz' },
-  { text: 'You talking to me?', film: 'Taxi Driver' },
-  { text: 'I see dead people.', film: 'The Sixth Sense' },
-  { text: 'Just keep swimming.', film: 'Finding Nemo' },
-  { text: 'Why so serious?', film: 'The Dark Knight' },
-  { text: 'I am Groot.', film: 'Guardians of the Galaxy' },
+  { text: "Here's looking at you, kid.", film: "Casablanca" },
+  { text: "May the Force be with you.", film: "Star Wars" },
+  { text: "I'll be back.", film: "The Terminator" },
+  { text: "To infinity and beyond!", film: "Toy Story" },
+  { text: "Life is like a box of chocolates.", film: "Forrest Gump" },
+  { text: "After all, tomorrow is another day.", film: "Gone with the Wind" },
+  { text: "There's no place like home.", film: "The Wizard of Oz" },
+  { text: "You talking to me?", film: "Taxi Driver" },
+  { text: "I see dead people.", film: "The Sixth Sense" },
+  { text: "Just keep swimming.", film: "Finding Nemo" },
+  { text: "Why so serious?", film: "The Dark Knight" },
+  { text: "I am Groot.", film: "Guardians of the Galaxy" },
 ];
 
 interface LoadingQuotesProps {
   className?: string;
   /** 'sm' for compact contexts (search modal), 'md' for full-page loading (default) */
-  size?: 'sm' | 'md';
+  size?: "sm" | "md";
 }
 
 /**
@@ -37,7 +37,10 @@ interface LoadingQuotesProps {
  * Quotes fade in/out via AnimatePresence. Film-reel spinner uses film-reel-spin
  * CSS animation from animations.css. (ANIM-06)
  */
-export function LoadingQuotes({ className = '', size = 'md' }: LoadingQuotesProps) {
+export function LoadingQuotes({
+  className = "",
+  size = "md",
+}: LoadingQuotesProps) {
   const [quoteIndex, setQuoteIndex] = useState(() =>
     Math.floor(Math.random() * QUOTES.length),
   );
@@ -51,13 +54,15 @@ export function LoadingQuotes({ className = '', size = 'md' }: LoadingQuotesProp
   }, []);
 
   const quote = QUOTES[quoteIndex];
-  const iconSize = size === 'sm' ? 20 : 24;
-  const quoteClass = size === 'sm'
-    ? 'text-clay-text/60 text-xs italic'
-    : 'text-clay-text/60 text-sm italic';
-  const filmClass = size === 'sm'
-    ? 'text-clay-text/40 text-[10px]'
-    : 'text-clay-text/40 text-xs';
+  const iconSize = size === "sm" ? 20 : 24;
+  const quoteClass =
+    size === "sm"
+      ? "text-clay-text/60 text-xs italic"
+      : "text-clay-text/60 text-sm italic";
+  const filmClass =
+    size === "sm"
+      ? "text-clay-text/40 text-[10px]"
+      : "text-clay-text/40 text-xs";
 
   return (
     <motion.div
@@ -67,15 +72,8 @@ export function LoadingQuotes({ className = '', size = 'md' }: LoadingQuotesProp
       transition={{ duration: 0.3 }}
     >
       {/* Film-reel spinner */}
-      <div
-        className="film-reel-spin text-accent"
-        aria-hidden="true"
-      >
-        <Film
-          width={iconSize}
-          height={iconSize}
-          strokeWidth={1.5}
-        />
+      <div className="film-reel-spin text-accent" aria-hidden="true">
+        <Film width={iconSize} height={iconSize} strokeWidth={1.5} />
       </div>
 
       {/* Rotating movie quote with fade in/out */}

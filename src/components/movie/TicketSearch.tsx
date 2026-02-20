@@ -1,9 +1,9 @@
 // Ticket search — Google search for movie tickets in user's area
 
-import { useState, useCallback } from 'react';
-import { motion } from 'motion/react';
-import { Ticket, Search, ExternalLink as ExternalLinkIcon } from 'lucide-react';
-import { ExternalLink } from '@/components/shared/ExternalLink';
+import { useState, useCallback } from "react";
+import { motion } from "motion/react";
+import { Ticket, Search, ExternalLink as ExternalLinkIcon } from "lucide-react";
+import { ExternalLink } from "@/components/shared/ExternalLink";
 
 interface TicketSearchProps {
   movieTitle: string;
@@ -30,7 +30,7 @@ export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
   const handleSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+      window.open(searchUrl, "_blank", "noopener,noreferrer");
     },
     [searchUrl],
   );
@@ -67,7 +67,7 @@ export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
           whileTap={{ scale: 0.97 }}
           style={{
             boxShadow:
-              '4px 4px 8px rgba(0,0,0,0.20), -2px -2px 5px rgba(255,255,255,0.05), inset -1px -1px 3px rgba(0,0,0,0.12), inset 1px 1px 3px rgba(255,255,255,0.18)',
+              "4px 4px 8px rgba(0,0,0,0.20), -2px -2px 5px rgba(255,255,255,0.05), inset -1px -1px 3px rgba(0,0,0,0.12), inset 1px 1px 3px rgba(255,255,255,0.18)",
           }}
           aria-label={`Search for ${query} tickets`}
         >

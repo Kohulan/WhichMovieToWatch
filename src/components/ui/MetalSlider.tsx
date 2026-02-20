@@ -1,5 +1,5 @@
-import { motion, useMotionValue, useTransform } from 'motion/react';
-import { useCallback, useId, useRef, useEffect } from 'react';
+import { motion, useMotionValue, useTransform } from "motion/react";
+import { useCallback, useId, useRef, useEffect } from "react";
 
 interface MetalSliderProps {
   value: number;
@@ -18,7 +18,7 @@ export function MetalSlider({
   max = 100,
   step = 1,
   label,
-  className = '',
+  className = "",
 }: MetalSliderProps) {
   const id = useId();
   const railRef = useRef<HTMLDivElement>(null);
@@ -41,7 +41,13 @@ export function MetalSlider({
   const fillWidth = useTransform(x, (latest) => {
     if (!railRef.current) return `${percentage}%`;
     const railWidth = railRef.current.offsetWidth - 20;
-    const pct = railWidth > 0 ? Math.max(0, Math.min(100, ((latest + 10) / railRef.current.offsetWidth) * 100)) : percentage;
+    const pct =
+      railWidth > 0
+        ? Math.max(
+            0,
+            Math.min(100, ((latest + 10) / railRef.current.offsetWidth) * 100),
+          )
+        : percentage;
     return `${pct}%`;
   });
 
@@ -90,21 +96,21 @@ export function MetalSlider({
     (e: React.KeyboardEvent) => {
       let newValue = value;
       switch (e.key) {
-        case 'ArrowRight':
-        case 'ArrowUp':
+        case "ArrowRight":
+        case "ArrowUp":
           e.preventDefault();
           newValue = Math.min(max, value + step);
           break;
-        case 'ArrowLeft':
-        case 'ArrowDown':
+        case "ArrowLeft":
+        case "ArrowDown":
           e.preventDefault();
           newValue = Math.max(min, value - step);
           break;
-        case 'Home':
+        case "Home":
           e.preventDefault();
           newValue = min;
           break;
-        case 'End':
+        case "End":
           e.preventDefault();
           newValue = max;
           break;
@@ -138,7 +144,7 @@ export function MetalSlider({
         aria-valuenow={value}
         aria-valuemin={min}
         aria-valuemax={max}
-        aria-label={label ?? 'Slider'}
+        aria-label={label ?? "Slider"}
         tabIndex={0}
         onKeyDown={handleKeyDown}
         onClick={handleRailClick}
@@ -148,7 +154,8 @@ export function MetalSlider({
         <div
           className="absolute inset-x-0 h-1 rounded-full bg-clay-base"
           style={{
-            boxShadow: 'inset 0 3px 5px rgba(0,0,0,0.35), inset 0 1px 3px rgba(0,0,0,0.25), inset 0 -1px 2px rgba(255,255,255,0.06)',
+            boxShadow:
+              "inset 0 3px 5px rgba(0,0,0,0.35), inset 0 1px 3px rgba(0,0,0,0.25), inset 0 -1px 2px rgba(255,255,255,0.06)",
           }}
         />
 
@@ -163,7 +170,8 @@ export function MetalSlider({
           className="metal-knob-enhanced absolute w-5 h-5 rounded-full cursor-grab active:cursor-grabbing"
           style={{
             x,
-            boxShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15)',
+            boxShadow:
+              "0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15)",
           }}
           drag="x"
           dragConstraints={railRef}
@@ -174,7 +182,7 @@ export function MetalSlider({
           onDragEnd={handleDragEnd}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
         />
       </div>
     </div>

@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
 
@@ -17,7 +17,7 @@ interface RegionState {
 export const useRegionStore = create<RegionState>()(
   persist(
     (set, get) => ({
-      detectedCountry: 'US',
+      detectedCountry: "US",
       manualOverride: null,
       lastDetected: 0,
 
@@ -40,11 +40,11 @@ export const useRegionStore = create<RegionState>()(
       },
     }),
     {
-      name: 'wmtw-region',
+      name: "wmtw-region",
       storage: createJSONStorage(() => localStorage),
       version: 2,
       migrate: () => ({
-        detectedCountry: 'US',
+        detectedCountry: "US",
         manualOverride: null,
         lastDetected: 0,
       }),

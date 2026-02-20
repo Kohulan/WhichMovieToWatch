@@ -1,9 +1,9 @@
 // Now playing with auto-refresh hook — region-aware, 30-min interval
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { fetchNowPlaying, fetchPopular } from '@/services/tmdb/trending';
-import { useRegionStore } from '@/stores/regionStore';
-import type { TMDBMovie } from '@/types/movie';
+import { useState, useEffect, useCallback, useRef } from "react";
+import { fetchNowPlaying, fetchPopular } from "@/services/tmdb/trending";
+import { useRegionStore } from "@/stores/regionStore";
+import type { TMDBMovie } from "@/types/movie";
 
 const REFRESH_INTERVAL = 30 * 60 * 1000; // 30 minutes
 
@@ -32,7 +32,7 @@ export function useTrending() {
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Failed to load trending movies',
+        err instanceof Error ? err.message : "Failed to load trending movies",
       );
     } finally {
       setIsLoading(false);

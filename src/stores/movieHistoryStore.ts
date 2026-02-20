@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
 const MAX_SHOWN_HISTORY = 2000;
 
@@ -144,7 +144,7 @@ export const useMovieHistoryStore = create<MovieHistoryState>()(
       },
     }),
     {
-      name: 'wmtw-movie-history',
+      name: "wmtw-movie-history",
       storage: createJSONStorage(() => localStorage),
       version: 1,
       partialize: (state) => ({

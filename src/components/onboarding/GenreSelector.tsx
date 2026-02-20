@@ -1,7 +1,7 @@
 // Genre clay pill chip selection for onboarding
 
-import { getAllGenres } from '@/lib/genre-map';
-import { ClayBadge } from '@/components/ui';
+import { getAllGenres } from "@/lib/genre-map";
+import { ClayBadge } from "@/components/ui";
 
 interface GenreSelectorProps {
   selectedGenre: string | null;
@@ -15,7 +15,10 @@ interface GenreSelectorProps {
  * Each genre is a ClayBadge — accent when selected, muted when not.
  * Tapping the already-selected genre reverts to "Any". (PREF-04)
  */
-export function GenreSelector({ selectedGenre, onGenreChange }: GenreSelectorProps) {
+export function GenreSelector({
+  selectedGenre,
+  onGenreChange,
+}: GenreSelectorProps) {
   const genres = getAllGenres();
 
   function handleSelect(genreId: string | null) {
@@ -43,7 +46,7 @@ export function GenreSelector({ selectedGenre, onGenreChange }: GenreSelectorPro
       >
         <span role="listitem">
           <ClayBadge
-            variant={selectedGenre === null ? 'accent' : 'muted'}
+            variant={selectedGenre === null ? "accent" : "muted"}
             size="md"
             className="cursor-pointer select-none transition-all"
           >
@@ -65,7 +68,7 @@ export function GenreSelector({ selectedGenre, onGenreChange }: GenreSelectorPro
           >
             <span role="listitem">
               <ClayBadge
-                variant={isSelected ? 'accent' : 'muted'}
+                variant={isSelected ? "accent" : "muted"}
                 size="md"
                 className="cursor-pointer select-none transition-all"
               >

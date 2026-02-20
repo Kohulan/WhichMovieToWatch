@@ -1,12 +1,15 @@
-import { useMemo } from 'react';
-import { getPosterUrl } from '@/services/tmdb/client';
-import { tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
-import { MetalButton } from '@/components/ui';
-import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
-import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
-import { useNetflixAvailability } from '@/hooks/useNetflixAvailability';
-import { getCountryName } from '@/lib/country-names';
-import type { TMDBMovie } from '@/types/movie';
+import { useMemo } from "react";
+import { getPosterUrl } from "@/services/tmdb/client";
+import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { MetalButton } from "@/components/ui";
+import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/animation/StaggerContainer";
+import { useNetflixAvailability } from "@/hooks/useNetflixAvailability";
+import { getCountryName } from "@/lib/country-names";
+import type { TMDBMovie } from "@/types/movie";
 
 interface NetflixResultsProps {
   results: TMDBMovie[];
@@ -19,12 +22,15 @@ interface NetflixResultsProps {
 
 function getRatingColor(voteAverage: number): string {
   const pct = Math.round(voteAverage * 10);
-  if (pct >= 70) return 'bg-green-500/80 text-white';
-  if (pct >= 50) return 'bg-yellow-500/80 text-white';
-  return 'bg-red-500/80 text-white';
+  if (pct >= 70) return "bg-green-500/80 text-white";
+  if (pct >= 50) return "bg-yellow-500/80 text-white";
+  return "bg-red-500/80 text-white";
 }
 
-function sortWithExactMatchFirst(movies: TMDBMovie[], query: string): TMDBMovie[] {
+function sortWithExactMatchFirst(
+  movies: TMDBMovie[],
+  query: string,
+): TMDBMovie[] {
   if (!query.trim()) return movies;
   const q = query.toLowerCase();
   const exact: TMDBMovie[] = [];
@@ -48,8 +54,10 @@ function NetflixCard({
   movie: TMDBMovie;
   onSelectMovie: (movieId: number) => void;
 }) {
-  const { countries, isLoading: countriesLoading } = useNetflixAvailability(movie.id);
-  const posterUrl = getPosterUrl(movie.poster_path, 'w185');
+  const { countries, isLoading: countriesLoading } = useNetflixAvailability(
+    movie.id,
+  );
+  const posterUrl = getPosterUrl(movie.poster_path, "w185");
   const year = movie.release_date
     ? new Date(movie.release_date).getFullYear()
     : null;
@@ -65,12 +73,12 @@ function NetflixCard({
       tabIndex={0}
       onClick={() => onSelectMovie(movie.id)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
           onSelectMovie(movie.id);
         }
       }}
-      aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPct}%${hasNetflix ? `, on Netflix in ${countries.length} countries` : ''}`}
+      aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPct}%${hasNetflix ? `, on Netflix in ${countries.length} countries` : ""}`}
       className={`
         w-full text-left group
         rounded-clay overflow-hidden
@@ -78,14 +86,18 @@ function NetflixCard({
         transition-all duration-200
         hover:clay-shadow-lg hover:-translate-y-0.5
         outline-none focus-visible:ring-2 focus-visible:ring-[#E50914]/60
-        ${hasNetflix ? 'ring-1 ring-[#E50914]/20' : ''}
+        ${hasNetflix ? "ring-1 ring-[#E50914]/20" : ""}
       `}
     >
       <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
         {posterUrl ? (
           <img
             src={posterUrl}
-            srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+            srcSet={
+              movie.poster_path
+                ? tmdbPosterSrcSet(movie.poster_path)
+                : undefined
+            }
             sizes={posterSizes}
             alt={`${movie.title} poster`}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -111,9 +123,7 @@ function NetflixCard({
         <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2">
           {movie.title}
         </p>
-        {year && (
-          <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
-        )}
+        {year && <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>}
 
         {/* Netflix availability */}
         <div className="mt-1.5">
@@ -211,7 +221,7 @@ export function NetflixResults({
             disabled={isLoading}
             aria-label="Load more search results"
           >
-            {isLoading ? 'Loading...' : 'Load More'}
+            {isLoading ? "Loading..." : "Load More"}
           </MetalButton>
         </div>
       )}

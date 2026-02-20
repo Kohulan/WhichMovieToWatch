@@ -1,8 +1,8 @@
 // Movie discovery with progressive filter relaxation
 
-import { tmdbFetch } from './client';
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
-import type { TMDBDiscoverResponse, TMDBMovie } from '@/types/movie';
+import { tmdbFetch } from "./client";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import type { TMDBDiscoverResponse, TMDBMovie } from "@/types/movie";
 
 export interface DiscoverFilters {
   genreId: string | null;
@@ -51,22 +51,23 @@ export async function discoverMovie(
   for (let i = 0; i <= relaxationStep; i++) {
     const step = RELAXATION_STEPS[i];
     if (step.minRating !== undefined) relaxed.minRating = step.minRating;
-    if (step.minVoteCount !== undefined) relaxed.minVoteCount = step.minVoteCount;
+    if (step.minVoteCount !== undefined)
+      relaxed.minVoteCount = step.minVoteCount;
     // Skip genre/provider relaxation when user has explicitly set them
-    if ('genreId' in step && !(lockUserFilters && filters.genreId)) {
+    if ("genreId" in step && !(lockUserFilters && filters.genreId)) {
       relaxed.genreId = step.genreId ?? null;
     }
-    if ('providerId' in step && !(lockUserFilters && filters.providerId)) {
+    if ("providerId" in step && !(lockUserFilters && filters.providerId)) {
       relaxed.providerId = step.providerId ?? null;
     }
   }
 
   // Build TMDB discover params (page 1 first to learn total_pages)
   const params: Record<string, string | number | boolean> = {
-    sort_by: 'popularity.desc',
-    'vote_count.gte': relaxed.minVoteCount,
-    'vote_average.gte': relaxed.minRating,
-    include_adult: 'false',
+    sort_by: "popularity.desc",
+    "vote_count.gte": relaxed.minVoteCount,
+    "vote_average.gte": relaxed.minRating,
+    include_adult: "false",
     page: 1,
   };
 
@@ -76,24 +77,30 @@ export async function discoverMovie(
 
   // Always require streaming availability so every result is streamable
   params.watch_region = relaxed.region;
-  params.with_watch_monetization_types = 'flatrate';
+  params.with_watch_monetization_types = "flatrate";
 
   if (relaxed.providerId) {
     params.with_watch_providers = relaxed.providerId;
   }
 
   // Fetch page 1 to learn total_pages, then pick a random page within the valid range
-  const firstPage = await tmdbFetch<TMDBDiscoverResponse>('/discover/movie', params);
+  const firstPage = await tmdbFetch<TMDBDiscoverResponse>(
+    "/discover/movie",
+    params,
+  );
 
   let response = firstPage;
   if (firstPage.total_pages > 1) {
     const maxPage = Math.min(firstPage.total_pages, 500); // TMDB caps at 500
     const randomPage = Math.floor(Math.random() * maxPage) + 1;
     if (randomPage > 1) {
-      const randomResponse = await tmdbFetch<TMDBDiscoverResponse>('/discover/movie', {
-        ...params,
-        page: randomPage,
-      });
+      const randomResponse = await tmdbFetch<TMDBDiscoverResponse>(
+        "/discover/movie",
+        {
+          ...params,
+          page: randomPage,
+        },
+      );
       if (randomResponse.results.length > 0) {
         response = randomResponse;
       }

@@ -1,4 +1,4 @@
-import { useId, useCallback } from 'react';
+import { useId, useCallback } from "react";
 
 interface DualRangeSliderProps {
   min: number;
@@ -84,9 +84,9 @@ export function DualRangeSlider({
         <div
           className="absolute inset-x-0 h-1.5 rounded-full"
           style={{
-            background: 'var(--clay-base)',
+            background: "var(--clay-base)",
             boxShadow:
-              'inset 2px 2px 4px rgba(0,0,0,0.2), inset -1px -1px 2px rgba(255,255,255,0.08)',
+              "inset 2px 2px 4px rgba(0,0,0,0.2), inset -1px -1px 2px rgba(255,255,255,0.08)",
           }}
         />
 
@@ -108,7 +108,7 @@ export function DualRangeSlider({
           step={step}
           value={minValue}
           onChange={handleMinChange}
-          aria-label={label ? `${label} minimum` : 'Minimum value'}
+          aria-label={label ? `${label} minimum` : "Minimum value"}
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuenow={minValue}
@@ -149,7 +149,7 @@ export function DualRangeSlider({
           step={step}
           value={maxValue}
           onChange={handleMaxChange}
-          aria-label={label ? `${label} maximum` : 'Maximum value'}
+          aria-label={label ? `${label} maximum` : "Maximum value"}
           aria-valuemin={min}
           aria-valuemax={max}
           aria-valuenow={maxValue}
