@@ -13,8 +13,8 @@
 // particularly on pages with fixed full-viewport backdrops that render opaque while
 // animated content is still invisible.
 
-import { motion, type Variants } from 'motion/react';
-import type { ReactNode } from 'react';
+import { motion, type Variants } from "motion/react";
+import type { ReactNode } from "react";
 
 // Direction-based child variants map
 const childVariantsMap = {
@@ -23,7 +23,7 @@ const childVariantsMap = {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 24 },
+      transition: { type: "spring", stiffness: 300, damping: 24 },
     },
   },
   left: {
@@ -31,7 +31,7 @@ const childVariantsMap = {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 24 },
+      transition: { type: "spring", stiffness: 300, damping: 24 },
     },
   },
   right: {
@@ -39,7 +39,7 @@ const childVariantsMap = {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { type: 'spring', stiffness: 300, damping: 24 },
+      transition: { type: "spring", stiffness: 300, damping: 24 },
     },
   },
 } as const;
@@ -65,19 +65,19 @@ interface StaggerContainerProps {
   /** Delay between children in seconds (default 0.08) */
   stagger?: number;
   /** Entrance direction for children (default 'up') */
-  direction?: 'up' | 'left' | 'right';
+  direction?: "up" | "left" | "right";
   /** ARIA role attribute */
   role?: string;
   /** ARIA label attribute */
-  'aria-label'?: string;
+  "aria-label"?: string;
 }
 
 export function StaggerContainer({
   children,
-  className = '',
+  className = "",
   stagger = 0.08,
   role,
-  'aria-label': ariaLabel,
+  "aria-label": ariaLabel,
 }: StaggerContainerProps) {
   return (
     <motion.div
@@ -100,20 +100,17 @@ interface StaggerItemProps {
   children: ReactNode;
   className?: string;
   /** Entrance direction — must match or be compatible with parent StaggerContainer direction */
-  direction?: 'up' | 'left' | 'right';
+  direction?: "up" | "left" | "right";
 }
 
 export function StaggerItem({
   children,
-  className = '',
-  direction = 'up',
+  className = "",
+  direction = "up",
 }: StaggerItemProps) {
   // Use variants prop (not initial/animate) so child inherits timing from parent StaggerContainer
   return (
-    <motion.div
-      className={className}
-      variants={childVariantsMap[direction]}
-    >
+    <motion.div className={className} variants={childVariantsMap[direction]}>
       {children}
     </motion.div>
   );

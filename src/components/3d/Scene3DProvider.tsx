@@ -1,6 +1,6 @@
-import { type ReactNode, useEffect } from 'react';
-import { use3DCapability } from '@/hooks/use3DCapability';
-import { useScene3dStore } from '@/stores/scene3dStore';
+import { type ReactNode, useEffect } from "react";
+import { use3DCapability } from "@/hooks/use3DCapability";
+import { useScene3dStore } from "@/stores/scene3dStore";
 
 interface Scene3DProviderProps {
   children: ReactNode;

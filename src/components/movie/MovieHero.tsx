@@ -1,15 +1,12 @@
 // Two-column movie hero — poster left, info right on desktop; stacked on mobile
 
-import { useState, type ReactNode } from 'react';
-import { motion } from 'motion/react';
-import { Film } from 'lucide-react';
-import { getPosterUrl } from '@/services/tmdb/client';
-import {
-  tmdbPosterSrcSet,
-  posterSizes,
-} from '@/hooks/useResponsiveImage';
-import type { TMDBMovieDetails } from '@/types/movie';
-import { GenreBadges } from './GenreBadges';
+import { useState, type ReactNode } from "react";
+import { motion } from "motion/react";
+import { Film } from "lucide-react";
+import { getPosterUrl } from "@/services/tmdb/client";
+import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import type { TMDBMovieDetails } from "@/types/movie";
+import { GenreBadges } from "./GenreBadges";
 
 interface MovieHeroProps {
   movie: TMDBMovieDetails;
@@ -27,7 +24,7 @@ interface MovieHeroProps {
 
 /** Format runtime from minutes to "Xh Ym" */
 function formatRuntime(minutes: number | null): string {
-  if (!minutes) return '';
+  if (!minutes) return "";
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
   if (hours === 0) return `${mins}m`;
@@ -37,7 +34,7 @@ function formatRuntime(minutes: number | null): string {
 
 /** Extract 4-digit year from release_date (e.g. "2023-05-15" → "2023") */
 function extractYear(releaseDate: string): string {
-  return releaseDate ? releaseDate.slice(0, 4) : '';
+  return releaseDate ? releaseDate.slice(0, 4) : "";
 }
 
 /**
@@ -48,10 +45,15 @@ function extractYear(releaseDate: string): string {
  * posterFooter renders below the poster (trailer button).
  * children render below the overview in the info column.
  */
-export function MovieHero({ movie, posterFooter, children, movieId }: MovieHeroProps) {
+export function MovieHero({
+  movie,
+  posterFooter,
+  children,
+  movieId,
+}: MovieHeroProps) {
   const [posterError, setPosterError] = useState(false);
 
-  const posterUrl = getPosterUrl(movie.poster_path, 'w342');
+  const posterUrl = getPosterUrl(movie.poster_path, "w342");
   const year = extractYear(movie.release_date);
   const runtime = formatRuntime(movie.runtime);
 

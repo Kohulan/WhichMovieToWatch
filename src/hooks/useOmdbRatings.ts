@@ -1,8 +1,8 @@
 // Lazy OMDB ratings hook — only for single displayed movie, NEVER in lists
 
-import { useState, useEffect } from 'react';
-import { fetchOmdbRatings } from '@/services/omdb/client';
-import type { OmdbRatings } from '@/services/omdb/client';
+import { useState, useEffect } from "react";
+import { fetchOmdbRatings } from "@/services/omdb/client";
+import type { OmdbRatings } from "@/services/omdb/client";
 
 export function useOmdbRatings(imdbId: string | null) {
   const [ratings, setRatings] = useState<OmdbRatings | null>(null);
@@ -27,7 +27,7 @@ export function useOmdbRatings(imdbId: string | null) {
       } catch (err) {
         // Don't break UI over missing ratings — log warning only
         if (!cancelled) {
-          console.warn('[omdb] Failed to fetch ratings:', err);
+          console.warn("[omdb] Failed to fetch ratings:", err);
         }
       } finally {
         if (!cancelled) {

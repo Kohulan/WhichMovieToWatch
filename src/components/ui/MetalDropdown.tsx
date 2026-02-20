@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { ChevronDown } from 'lucide-react';
-import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { motion, AnimatePresence } from "motion/react";
+import { ChevronDown } from "lucide-react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 interface DropdownOption {
   value: string;
@@ -23,7 +23,7 @@ const containerVariants = {
     y: 0,
     scale: 1,
     transition: {
-      type: 'spring' as const,
+      type: "spring" as const,
       stiffness: 400,
       damping: 28,
       staggerChildren: 0.03,
@@ -44,7 +44,11 @@ const containerVariants = {
 
 const itemVariants = {
   hidden: { opacity: 0, x: -8 },
-  visible: { opacity: 1, x: 0, transition: { type: 'spring' as const, stiffness: 400, damping: 25 } },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { type: "spring" as const, stiffness: 400, damping: 25 },
+  },
   exit: { opacity: 0, x: 8, transition: { duration: 0.1 } },
 };
 
@@ -52,9 +56,9 @@ export function MetalDropdown({
   options,
   value,
   onChange,
-  placeholder = 'Select...',
+  placeholder = "Select...",
   label,
-  className = '',
+  className = "",
 }: MetalDropdownProps) {
   const id = useId();
   const [open, setOpen] = useState(false);
@@ -69,20 +73,23 @@ export function MetalDropdown({
     if (!open) return;
 
     const handleOutsideClick = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
         setFocusedIndex(-1);
       }
     };
 
-    document.addEventListener('mousedown', handleOutsideClick);
-    return () => document.removeEventListener('mousedown', handleOutsideClick);
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [open]);
 
   useEffect(() => {
     if (open && focusedIndex >= 0 && listRef.current) {
       const items = listRef.current.querySelectorAll('[role="option"]');
-      items[focusedIndex]?.scrollIntoView({ block: 'nearest' });
+      items[focusedIndex]?.scrollIntoView({ block: "nearest" });
     }
   }, [focusedIndex, open]);
 
@@ -98,9 +105,9 @@ export function MetalDropdown({
   const handleTriggerKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
-        case 'Enter':
-        case ' ':
-        case 'ArrowDown':
+        case "Enter":
+        case " ":
+        case "ArrowDown":
           e.preventDefault();
           setOpen(true);
           setFocusedIndex(
@@ -109,7 +116,7 @@ export function MetalDropdown({
               : 0,
           );
           break;
-        case 'Escape':
+        case "Escape":
           e.preventDefault();
           setOpen(false);
           setFocusedIndex(-1);
@@ -122,31 +129,31 @@ export function MetalDropdown({
   const handleListKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       switch (e.key) {
-        case 'ArrowDown':
+        case "ArrowDown":
           e.preventDefault();
           setFocusedIndex((prev) => Math.min(prev + 1, options.length - 1));
           break;
-        case 'ArrowUp':
+        case "ArrowUp":
           e.preventDefault();
           setFocusedIndex((prev) => Math.max(prev - 1, 0));
           break;
-        case 'Enter':
-        case ' ':
+        case "Enter":
+        case " ":
           e.preventDefault();
           if (focusedIndex >= 0 && focusedIndex < options.length) {
             selectOption(options[focusedIndex].value);
           }
           break;
-        case 'Escape':
+        case "Escape":
           e.preventDefault();
           setOpen(false);
           setFocusedIndex(-1);
           break;
-        case 'Home':
+        case "Home":
           e.preventDefault();
           setFocusedIndex(0);
           break;
-        case 'End':
+        case "End":
           e.preventDefault();
           setFocusedIndex(options.length - 1);
           break;
@@ -184,13 +191,13 @@ export function MetalDropdown({
           select-none
         "
       >
-        <span className={`relative z-10 ${selectedOption ? '' : 'opacity-60'}`}>
+        <span className={`relative z-10 ${selectedOption ? "" : "opacity-60"}`}>
           {displayLabel}
         </span>
         <motion.span
           className="relative z-10"
           animate={{ rotate: open ? 180 : 0 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
           <ChevronDown className="w-4 h-4" />
         </motion.span>
@@ -204,14 +211,14 @@ export function MetalDropdown({
               ref={listRef}
               id={listboxId}
               role="listbox"
-              aria-label={label ?? 'Options'}
+              aria-label={label ?? "Options"}
               tabIndex={-1}
               onKeyDown={handleListKeyDown}
               variants={containerVariants}
               initial="hidden"
               animate="visible"
               exit="exit"
-              style={{ transformOrigin: 'top center' }}
+              style={{ transformOrigin: "top center" }}
               className="
                 absolute z-50 top-1 left-0 right-0
                 bg-clay-elevated rounded-clay clay-texture
@@ -235,8 +242,8 @@ export function MetalDropdown({
                   className={`
                     px-4 py-2.5 font-body text-sm cursor-pointer
                     select-none transition-colors duration-100
-                    ${option.value === value ? 'text-accent font-semibold bg-clay-surface/50' : 'text-clay-text'}
-                    ${idx === focusedIndex ? 'bg-clay-surface' : 'hover:bg-clay-surface'}
+                    ${option.value === value ? "text-accent font-semibold bg-clay-surface/50" : "text-clay-text"}
+                    ${idx === focusedIndex ? "bg-clay-surface" : "hover:bg-clay-surface"}
                   `}
                 >
                   {option.label}

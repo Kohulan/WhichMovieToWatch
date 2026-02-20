@@ -9,15 +9,15 @@
 //
 // Wrapped in StaggerContainer for scroll-entry stagger animation.
 
-import { TrendingUp } from 'lucide-react';
-import { BentoGrid } from '@/components/bento/BentoGrid';
-import { BentoCell } from '@/components/bento/BentoCell';
+import { TrendingUp } from "lucide-react";
+import { BentoGrid } from "@/components/bento/BentoGrid";
+import { BentoCell } from "@/components/bento/BentoCell";
 import {
   StaggerContainer,
   StaggerItem,
-} from '@/components/animation/StaggerContainer';
-import { useTrending } from '@/hooks/useTrending';
-import { getBackdropUrl } from '@/services/tmdb/client';
+} from "@/components/animation/StaggerContainer";
+import { useTrending } from "@/hooks/useTrending";
+import { getBackdropUrl } from "@/services/tmdb/client";
 
 export function TrendingBentoHero() {
   const { movies, isLoading } = useTrending();
@@ -25,13 +25,12 @@ export function TrendingBentoHero() {
   const featuredMovie = movies[0] ?? null;
   const movieCount = movies.length;
 
-  const backdropUrl =
-    featuredMovie?.backdrop_path
-      ? getBackdropUrl(featuredMovie.backdrop_path, 'w780')
-      : null;
+  const backdropUrl = featuredMovie?.backdrop_path
+    ? getBackdropUrl(featuredMovie.backdrop_path, "w780")
+    : null;
 
   const ratingDisplay = featuredMovie
-    ? (featuredMovie.vote_average * 10).toFixed(0) + '%'
+    ? (featuredMovie.vote_average * 10).toFixed(0) + "%"
     : null;
 
   return (
@@ -61,7 +60,10 @@ export function TrendingBentoHero() {
               {/* Now Playing badge */}
               <div className="flex items-center gap-2">
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-500/80 text-white text-xs font-semibold backdrop-blur-sm">
-                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" aria-hidden="true" />
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"
+                    aria-hidden="true"
+                  />
                   Now Playing
                 </span>
               </div>
@@ -102,7 +104,10 @@ export function TrendingBentoHero() {
                 <h2 className="text-clay-text font-heading font-semibold text-base">
                   Now Playing
                 </h2>
-                <TrendingUp className="w-5 h-5 text-clay-text-muted" aria-hidden="true" />
+                <TrendingUp
+                  className="w-5 h-5 text-clay-text-muted"
+                  aria-hidden="true"
+                />
               </div>
 
               {/* Movie count */}
@@ -111,11 +116,13 @@ export function TrendingBentoHero() {
                   <div className="h-8 w-24 rounded bg-white/20 animate-pulse mb-1" />
                 ) : (
                   <p className="text-3xl font-heading font-bold text-clay-text leading-none">
-                    {movieCount > 0 ? `${movieCount}` : '—'}
+                    {movieCount > 0 ? `${movieCount}` : "—"}
                   </p>
                 )}
                 <p className="text-clay-text-muted text-sm mt-1">
-                  {movieCount === 1 ? 'movie in theaters' : 'movies in theaters'}
+                  {movieCount === 1
+                    ? "movie in theaters"
+                    : "movies in theaters"}
                 </p>
               </div>
 

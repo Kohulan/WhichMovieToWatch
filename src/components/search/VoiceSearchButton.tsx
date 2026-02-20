@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { Mic, MicOff } from 'lucide-react';
-import { useVoiceSearch } from '@/hooks/useVoiceSearch';
+import { useEffect } from "react";
+import { Mic, MicOff } from "lucide-react";
+import { useVoiceSearch } from "@/hooks/useVoiceSearch";
 
 interface VoiceSearchButtonProps {
   onTranscript: (transcript: string) => void;
@@ -16,8 +16,13 @@ interface VoiceSearchButtonProps {
  * ARIA: aria-label="Voice search", aria-pressed for screen readers (A11Y-02)
  */
 export function VoiceSearchButton({ onTranscript }: VoiceSearchButtonProps) {
-  const { isSupported, isListening, transcript, startListening, stopListening } =
-    useVoiceSearch();
+  const {
+    isSupported,
+    isListening,
+    transcript,
+    startListening,
+    stopListening,
+  } = useVoiceSearch();
 
   // Propagate transcript to parent via effect (not during render)
   useEffect(() => {
@@ -40,7 +45,7 @@ export function VoiceSearchButton({ onTranscript }: VoiceSearchButtonProps) {
     <button
       type="button"
       onClick={handleClick}
-      aria-label={isListening ? 'Stop voice search' : 'Voice search'}
+      aria-label={isListening ? "Stop voice search" : "Voice search"}
       aria-pressed={isListening}
       className={`
         relative flex items-center justify-center
@@ -50,8 +55,8 @@ export function VoiceSearchButton({ onTranscript }: VoiceSearchButtonProps) {
         focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1
         ${
           isListening
-            ? 'bg-accent text-white animate-pulse ring-4 ring-accent/50'
-            : 'text-clay-text-muted hover:text-clay-text hover:bg-clay-base/40'
+            ? "bg-accent text-white animate-pulse ring-4 ring-accent/50"
+            : "text-clay-text-muted hover:text-clay-text hover:bg-clay-base/40"
         }
       `}
     >

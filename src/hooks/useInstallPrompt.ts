@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 interface BeforeInstallPromptEvent extends Event {
   prompt(): Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
-const INSTALL_DISMISSED_KEY = 'wmtw-pwa-install-dismissed';
+const INSTALL_DISMISSED_KEY = "wmtw-pwa-install-dismissed";
 const DAYS_BEFORE_REPROMPT = 7;
 
 interface UseInstallPromptResult {
@@ -17,7 +17,8 @@ interface UseInstallPromptResult {
 }
 
 export function useInstallPrompt(): UseInstallPromptResult {
-  const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
+  const [installEvent, setInstallEvent] =
+    useState<BeforeInstallPromptEvent | null>(null);
   const [isIOS, setIsIOS] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
   const [showPrompt, setShowPrompt] = useState(false);
@@ -25,7 +26,7 @@ export function useInstallPrompt(): UseInstallPromptResult {
   useEffect(() => {
     // Check standalone mode (already installed)
     const isStandalone =
-      window.matchMedia('(display-mode: standalone)').matches ||
+      window.matchMedia("(display-mode: standalone)").matches ||
       (navigator as unknown as { standalone?: boolean }).standalone === true;
 
     if (isStandalone) {
@@ -35,7 +36,8 @@ export function useInstallPrompt(): UseInstallPromptResult {
 
     // iOS detection
     const iosDetected =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as unknown as { MSStream?: unknown }).MSStream;
+      /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+      !(window as unknown as { MSStream?: unknown }).MSStream;
     setIsIOS(iosDetected);
 
     // Check localStorage for recent dismissal
@@ -68,12 +70,15 @@ export function useInstallPrompt(): UseInstallPromptResult {
       setShowPrompt(false);
     };
 
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    window.addEventListener('appinstalled', handleAppInstalled);
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("appinstalled", handleAppInstalled);
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-      window.removeEventListener('appinstalled', handleAppInstalled);
+      window.removeEventListener(
+        "beforeinstallprompt",
+        handleBeforeInstallPrompt,
+      );
+      window.removeEventListener("appinstalled", handleAppInstalled);
       clearTimeout(timer);
     };
   }, []);
@@ -82,7 +87,7 @@ export function useInstallPrompt(): UseInstallPromptResult {
     if (!installEvent) return;
     await installEvent.prompt();
     const choice = await installEvent.userChoice;
-    if (choice.outcome === 'dismissed') {
+    if (choice.outcome === "dismissed") {
       dismiss();
     }
     setInstallEvent(null);

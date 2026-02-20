@@ -60,9 +60,9 @@ export default defineConfig({
                 maxAgeSeconds: 86400,
               },
               cacheableResponse: {
-                statuses: [0, 200],
+                statuses: [200],
               },
-              networkTimeoutSeconds: 10,
+              networkTimeoutSeconds: 15,
             },
           },
           {
@@ -75,9 +75,9 @@ export default defineConfig({
                 maxAgeSeconds: 604800,
               },
               cacheableResponse: {
-                statuses: [0, 200],
+                statuses: [200],
               },
-              networkTimeoutSeconds: 10,
+              networkTimeoutSeconds: 15,
             },
           },
           {

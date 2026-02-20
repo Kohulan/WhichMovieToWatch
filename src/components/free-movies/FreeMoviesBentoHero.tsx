@@ -9,13 +9,13 @@
 //
 // Wrapped in StaggerContainer for scroll-entry stagger animation.
 
-import { Film } from 'lucide-react';
-import { BentoGrid } from '@/components/bento/BentoGrid';
-import { BentoCell } from '@/components/bento/BentoCell';
+import { Film } from "lucide-react";
+import { BentoGrid } from "@/components/bento/BentoGrid";
+import { BentoCell } from "@/components/bento/BentoCell";
 import {
   StaggerContainer,
   StaggerItem,
-} from '@/components/animation/StaggerContainer';
+} from "@/components/animation/StaggerContainer";
 
 export function FreeMoviesBentoHero() {
   return (
@@ -34,7 +34,7 @@ export function FreeMoviesBentoHero() {
               className="absolute inset-0"
               style={{
                 background:
-                  'linear-gradient(135deg, #FF0000 0%, #CC0000 50%, #990000 100%)',
+                  "linear-gradient(135deg, #FF0000 0%, #CC0000 50%, #990000 100%)",
                 opacity: 0.25,
               }}
               aria-hidden="true"
@@ -44,10 +44,7 @@ export function FreeMoviesBentoHero() {
               {/* Icon + heading */}
               <div className="flex items-center gap-2.5">
                 <div className="p-2 rounded-xl bg-red-500/20 backdrop-blur-sm">
-                  <Film
-                    className="w-5 h-5 text-red-400"
-                    aria-hidden="true"
-                  />
+                  <Film className="w-5 h-5 text-red-400" aria-hidden="true" />
                 </div>
                 <h2 className="text-clay-text font-heading font-semibold text-base leading-tight">
                   Free on YouTube
@@ -58,7 +55,7 @@ export function FreeMoviesBentoHero() {
               <div className="flex items-center gap-2">
                 <div
                   className="flex items-center justify-center w-7 h-5 rounded"
-                  style={{ backgroundColor: '#FF0000' }}
+                  style={{ backgroundColor: "#FF0000" }}
                   aria-hidden="true"
                 >
                   {/* YouTube play triangle */}

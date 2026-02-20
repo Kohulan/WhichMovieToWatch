@@ -4,7 +4,7 @@ interface ClaySkeletonCardProps {
   hasImage?: boolean;
 }
 
-const lineWidths = ['100%', '80%', '60%', '90%', '70%', '50%'];
+const lineWidths = ["100%", "80%", "60%", "90%", "70%", "50%"];
 
 /**
  * ClaySkeletonCard — Clay-styled skeleton loading placeholder with shimmer.
@@ -14,7 +14,7 @@ const lineWidths = ['100%', '80%', '60%', '90%', '70%', '50%'];
  * number of text lines and optional image placeholder.
  */
 export function ClaySkeletonCard({
-  className = '',
+  className = "",
   lines = 3,
   hasImage = true,
 }: ClaySkeletonCardProps) {
@@ -33,9 +33,9 @@ export function ClaySkeletonCard({
               className="w-full h-full"
               style={{
                 background:
-                  'linear-gradient(90deg, transparent 0%, var(--clay-highlight) 50%, transparent 100%)',
-                backgroundSize: '200% 100%',
-                animation: 'clay-shimmer 1.5s ease-in-out infinite',
+                  "linear-gradient(90deg, transparent 0%, var(--clay-highlight) 50%, transparent 100%)",
+                backgroundSize: "200% 100%",
+                animation: "clay-shimmer 1.5s ease-in-out infinite",
               }}
             />
           </div>
@@ -53,8 +53,8 @@ export function ClaySkeletonCard({
               className="w-full h-full"
               style={{
                 background:
-                  'linear-gradient(90deg, transparent 0%, var(--clay-highlight) 50%, transparent 100%)',
-                backgroundSize: '200% 100%',
+                  "linear-gradient(90deg, transparent 0%, var(--clay-highlight) 50%, transparent 100%)",
+                backgroundSize: "200% 100%",
                 animation: `clay-shimmer 1.5s ease-in-out infinite ${i * 0.1}s`,
               }}
             />

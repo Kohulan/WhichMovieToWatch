@@ -1,9 +1,9 @@
 // Route-level page composing DiscoveryPage + OnboardingWizard
 
-import { useState } from 'react';
-import { usePreferencesStore } from '@/stores/preferencesStore';
-import { DiscoveryPage } from '@/components/discovery/DiscoveryPage';
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
+import { useState } from "react";
+import { usePreferencesStore } from "@/stores/preferencesStore";
+import { DiscoveryPage } from "@/components/discovery/DiscoveryPage";
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
 
 /**
  * DiscoverPage — Route-level wrapper for the discovery experience.

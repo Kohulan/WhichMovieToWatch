@@ -1,24 +1,22 @@
 // Trailer link — finds YouTube trailer from movie videos (DISP-03)
 
-import { PlayCircle } from 'lucide-react';
-import { ExternalLink } from '@/components/shared/ExternalLink';
-import type { TMDBMovieDetails } from '@/types/movie';
+import { PlayCircle } from "lucide-react";
+import { ExternalLink } from "@/components/shared/ExternalLink";
+import type { TMDBMovieDetails } from "@/types/movie";
 
 interface TrailerLinkProps {
-  videos: TMDBMovieDetails['videos'];
+  videos: TMDBMovieDetails["videos"];
 }
 
 /** Find the best YouTube video from the videos list */
-function findYouTubeVideo(
-  videos: TMDBMovieDetails['videos'],
-): string | null {
+function findYouTubeVideo(videos: TMDBMovieDetails["videos"]): string | null {
   if (!videos?.results?.length) return null;
 
-  const youtubeVideos = videos.results.filter((v) => v.site === 'YouTube');
+  const youtubeVideos = videos.results.filter((v) => v.site === "YouTube");
   if (youtubeVideos.length === 0) return null;
 
   // Prefer official Trailer type
-  const trailer = youtubeVideos.find((v) => v.type === 'Trailer');
+  const trailer = youtubeVideos.find((v) => v.type === "Trailer");
   const video = trailer ?? youtubeVideos[0];
 
   return video.key;

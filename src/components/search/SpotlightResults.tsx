@@ -1,10 +1,13 @@
-import { useMemo } from 'react';
-import { getPosterUrl } from '@/services/tmdb/client';
-import { tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
-import { MetalButton } from '@/components/ui';
-import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
-import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
-import type { TMDBMovie } from '@/types/movie';
+import { useMemo } from "react";
+import { getPosterUrl } from "@/services/tmdb/client";
+import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { MetalButton } from "@/components/ui";
+import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/animation/StaggerContainer";
+import type { TMDBMovie } from "@/types/movie";
 
 interface SpotlightResultsProps {
   results: TMDBMovie[];
@@ -17,13 +20,16 @@ interface SpotlightResultsProps {
 
 function getRatingColor(voteAverage: number): string {
   const pct = Math.round(voteAverage * 10);
-  if (pct >= 70) return 'bg-green-500/80 text-white';
-  if (pct >= 50) return 'bg-yellow-500/80 text-white';
-  return 'bg-red-500/80 text-white';
+  if (pct >= 70) return "bg-green-500/80 text-white";
+  if (pct >= 50) return "bg-yellow-500/80 text-white";
+  return "bg-red-500/80 text-white";
 }
 
 /** Sort exact title matches to the top, preserve TMDB order for the rest */
-function sortWithExactMatchFirst(movies: TMDBMovie[], query: string): TMDBMovie[] {
+function sortWithExactMatchFirst(
+  movies: TMDBMovie[],
+  query: string,
+): TMDBMovie[] {
   if (!query.trim()) return movies;
   const q = query.toLowerCase();
   const exact: TMDBMovie[] = [];
@@ -78,7 +84,7 @@ export function SpotlightResults({
         aria-label="Search results"
       >
         {sorted.map((movie) => {
-          const posterUrl = getPosterUrl(movie.poster_path, 'w185');
+          const posterUrl = getPosterUrl(movie.poster_path, "w185");
           const year = movie.release_date
             ? new Date(movie.release_date).getFullYear()
             : null;
@@ -88,18 +94,18 @@ export function SpotlightResults({
           return (
             <StaggerItem key={movie.id}>
               <div role="listitem">
-              <button
-                type="button"
-                tabIndex={0}
-                onClick={() => onSelectMovie(movie.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    onSelectMovie(movie.id);
-                  }
-                }}
-                aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPct}%`}
-                className="
+                <button
+                  type="button"
+                  tabIndex={0}
+                  onClick={() => onSelectMovie(movie.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSelectMovie(movie.id);
+                    }
+                  }}
+                  aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPct}%`}
+                  className="
                   w-full text-left group
                   rounded-clay overflow-hidden
                   bg-clay-surface clay-shadow-md clay-texture
@@ -107,41 +113,47 @@ export function SpotlightResults({
                   hover:clay-shadow-lg hover:-translate-y-0.5
                   outline-none focus-visible:ring-2 focus-visible:ring-accent
                 "
-              >
-                <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
-                  {posterUrl ? (
-                    <img
-                      src={posterUrl}
-                      srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
-                      sizes={posterSizes}
-                      alt={`${movie.title} poster`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-clay-text-muted text-xs text-center px-2">
-                        No poster
-                      </span>
+                >
+                  <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
+                    {posterUrl ? (
+                      <img
+                        src={posterUrl}
+                        srcSet={
+                          movie.poster_path
+                            ? tmdbPosterSrcSet(movie.poster_path)
+                            : undefined
+                        }
+                        sizes={posterSizes}
+                        alt={`${movie.title} poster`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="text-clay-text-muted text-xs text-center px-2">
+                          No poster
+                        </span>
+                      </div>
+                    )}
+                    <div
+                      className={`absolute top-1.5 right-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md ${ratingColor}`}
+                      aria-hidden="true"
+                    >
+                      {ratingPct}%
                     </div>
-                  )}
-                  <div
-                    className={`absolute top-1.5 right-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md ${ratingColor}`}
-                    aria-hidden="true"
-                  >
-                    {ratingPct}%
                   </div>
-                </div>
-                <div className="p-2">
-                  <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2">
-                    {movie.title}
-                  </p>
-                  {year && (
-                    <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
-                  )}
-                </div>
-              </button>
+                  <div className="p-2">
+                    <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2">
+                      {movie.title}
+                    </p>
+                    {year && (
+                      <p className="text-clay-text-muted text-xs mt-0.5">
+                        {year}
+                      </p>
+                    )}
+                  </div>
+                </button>
               </div>
             </StaggerItem>
           );
@@ -157,7 +169,7 @@ export function SpotlightResults({
             disabled={isLoading}
             aria-label="Load more search results"
           >
-            {isLoading ? 'Loading...' : 'Load More'}
+            {isLoading ? "Loading..." : "Load More"}
           </MetalButton>
         </div>
       )}

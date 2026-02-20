@@ -1,8 +1,8 @@
 // Provider logo grid for onboarding — toggle selection with show/hide all
 
-import { useState } from 'react';
-import { useRegionProviders } from '@/hooks/useWatchProviders';
-import { getProviderLogoUrl } from '@/lib/provider-registry';
+import { useState } from "react";
+import { useRegionProviders } from "@/hooks/useWatchProviders";
+import { getProviderLogoUrl } from "@/lib/provider-registry";
 
 interface ProviderSelectorProps {
   selectedIds: number[];
@@ -19,7 +19,10 @@ const TOP_PROVIDER_IDS = [8, 337, 9, 119, 15, 384, 350, 531, 386];
  * Toggle selection via local Set<number> → calls onSelectionChange with array.
  * Selected providers: highlighted ring. Unselected: dimmed. (PREF-03)
  */
-export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSelectorProps) {
+export function ProviderSelector({
+  selectedIds,
+  onSelectionChange,
+}: ProviderSelectorProps) {
   const { providers, isLoading } = useRegionProviders();
   const [showAll, setShowAll] = useState(false);
 
@@ -37,8 +40,12 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
 
   // Separate top providers from others
   const topProviderIdSet = new Set(TOP_PROVIDER_IDS);
-  const topProviders = providers.filter((p) => topProviderIdSet.has(p.provider_id));
-  const otherProviders = providers.filter((p) => !topProviderIdSet.has(p.provider_id));
+  const topProviders = providers.filter((p) =>
+    topProviderIdSet.has(p.provider_id),
+  );
+  const otherProviders = providers.filter(
+    (p) => !topProviderIdSet.has(p.provider_id),
+  );
 
   // If top providers not found in region results, synthesize placeholders for them
   // using well-known TMDB data (grayed out)
@@ -84,17 +91,17 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
         className={`
           flex flex-col items-center gap-1.5 p-1 rounded-xl transition-all
           focus:outline-none focus:ring-2 focus:ring-clay-accent
-          ${disabled ? 'cursor-default' : 'cursor-pointer hover:opacity-90'}
+          ${disabled ? "cursor-default" : "cursor-pointer hover:opacity-90"}
         `}
         aria-pressed={isSelected}
-        aria-label={`${provider_name}${disabled ? ' (not available in your region)' : ''}`}
+        aria-label={`${provider_name}${disabled ? " (not available in your region)" : ""}`}
         title={provider_name}
       >
         <div
           className={`
             w-12 h-12 rounded-xl overflow-hidden transition-all
-            ${isSelected ? 'ring-2 ring-clay-accent opacity-100' : 'opacity-50'}
-            ${disabled ? 'grayscale opacity-30' : ''}
+            ${isSelected ? "ring-2 ring-clay-accent opacity-100" : "opacity-50"}
+            ${disabled ? "grayscale opacity-30" : ""}
           `}
         >
           {logo_path ? (
@@ -136,7 +143,10 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
         {/* Grayed-out placeholders for top providers not in region */}
         {missingTopIds.map((id) => (
           <div key={id} className="flex flex-col items-center gap-1.5 p-1">
-            <div className="w-12 h-12 rounded-xl bg-clay-base opacity-20" aria-hidden="true" />
+            <div
+              className="w-12 h-12 rounded-xl bg-clay-base opacity-20"
+              aria-hidden="true"
+            />
           </div>
         ))}
       </div>
@@ -149,7 +159,7 @@ export function ProviderSelector({ selectedIds, onSelectionChange }: ProviderSel
             className="text-sm text-clay-text-muted underline underline-offset-2 hover:text-clay-text transition-colors"
             aria-expanded={showAll}
           >
-            {showAll ? 'Show less' : `Show all (${otherProviders.length} more)`}
+            {showAll ? "Show less" : `Show all (${otherProviders.length} more)`}
           </button>
 
           {showAll && (

@@ -21,7 +21,9 @@ export async function initAudio(): Promise<void> {
 
   try {
     audioContext = new AudioContext();
-    const response = await fetch(`${import.meta.env.BASE_URL}sounds/dial-tick.mp3`);
+    const response = await fetch(
+      `${import.meta.env.BASE_URL}sounds/dial-tick.mp3`,
+    );
     const arrayBuffer = await response.arrayBuffer();
     tickBuffer = await audioContext.decodeAudioData(arrayBuffer);
     initialized = true;
@@ -35,14 +37,14 @@ export async function initAudio(): Promise<void> {
 }
 
 // One-shot listener: initialize audio on first user gesture
-if (typeof document !== 'undefined') {
+if (typeof document !== "undefined") {
   const bootstrap = () => {
     initAudio();
-    document.removeEventListener('click', bootstrap);
-    document.removeEventListener('touchstart', bootstrap);
+    document.removeEventListener("click", bootstrap);
+    document.removeEventListener("touchstart", bootstrap);
   };
-  document.addEventListener('click', bootstrap, { once: true });
-  document.addEventListener('touchstart', bootstrap, { once: true });
+  document.addEventListener("click", bootstrap, { once: true });
+  document.addEventListener("touchstart", bootstrap, { once: true });
 }
 
 /**
@@ -53,7 +55,7 @@ export function playTick(): void {
   if (!audioContext || !tickBuffer) return;
 
   // Resume context if it was suspended (e.g. tab backgrounded)
-  if (audioContext.state === 'suspended') {
+  if (audioContext.state === "suspended") {
     audioContext.resume();
   }
 

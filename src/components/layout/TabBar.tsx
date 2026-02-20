@@ -1,5 +1,5 @@
-import { Coffee, Github } from 'lucide-react';
-import { Link } from 'react-router';
+import { Coffee, Github } from "lucide-react";
+import { Link } from "react-router";
 
 /**
  * BottomBar — Fixed bottom bar with footer credits.

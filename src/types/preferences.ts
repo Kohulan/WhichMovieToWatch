@@ -7,7 +7,7 @@ export interface TasteProfile {
   lastUpdated: number;
 }
 
-export type TasteSignal = 'love' | 'not-interested';
+export type TasteSignal = "love" | "not-interested";
 
 export interface MovieInteraction {
   movieId: number;

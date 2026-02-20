@@ -1,37 +1,45 @@
 // Main discovery screen — cinematic hero, ratings, providers, actions, similar movies
 
-import { useEffect, useState, useCallback } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { SlidersHorizontal } from 'lucide-react';
-import { useDiscoveryStore } from '@/stores/discoveryStore';
-import { usePreferencesStore } from '@/stores/preferencesStore';
-import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
-import { useRandomMovie } from '@/hooks/useRandomMovie';
-import { useMovieDetails } from '@/hooks/useMovieDetails';
-import { useOmdbRatings } from '@/hooks/useOmdbRatings';
-import { useWatchProviders } from '@/hooks/useWatchProviders';
-import { useSimilarMovies } from '@/hooks/useSimilarMovies';
-import { useDeepLink } from '@/hooks/useDeepLink';
-import { useAnnounce } from '@/components/shared/ScreenReaderAnnouncer';
-import { MovieHero } from '@/components/movie/MovieHero';
-import { RatingBadges } from '@/components/movie/RatingBadges';
-import { ProviderSection } from '@/components/movie/ProviderSection';
-import { GlobalAvailabilitySection } from '@/components/movie/GlobalAvailabilitySection';
-import { TrailerLink } from '@/components/movie/TrailerLink';
-import { TicketSearch } from '@/components/movie/TicketSearch';
-import { MovieActions } from '@/components/movie/MovieActions';
-import { OnboardingWizard } from '@/components/onboarding/OnboardingWizard';
-import { ClayCard } from '@/components/ui/ClayCard';
-import { ClaySkeletonCard } from '@/components/ui/ClaySkeletonCard';
-import { MetalButton } from '@/components/ui';
-import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
-import { ScrollReveal } from '@/components/animation/ScrollReveal';
-import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
-import { getPosterUrl, getBackdropUrl } from '@/services/tmdb/client';
-import { tmdbBackdropSrcSet, backdropSizes, tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
-import { ShareButton } from '@/components/share/ShareButton';
-import { MovieMetaTags } from '@/components/share/MovieMetaTags';
-import type { TMDBMovieDetails } from '@/types/movie';
+import { useEffect, useState, useCallback } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { SlidersHorizontal } from "lucide-react";
+import { useDiscoveryStore } from "@/stores/discoveryStore";
+import { usePreferencesStore } from "@/stores/preferencesStore";
+import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
+import { useRandomMovie } from "@/hooks/useRandomMovie";
+import { useMovieDetails } from "@/hooks/useMovieDetails";
+import { useOmdbRatings } from "@/hooks/useOmdbRatings";
+import { useWatchProviders } from "@/hooks/useWatchProviders";
+import { useSimilarMovies } from "@/hooks/useSimilarMovies";
+import { useDeepLink } from "@/hooks/useDeepLink";
+import { useAnnounce } from "@/components/shared/ScreenReaderAnnouncer";
+import { MovieHero } from "@/components/movie/MovieHero";
+import { RatingBadges } from "@/components/movie/RatingBadges";
+import { ProviderSection } from "@/components/movie/ProviderSection";
+import { GlobalAvailabilitySection } from "@/components/movie/GlobalAvailabilitySection";
+import { TrailerLink } from "@/components/movie/TrailerLink";
+import { TicketSearch } from "@/components/movie/TicketSearch";
+import { MovieActions } from "@/components/movie/MovieActions";
+import { OnboardingWizard } from "@/components/onboarding/OnboardingWizard";
+import { ClayCard } from "@/components/ui/ClayCard";
+import { ClaySkeletonCard } from "@/components/ui/ClaySkeletonCard";
+import { MetalButton } from "@/components/ui";
+import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
+import { ScrollReveal } from "@/components/animation/ScrollReveal";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/animation/StaggerContainer";
+import { getPosterUrl, getBackdropUrl } from "@/services/tmdb/client";
+import {
+  tmdbBackdropSrcSet,
+  backdropSizes,
+  tmdbPosterSrcSet,
+  posterSizes,
+} from "@/hooks/useResponsiveImage";
+import { ShareButton } from "@/components/share/ShareButton";
+import { MovieMetaTags } from "@/components/share/MovieMetaTags";
+import type { TMDBMovieDetails } from "@/types/movie";
 
 /**
  * DiscoveryPage — Main cinematic discovery screen.
@@ -48,21 +56,30 @@ export function DiscoveryPage() {
   const [showTickets, setShowTickets] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
 
-  const { discover, isLoading, error, currentMovie: discoveryMovie } = useRandomMovie();
+  const {
+    discover,
+    isLoading,
+    error,
+    currentMovie: discoveryMovie,
+  } = useRandomMovie();
   const setCurrentMovie = useDiscoveryStore((s) => s.setCurrentMovie);
   const setFilters = useDiscoveryStore((s) => s.setFilters);
   const markLoved = useMovieHistoryStore((s) => s.markLoved);
   const recordLove = usePreferencesStore((s) => s.recordLove);
 
   // Onboarding state
-  const hasCompletedOnboarding = usePreferencesStore((s) => s.hasCompletedOnboarding);
+  const hasCompletedOnboarding = usePreferencesStore(
+    (s) => s.hasCompletedOnboarding,
+  );
   const preferredProvider = usePreferencesStore((s) => s.preferredProvider);
   const preferredGenre = usePreferencesStore((s) => s.preferredGenre);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Deep link support (DISC-04)
-  const { deepLinkMovieId, showAllProviders, isTrendingSource, clearDeepLink } = useDeepLink();
-  const { data: deepLinkMovie, isLoading: deepLinkLoading } = useMovieDetails(deepLinkMovieId);
+  const { deepLinkMovieId, showAllProviders, isTrendingSource, clearDeepLink } =
+    useDeepLink();
+  const { data: deepLinkMovie, isLoading: deepLinkLoading } =
+    useMovieDetails(deepLinkMovieId);
 
   // Use deep link movie or the randomly discovered movie
   const currentMovie: TMDBMovieDetails | null = deepLinkMovie ?? discoveryMovie;
@@ -76,11 +93,12 @@ export function DiscoveryPage() {
   const { providers } = useWatchProviders(currentMovie?.id ?? null);
 
   // Similar movies — only triggered after Love action (INTR-01)
-  const { movies: similarMovies, isLoading: similarLoading } = useSimilarMovies(lovedMovieId);
+  const { movies: similarMovies, isLoading: similarLoading } =
+    useSimilarMovies(lovedMovieId);
 
   // Full-bleed backdrop URL
   const backdropUrl = currentMovie?.backdrop_path
-    ? getBackdropUrl(currentMovie.backdrop_path, 'original')
+    ? getBackdropUrl(currentMovie.backdrop_path, "original")
     : null;
 
   // Initialize on mount: show onboarding for new users, apply persisted filters for returning users
@@ -152,8 +170,10 @@ export function DiscoveryPage() {
     const genreIds = currentMovie.genres?.map((g) => g.id) ?? [];
     const decade = currentMovie.release_date
       ? `${currentMovie.release_date.slice(0, 3)}0s`
-      : 'unknown';
-    const director = currentMovie.credits?.crew?.find((c) => c.job === 'Director');
+      : "unknown";
+    const director = currentMovie.credits?.crew?.find(
+      (c) => c.job === "Director",
+    );
 
     markLoved(currentMovie.id);
     recordLove(genreIds, decade, director?.id);
@@ -166,13 +186,13 @@ export function DiscoveryPage() {
   const handleSimilarMovieClick = useCallback(
     async (movieId: number) => {
       // Import fetchMovieDetails inline to avoid circular hook dependency
-      const { fetchMovieDetails } = await import('@/services/tmdb/details');
+      const { fetchMovieDetails } = await import("@/services/tmdb/details");
       try {
         const details = await fetchMovieDetails(movieId);
         setCurrentMovie(details);
         setLovedMovieId(null);
       } catch (err) {
-        console.warn('[DiscoveryPage] Failed to load similar movie:', err);
+        console.warn("[DiscoveryPage] Failed to load similar movie:", err);
       }
     },
     [setCurrentMovie],
@@ -259,12 +279,19 @@ export function DiscoveryPage() {
 
       {/* Fixed full-screen backdrop — crossfades between movies */}
       {backdropUrl && (
-        <div className="fixed inset-0 z-0" aria-hidden="true">
+        <div
+          className="fixed inset-0 z-0 pointer-events-none"
+          aria-hidden="true"
+        >
           <AnimatePresence mode="wait">
             <motion.img
               key={currentMovie.id}
               src={backdropUrl}
-              srcSet={currentMovie.backdrop_path ? tmdbBackdropSrcSet(currentMovie.backdrop_path) : undefined}
+              srcSet={
+                currentMovie.backdrop_path
+                  ? tmdbBackdropSrcSet(currentMovie.backdrop_path)
+                  : undefined
+              }
               sizes={backdropSizes}
               alt=""
               loading="lazy"
@@ -284,65 +311,68 @@ export function DiscoveryPage() {
       <AnimatePresence mode="wait">
         <motion.section
           key={currentMovie.id}
-          initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
-          animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, scale: 1.02, filter: 'blur(6px)' }}
-          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          initial={{ opacity: 0, scale: 0.97, y: 12 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 1.01, y: -6 }}
+          transition={{ duration: 0.35, ease: [0.25, 0.1, 0.25, 1] }}
           className="relative z-10 flex flex-col justify-end px-4 sm:px-6 lg:px-8 pt-4 pb-8"
         >
-        <div className="max-w-7xl mx-auto w-full">
-          {/* Cinematic hero with all info in the right column (DISP-01) */}
-          <MovieHero
-            movie={currentMovie}
-            movieId={currentMovie.id}
-            posterFooter={
-              <div className="space-y-2 w-full">
-                <TrailerLink videos={currentMovie.videos} />
-                <button
-                  onClick={() => setSettingsOpen(true)}
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-xl bg-white/[0.06] backdrop-blur-md border border-white/10 text-clay-text-muted font-medium text-sm hover:bg-white/[0.10] hover:text-clay-text transition-colors cursor-pointer"
-                  aria-label="Change discovery preferences"
-                >
-                  <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
-                  Preferences
-                </button>
-                <ShareButton movie={currentMovie} />
-              </div>
-            }
-          >
-            {/* Action buttons — immediately below title/overview (DISP-06) */}
-            <MovieActions
+          <div className="max-w-7xl mx-auto w-full">
+            {/* Cinematic hero with all info in the right column (DISP-01) */}
+            <MovieHero
+              movie={currentMovie}
               movieId={currentMovie.id}
-              movieGenres={currentMovie.genres ?? []}
-              releaseYear={currentMovie.release_date?.slice(0, 4) ?? ''}
-              onNext={handleNext}
-              onLove={handleLove}
-            />
+              posterFooter={
+                <div className="space-y-2 w-full">
+                  <TrailerLink videos={currentMovie.videos} />
+                  <button
+                    onClick={() => setSettingsOpen(true)}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-xl bg-white/[0.06] backdrop-blur-md border border-white/10 text-clay-text-muted font-medium text-sm hover:bg-white/[0.10] hover:text-clay-text transition-colors cursor-pointer"
+                    aria-label="Change discovery preferences"
+                  >
+                    <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+                    Preferences
+                  </button>
+                  <ShareButton movie={currentMovie} />
+                </div>
+              }
+            >
+              {/* Action buttons — immediately below title/overview (DISP-06) */}
+              <MovieActions
+                movieId={currentMovie.id}
+                movieGenres={currentMovie.genres ?? []}
+                releaseYear={currentMovie.release_date?.slice(0, 4) ?? ""}
+                onNext={handleNext}
+                onLove={handleLove}
+              />
 
-            {/* Rating badges (DISP-02) */}
-            <RatingBadges
-              tmdbRating={currentMovie.vote_average}
-              imdbRating={imdbRating}
-              rottenTomatoes={rottenTomatoes}
-              metascore={metascore}
-            />
+              {/* Rating badges (DISP-02) */}
+              <RatingBadges
+                tmdbRating={currentMovie.vote_average}
+                imdbRating={imdbRating}
+                rottenTomatoes={rottenTomatoes}
+                metascore={metascore}
+              />
 
-            {/* Streaming providers (DISP-05) — show global availability when navigating from Netflix search */}
-            {globalProviders ? (
-              <GlobalAvailabilitySection movieId={currentMovie.id} />
-            ) : (
-              <ProviderSection providers={providers} findMovieLink={findMovieLink}>
-                {/* Ticket search — only shown for trending (now playing) movies */}
-                {showTickets && (
-                  <TicketSearch
-                    movieTitle={currentMovie.title}
-                    releaseYear={currentMovie.release_date?.slice(0, 4)}
-                  />
-                )}
-              </ProviderSection>
-            )}
-          </MovieHero>
-        </div>
+              {/* Streaming providers (DISP-05) — show global availability when navigating from Netflix search */}
+              {globalProviders ? (
+                <GlobalAvailabilitySection movieId={currentMovie.id} />
+              ) : (
+                <ProviderSection
+                  providers={providers}
+                  findMovieLink={findMovieLink}
+                >
+                  {/* Ticket search — only shown for trending (now playing) movies */}
+                  {showTickets && (
+                    <TicketSearch
+                      movieTitle={currentMovie.title}
+                      releaseYear={currentMovie.release_date?.slice(0, 4)}
+                    />
+                  )}
+                </ProviderSection>
+              )}
+            </MovieHero>
+          </div>
         </motion.section>
       </AnimatePresence>
 
@@ -376,22 +406,30 @@ export function DiscoveryPage() {
                   aria-label="Similar movies"
                 >
                   {similarMovies.slice(0, 10).map((movie) => {
-                    const posterUrl = getPosterUrl(movie.poster_path, 'w185');
-                    const year = movie.release_date?.slice(0, 4) ?? '';
+                    const posterUrl = getPosterUrl(movie.poster_path, "w185");
+                    const year = movie.release_date?.slice(0, 4) ?? "";
 
                     return (
-                      <StaggerItem key={movie.id} direction="left" className="flex-shrink-0 snap-start">
+                      <StaggerItem
+                        key={movie.id}
+                        direction="left"
+                        className="flex-shrink-0 snap-start"
+                      >
                         <button
                           role="listitem"
                           className="w-28 text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-clay-accent"
                           onClick={() => handleSimilarMovieClick(movie.id)}
-                          aria-label={`Load ${movie.title}${year ? ` (${year})` : ''}`}
+                          aria-label={`Load ${movie.title}${year ? ` (${year})` : ""}`}
                         >
                           {posterUrl ? (
                             <motion.img
                               layoutId={`similar-poster-${movie.id}`}
                               src={posterUrl}
-                              srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+                              srcSet={
+                                movie.poster_path
+                                  ? tmdbPosterSrcSet(movie.poster_path)
+                                  : undefined
+                              }
                               sizes={posterSizes}
                               alt={`${movie.title} poster`}
                               loading="lazy"
@@ -413,7 +451,9 @@ export function DiscoveryPage() {
                               {movie.title}
                             </p>
                             {year && (
-                              <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                              <p className="text-clay-text-muted text-xs mt-0.5">
+                                {year}
+                              </p>
                             )}
                           </div>
                         </button>

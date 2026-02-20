@@ -1,7 +1,7 @@
 // TTL-based cache manager with stale-while-revalidate support
 
-import { getDB } from './db';
-import type { CacheEntry } from './types';
+import { getDB } from "./db";
+import type { CacheEntry } from "./types";
 
 export const TTL = {
   TRENDING: 30 * 60 * 1000,
@@ -15,7 +15,7 @@ export async function getCached<T>(
   key: string,
 ): Promise<{ value: T | null; isStale: boolean }> {
   const db = await getDB();
-  const entry = await db.get('api-cache', key);
+  const entry = await db.get("api-cache", key);
 
   if (!entry) {
     return { value: null, isStale: true };
@@ -33,7 +33,7 @@ export async function setCache<T>(
   ttlMs: number,
 ): Promise<void> {
   const db = await getDB();
-  await db.put('api-cache', {
+  await db.put("api-cache", {
     key,
     value,
     cachedAt: Date.now(),
@@ -43,8 +43,8 @@ export async function setCache<T>(
 
 export async function invalidateByPrefix(prefix: string): Promise<void> {
   const db = await getDB();
-  const tx = db.transaction('api-cache', 'readwrite');
-  const store = tx.objectStore('api-cache');
+  const tx = db.transaction("api-cache", "readwrite");
+  const store = tx.objectStore("api-cache");
   let cursor = await store.openCursor();
 
   while (cursor) {
@@ -59,8 +59,8 @@ export async function invalidateByPrefix(prefix: string): Promise<void> {
 
 export async function evictExpired(): Promise<number> {
   const db = await getDB();
-  const tx = db.transaction('api-cache', 'readwrite');
-  const store = tx.objectStore('api-cache');
+  const tx = db.transaction("api-cache", "readwrite");
+  const store = tx.objectStore("api-cache");
   let cursor = await store.openCursor();
   let evictedCount = 0;
   const now = Date.now();

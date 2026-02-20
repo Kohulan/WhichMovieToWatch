@@ -1,12 +1,10 @@
 // Service Rotary Dial — compact skeuomorphic knob to switch streaming services
 
-import { useCallback, useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import {
-  DINNER_TIME_SERVICES,
-} from '@/hooks/useDinnerTime';
-import { getServiceConfig } from './ServiceBranding';
-import { playTick } from '@/hooks/useSound';
+import { useCallback, useState, useEffect, useRef } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { DINNER_TIME_SERVICES } from "@/hooks/useDinnerTime";
+import { getServiceConfig } from "./ServiceBranding";
+import { playTick } from "@/hooks/useSound";
 
 interface ServiceRotaryDialProps {
   currentService: number;
@@ -24,9 +22,9 @@ const ANGLES = [0, 120, 240] as const;
 
 /** Brand colors keyed by service ID */
 const SERVICE_COLORS: Record<number, string> = {
-  [DINNER_TIME_SERVICES.NETFLIX]: '#E50914',
-  [DINNER_TIME_SERVICES.PRIME]: '#00A8E1',
-  [DINNER_TIME_SERVICES.DISNEY_PLUS]: '#113CCF',
+  [DINNER_TIME_SERVICES.NETFLIX]: "#E50914",
+  [DINNER_TIME_SERVICES.PRIME]: "#00A8E1",
+  [DINNER_TIME_SERVICES.DISNEY_PLUS]: "#113CCF",
 };
 
 export function ServiceRotaryDial({
@@ -34,7 +32,7 @@ export function ServiceRotaryDial({
   onServiceChange,
 }: ServiceRotaryDialProps) {
   const currentIndex = SERVICES.indexOf(currentService);
-  const activeColor = SERVICE_COLORS[currentService] ?? '#6B7280';
+  const activeColor = SERVICE_COLORS[currentService] ?? "#6B7280";
 
   /* Glow ring state — active for 2s after each click */
   const [isGlowing, setIsGlowing] = useState(false);
@@ -88,10 +86,10 @@ export function ServiceRotaryDial({
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") {
         e.preventDefault();
         advance(1);
-      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
         e.preventDefault();
         advance(-1);
       }
@@ -100,13 +98,16 @@ export function ServiceRotaryDial({
   );
 
   /* Drag-to-rotate */
-  const getAngleFromPointer = useCallback((clientX: number, clientY: number) => {
-    if (!knobRef.current) return 0;
-    const rect = knobRef.current.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
-  }, []);
+  const getAngleFromPointer = useCallback(
+    (clientX: number, clientY: number) => {
+      if (!knobRef.current) return 0;
+      const rect = knobRef.current.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      return Math.atan2(clientY - cy, clientX - cx) * (180 / Math.PI);
+    },
+    [],
+  );
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent) => {
@@ -159,7 +160,7 @@ export function ServiceRotaryDial({
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           animate={{ rotate: cumulativeAngle.current }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
           className="absolute inset-2 metal-knob-enhanced metal-shadow rounded-full cursor-pointer flex items-center justify-center touch-none"
           aria-label={`Current service: ${config.name}. Click to switch.`}
         >
@@ -177,8 +178,8 @@ export function ServiceRotaryDial({
             className="w-4 h-4 rounded-full"
             style={{
               background:
-                'radial-gradient(circle, var(--metal-dark) 0%, var(--metal-base) 100%)',
-              boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.4)',
+                "radial-gradient(circle, var(--metal-dark) 0%, var(--metal-base) 100%)",
+              boxShadow: "inset 0 1px 2px rgba(0,0,0,0.4)",
             }}
           />
         </motion.div>

@@ -1,6 +1,6 @@
 // Route wrapper for the Trending (Now Playing) page
-import { TrendingBentoHero } from '@/components/trending/TrendingBentoHero';
-import { TrendingPage as TrendingPageComponent } from '@/components/trending/TrendingPage';
+import { TrendingBentoHero } from "@/components/trending/TrendingBentoHero";
+import { TrendingPage as TrendingPageComponent } from "@/components/trending/TrendingPage";
 
 export default function TrendingPage() {
   return (

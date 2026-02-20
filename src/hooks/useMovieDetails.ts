@@ -1,9 +1,9 @@
 // SWR movie details hook — shows cached data immediately, refreshes stale
 
-import { useState, useEffect } from 'react';
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
-import { fetchMovieDetails } from '@/services/tmdb/details';
-import type { TMDBMovieDetails } from '@/types/movie';
+import { useState, useEffect } from "react";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import { fetchMovieDetails } from "@/services/tmdb/details";
+import type { TMDBMovieDetails } from "@/types/movie";
 
 export function useMovieDetails(movieId: number | null) {
   const [data, setData] = useState<TMDBMovieDetails | null>(null);
@@ -57,7 +57,7 @@ export function useMovieDetails(movieId: number | null) {
         // Only set error if we don't have cached fallback
         if (!cached.value) {
           setError(
-            err instanceof Error ? err.message : 'Failed to load movie details',
+            err instanceof Error ? err.message : "Failed to load movie details",
           );
         }
       } finally {

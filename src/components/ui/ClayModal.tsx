@@ -1,7 +1,7 @@
-import { motion, AnimatePresence } from 'motion/react';
-import { X } from 'lucide-react';
-import type { ReactNode } from 'react';
-import { useEffect, useId } from 'react';
+import { motion, AnimatePresence } from "motion/react";
+import { X } from "lucide-react";
+import type { ReactNode } from "react";
+import { useEffect, useId } from "react";
 
 interface ClayModalProps {
   isOpen: boolean;
@@ -23,7 +23,7 @@ export function ClayModal({
   onClose,
   children,
   title,
-  className = '',
+  className = "",
 }: ClayModalProps) {
   const titleId = useId();
 
@@ -32,17 +32,17 @@ export function ClayModal({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === "Escape") onClose();
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
 
     // Prevent body scroll when modal is open
     const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = originalOverflow;
     };
   }, [isOpen, onClose]);
@@ -73,7 +73,7 @@ export function ClayModal({
               scale: 1,
               opacity: 1,
               transition: {
-                type: 'spring',
+                type: "spring",
                 stiffness: 300,
                 damping: 22,
               },

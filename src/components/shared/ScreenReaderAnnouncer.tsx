@@ -1,7 +1,7 @@
 // ARIA live region for dynamic content announcements (A11Y-04)
 
-import { useState } from 'react';
-import type { ReactElement } from 'react';
+import { useState } from "react";
+import type { ReactElement } from "react";
 
 interface ScreenReaderAnnouncerProps {
   message: string;
@@ -15,11 +15,7 @@ interface ScreenReaderAnnouncerProps {
  */
 export function ScreenReaderAnnouncer({ message }: ScreenReaderAnnouncerProps) {
   return (
-    <div
-      aria-live="polite"
-      aria-atomic="true"
-      className="sr-only"
-    >
+    <div aria-live="polite" aria-atomic="true" className="sr-only">
       {message}
     </div>
   );
@@ -44,11 +40,11 @@ export function useAnnounce(): [
   announce: (msg: string) => void,
   AnnouncerComponent: () => ReactElement,
 ] {
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
 
   function announce(msg: string) {
     // Brief clear then set forces re-announcement of same message
-    setMessage('');
+    setMessage("");
     setTimeout(() => setMessage(msg), 50);
   }
 

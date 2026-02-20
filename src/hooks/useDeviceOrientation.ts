@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from "react";
 
 /** Raw orientation angles from the DeviceOrientationEvent. */
 export interface OrientationData {
@@ -28,7 +28,7 @@ export interface OrientationData {
  * 'denied'      — user denied the iOS permission dialog
  * 'unsupported' — browser/device does not support DeviceOrientationEvent
  */
-export type PermissionState = 'prompt' | 'granted' | 'denied' | 'unsupported';
+export type PermissionState = "prompt" | "granted" | "denied" | "unsupported";
 
 export interface DeviceOrientationResult {
   orientation: OrientationData;
@@ -47,7 +47,7 @@ const INITIAL_ORIENTATION: OrientationData = {
   gammaNorm: 0,
 };
 
-const LS_KEY_GRANTED = 'wmtw-gyro-granted';
+const LS_KEY_GRANTED = "wmtw-gyro-granted";
 
 /**
  * useDeviceOrientation — Device orientation API with iOS 13+ permission handling.
@@ -69,8 +69,10 @@ const LS_KEY_GRANTED = 'wmtw-gyro-granted';
  * Values are clamped to -1..1.
  */
 export function useDeviceOrientation(): DeviceOrientationResult {
-  const [orientation, setOrientation] = useState<OrientationData>(INITIAL_ORIENTATION);
-  const [permissionState, setPermissionState] = useState<PermissionState>('unsupported');
+  const [orientation, setOrientation] =
+    useState<OrientationData>(INITIAL_ORIENTATION);
+  const [permissionState, setPermissionState] =
+    useState<PermissionState>("unsupported");
   const listenerActiveRef = useRef(false);
 
   /** Start listening to deviceorientation events. */
@@ -92,67 +94,74 @@ export function useDeviceOrientation(): DeviceOrientationResult {
       });
     }
 
-    window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+    window.addEventListener("deviceorientation", handleOrientation, {
+      passive: true,
+    });
 
     // Store cleanup reference on the window for unmount — using a module-level symbol
     // is cleaner, but closure capture works fine here.
     return () => {
-      window.removeEventListener('deviceorientation', handleOrientation);
+      window.removeEventListener("deviceorientation", handleOrientation);
       listenerActiveRef.current = false;
     };
   }, []);
 
   useEffect(() => {
     // Guard: SSR / environments without window
-    if (typeof window === 'undefined' || typeof DeviceOrientationEvent === 'undefined') {
-      setPermissionState('unsupported');
+    if (
+      typeof window === "undefined" ||
+      typeof DeviceOrientationEvent === "undefined"
+    ) {
+      setPermissionState("unsupported");
       return;
     }
 
     // iOS 13+ requires an explicit requestPermission() call from a user gesture
     if (
-      typeof (DeviceOrientationEvent as unknown as { requestPermission?: unknown }).requestPermission === 'function'
+      typeof (
+        DeviceOrientationEvent as unknown as { requestPermission?: unknown }
+      ).requestPermission === "function"
     ) {
       // Surface the permission button to the user (prompt state)
-      setPermissionState('prompt');
+      setPermissionState("prompt");
       // Note: we do NOT auto-call requestPermission here — iOS requires user gesture
       return;
     }
 
     // Android / desktop: events are freely available — start listening immediately
-    setPermissionState('granted');
+    setPermissionState("granted");
     const cleanup = startListening();
     return cleanup;
   }, [startListening]);
 
   /** Call this from a button click handler to trigger the iOS permission dialog. */
   const requestPermission = useCallback(async () => {
-    if (typeof DeviceOrientationEvent === 'undefined') return;
+    if (typeof DeviceOrientationEvent === "undefined") return;
 
     const DOE = DeviceOrientationEvent as unknown as {
-      requestPermission?: () => Promise<'granted' | 'denied'>;
+      requestPermission?: () => Promise<"granted" | "denied">;
     };
 
-    if (typeof DOE.requestPermission !== 'function') {
+    if (typeof DOE.requestPermission !== "function") {
       // Non-iOS path: already granted via useEffect; this is a no-op
-      setPermissionState('granted');
+      setPermissionState("granted");
       startListening();
       return;
     }
 
     try {
       const result = await DOE.requestPermission();
-      if (result === 'granted') {
-        setPermissionState('granted');
-        localStorage.setItem(LS_KEY_GRANTED, '1');
+      if (result === "granted") {
+        setPermissionState("granted");
+        localStorage.setItem(LS_KEY_GRANTED, "1");
         startListening();
       } else {
-        setPermissionState('denied');
+        setPermissionState("denied");
       }
     } catch (err) {
       // requestPermission throws when called outside user gesture context
-      console.warn('[useDeviceOrientation] requestPermission failed:', err);
-      setPermissionState('denied');
+      console.warn("[useDeviceOrientation] requestPermission failed:", err);
+      setPermissionState("denied");
     }
   }, [startListening]);
 
@@ -160,6 +169,6 @@ export function useDeviceOrientation(): DeviceOrientationResult {
     orientation,
     permissionState,
     requestPermission,
-    isAvailable: permissionState !== 'unsupported',
+    isAvailable: permissionState !== "unsupported",
   };
 }

@@ -1,14 +1,14 @@
 // Discovery hook with filter relaxation and taste scoring
 
-import { useCallback } from 'react';
-import { discoverMovie } from '@/services/tmdb/discover';
-import { fetchMovieDetails } from '@/services/tmdb/details';
-import { useMovieHistoryStore } from '@/stores/movieHistoryStore';
-import { useDiscoveryStore } from '@/stores/discoveryStore';
-import { usePreferencesStore } from '@/stores/preferencesStore';
-import { useRegionStore } from '@/stores/regionStore';
-import { scoreTasteMatch } from '@/lib/taste-engine';
-import { getGenreName } from '@/lib/genre-map';
+import { useCallback } from "react";
+import { discoverMovie } from "@/services/tmdb/discover";
+import { fetchMovieDetails } from "@/services/tmdb/details";
+import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
+import { useDiscoveryStore } from "@/stores/discoveryStore";
+import { usePreferencesStore } from "@/stores/preferencesStore";
+import { useRegionStore } from "@/stores/regionStore";
+import { scoreTasteMatch } from "@/lib/taste-engine";
+import { getGenreName } from "@/lib/genre-map";
 
 export function useRandomMovie() {
   const currentMovie = useDiscoveryStore((s) => s.currentMovie);
@@ -30,8 +30,10 @@ export function useRandomMovie() {
     discoveryState.setError(null);
 
     // Lock provider/genre filters when user has explicitly set them via onboarding/settings
-    const hasUserFilters = prefsState.hasCompletedOnboarding &&
-      (prefsState.preferredProvider !== null || prefsState.preferredGenre !== null);
+    const hasUserFilters =
+      prefsState.hasCompletedOnboarding &&
+      (prefsState.preferredProvider !== null ||
+        prefsState.preferredGenre !== null);
 
     try {
       const result = await discoverMovie(
@@ -75,17 +77,19 @@ export function useRandomMovie() {
         } else if (genreLabel) {
           msg = `No ${genreLabel} movies available for streaming in your region.`;
         } else if (hasProvider) {
-          msg = 'No movies available on this streaming service in your region.';
+          msg = "No movies available on this streaming service in your region.";
         } else {
-          msg = 'No movies found matching your filters.';
+          msg = "No movies found matching your filters.";
         }
 
-        discoveryState.setError(`${msg} Pick a different service or genre below.`);
+        discoveryState.setError(
+          `${msg} Pick a different service or genre below.`,
+        );
         discoveryState.setRelaxationStep(result.relaxationStep);
       }
     } catch (err) {
       discoveryState.setError(
-        err instanceof Error ? err.message : 'Failed to discover movie',
+        err instanceof Error ? err.message : "Failed to discover movie",
       );
     } finally {
       discoveryState.setLoading(false);

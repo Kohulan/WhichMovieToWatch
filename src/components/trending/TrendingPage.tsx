@@ -1,13 +1,16 @@
 // Trending (Now Playing) page — horizontal scroll strip with auto-refresh (TRND-01, TRND-02, TRND-03, TRND-04)
 
-import { useNavigate } from 'react-router';
-import { RefreshCw, Clock, AlertCircle } from 'lucide-react';
-import { useTrending } from '@/hooks/useTrending';
-import { getPosterUrl } from '@/services/tmdb/client';
-import { tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
-import { ClaySkeletonCard } from '@/components/ui';
-import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
-import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
+import { useNavigate } from "react-router";
+import { RefreshCw, Clock, AlertCircle } from "lucide-react";
+import { useTrending } from "@/hooks/useTrending";
+import { getPosterUrl } from "@/services/tmdb/client";
+import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { ClaySkeletonCard } from "@/components/ui";
+import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/animation/StaggerContainer";
 
 /**
  * TrendingPage — Horizontal scroll row of now-playing movies with auto-refresh.
@@ -75,7 +78,10 @@ export function TrendingPage() {
         <div className="flex items-center gap-2">
           {/* Last updated indicator */}
           {!isLoading && movies.length > 0 && (
-            <span className="text-xs text-clay-text-muted flex items-center gap-1" aria-live="polite">
+            <span
+              className="text-xs text-clay-text-muted flex items-center gap-1"
+              aria-live="polite"
+            >
               <Clock className="w-3 h-3" aria-hidden="true" />
               Live
             </span>
@@ -88,7 +94,7 @@ export function TrendingPage() {
             aria-label="Refresh now playing movies"
           >
             <RefreshCw
-              className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
               aria-hidden="true"
             />
           </button>
@@ -105,33 +111,41 @@ export function TrendingPage() {
         aria-label="Now playing movies"
       >
         {movies.map((movie) => {
-          const posterUrl = getPosterUrl(movie.poster_path, 'w185');
+          const posterUrl = getPosterUrl(movie.poster_path, "w185");
           const year = movie.release_date
             ? new Date(movie.release_date).getFullYear()
             : null;
           const ratingPercent = Math.round(movie.vote_average * 10);
 
-          let ratingColor = 'bg-red-500/80 text-white';
+          let ratingColor = "bg-red-500/80 text-white";
           if (ratingPercent >= 70) {
-            ratingColor = 'bg-green-500/80 text-white';
+            ratingColor = "bg-green-500/80 text-white";
           } else if (ratingPercent >= 50) {
-            ratingColor = 'bg-yellow-500/80 text-white';
+            ratingColor = "bg-yellow-500/80 text-white";
           }
 
           return (
-            <StaggerItem key={movie.id} direction="up" className="flex-shrink-0 snap-start w-40 md:w-full">
+            <StaggerItem
+              key={movie.id}
+              direction="up"
+              className="flex-shrink-0 snap-start w-40 md:w-full"
+            >
               <button
                 role="listitem"
                 onClick={() => handleMovieClick(movie.id)}
                 className="w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl"
-                aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPercent}%`}
+                aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPercent}%`}
               >
                 {/* Poster */}
                 <div className="w-40 md:w-full h-60 rounded-2xl overflow-hidden bg-white/[0.05] border border-white/10 relative transition-all duration-300 group-hover:border-white/20 group-hover:shadow-lg group-hover:shadow-accent/10">
                   {posterUrl ? (
                     <img
                       src={posterUrl}
-                      srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+                      srcSet={
+                        movie.poster_path
+                          ? tmdbPosterSrcSet(movie.poster_path)
+                          : undefined
+                      }
                       sizes={posterSizes}
                       alt={`${movie.title} poster`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -161,7 +175,9 @@ export function TrendingPage() {
                     {movie.title}
                   </p>
                   {year && (
-                    <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                    <p className="text-clay-text-muted text-xs mt-0.5">
+                      {year}
+                    </p>
                   )}
                 </div>
               </button>

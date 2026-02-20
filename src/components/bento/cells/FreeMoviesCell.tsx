@@ -3,9 +3,9 @@
 // Designed as col-span-4, row-span-1 on desktop.
 // Clay material cell. Click navigates to /free-movies.
 
-import { useNavigate } from 'react-router';
-import { motion } from 'motion/react';
-import { Film, ArrowRight } from 'lucide-react';
+import { useNavigate } from "react-router";
+import { motion } from "motion/react";
+import { Film, ArrowRight } from "lucide-react";
 
 export function FreeMoviesCell() {
   const navigate = useNavigate();
@@ -13,13 +13,13 @@ export function FreeMoviesCell() {
   return (
     <div
       className="w-full h-full flex items-center gap-4 p-4"
-      onClick={() => navigate('/free-movies')}
+      onClick={() => navigate("/free-movies")}
     >
       {/* Icon with film reel spin */}
       <motion.div
         className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center"
         whileHover={{ rotate: 360 }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
       >
         <Film className="w-6 h-6 text-accent" aria-hidden="true" />
       </motion.div>

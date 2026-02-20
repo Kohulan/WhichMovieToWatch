@@ -1,8 +1,8 @@
 // Now playing and popular movie lists
 
-import { tmdbFetch } from './client';
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
-import type { TMDBDiscoverResponse } from '@/types/movie';
+import { tmdbFetch } from "./client";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import type { TMDBDiscoverResponse } from "@/types/movie";
 
 export async function fetchNowPlaying(
   region: string,
@@ -15,7 +15,7 @@ export async function fetchNowPlaying(
     return cached.value;
   }
 
-  const response = await tmdbFetch<TMDBDiscoverResponse>('/movie/now_playing', {
+  const response = await tmdbFetch<TMDBDiscoverResponse>("/movie/now_playing", {
     region,
     page,
   });
@@ -33,7 +33,7 @@ export async function fetchPopular(page = 1): Promise<TMDBDiscoverResponse> {
     return cached.value;
   }
 
-  const response = await tmdbFetch<TMDBDiscoverResponse>('/movie/popular', {
+  const response = await tmdbFetch<TMDBDiscoverResponse>("/movie/popular", {
     page,
   });
 

@@ -1,5 +1,5 @@
-import { motion } from 'motion/react';
-import { useCallback, useId } from 'react';
+import { motion } from "motion/react";
+import { useCallback, useId } from "react";
 
 interface MetalToggleProps {
   checked: boolean;
@@ -14,7 +14,7 @@ export function MetalToggle({
   onChange,
   label,
   disabled = false,
-  className = '',
+  className = "",
 }: MetalToggleProps) {
   const id = useId();
 
@@ -27,7 +27,7 @@ export function MetalToggle({
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (disabled) return;
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         onChange(!checked);
       }
@@ -41,7 +41,7 @@ export function MetalToggle({
       <div
         role="switch"
         aria-checked={checked}
-        aria-label={label ?? 'Toggle'}
+        aria-label={label ?? "Toggle"}
         aria-disabled={disabled}
         id={id}
         tabIndex={disabled ? -1 : 0}
@@ -50,21 +50,23 @@ export function MetalToggle({
         className={`
           relative w-12 h-6 rounded-full cursor-pointer
           transition-colors duration-200
-          ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-          ${checked ? 'accent-glow-active' : ''}
+          ${disabled ? "opacity-50 cursor-not-allowed" : ""}
+          ${checked ? "accent-glow-active" : ""}
         `}
         style={{
-          boxShadow: 'inset 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 3px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.05)',
-          backgroundColor: checked ? 'var(--accent)' : 'var(--clay-base)',
+          boxShadow:
+            "inset 0 3px 6px rgba(0,0,0,0.4), inset 0 1px 3px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.08), 0 1px 0 rgba(255,255,255,0.05)",
+          backgroundColor: checked ? "var(--accent)" : "var(--clay-base)",
         }}
       >
         {/* Knob */}
         <motion.div
           className="metal-knob-enhanced absolute top-[2px] w-5 h-5 rounded-full"
           animate={{ x: checked ? 24 : 2 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
           style={{
-            boxShadow: '0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15)',
+            boxShadow:
+              "0 2px 4px rgba(0,0,0,0.35), 0 4px 8px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 2px rgba(0,0,0,0.15)",
           }}
         />
       </div>
@@ -72,7 +74,7 @@ export function MetalToggle({
       {label && (
         <label
           htmlFor={id}
-          className={`font-body text-clay-text select-none ${disabled ? 'opacity-50' : 'cursor-pointer'}`}
+          className={`font-body text-clay-text select-none ${disabled ? "opacity-50" : "cursor-pointer"}`}
         >
           {label}
         </label>

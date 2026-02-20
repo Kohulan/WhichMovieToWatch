@@ -1,9 +1,9 @@
-import { getPosterUrl } from '@/services/tmdb/client';
-import { tmdbPosterSrcSet, posterSizes } from '@/hooks/useResponsiveImage';
-import { ClaySkeletonCard } from '@/components/ui';
-import { MetalButton } from '@/components/ui';
-import { LoadingQuotes } from '@/components/animation/LoadingQuotes';
-import type { TMDBMovie } from '@/types/movie';
+import { getPosterUrl } from "@/services/tmdb/client";
+import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { ClaySkeletonCard } from "@/components/ui";
+import { MetalButton } from "@/components/ui";
+import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
+import type { TMDBMovie } from "@/types/movie";
 
 interface SearchResultsProps {
   results: TMDBMovie[];
@@ -31,18 +31,15 @@ export function SearchResults({
 }: SearchResultsProps) {
   function getRatingColor(voteAverage: number): string {
     const pct = Math.round(voteAverage * 10);
-    if (pct >= 70) return 'bg-green-500/80 text-white';
-    if (pct >= 50) return 'bg-yellow-500/80 text-white';
-    return 'bg-red-500/80 text-white';
+    if (pct >= 70) return "bg-green-500/80 text-white";
+    if (pct >= 50) return "bg-yellow-500/80 text-white";
+    return "bg-red-500/80 text-white";
   }
 
   // Loading state — movie-themed quotes with film-reel spinner (ANIM-06)
   if (isLoading && results.length === 0) {
     return (
-      <div
-        aria-busy="true"
-        aria-label="Loading search results"
-      >
+      <div aria-busy="true" aria-label="Loading search results">
         <LoadingQuotes size="sm" />
       </div>
     );
@@ -68,7 +65,7 @@ export function SearchResults({
         aria-label="Search results"
       >
         {results.map((movie) => {
-          const posterUrl = getPosterUrl(movie.poster_path, 'w185');
+          const posterUrl = getPosterUrl(movie.poster_path, "w185");
           const year = movie.release_date
             ? new Date(movie.release_date).getFullYear()
             : null;
@@ -82,12 +79,12 @@ export function SearchResults({
                 tabIndex={0}
                 onClick={() => onSelectMovie(movie.id)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     onSelectMovie(movie.id);
                   }
                 }}
-                aria-label={`${movie.title}${year ? `, ${year}` : ''}, rated ${ratingPct}%`}
+                aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPct}%`}
                 className="
                   w-full text-left group
                   rounded-clay overflow-hidden
@@ -102,7 +99,11 @@ export function SearchResults({
                   {posterUrl ? (
                     <img
                       src={posterUrl}
-                      srcSet={movie.poster_path ? tmdbPosterSrcSet(movie.poster_path) : undefined}
+                      srcSet={
+                        movie.poster_path
+                          ? tmdbPosterSrcSet(movie.poster_path)
+                          : undefined
+                      }
                       sizes={posterSizes}
                       alt={`${movie.title} poster`}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -132,7 +133,9 @@ export function SearchResults({
                     {movie.title}
                   </p>
                   {year && (
-                    <p className="text-clay-text-muted text-xs mt-0.5">{year}</p>
+                    <p className="text-clay-text-muted text-xs mt-0.5">
+                      {year}
+                    </p>
                   )}
                 </div>
               </button>
@@ -151,7 +154,7 @@ export function SearchResults({
             disabled={isLoading}
             aria-label="Load more search results"
           >
-            {isLoading ? 'Loading...' : 'Load More'}
+            {isLoading ? "Loading..." : "Load More"}
           </MetalButton>
         </div>
       )}

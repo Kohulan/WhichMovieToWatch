@@ -3,9 +3,9 @@
 // Designed as col-span-4, row-span-1 on desktop.
 // Clay material cell. Click navigates to /dinner-time.
 
-import { useNavigate } from 'react-router';
-import { motion } from 'motion/react';
-import { UtensilsCrossed, ArrowRight } from 'lucide-react';
+import { useNavigate } from "react-router";
+import { motion } from "motion/react";
+import { UtensilsCrossed, ArrowRight } from "lucide-react";
 
 export function DinnerTimeCell() {
   const navigate = useNavigate();
@@ -13,13 +13,18 @@ export function DinnerTimeCell() {
   return (
     <div
       className="w-full h-full flex items-center gap-4 p-4"
-      onClick={() => navigate('/dinner-time')}
+      onClick={() => navigate("/dinner-time")}
     >
       {/* Icon with gentle wobble */}
       <motion.div
         className="flex-shrink-0 w-12 h-12 rounded-xl bg-accent/15 flex items-center justify-center"
         animate={{ rotate: [0, -5, 5, 0] }}
-        transition={{ duration: 3, repeat: Infinity, repeatDelay: 5, ease: 'easeInOut' }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          repeatDelay: 5,
+          ease: "easeInOut",
+        }}
       >
         <UtensilsCrossed className="w-6 h-6 text-accent" aria-hidden="true" />
       </motion.div>

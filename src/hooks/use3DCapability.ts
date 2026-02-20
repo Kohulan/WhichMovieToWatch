@@ -1,4 +1,4 @@
-import { useGpuTier } from './useGpuTier';
+import { useGpuTier } from "./useGpuTier";
 
 /**
  * Capability enum for 3D rendering decisions:
@@ -6,7 +6,7 @@ import { useGpuTier } from './useGpuTier';
  *   'reduced-3d'  — Mobile tier 2: reduced-quality Spline scene
  *   'fallback-2d' — Low GPU (tier 0-1), no WebGL, or prefers-reduced-motion: CSS parallax only
  */
-export type Capability = 'full-3d' | 'reduced-3d' | 'fallback-2d';
+export type Capability = "full-3d" | "reduced-3d" | "fallback-2d";
 
 export interface CapabilityResult {
   capability: Capability;
@@ -20,10 +20,10 @@ export interface CapabilityResult {
  */
 function checkWebGLSupport(): boolean {
   try {
-    const canvas = document.createElement('canvas');
-    const webgl2 = canvas.getContext('webgl2');
+    const canvas = document.createElement("canvas");
+    const webgl2 = canvas.getContext("webgl2");
     if (webgl2) return true;
-    const webgl1 = canvas.getContext('webgl');
+    const webgl1 = canvas.getContext("webgl");
     return webgl1 !== null;
   } catch {
     return false;
@@ -48,32 +48,32 @@ export function use3DCapability(): CapabilityResult {
   // While GPU detection is in progress, report as loading
   // Capability will be determined once detection completes
   if (loading) {
-    return { capability: 'fallback-2d', loading: true, tier: 0 };
+    return { capability: "fallback-2d", loading: true, tier: 0 };
   }
 
   // Accessibility: user prefers reduced motion — always fallback
   const prefersReducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)',
+    "(prefers-reduced-motion: reduce)",
   ).matches;
   if (prefersReducedMotion) {
-    return { capability: 'fallback-2d', loading: false, tier };
+    return { capability: "fallback-2d", loading: false, tier };
   }
 
   // WebGL check: without WebGL, Spline cannot render
   const hasWebGL = checkWebGLSupport();
   if (!hasWebGL) {
-    return { capability: 'fallback-2d', loading: false, tier };
+    return { capability: "fallback-2d", loading: false, tier };
   }
 
   // GPU tier classification
   if (tier <= 1) {
-    return { capability: 'fallback-2d', loading: false, tier };
+    return { capability: "fallback-2d", loading: false, tier };
   }
 
   if (tier === 2 && isMobile) {
-    return { capability: 'reduced-3d', loading: false, tier };
+    return { capability: "reduced-3d", loading: false, tier };
   }
 
   // tier 2 desktop or tier 3 (any device)
-  return { capability: 'full-3d', loading: false, tier };
+  return { capability: "full-3d", loading: false, tier };
 }

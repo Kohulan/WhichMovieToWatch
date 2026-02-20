@@ -1,9 +1,9 @@
 // Fetches similar movies for a given movie ID (used for Love action recommendations)
 
-import { useState, useEffect } from 'react';
-import { tmdbFetch } from '@/services/tmdb/client';
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
-import type { TMDBMovie, TMDBDiscoverResponse } from '@/types/movie';
+import { useState, useEffect } from "react";
+import { tmdbFetch } from "@/services/tmdb/client";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import type { TMDBMovie, TMDBDiscoverResponse } from "@/types/movie";
 
 /**
  * useSimilarMovies — Fetches TMDB similar movies for a given movieId.
@@ -58,7 +58,10 @@ export function useSimilarMovies(movieId: number | null) {
         }
       } catch (err) {
         if (!cancelled) {
-          console.warn('[useSimilarMovies] Failed to fetch similar movies:', err);
+          console.warn(
+            "[useSimilarMovies] Failed to fetch similar movies:",
+            err,
+          );
           // Keep stale data if available, otherwise set empty
           if (!cached.value) {
             setMovies([]);

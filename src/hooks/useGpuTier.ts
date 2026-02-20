@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getGPUTier } from 'detect-gpu';
+import { useState, useEffect } from "react";
+import { getGPUTier } from "detect-gpu";
 
 export interface GpuTierResult {
   tier: number;
@@ -9,7 +9,7 @@ export interface GpuTierResult {
 }
 
 // Module-level cache so detection runs only once per session
-let cachedResult: Omit<GpuTierResult, 'loading'> | null = null;
+let cachedResult: Omit<GpuTierResult, "loading"> | null = null;
 let detectionPromise: Promise<void> | null = null;
 
 /**
@@ -25,7 +25,7 @@ let detectionPromise: Promise<void> | null = null;
  * even if multiple components mount this hook simultaneously.
  */
 export function useGpuTier(): GpuTierResult {
-  const [result, setResult] = useState<Omit<GpuTierResult, 'loading'> | null>(
+  const [result, setResult] = useState<Omit<GpuTierResult, "loading"> | null>(
     cachedResult,
   );
 

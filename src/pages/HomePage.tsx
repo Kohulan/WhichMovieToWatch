@@ -13,20 +13,23 @@
 // |                                       |                                   | Providers (3 cols, 1 row)    |
 // | Dinner Time (4 cols, 1 row, clay)     | Free Movies (4 cols, 1 row, clay) | Search (4 cols, 1 row, clay) |
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { BentoGrid, BentoCell } from '@/components/bento';
-import { StaggerContainer, StaggerItem } from '@/components/animation/StaggerContainer';
-import { useTopStreaming } from '@/hooks/useTopStreaming';
-import { useFeaturedStore } from '@/stores/featuredStore';
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+import { BentoGrid, BentoCell } from "@/components/bento";
+import {
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/animation/StaggerContainer";
+import { useTopStreaming } from "@/hooks/useTopStreaming";
+import { useFeaturedStore } from "@/stores/featuredStore";
 
-import { DiscoverHeroCell } from '@/components/bento/cells/DiscoverHeroCell';
-import { TrendingPreviewCell } from '@/components/bento/cells/TrendingPreviewCell';
-import { RatingShowcaseCell } from '@/components/bento/cells/RatingShowcaseCell';
-import { ProviderLogosCell } from '@/components/bento/cells/ProviderLogosCell';
-import { DinnerTimeCell } from '@/components/bento/cells/DinnerTimeCell';
-import { FreeMoviesCell } from '@/components/bento/cells/FreeMoviesCell';
-import { SearchCell } from '@/components/bento/cells/SearchCell';
+import { DiscoverHeroCell } from "@/components/bento/cells/DiscoverHeroCell";
+import { TrendingPreviewCell } from "@/components/bento/cells/TrendingPreviewCell";
+import { RatingShowcaseCell } from "@/components/bento/cells/RatingShowcaseCell";
+import { ProviderLogosCell } from "@/components/bento/cells/ProviderLogosCell";
+import { DinnerTimeCell } from "@/components/bento/cells/DinnerTimeCell";
+import { FreeMoviesCell } from "@/components/bento/cells/FreeMoviesCell";
+import { SearchCell } from "@/components/bento/cells/SearchCell";
 
 const CYCLE_INTERVAL = 5000; // 5 seconds between movie changes
 
@@ -55,9 +58,7 @@ export function HomePage() {
         <h1 className="font-heading text-xl font-bold text-clay-text">
           Welcome
         </h1>
-        <p className="text-sm text-clay-text-muted">
-          Your movie discovery hub
-        </p>
+        <p className="text-sm text-clay-text-muted">Your movie discovery hub</p>
       </div>
 
       {/* Bento grid with staggered fade-up animation on scroll entry */}
@@ -68,12 +69,15 @@ export function HomePage() {
       >
         <BentoGrid columns={12}>
           {/* Discover CTA — glass hero, 6 cols, 2 rows */}
-          <StaggerItem direction="up" className="md:col-span-2 lg:col-span-6 lg:row-span-2">
+          <StaggerItem
+            direction="up"
+            className="md:col-span-2 lg:col-span-6 lg:row-span-2"
+          >
             <BentoCell
               material="glass"
               colSpan={{ tablet: 2, desktop: 6 }}
               rowSpan={2}
-              onClick={() => navigate('/discover')}
+              onClick={() => navigate("/discover")}
               overlay={
                 <div className="w-full p-3 text-xs text-white/80 font-medium bg-black/30 backdrop-blur-sm">
                   Tap to explore
@@ -90,7 +94,7 @@ export function HomePage() {
               material="glass"
               colSpan={{ desktop: 3 }}
               rowSpan={2}
-              onClick={() => navigate('/trending')}
+              onClick={() => navigate("/trending")}
               overlay={
                 <div className="w-full p-3 text-xs text-white/80 font-medium bg-black/30 backdrop-blur-sm">
                   Tap to explore
@@ -106,7 +110,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 3 }}
-              onClick={() => navigate('/trending')}
+              onClick={() => navigate("/trending")}
             >
               <RatingShowcaseCell />
             </BentoCell>
@@ -128,7 +132,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
-              onClick={() => navigate('/dinner-time')}
+              onClick={() => navigate("/dinner-time")}
               overlay={
                 <div className="w-full p-3 text-xs text-clay-text-muted font-medium bg-clay-base/40 backdrop-blur-sm">
                   Tap to explore
@@ -144,7 +148,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
-              onClick={() => navigate('/free-movies')}
+              onClick={() => navigate("/free-movies")}
               overlay={
                 <div className="w-full p-3 text-xs text-clay-text-muted font-medium bg-clay-base/40 backdrop-blur-sm">
                   Tap to explore
@@ -160,7 +164,9 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
-              onClick={() => window.dispatchEvent(new CustomEvent('open-search'))}
+              onClick={() =>
+                window.dispatchEvent(new CustomEvent("open-search"))
+              }
               overlay={
                 <div className="w-full p-3 text-xs text-clay-text-muted font-medium bg-clay-base/40 backdrop-blur-sm">
                   Tap to search

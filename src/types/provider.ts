@@ -1,6 +1,6 @@
 // Provider types with pricing tier categorization
 
-export type ProviderTier = 'flatrate' | 'rent' | 'buy' | 'free' | 'ads';
+export type ProviderTier = "flatrate" | "rent" | "buy" | "free" | "ads";
 
 export interface ProviderInfo {
   provider_id: number;

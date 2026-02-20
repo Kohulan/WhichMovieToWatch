@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   ClayCard,
   ClayModal,
@@ -12,27 +12,27 @@ import {
   MetalDropdown,
   ThemeToggle,
   RotaryDial,
-} from '../components/ui';
+} from "../components/ui";
 
 const streamingProviders = [
-  { value: 'netflix', label: 'Netflix' },
-  { value: 'disney', label: 'Disney+' },
-  { value: 'prime', label: 'Prime Video' },
-  { value: 'hbo', label: 'HBO Max' },
-  { value: 'apple', label: 'Apple TV+' },
+  { value: "netflix", label: "Netflix" },
+  { value: "disney", label: "Disney+" },
+  { value: "prime", label: "Prime Video" },
+  { value: "hbo", label: "HBO Max" },
+  { value: "apple", label: "Apple TV+" },
 ];
 
 /** CSS variable names for the current theme's color palette */
 const colorSwatches = [
-  { variable: '--clay-base', label: 'clay-base' },
-  { variable: '--clay-surface', label: 'clay-surface' },
-  { variable: '--clay-elevated', label: 'clay-elevated' },
-  { variable: '--clay-shadow', label: 'clay-shadow' },
-  { variable: '--clay-highlight', label: 'clay-highlight' },
-  { variable: '--metal-base', label: 'metal-base' },
-  { variable: '--metal-shine', label: 'metal-shine' },
-  { variable: '--metal-dark', label: 'metal-dark' },
-  { variable: '--accent', label: 'accent' },
+  { variable: "--clay-base", label: "clay-base" },
+  { variable: "--clay-surface", label: "clay-surface" },
+  { variable: "--clay-elevated", label: "clay-elevated" },
+  { variable: "--clay-shadow", label: "clay-shadow" },
+  { variable: "--clay-highlight", label: "clay-highlight" },
+  { variable: "--metal-base", label: "metal-base" },
+  { variable: "--metal-shine", label: "metal-shine" },
+  { variable: "--metal-dark", label: "metal-dark" },
+  { variable: "--accent", label: "accent" },
 ];
 
 /**
@@ -52,9 +52,9 @@ export function Showcase() {
   const [sliderValue, setSliderValue] = useState(65);
   const [checkboxChecked, setCheckboxChecked] = useState(true);
   const [checkboxUnchecked, setCheckboxUnchecked] = useState(false);
-  const [dropdownValue, setDropdownValue] = useState('');
+  const [dropdownValue, setDropdownValue] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalInput, setModalInput] = useState('');
+  const [modalInput, setModalInput] = useState("");
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
@@ -64,14 +64,13 @@ export function Showcase() {
           Design System Showcase
         </h1>
         <p className="font-body text-base md:text-lg text-clay-text-muted max-w-2xl mx-auto">
-          Every component in the WhichMovieToWatch design system.
-          Toggle the theme switch in the navbar to see dark and light variants.
+          Every component in the WhichMovieToWatch design system. Toggle the
+          theme switch in the navbar to see dark and light variants.
         </p>
       </header>
 
       {/* Responsive grid for component sections */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-
         {/* ============================================================
             SECTION A: Clay Surfaces
             ============================================================ */}
@@ -85,8 +84,12 @@ export function Showcase() {
           <ClayCard>
             <div className="p-6">
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-heading text-lg text-clay-text">ClayCard</h3>
-                <ClayBadge variant="accent" size="sm">Elevated</ClayBadge>
+                <h3 className="font-heading text-lg text-clay-text">
+                  ClayCard
+                </h3>
+                <ClayBadge variant="accent" size="sm">
+                  Elevated
+                </ClayBadge>
               </div>
               <p className="font-body text-sm text-clay-text-muted">
                 Hover to lift, press to depress. Notice the plasticine texture
@@ -98,11 +101,16 @@ export function Showcase() {
           <ClayCard elevated={false}>
             <div className="p-6">
               <div className="flex items-center gap-2 mb-2">
-                <h3 className="font-heading text-lg text-clay-text">ClayCard</h3>
-                <ClayBadge variant="muted" size="sm">Flat</ClayBadge>
+                <h3 className="font-heading text-lg text-clay-text">
+                  ClayCard
+                </h3>
+                <ClayBadge variant="muted" size="sm">
+                  Flat
+                </ClayBadge>
               </div>
               <p className="font-body text-sm text-clay-text-muted">
-                Non-elevated variant with subtle shadow. Good for secondary content areas.
+                Non-elevated variant with subtle shadow. Good for secondary
+                content areas.
               </p>
             </div>
           </ClayCard>
@@ -112,7 +120,9 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6">
-              <h3 className="font-heading text-lg text-clay-text mb-4">ClayBadge</h3>
+              <h3 className="font-heading text-lg text-clay-text mb-4">
+                ClayBadge
+              </h3>
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap gap-2">
                   <ClayBadge>Default</ClayBadge>
@@ -121,8 +131,12 @@ export function Showcase() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <ClayBadge size="sm">Small</ClayBadge>
-                  <ClayBadge variant="accent" size="sm">SM Accent</ClayBadge>
-                  <ClayBadge variant="muted" size="sm">SM Muted</ClayBadge>
+                  <ClayBadge variant="accent" size="sm">
+                    SM Accent
+                  </ClayBadge>
+                  <ClayBadge variant="muted" size="sm">
+                    SM Muted
+                  </ClayBadge>
                 </div>
               </div>
             </div>
@@ -133,8 +147,13 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6 flex flex-col gap-4">
-              <h3 className="font-heading text-lg text-clay-text mb-1">ClayInput</h3>
-              <ClayInput label="Movie Title" placeholder="Search for a movie..." />
+              <h3 className="font-heading text-lg text-clay-text mb-1">
+                ClayInput
+              </h3>
+              <ClayInput
+                label="Movie Title"
+                placeholder="Search for a movie..."
+              />
               <ClayInput placeholder="Without label" />
               <ClayInput
                 label="Release Year"
@@ -147,7 +166,9 @@ export function Showcase() {
 
         {/* Skeleton Cards */}
         <div className="md:col-span-2 lg:col-span-3">
-          <h4 className="font-heading text-base text-clay-text-muted mb-3">ClaySkeletonCard</h4>
+          <h4 className="font-heading text-base text-clay-text-muted mb-3">
+            ClaySkeletonCard
+          </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl">
             <ClaySkeletonCard />
             <ClaySkeletonCard hasImage={false} lines={2} />
@@ -166,19 +187,33 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6 flex flex-col gap-4">
-              <h3 className="font-heading text-lg text-clay-text">MetalButton</h3>
+              <h3 className="font-heading text-lg text-clay-text">
+                MetalButton
+              </h3>
               <div className="flex flex-col gap-3">
-                <p className="font-body text-xs text-clay-text-muted uppercase tracking-wider">Primary</p>
+                <p className="font-body text-xs text-clay-text-muted uppercase tracking-wider">
+                  Primary
+                </p>
                 <div className="flex flex-wrap gap-2 items-center">
-                  <MetalButton variant="primary" size="sm">Small</MetalButton>
-                  <MetalButton variant="primary" size="md">Medium</MetalButton>
-                  <MetalButton variant="primary" size="lg">Large</MetalButton>
+                  <MetalButton variant="primary" size="sm">
+                    Small
+                  </MetalButton>
+                  <MetalButton variant="primary" size="md">
+                    Medium
+                  </MetalButton>
+                  <MetalButton variant="primary" size="lg">
+                    Large
+                  </MetalButton>
                 </div>
-                <p className="font-body text-xs text-clay-text-muted uppercase tracking-wider mt-2">Secondary / Ghost / Disabled</p>
+                <p className="font-body text-xs text-clay-text-muted uppercase tracking-wider mt-2">
+                  Secondary / Ghost / Disabled
+                </p>
                 <div className="flex flex-wrap gap-2 items-center">
                   <MetalButton variant="secondary">Secondary</MetalButton>
                   <MetalButton variant="ghost">Ghost</MetalButton>
-                  <MetalButton variant="primary" disabled>Disabled</MetalButton>
+                  <MetalButton variant="primary" disabled>
+                    Disabled
+                  </MetalButton>
                 </div>
               </div>
             </div>
@@ -189,16 +224,18 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6 flex flex-col gap-4">
-              <h3 className="font-heading text-lg text-clay-text">MetalToggle</h3>
+              <h3 className="font-heading text-lg text-clay-text">
+                MetalToggle
+              </h3>
               <MetalToggle
                 checked={toggleOn}
                 onChange={setToggleOn}
-                label={toggleOn ? 'Enabled' : 'Disabled'}
+                label={toggleOn ? "Enabled" : "Disabled"}
               />
               <MetalToggle
                 checked={toggleOff}
                 onChange={setToggleOff}
-                label={toggleOff ? 'Notifications On' : 'Notifications Off'}
+                label={toggleOff ? "Notifications On" : "Notifications Off"}
               />
             </div>
           </ClayCard>
@@ -208,7 +245,9 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6 flex flex-col gap-4">
-              <h3 className="font-heading text-lg text-clay-text">MetalSlider</h3>
+              <h3 className="font-heading text-lg text-clay-text">
+                MetalSlider
+              </h3>
               <MetalSlider
                 value={sliderValue}
                 onChange={setSliderValue}
@@ -225,7 +264,9 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6 flex flex-col gap-4">
-              <h3 className="font-heading text-lg text-clay-text">MetalCheckbox</h3>
+              <h3 className="font-heading text-lg text-clay-text">
+                MetalCheckbox
+              </h3>
               <MetalCheckbox
                 checked={checkboxChecked}
                 onChange={setCheckboxChecked}
@@ -244,7 +285,9 @@ export function Showcase() {
         <div className="flex flex-col gap-4">
           <ClayCard>
             <div className="p-6 flex flex-col gap-4">
-              <h3 className="font-heading text-lg text-clay-text">MetalDropdown</h3>
+              <h3 className="font-heading text-lg text-clay-text">
+                MetalDropdown
+              </h3>
               <MetalDropdown
                 options={streamingProviders}
                 value={dropdownValue}
@@ -268,7 +311,9 @@ export function Showcase() {
           <ClayCard>
             <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8 items-center md:items-start">
               <div className="flex flex-col items-center gap-3 text-center">
-                <h3 className="font-heading text-lg text-clay-text">RotaryDial</h3>
+                <h3 className="font-heading text-lg text-clay-text">
+                  RotaryDial
+                </h3>
                 <RotaryDial />
                 <p className="font-body text-xs text-clay-text-muted max-w-[200px]">
                   Switch between Warm Orange, Gold, and White themes.
@@ -277,7 +322,9 @@ export function Showcase() {
               <div className="hidden md:block w-px h-32 bg-clay-text-muted/20" />
               <div className="md:hidden w-32 h-px bg-clay-text-muted/20" />
               <div className="flex flex-col items-center gap-3 text-center">
-                <h3 className="font-heading text-lg text-clay-text">ThemeToggle</h3>
+                <h3 className="font-heading text-lg text-clay-text">
+                  ThemeToggle
+                </h3>
                 <ThemeToggle />
                 <p className="font-body text-xs text-clay-text-muted max-w-[200px]">
                   Toggle between dark and light modes.
@@ -299,8 +346,8 @@ export function Showcase() {
           <ClayCard>
             <div className="p-6 flex flex-col items-center gap-4">
               <p className="font-body text-sm text-clay-text-muted text-center">
-                Click the button to open a ClayModal with sample content, including
-                a card, input, and buttons.
+                Click the button to open a ClayModal with sample content,
+                including a card, input, and buttons.
               </p>
               <MetalButton
                 variant="primary"
@@ -337,24 +384,26 @@ export function Showcase() {
               <hr className="border-clay-text-muted/20 my-2" />
 
               <p className="font-body font-normal text-base text-clay-text leading-relaxed">
-                <span className="text-clay-text-muted">(400)</span>{' '}
-                The art of cinema transports us to worlds beyond imagination. Every frame tells a story,
-                every cut reveals a new perspective, and every performance captures the essence of what it
-                means to be human.
+                <span className="text-clay-text-muted">(400)</span> The art of
+                cinema transports us to worlds beyond imagination. Every frame
+                tells a story, every cut reveals a new perspective, and every
+                performance captures the essence of what it means to be human.
               </p>
               <p className="font-body font-medium text-base text-clay-text leading-relaxed">
-                <span className="text-clay-text-muted">(500)</span>{' '}
-                From the golden age of Hollywood to modern streaming, movies continue to push the boundaries
-                of storytelling and visual expression.
+                <span className="text-clay-text-muted">(500)</span> From the
+                golden age of Hollywood to modern streaming, movies continue to
+                push the boundaries of storytelling and visual expression.
               </p>
               <p className="font-body font-semibold text-base text-clay-text leading-relaxed">
-                <span className="text-clay-text-muted">(600)</span>{' '}
-                Discover your next favorite film with our curated recommendations, powered by intelligent
-                algorithms and a passion for great cinema.
+                <span className="text-clay-text-muted">(600)</span> Discover
+                your next favorite film with our curated recommendations,
+                powered by intelligent algorithms and a passion for great
+                cinema.
               </p>
               <p className="font-body font-bold text-base text-clay-text leading-relaxed">
-                <span className="text-clay-text-muted">(700)</span>{' '}
-                WhichMovieToWatch helps you find the perfect movie for any mood, any occasion, any moment.
+                <span className="text-clay-text-muted">(700)</span>{" "}
+                WhichMovieToWatch helps you find the perfect movie for any mood,
+                any occasion, any moment.
               </p>
             </div>
           </ClayCard>
@@ -386,7 +435,6 @@ export function Showcase() {
             ))}
           </div>
         </div>
-
       </div>
 
       {/* Spacer at bottom */}
@@ -402,8 +450,9 @@ export function Showcase() {
       >
         <div className="flex flex-col gap-4">
           <p className="font-body text-clay-text-muted">
-            This is a ClayModal with sample content. It features spring animation entry,
-            backdrop blur, and closes on Escape or backdrop click.
+            This is a ClayModal with sample content. It features spring
+            animation entry, backdrop blur, and closes on Escape or backdrop
+            click.
           </p>
           <ClayInput
             label="Search"

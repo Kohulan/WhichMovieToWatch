@@ -1,13 +1,31 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
-import { Globe, Check, RotateCcw } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import { useRegion } from '@/hooks/useRegion';
-import { COUNTRY_NAMES, getCountryName } from '@/lib/country-names';
+import { useState, useRef, useEffect, useMemo } from "react";
+import { Globe, Check, RotateCcw } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import { useRegion } from "@/hooks/useRegion";
+import { COUNTRY_NAMES, getCountryName } from "@/lib/country-names";
 
 /** Popular countries shown at the top of the list */
 const POPULAR_CODES = new Set([
-  'US', 'GB', 'DE', 'FR', 'CA', 'AU', 'IN', 'JP', 'BR', 'ES',
-  'IT', 'NL', 'SE', 'MX', 'KR', 'CH', 'AT', 'BE', 'NO', 'DK',
+  "US",
+  "GB",
+  "DE",
+  "FR",
+  "CA",
+  "AU",
+  "IN",
+  "JP",
+  "BR",
+  "ES",
+  "IT",
+  "NL",
+  "SE",
+  "MX",
+  "KR",
+  "CH",
+  "AT",
+  "BE",
+  "NO",
+  "DK",
 ]);
 
 /** All countries sorted alphabetically by name */
@@ -22,7 +40,7 @@ const ALL_COUNTRIES = Object.entries(COUNTRY_NAMES)
 export function RegionPicker() {
   const { region, manualOverride, detectedCountry, setOverride } = useRegion();
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -33,13 +51,16 @@ export function RegionPicker() {
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
-        setQuery('');
+        setQuery("");
       }
     }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
   // Focus input when opened
@@ -51,13 +72,13 @@ export function RegionPicker() {
   useEffect(() => {
     if (!open) return;
     function handleKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         setOpen(false);
-        setQuery('');
+        setQuery("");
       }
     }
-    document.addEventListener('keydown', handleKey);
-    return () => document.removeEventListener('keydown', handleKey);
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
   }, [open]);
 
   const { popular, rest, isSearching } = useMemo(() => {
@@ -79,13 +100,13 @@ export function RegionPicker() {
   function handleSelect(code: string) {
     setOverride(code);
     setOpen(false);
-    setQuery('');
+    setQuery("");
   }
 
   function handleReset() {
     setOverride(null);
     setOpen(false);
-    setQuery('');
+    setQuery("");
   }
 
   return (
@@ -169,7 +190,13 @@ export function RegionPicker() {
                     Popular
                   </p>
                   {popular.map((c) => (
-                    <CountryRow key={c.code} code={c.code} name={c.name} isActive={c.code === region} onSelect={handleSelect} />
+                    <CountryRow
+                      key={c.code}
+                      code={c.code}
+                      name={c.name}
+                      isActive={c.code === region}
+                      onSelect={handleSelect}
+                    />
                   ))}
                   <div className="border-t border-white/[0.06] my-1.5" />
                   <p className="text-[10px] uppercase tracking-wider text-clay-text-muted px-2 pt-1 pb-1.5">
@@ -178,7 +205,13 @@ export function RegionPicker() {
                 </>
               )}
               {rest.map((c) => (
-                <CountryRow key={c.code} code={c.code} name={c.name} isActive={c.code === region} onSelect={handleSelect} />
+                <CountryRow
+                  key={c.code}
+                  code={c.code}
+                  name={c.name}
+                  isActive={c.code === region}
+                  onSelect={handleSelect}
+                />
               ))}
               {isSearching && rest.length === 0 && (
                 <p className="text-sm text-clay-text-muted text-center py-4">
@@ -193,8 +226,16 @@ export function RegionPicker() {
   );
 }
 
-function CountryRow({ code, name, isActive, onSelect }: {
-  code: string; name: string; isActive: boolean; onSelect: (code: string) => void;
+function CountryRow({
+  code,
+  name,
+  isActive,
+  onSelect,
+}: {
+  code: string;
+  name: string;
+  isActive: boolean;
+  onSelect: (code: string) => void;
 }) {
   return (
     <button
@@ -203,9 +244,10 @@ function CountryRow({ code, name, isActive, onSelect }: {
         w-full flex items-center justify-between gap-2 px-3 py-2
         text-sm rounded-lg
         transition-colors duration-100
-        ${isActive
-          ? 'bg-accent/15 text-accent font-medium'
-          : 'text-clay-text hover:bg-white/[0.06]'
+        ${
+          isActive
+            ? "bg-accent/15 text-accent font-medium"
+            : "text-clay-text hover:bg-white/[0.06]"
         }
       `}
     >

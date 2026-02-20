@@ -1,8 +1,8 @@
 // Streaming provider list per region and per movie
 
-import { tmdbFetch } from './client';
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
-import type { WatchProviderCountry } from '@/types/movie';
+import { tmdbFetch } from "./client";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import type { WatchProviderCountry } from "@/types/movie";
 
 interface TMDBProviderResult {
   provider_id: number;
@@ -41,7 +41,7 @@ export async function fetchRegionProviders(
   }
 
   const response = await tmdbFetch<TMDBProviderListResponse>(
-    '/watch/providers/movie',
+    "/watch/providers/movie",
     { watch_region: region },
   );
 
@@ -78,7 +78,8 @@ export async function fetchAllMovieProviders(
 ): Promise<Record<string, WatchProviderCountry>> {
   const cacheKey = `providers-movie-${movieId}-all`;
 
-  const cached = await getCached<Record<string, WatchProviderCountry>>(cacheKey);
+  const cached =
+    await getCached<Record<string, WatchProviderCountry>>(cacheKey);
   if (cached.value && !cached.isStale) {
     return cached.value;
   }
@@ -93,7 +94,7 @@ export async function fetchAllMovieProviders(
 }
 
 export async function fetchAvailableRegions(): Promise<TMDBRegionResult[]> {
-  const cacheKey = 'provider-regions';
+  const cacheKey = "provider-regions";
 
   const cached = await getCached<TMDBRegionResult[]>(cacheKey);
   if (cached.value && !cached.isStale) {
@@ -101,7 +102,7 @@ export async function fetchAvailableRegions(): Promise<TMDBRegionResult[]> {
   }
 
   const response = await tmdbFetch<TMDBRegionResponse>(
-    '/watch/providers/regions',
+    "/watch/providers/regions",
   );
 
   await setCache(cacheKey, response.results, TTL.PROVIDER_LIST);

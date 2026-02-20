@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
-import { motion } from 'motion/react';
-import { Sun, Moon } from 'lucide-react';
-import { useThemeStore } from '../../stores/themeStore';
+import { useCallback } from "react";
+import { motion } from "motion/react";
+import { Sun, Moon } from "lucide-react";
+import { useThemeStore } from "../../stores/themeStore";
 
 /**
  * ThemeToggle — Skeuomorphic dark/light toggle switch.
@@ -10,10 +10,10 @@ import { useThemeStore } from '../../stores/themeStore';
  * inside the track, and spring animation. Matches the premium
  * aesthetic of the RotaryDial companion component.
  */
-export function ThemeToggle({ className = '' }: { className?: string }) {
+export function ThemeToggle({ className = "" }: { className?: string }) {
   const mode = useThemeStore((s) => s.mode);
   const toggleMode = useThemeStore((s) => s.toggleMode);
-  const isDark = mode === 'dark';
+  const isDark = mode === "dark";
 
   const handleClick = useCallback(() => {
     toggleMode();
@@ -21,7 +21,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         toggleMode();
       }
@@ -43,9 +43,9 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
       <div
         className="relative w-[52px] h-7 rounded-full transition-colors duration-200"
         style={{
-          backgroundColor: isDark ? 'var(--accent)' : 'var(--clay-elevated)',
+          backgroundColor: isDark ? "var(--accent)" : "var(--clay-elevated)",
           boxShadow:
-            'inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.1)',
+            "inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.1)",
         }}
       >
         {/* Sun icon (left side — visible in light mode) */}
@@ -54,7 +54,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
           style={{
             width: 14,
             height: 14,
-            color: isDark ? 'rgba(255,255,255,0.3)' : 'var(--clay-text)',
+            color: isDark ? "rgba(255,255,255,0.3)" : "var(--clay-text)",
             opacity: isDark ? 0.3 : 0.8,
           }}
         />
@@ -65,7 +65,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
           style={{
             width: 14,
             height: 14,
-            color: isDark ? 'var(--clay-base)' : 'var(--clay-text-muted)',
+            color: isDark ? "var(--clay-base)" : "var(--clay-text-muted)",
             opacity: isDark ? 0.9 : 0.3,
           }}
         />
@@ -74,10 +74,10 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
         <motion.div
           className="metal-knob absolute top-[3px] w-[22px] h-[22px] rounded-full"
           animate={{ x: isDark ? 25 : 3 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
           style={{
             boxShadow:
-              '0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)',
+              "0 2px 4px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3)",
           }}
         />
       </div>

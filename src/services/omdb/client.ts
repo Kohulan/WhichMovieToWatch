@@ -1,8 +1,8 @@
 // OMDB ratings lookup by IMDB ID with aggressive caching to conserve 1000/day quota
 
-import { getCached, setCache, TTL } from '@/services/cache/cache-manager';
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
 
-const OMDB_BASE_URL = 'https://www.omdbapi.com';
+const OMDB_BASE_URL = "https://www.omdbapi.com";
 
 export interface OmdbRatings {
   imdbRating: string;
@@ -17,7 +17,9 @@ interface OmdbApiResponse {
   Ratings?: Array<{ Source: string; Value: string }>;
 }
 
-export async function fetchOmdbRatings(imdbId: string): Promise<OmdbRatings | null> {
+export async function fetchOmdbRatings(
+  imdbId: string,
+): Promise<OmdbRatings | null> {
   if (!imdbId) return null;
 
   const cacheKey = `omdb-${imdbId}`;
@@ -43,18 +45,18 @@ export async function fetchOmdbRatings(imdbId: string): Promise<OmdbRatings | nu
 
   const data: OmdbApiResponse = await response.json();
 
-  if (data.Response === 'False') {
+  if (data.Response === "False") {
     // Cache null result to avoid re-fetching a movie OMDB doesn't have
     await setCache(cacheKey, null, TTL.OMDB_RATINGS);
     return null;
   }
 
-  const rtRating = data.Ratings?.find((r) => r.Source === 'Rotten Tomatoes');
+  const rtRating = data.Ratings?.find((r) => r.Source === "Rotten Tomatoes");
 
   const ratings: OmdbRatings = {
-    imdbRating: data.imdbRating === 'N/A' ? 'N/A' : (data.imdbRating || 'N/A'),
+    imdbRating: data.imdbRating === "N/A" ? "N/A" : data.imdbRating || "N/A",
     rottenTomatoes: rtRating?.Value || null,
-    metascore: data.Metascore === 'N/A' ? null : (data.Metascore || null),
+    metascore: data.Metascore === "N/A" ? null : data.Metascore || null,
   };
 
   await setCache(cacheKey, ratings, TTL.OMDB_RATINGS);

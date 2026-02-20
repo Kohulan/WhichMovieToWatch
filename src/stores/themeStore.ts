@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
 
-export type ColorPreset = 'warm-orange' | 'gold' | 'clean-white';
-export type ThemeMode = 'light' | 'dark';
+export type ColorPreset = "warm-orange" | "gold" | "clean-white";
+export type ThemeMode = "light" | "dark";
 
 interface ThemeState {
   mode: ThemeMode;
@@ -15,15 +15,15 @@ interface ThemeState {
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
-      mode: 'dark',
-      preset: 'warm-orange',
+      mode: "dark",
+      preset: "warm-orange",
       setMode: (mode) => set({ mode }),
       toggleMode: () =>
-        set((state) => ({ mode: state.mode === 'light' ? 'dark' : 'light' })),
+        set((state) => ({ mode: state.mode === "light" ? "dark" : "light" })),
       setPreset: (preset) => set({ preset }),
     }),
     {
-      name: 'theme-preferences',
+      name: "theme-preferences",
       storage: createJSONStorage(() => localStorage),
     },
   ),

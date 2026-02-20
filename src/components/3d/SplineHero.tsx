@@ -1,9 +1,9 @@
-import { SplineScene } from './SplineScene';
-import { useThemeStore, type ThemeMode } from '@/stores/themeStore';
+import { SplineScene } from "./SplineScene";
+import { useThemeStore, type ThemeMode } from "@/stores/themeStore";
 
 const SCENE_URLS: Record<ThemeMode, string> = {
-  dark:  'https://prod.spline.design/2fWjKvs9eEHSzk0P/scene.splinecode',
-  light: 'https://prod.spline.design/uc2Zl43KCHmTStn5/scene.splinecode',
+  dark: "https://prod.spline.design/2fWjKvs9eEHSzk0P/scene.splinecode",
+  light: "https://prod.spline.design/uc2Zl43KCHmTStn5/scene.splinecode",
 };
 
 interface SplineHeroProps {
