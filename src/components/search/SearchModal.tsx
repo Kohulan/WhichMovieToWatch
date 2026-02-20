@@ -242,14 +242,14 @@ export function SearchModal({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop — click to close (SRCH-05). Animates backdrop-filter blur for cinematic entrance. */}
+          {/* Backdrop — click to close (SRCH-05). Static blur revealed by opacity fade. */}
           <motion.div
             key="search-backdrop"
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ opacity: 1, backdropFilter: "blur(12px)" }}
-            exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-black/60"
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm sm:bg-black/60 sm:backdrop-blur-md"
             onClick={onClose}
             aria-hidden="true"
           />
@@ -263,7 +263,7 @@ export function SearchModal({
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="
               fixed inset-x-0 bottom-0 z-50
-              bg-clay-base/80 backdrop-blur-2xl border-t border-white/10
+              bg-clay-base/95 backdrop-blur-md sm:bg-clay-base/80 sm:backdrop-blur-2xl border-t border-white/10
               rounded-t-[24px]
               max-h-[90vh]
               flex flex-col

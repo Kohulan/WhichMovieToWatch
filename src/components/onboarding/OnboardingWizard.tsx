@@ -29,17 +29,17 @@ const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 80 : -80,
     opacity: 0,
-    filter: "blur(4px)",
+    scale: 0.97,
   }),
   center: {
     x: 0,
     opacity: 1,
-    filter: "blur(0px)",
+    scale: 1,
   },
   exit: (direction: number) => ({
     x: direction > 0 ? -80 : 80,
     opacity: 0,
-    filter: "blur(4px)",
+    scale: 0.97,
   }),
 };
 
@@ -209,7 +209,7 @@ export function OnboardingWizard({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative bg-clay-base/90 backdrop-blur-2xl border border-white/10 rounded-2xl max-w-xl w-full mx-auto max-h-[85vh] flex flex-col overflow-hidden transition-colors duration-300"
+            className="relative bg-clay-base/95 backdrop-blur-md sm:bg-clay-base/90 sm:backdrop-blur-2xl border border-white/10 rounded-2xl max-w-xl w-full mx-auto max-h-[85vh] flex flex-col overflow-hidden transition-colors duration-300"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{
               scale: 1,
@@ -346,7 +346,7 @@ export function OnboardingWizard({
                             >
                               <div
                                 className={`
-                                  relative w-full aspect-square rounded-xl overflow-hidden transition-all duration-200
+                                  relative w-full aspect-square rounded-xl overflow-hidden transition-[box-shadow,opacity] duration-200
                                   ${
                                     isSelected
                                       ? "ring-[3px] ring-accent shadow-[0_0_16px_rgba(var(--accent-rgb,255,140,50),0.35)] opacity-100"
@@ -457,7 +457,7 @@ export function OnboardingWizard({
                         <span
                           className={`
                             inline-flex items-center px-4 py-2 rounded-full font-body font-semibold text-sm
-                            transition-all duration-200 select-none
+                            transition-colors duration-200 select-none
                             ${
                               selectedGenre === null
                                 ? "bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]"
@@ -488,7 +488,7 @@ export function OnboardingWizard({
                             <span
                               className={`
                                 inline-flex items-center px-4 py-2 rounded-full font-body font-medium text-sm
-                                transition-all duration-200 select-none
+                                transition-colors duration-200 select-none
                                 ${
                                   isSelected
                                     ? "bg-accent text-white shadow-[0_0_12px_rgba(var(--accent-rgb,255,140,50),0.3)]"

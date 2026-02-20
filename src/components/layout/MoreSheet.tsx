@@ -68,7 +68,7 @@ export function MoreSheet({
               fixed top-0 right-0 bottom-0 z-50
               sm:hidden
               w-72
-              bg-clay-base/95 backdrop-blur-2xl
+              bg-clay-base/95 backdrop-blur-md
               border-l border-white/[0.12]
               shadow-[-8px_0_40px_rgba(0,0,0,0.25)]
               flex flex-col

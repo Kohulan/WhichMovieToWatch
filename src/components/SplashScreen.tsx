@@ -24,8 +24,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
-        scale: 1.1,
-        filter: "blur(12px)",
+        scale: 1.08,
         transition: { duration: 0.6, ease: "easeInOut" },
       }}
     >
@@ -95,15 +94,15 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
             key={word}
             className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-white"
             variants={{
-              hidden: { opacity: 0, y: 30, filter: "blur(12px)" },
+              hidden: { opacity: 0, y: 30, scale: 0.92 },
               visible: {
                 opacity: 1,
                 y: 0,
-                filter: "blur(0px)",
+                scale: 1,
                 transition: {
                   y: { type: "spring", stiffness: 250, damping: 18 },
                   opacity: { duration: 0.4 },
-                  filter: { duration: 0.5 },
+                  scale: { duration: 0.5, ease: "easeOut" },
                 },
               },
             }}

@@ -18,7 +18,7 @@ export function TabBar() {
         fixed bottom-0 left-0 right-0 z-40
         mx-2 sm:mx-5 mb-2 sm:mb-3
         rounded-2xl
-        bg-clay-base/60 backdrop-blur-xl
+        bg-clay-base/80 backdrop-blur-md sm:bg-clay-base/60 sm:backdrop-blur-xl
         border border-white/[0.08]
         pb-[env(safe-area-inset-bottom)]
         transition-colors duration-500 ease-in-out
