@@ -6,7 +6,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Link, Image, Square, Twitter, MessageCircle, X } from "lucide-react";
+import {
+  Link,
+  Image,
+  Square,
+  Twitter,
+  MessageCircle,
+  X,
+  Share2,
+} from "lucide-react";
 import {
   generateStoryCard,
   generatePostCard,
@@ -130,6 +138,19 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
     onClose();
   }
 
+  async function handleNativeShare() {
+    try {
+      await navigator.share({
+        title: movie.title,
+        text: `Check out ${movie.title}!`,
+        url: shareUrl,
+      });
+    } catch {
+      // user cancelled
+    }
+    onClose();
+  }
+
   return (
     <motion.div
       className="fixed inset-0 z-50 flex items-end justify-center"
@@ -172,6 +193,14 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
 
         {/* Actions */}
         <div className="py-2">
+          {typeof navigator !== "undefined" && !!navigator.share && (
+            <ShareMenuItem
+              icon={<Share2 className="w-5 h-5" />}
+              label="Share Link"
+              subtitle="Native share sheet"
+              onClick={handleNativeShare}
+            />
+          )}
           <ShareMenuItem
             icon={<Link className="w-5 h-5" />}
             label="Copy Link"

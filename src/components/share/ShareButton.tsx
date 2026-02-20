@@ -7,7 +7,6 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Share2 } from "lucide-react";
-import { useShare } from "@/hooks/useShare";
 import { ShareMenu } from "./ShareMenu";
 import type { StoryCardMovie } from "./StoryCardGenerator";
 
@@ -17,27 +16,10 @@ interface ShareButtonProps {
 
 const SHARE_URL_BASE = "https://www.whichmovietowatch.online/#/discover?movie=";
 
-/** Touch device = mobile/tablet → use native share sheet */
-const isMobile =
-  typeof navigator !== "undefined" && navigator.maxTouchPoints > 0;
-
 export function ShareButton({ movie }: ShareButtonProps) {
-  const { canNativeShare, share } = useShare();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  async function handleClick() {
-    // Mobile with native share: open OS share sheet (link only)
-    if (isMobile && canNativeShare) {
-      const shareUrl = `${SHARE_URL_BASE}${movie.id}`;
-      await share({
-        title: movie.title,
-        text: `Check out ${movie.title}!`,
-        url: shareUrl,
-      });
-      return;
-    }
-
-    // Desktop (or no native share): always show custom menu
+  function handleClick() {
     setMenuOpen(true);
   }
 

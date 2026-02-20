@@ -90,7 +90,10 @@ export function DiscoveryPage() {
   );
 
   // Watch providers for current movie
-  const { providers } = useWatchProviders(currentMovie?.id ?? null);
+  const { providers } = useWatchProviders(
+    currentMovie?.id ?? null,
+    currentMovie?.title ?? "",
+  );
 
   // Similar movies — only triggered after Love action (INTR-01)
   const { movies: similarMovies, isLoading: similarLoading } =

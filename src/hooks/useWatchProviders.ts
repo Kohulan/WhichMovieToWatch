@@ -7,13 +7,14 @@ import {
 } from "@/services/tmdb/providers";
 import { useRegionStore } from "@/stores/regionStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
-import { isFreeProvider } from "@/lib/provider-registry";
+import { isFreeProvider, getProviderDeepLink } from "@/lib/provider-registry";
 import type { WatchProviderCountry, WatchProvider } from "@/types/movie";
 import type { MovieProviders, ProviderInfo } from "@/types/provider";
 
-/** Map raw WatchProvider to ProviderInfo with isFree flag */
+/** Map raw WatchProvider to ProviderInfo with per-provider deep link */
 function toProviderInfo(
   provider: WatchProvider,
+  movieTitle: string,
   tmdbLink: string,
 ): ProviderInfo {
   return {
@@ -21,20 +22,21 @@ function toProviderInfo(
     provider_name: provider.provider_name,
     logo_path: provider.logo_path,
     display_priority: provider.display_priority,
-    deep_link: tmdbLink,
+    deep_link: getProviderDeepLink(provider.provider_id, movieTitle, tmdbLink),
   };
 }
 
 /** Map a list of WatchProviders to ProviderInfo[] */
 function mapProviders(
   providers: WatchProvider[] | undefined,
+  movieTitle: string,
   tmdbLink: string,
 ): ProviderInfo[] | undefined {
   if (!providers || providers.length === 0) return undefined;
-  return providers.map((p) => toProviderInfo(p, tmdbLink));
+  return providers.map((p) => toProviderInfo(p, movieTitle, tmdbLink));
 }
 
-export function useWatchProviders(movieId: number | null) {
+export function useWatchProviders(movieId: number | null, movieTitle = "") {
   const [rawData, setRawData] = useState<WatchProviderCountry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const region = useRegionStore((s) => s.effectiveRegion)();
@@ -84,14 +86,14 @@ export function useWatchProviders(movieId: number | null) {
     const tmdbLink = rawData.link || "";
 
     return {
-      flatrate: mapProviders(rawData.flatrate, tmdbLink),
-      rent: mapProviders(rawData.rent, tmdbLink),
-      buy: mapProviders(rawData.buy, tmdbLink),
-      free: mapProviders(rawData.free, tmdbLink),
-      ads: mapProviders(rawData.ads, tmdbLink),
+      flatrate: mapProviders(rawData.flatrate, movieTitle, tmdbLink),
+      rent: mapProviders(rawData.rent, movieTitle, tmdbLink),
+      buy: mapProviders(rawData.buy, movieTitle, tmdbLink),
+      free: mapProviders(rawData.free, movieTitle, tmdbLink),
+      ads: mapProviders(rawData.ads, movieTitle, tmdbLink),
       tmdb_link: tmdbLink,
     };
-  }, [rawData]);
+  }, [rawData, movieTitle]);
 
   // Filter providers to only those in user's myServices
   const myProviders: MovieProviders = useMemo(() => {
