@@ -2,7 +2,7 @@
  * StoryCardGenerator.ts
  * Canvas-based Instagram story card generator (1080x1920).
  * Theme-aware: gradient and accent colors match the current theme preset.
- * Poster loaded via corsproxy.io CORS proxy to bypass TMDB CORS restrictions.
+ * Poster loaded via images.weserv.nl CORS proxy to bypass TMDB CORS restrictions.
  */
 
 import type { ColorPreset } from "@/stores/themeStore";
@@ -48,14 +48,36 @@ const TEXT_COLORS = {
   light: { primary: "#1a1a1a", secondary: "rgba(0,0,0,0.55)" },
 };
 
-function loadImageFromSrc(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
-  });
+/**
+ * Load a TMDB poster image for canvas use via images.weserv.nl CORS proxy.
+ * Fetches as blob → creates object URL → loads Image element.
+ * Blob URLs are same-origin so the canvas is never tainted.
+ * Returns null on any failure (network, 404, decode error).
+ */
+async function loadPosterImage(
+  posterPath: string,
+): Promise<HTMLImageElement | null> {
+  const proxyUrl = `https://images.weserv.nl/?url=image.tmdb.org/t/p/w780${posterPath}&n=-1`;
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    return new Promise<HTMLImageElement | null>((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(blobUrl);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(blobUrl);
+        resolve(null);
+      };
+      img.src = blobUrl;
+    });
+  } catch {
+    return null;
+  }
 }
 
 function drawRoundedRect(
@@ -132,26 +154,17 @@ export async function generateStoryCard(
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 20;
 
-  let posterLoaded = false;
+  const posterImg = movie.poster_path
+    ? await loadPosterImage(movie.poster_path)
+    : null;
 
-  if (movie.poster_path) {
-    const tmdbUrl = `https://image.tmdb.org/t/p/w780${movie.poster_path}`;
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(tmdbUrl)}`;
-    try {
-      const img = await loadImageFromSrc(proxyUrl);
-      ctx.save();
-      drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 20);
-      ctx.clip();
-      ctx.shadowColor = "transparent"; // clip resets after save/restore
-      ctx.drawImage(img, POSTER_X, POSTER_Y, POSTER_W, POSTER_H);
-      ctx.restore();
-      posterLoaded = true;
-    } catch {
-      // Fallback handled below
-    }
-  }
-
-  if (!posterLoaded) {
+  if (posterImg) {
+    ctx.save();
+    drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 20);
+    ctx.clip();
+    ctx.drawImage(posterImg, POSTER_X, POSTER_Y, POSTER_W, POSTER_H);
+    ctx.restore();
+  } else {
     // Gradient placeholder poster
     ctx.save();
     drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 20);
@@ -305,25 +318,17 @@ export async function generatePostCard(
   ctx.shadowBlur = 30;
   ctx.shadowOffsetY = 12;
 
-  let posterLoaded = false;
-  if (movie.poster_path) {
-    const tmdbUrl = `https://image.tmdb.org/t/p/w780${movie.poster_path}`;
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(tmdbUrl)}`;
-    try {
-      const img = await loadImageFromSrc(proxyUrl);
-      ctx.save();
-      drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 16);
-      ctx.clip();
-      ctx.shadowColor = "transparent";
-      ctx.drawImage(img, POSTER_X, POSTER_Y, POSTER_W, POSTER_H);
-      ctx.restore();
-      posterLoaded = true;
-    } catch {
-      // fallback below
-    }
-  }
+  const posterImg = movie.poster_path
+    ? await loadPosterImage(movie.poster_path)
+    : null;
 
-  if (!posterLoaded) {
+  if (posterImg) {
+    ctx.save();
+    drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 16);
+    ctx.clip();
+    ctx.drawImage(posterImg, POSTER_X, POSTER_Y, POSTER_W, POSTER_H);
+    ctx.restore();
+  } else {
     ctx.save();
     drawRoundedRect(ctx, POSTER_X, POSTER_Y, POSTER_W, POSTER_H, 16);
     const pg = ctx.createLinearGradient(
