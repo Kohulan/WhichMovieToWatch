@@ -14,14 +14,14 @@ import type { Transition, Variants } from "motion/react";
  * entering page renders at the correct position. pointerEvents:'none'
  * prevents the fading-out page from intercepting clicks.
  */
-const syncExit: Record<string, unknown> = {
+const syncExit = {
   opacity: 0,
-  position: "absolute",
+  position: "absolute" as const,
   top: 0,
   left: 0,
   right: 0,
   zIndex: 0,
-  pointerEvents: "none",
+  pointerEvents: "none" as const,
 };
 
 /**
