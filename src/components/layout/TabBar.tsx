@@ -16,7 +16,7 @@ export function TabBar() {
       role="contentinfo"
       className="
         fixed bottom-0 left-0 right-0 z-40
-        mx-3 sm:mx-5 mb-3
+        mx-2 sm:mx-5 mb-2 sm:mb-3
         rounded-2xl
         bg-clay-base/60 backdrop-blur-xl
         border border-white/[0.08]
@@ -24,7 +24,7 @@ export function TabBar() {
         transition-colors duration-500 ease-in-out
       "
     >
-      <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 text-xs text-clay-text-muted">
+      <div className="flex items-center justify-between px-3 sm:px-5 py-2.5 text-xs text-clay-text-muted">
         {/* Left: credit + GitHub */}
         <div className="flex items-center gap-1.5">
           <span>Made with</span>

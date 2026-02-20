@@ -50,7 +50,7 @@ function App() {
         <Scene3DProvider>
           <AppShell />
 
-          {/* Tab bar — persistent bottom navigation (DISC-03) */}
+          {/* Footer bar with credits + mobile "More" button */}
           <TabBar />
         </Scene3DProvider>
       )}
