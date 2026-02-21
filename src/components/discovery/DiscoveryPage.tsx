@@ -71,6 +71,7 @@ export function DiscoveryPage() {
   const hasCompletedOnboarding = usePreferencesStore(
     (s) => s.hasCompletedOnboarding,
   );
+  const myServices = usePreferencesStore((s) => s.myServices);
   const preferredProvider = usePreferencesStore((s) => s.preferredProvider);
   const preferredGenre = usePreferencesStore((s) => s.preferredGenre);
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -89,11 +90,13 @@ export function DiscoveryPage() {
     currentMovie?.imdb_id ?? null,
   );
 
-  // Watch providers for current movie
-  const { providers } = useWatchProviders(
-    currentMovie?.id ?? null,
-    currentMovie?.title ?? "",
-  );
+  // Watch providers for current movie — show only user's selected services when set
+  const {
+    providers: allProviders,
+    myProviders,
+    hasServiceMismatch,
+  } = useWatchProviders(currentMovie?.id ?? null, currentMovie?.title ?? "");
+  const providers = myServices.length > 0 ? myProviders : allProviders;
 
   // Similar movies — only triggered after Love action (INTR-01)
   const { movies: similarMovies, isLoading: similarLoading } =
@@ -104,24 +107,26 @@ export function DiscoveryPage() {
     ? getBackdropUrl(currentMovie.backdrop_path, "original")
     : null;
 
-  // Initialize on mount: show onboarding for new users, apply persisted filters for returning users
+  // Initialize on mount: show onboarding for new users, apply persisted filters + discover for returning users.
+  // Post-onboarding discover is handled by handleOnboardingComplete — no deps needed here.
   useEffect(() => {
     if (!hasCompletedOnboarding && !deepLinkMovieId) {
       setShowOnboarding(true);
-    } else if (hasCompletedOnboarding) {
+    } else if (hasCompletedOnboarding && !deepLinkMovieId) {
+      // Returning user — restore persisted filters and discover
+      const providerIds =
+        myServices.length > 0
+          ? myServices
+          : preferredProvider
+            ? [Number(preferredProvider)]
+            : [];
       setFilters({
-        providerId: preferredProvider ? Number(preferredProvider) : null,
+        providerIds,
         genreId: preferredGenre,
       });
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Load a random movie on first render if no deep link and onboarding already done
-  useEffect(() => {
-    if (!deepLinkMovieId && !discoveryMovie && hasCompletedOnboarding) {
       discover();
     }
-  }, [hasCompletedOnboarding]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // When deep link movie is loaded, set it as current movie in store and clear param.
   // Capture showAllProviders before clearing — URL params disappear after clearDeepLink().
@@ -364,6 +369,8 @@ export function DiscoveryPage() {
                 <ProviderSection
                   providers={providers}
                   findMovieLink={findMovieLink}
+                  hasServiceMismatch={hasServiceMismatch}
+                  allProviders={allProviders}
                 >
                   {/* Ticket search — only shown for trending (now playing) movies */}
                   {showTickets && (

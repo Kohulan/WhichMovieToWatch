@@ -3,7 +3,7 @@ import type { TMDBMovieDetails } from "@/types/movie";
 
 interface DiscoveryFilters {
   genreId: string | null;
-  providerId: number | null;
+  providerIds: number[];
   minRating: number;
   minVoteCount: number;
 }
@@ -25,7 +25,7 @@ interface DiscoveryState {
 
 const DEFAULT_FILTERS: DiscoveryFilters = {
   genreId: null,
-  providerId: null,
+  providerIds: [],
   minRating: 6.0,
   minVoteCount: 500,
 };

@@ -1,9 +1,9 @@
 // Cinematic 2-step onboarding wizard for provider + genre preferences
 // Supports both first-visit onboarding and re-edit settings mode.
 
-import { useState, useCallback, useRef, useEffect, useId } from "react";
+import { useState, useCallback, useEffect, useId } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Tv, Sparkles, ArrowLeft, X } from "lucide-react";
+import { Tv, Sparkles, ArrowLeft, ArrowRight, X } from "lucide-react";
 import { MetalButton } from "@/components/ui";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useDiscoveryStore } from "@/stores/discoveryStore";
@@ -46,8 +46,8 @@ const slideVariants = {
 /**
  * OnboardingWizard — Cinematic 2-step preference setup.
  *
- * Step 1: Pick ONE default streaming provider (single-select logo grid).
- *         Auto-advances to step 2 after selection.
+ * Step 1: Pick streaming providers (multi-select logo grid).
+ *         User clicks "Next" in footer to advance.
  * Step 2: Pick ONE genre or "Any" (single-select pill chips).
  *
  * Footer with Skip/Back and action buttons is always pinned to the bottom.
@@ -60,11 +60,18 @@ export function OnboardingWizard({
 }: OnboardingWizardProps) {
   const currentProvider = usePreferencesStore((s) => s.preferredProvider);
   const currentGenre = usePreferencesStore((s) => s.preferredGenre);
+  const myServices = usePreferencesStore((s) => s.myServices);
 
   const [step, setStep] = useState<1 | 2>(1);
   const [direction, setDirection] = useState(1);
-  const [selectedProvider, setSelectedProvider] = useState<number | null>(
-    mode === "settings" && currentProvider ? Number(currentProvider) : null,
+  const [selectedProviders, setSelectedProviders] = useState<Set<number>>(
+    () => {
+      if (mode === "settings") {
+        if (myServices.length > 0) return new Set(myServices);
+        if (currentProvider) return new Set([Number(currentProvider)]);
+      }
+      return new Set();
+    },
   );
   const [selectedGenre, setSelectedGenre] = useState<string | null>(
     mode === "settings" ? currentGenre : null,
@@ -74,22 +81,13 @@ export function OnboardingWizard({
     (s) => s.setPreferredProvider,
   );
   const setPreferredGenre = usePreferencesStore((s) => s.setPreferredGenre);
+  const setMyServices = usePreferencesStore((s) => s.setMyServices);
   const completeOnboarding = usePreferencesStore((s) => s.completeOnboarding);
   const setFilters = useDiscoveryStore((s) => s.setFilters);
 
   const { providers, isLoading: providersLoading } = useRegionProviders();
   const genres = getAllGenres();
   const titleId = useId();
-
-  // Track auto-advance timer so we can cancel on unmount
-  const autoAdvanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Cleanup timer on unmount
-  useEffect(() => {
-    return () => {
-      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
-    };
-  }, []);
 
   // Sort providers: top ones first, then alphabetical
   const sortedProviders = [...providers].sort((a, b) => {
@@ -100,23 +98,16 @@ export function OnboardingWizard({
     return a.provider_name.localeCompare(b.provider_name);
   });
 
-  // Select provider and auto-advance to genres after a brief delay
+  // Toggle provider in/out of multi-select set
   const handleProviderSelect = useCallback((providerId: number) => {
-    setSelectedProvider((prev) => {
-      const newVal = prev === providerId ? null : providerId;
-
-      // Clear any pending auto-advance
-      if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
-
-      // Auto-advance to genre step when a provider is selected
-      if (newVal !== null) {
-        autoAdvanceTimer.current = setTimeout(() => {
-          setDirection(1);
-          setStep(2);
-        }, 350);
+    setSelectedProviders((prev) => {
+      const next = new Set(prev);
+      if (next.has(providerId)) {
+        next.delete(providerId);
+      } else {
+        next.add(providerId);
       }
-
-      return newVal;
+      return next;
     });
   }, []);
 
@@ -126,11 +117,16 @@ export function OnboardingWizard({
   }, []);
 
   const handleSave = useCallback(() => {
-    setPreferredProvider(selectedProvider ? String(selectedProvider) : null);
+    const providerArray = [...selectedProviders];
+    setMyServices(providerArray);
+    // Backward compat: keep preferredProvider as the first selected service
+    setPreferredProvider(
+      providerArray.length > 0 ? String(providerArray[0]) : null,
+    );
     setPreferredGenre(selectedGenre);
 
     setFilters({
-      providerId: selectedProvider,
+      providerIds: providerArray,
       genreId: selectedGenre,
     });
 
@@ -140,8 +136,9 @@ export function OnboardingWizard({
 
     onComplete();
   }, [
-    selectedProvider,
+    selectedProviders,
     selectedGenre,
+    setMyServices,
     setPreferredProvider,
     setPreferredGenre,
     setFilters,
@@ -180,7 +177,15 @@ export function OnboardingWizard({
     if (isOpen) {
       setStep(1);
       if (mode === "settings") {
-        setSelectedProvider(currentProvider ? Number(currentProvider) : null);
+        const services = usePreferencesStore.getState().myServices;
+        const provider = usePreferencesStore.getState().preferredProvider;
+        if (services.length > 0) {
+          setSelectedProviders(new Set(services));
+        } else if (provider) {
+          setSelectedProviders(new Set([Number(provider)]));
+        } else {
+          setSelectedProviders(new Set());
+        }
         setSelectedGenre(currentGenre);
       }
     }
@@ -297,16 +302,16 @@ export function OnboardingWizard({
                           className="font-heading text-lg font-bold text-clay-text"
                         >
                           {isSettingsMode
-                            ? "Change Streaming Service"
+                            ? "Change Streaming Services"
                             : "Where do you watch?"}
                         </h2>
                         <p className="text-clay-text-muted text-xs">
-                          Tap your go-to platform
+                          Tap your platforms
                         </p>
                       </div>
                     </div>
 
-                    {/* Provider grid — single select, auto-advances */}
+                    {/* Provider grid — multi-select */}
                     {providersLoading ? (
                       <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 pb-4">
                         {Array.from({ length: 10 }).map((_, i) => (
@@ -319,19 +324,20 @@ export function OnboardingWizard({
                     ) : (
                       <div
                         className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 pb-4"
-                        role="radiogroup"
+                        role="group"
                         aria-label="Streaming service selection"
                       >
                         {sortedProviders.map((provider) => {
-                          const isSelected =
-                            selectedProvider === provider.provider_id;
+                          const isSelected = selectedProviders.has(
+                            provider.provider_id,
+                          );
                           return (
                             <motion.button
                               key={provider.provider_id}
                               onClick={() =>
                                 handleProviderSelect(provider.provider_id)
                               }
-                              role="radio"
+                              role="checkbox"
                               aria-checked={isSelected}
                               aria-label={provider.provider_name}
                               title={provider.provider_name}
@@ -520,6 +526,20 @@ export function OnboardingWizard({
                 <MetalButton variant="ghost" size="sm" onClick={handleBack}>
                   <ArrowLeft className="w-3.5 h-3.5" />
                   Back
+                </MetalButton>
+              )}
+
+              {step === 1 && selectedProviders.size > 0 && (
+                <MetalButton
+                  variant="primary"
+                  size="md"
+                  onClick={() => {
+                    setDirection(1);
+                    setStep(2);
+                  }}
+                >
+                  Next
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </MetalButton>
               )}
 

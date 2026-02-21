@@ -14,11 +14,13 @@ let detectionPromise: Promise<void> | null = null;
 
 /**
  * Fallback GPU classification using the WebGL renderer string.
- * Used when detect-gpu fails (e.g. ad blocker blocks unpkg.com benchmarks).
+ * Used when detect-gpu can't fetch benchmarks (e.g. ad blocker blocks unpkg.com).
  *
- * Returns a conservative tier estimate based on WebGL availability and
- * the unmasked renderer string. Not as precise as detect-gpu's benchmark
- * comparison, but avoids the false tier-0 that blocks 3D entirely.
+ * detect-gpu needs to fetch benchmark JSON from unpkg.com to compare the GPU
+ * against known performance data. When that fetch is blocked (ad blockers,
+ * corporate firewalls, privacy extensions), the library returns type:'FALLBACK'
+ * with tier:1 — too low for 3D. This function uses the WebGL renderer string
+ * to make a more accurate local classification.
  */
 function localGpuFallback(): Omit<GpuTierResult, "loading"> {
   const isMobile =
@@ -75,8 +77,11 @@ function localGpuFallback(): Omit<GpuTierResult, "loading"> {
  *   2 = mid-range (mobile high, desktop integrated)
  *   3 = high-end (discrete desktop GPU)
  *
- * When detect-gpu fails (e.g. ad blocker blocks benchmark fetch from unpkg.com),
- * falls back to a local WebGL renderer heuristic instead of defaulting to tier 0.
+ * detect-gpu relies on fetching benchmark data from unpkg.com. When that
+ * fetch is blocked (ad blockers, privacy extensions), the library returns
+ * type:'FALLBACK' with tier:1 — which forces fallback-2d and hides the
+ * Spline 3D scene. In that case, we use a local WebGL renderer heuristic
+ * to get a more accurate tier.
  *
  * Module-level caching ensures detection runs only once per session,
  * even if multiple components mount this hook simultaneously.
@@ -105,14 +110,32 @@ export function useGpuTier(): GpuTierResult {
     detectionPromise = (async () => {
       try {
         const gpuTier = await getGPUTier();
-        cachedResult = {
-          tier: gpuTier.tier,
-          isMobile: gpuTier.isMobile ?? false,
-          gpu: gpuTier.gpu,
-        };
+
+        // detect-gpu resolves (doesn't throw) even when benchmarks can't be fetched.
+        // type:'FALLBACK' means benchmarks were unavailable (blocked by ad blocker,
+        // network error, etc.) — tier will be inaccurately low. Use local heuristic.
+        // type:'BLOCKLISTED' means the GPU is known to be problematic — trust it.
+        // type:'BENCHMARK' means full benchmark comparison succeeded — trust it.
+        if (gpuTier.type === "FALLBACK") {
+          const localResult = localGpuFallback();
+          // Use the better of detect-gpu's fallback and our local estimate
+          cachedResult =
+            localResult.tier > gpuTier.tier
+              ? localResult
+              : {
+                  tier: gpuTier.tier,
+                  isMobile: gpuTier.isMobile ?? false,
+                  gpu: gpuTier.gpu,
+                };
+        } else {
+          cachedResult = {
+            tier: gpuTier.tier,
+            isMobile: gpuTier.isMobile ?? false,
+            gpu: gpuTier.gpu,
+          };
+        }
       } catch {
-        // detect-gpu failed (likely ad blocker blocking benchmark fetch).
-        // Fall back to local WebGL heuristic instead of assuming tier 0.
+        // detect-gpu threw entirely (rare) — use local fallback
         cachedResult = localGpuFallback();
       } finally {
         setResult(cachedResult);

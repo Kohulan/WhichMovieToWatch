@@ -1,12 +1,11 @@
 // Movie discovery with progressive filter relaxation
 
 import { tmdbFetch } from "./client";
-import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
 import type { TMDBDiscoverResponse, TMDBMovie } from "@/types/movie";
 
 export interface DiscoverFilters {
   genreId: string | null;
-  providerId: number | null;
+  providerIds: number[];
   minRating: number;
   minVoteCount: number;
   region: string;
@@ -21,7 +20,7 @@ interface RelaxationOverrides {
   minRating?: number;
   minVoteCount?: number;
   genreId?: null;
-  providerId?: null;
+  providerIds?: [];
 }
 
 // Progressive filter relaxation steps (5 steps per research doc):
@@ -35,7 +34,7 @@ const RELAXATION_STEPS: RelaxationOverrides[] = [
   { minRating: 5.5, minVoteCount: 200 }, // Step 1: relax quality thresholds
   { genreId: null }, // Step 2: remove genre constraint
   { minRating: 5.0, minVoteCount: 50 }, // Step 3: further relax thresholds
-  { providerId: null }, // Step 4: remove provider constraint
+  { providerIds: [] }, // Step 4: remove provider constraint
 ];
 
 export async function discoverMovie(
@@ -57,8 +56,11 @@ export async function discoverMovie(
     if ("genreId" in step && !(lockUserFilters && filters.genreId)) {
       relaxed.genreId = step.genreId ?? null;
     }
-    if ("providerId" in step && !(lockUserFilters && filters.providerId)) {
-      relaxed.providerId = step.providerId ?? null;
+    if (
+      "providerIds" in step &&
+      !(lockUserFilters && filters.providerIds.length > 0)
+    ) {
+      relaxed.providerIds = step.providerIds ?? [];
     }
   }
 
@@ -79,8 +81,8 @@ export async function discoverMovie(
   params.watch_region = relaxed.region;
   params.with_watch_monetization_types = "flatrate";
 
-  if (relaxed.providerId) {
-    params.with_watch_providers = relaxed.providerId;
+  if (relaxed.providerIds.length > 0) {
+    params.with_watch_providers = relaxed.providerIds.join("|");
   }
 
   // Fetch page 1 to learn total_pages, then pick a random page within the valid range
@@ -124,4 +126,96 @@ export async function discoverMovie(
 
   // All relaxation steps exhausted
   return { movie: null, relaxationStep };
+}
+
+/**
+ * Return a shuffled pool of candidate movies for provider verification.
+ * Uses flatrate-only monetization so TMDB only returns movies genuinely
+ * included in streaming subscriptions (not rent/buy).
+ */
+export async function discoverCandidates(
+  filters: DiscoverFilters,
+  excludeIds: Set<number>,
+  options: DiscoverOptions = {},
+): Promise<{ candidates: TMDBMovie[]; relaxationStep: number }> {
+  const { lockUserFilters = false } = options;
+
+  for (
+    let relaxationStep = 0;
+    relaxationStep < RELAXATION_STEPS.length;
+    relaxationStep++
+  ) {
+    // Apply cumulative relaxation overrides up to current step
+    const relaxed = { ...filters };
+    for (let i = 0; i <= relaxationStep; i++) {
+      const step = RELAXATION_STEPS[i];
+      if (step.minRating !== undefined) relaxed.minRating = step.minRating;
+      if (step.minVoteCount !== undefined)
+        relaxed.minVoteCount = step.minVoteCount;
+      if ("genreId" in step && !(lockUserFilters && filters.genreId)) {
+        relaxed.genreId = step.genreId ?? null;
+      }
+      if (
+        "providerIds" in step &&
+        !(lockUserFilters && filters.providerIds.length > 0)
+      ) {
+        relaxed.providerIds = step.providerIds ?? [];
+      }
+    }
+
+    const params: Record<string, string | number | boolean> = {
+      sort_by: "popularity.desc",
+      "vote_count.gte": relaxed.minVoteCount,
+      "vote_average.gte": relaxed.minRating,
+      include_adult: "false",
+      page: 1,
+    };
+
+    if (relaxed.genreId) {
+      params.with_genres = relaxed.genreId;
+    }
+
+    params.watch_region = relaxed.region;
+    params.with_watch_monetization_types = "flatrate";
+
+    if (relaxed.providerIds.length > 0) {
+      params.with_watch_providers = relaxed.providerIds.join("|");
+    }
+
+    // Fetch page 1 to learn total_pages, then pick a random page
+    const firstPage = await tmdbFetch<TMDBDiscoverResponse>(
+      "/discover/movie",
+      params,
+    );
+
+    let response = firstPage;
+    if (firstPage.total_pages > 1) {
+      const maxPage = Math.min(firstPage.total_pages, 500);
+      const randomPage = Math.floor(Math.random() * maxPage) + 1;
+      if (randomPage > 1) {
+        const randomResponse = await tmdbFetch<TMDBDiscoverResponse>(
+          "/discover/movie",
+          { ...params, page: randomPage },
+        );
+        if (randomResponse.results.length > 0) {
+          response = randomResponse;
+        }
+      }
+    }
+
+    // Filter out already-seen movies
+    const available = response.results.filter((m) => !excludeIds.has(m.id));
+
+    if (available.length > 0) {
+      // Shuffle (Fisher-Yates) so caller iterates in random order
+      for (let i = available.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [available[i], available[j]] = [available[j], available[i]];
+      }
+      return { candidates: available, relaxationStep };
+    }
+  }
+
+  // All relaxation steps exhausted
+  return { candidates: [], relaxationStep: RELAXATION_STEPS.length - 1 };
 }
