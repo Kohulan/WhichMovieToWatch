@@ -5,10 +5,15 @@ import {
   fetchMovieProviders,
   fetchRegionProviders,
 } from "@/services/tmdb/providers";
+import { getCached } from "@/services/cache/cache-manager";
 import { useRegionStore } from "@/stores/regionStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { isFreeProvider, getProviderDeepLink } from "@/lib/provider-registry";
-import type { WatchProviderCountry, WatchProvider } from "@/types/movie";
+import type {
+  WatchProviderCountry,
+  WatchProvider,
+  TMDBMovieDetails,
+} from "@/types/movie";
 import type { MovieProviders, ProviderInfo } from "@/types/provider";
 
 /** Map raw WatchProvider to ProviderInfo with per-provider deep link */
@@ -54,9 +59,19 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
       setIsLoading(true);
 
       try {
-        const data = await fetchMovieProviders(movieId!, region);
-        if (!cancelled) {
-          setRawData(data);
+        // Try reading from movie-details cache first (already fetched by useRandomMovie)
+        const detailsCache = await getCached<TMDBMovieDetails>(
+          `movie-details-${movieId}`,
+        );
+        const embedded =
+          detailsCache.value?.["watch/providers"]?.results?.[region];
+
+        if (embedded) {
+          if (!cancelled) setRawData(embedded);
+        } else {
+          // Fallback to dedicated provider fetch
+          const data = await fetchMovieProviders(movieId!, region);
+          if (!cancelled) setRawData(data);
         }
       } catch (err) {
         if (!cancelled) {
@@ -95,7 +110,8 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
     };
   }, [rawData, movieTitle]);
 
-  // Filter providers to only those in user's myServices
+  // Filter streaming tiers to user's selected services.
+  // Rent/buy are kept unfiltered — they're one-time purchases, not subscriptions.
   const myProviders: MovieProviders = useMemo(() => {
     if (!rawData) return { tmdb_link: "" };
 
@@ -105,10 +121,10 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
 
     return {
       flatrate: filterByMyServices(providers.flatrate),
-      rent: filterByMyServices(providers.rent),
-      buy: filterByMyServices(providers.buy),
       free: filterByMyServices(providers.free),
       ads: filterByMyServices(providers.ads),
+      rent: providers.rent,
+      buy: providers.buy,
       tmdb_link: providers.tmdb_link,
     };
   }, [providers, myServices, rawData]);
@@ -116,7 +132,27 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
   // All providers with isFree enrichment (already available via isFreeProvider util)
   const allProviders = providers;
 
-  return { providers, isLoading, myProviders, allProviders };
+  // Service mismatch: user has services selected but none appear in streaming
+  // tiers (flatrate/free/ads). This covers both "other services have it" and
+  // "movie is rent/buy-only" — either way the user's subscription doesn't help.
+  const hasServiceMismatch = useMemo(() => {
+    if (myServices.length === 0) return false;
+
+    const mySet = new Set(myServices);
+    const streamingTiers = [providers.flatrate, providers.free, providers.ads];
+    const hasMatch = streamingTiers.some((tier) =>
+      tier?.some((p) => mySet.has(p.provider_id)),
+    );
+    return !hasMatch;
+  }, [providers, myServices]);
+
+  return {
+    providers,
+    isLoading,
+    myProviders,
+    allProviders,
+    hasServiceMismatch,
+  };
 }
 
 /** Hook to fetch all available providers for the user's region (for settings UI) */

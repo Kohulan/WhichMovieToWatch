@@ -8,6 +8,10 @@ interface ProviderSectionProps {
   providers: MovieProviders;
   findMovieLink?: string;
   children?: React.ReactNode;
+  /** True when user has services selected but none appear in streaming tiers */
+  hasServiceMismatch?: boolean;
+  /** All providers (unfiltered) — shown as fallback when hasServiceMismatch is true */
+  allProviders?: MovieProviders;
 }
 
 interface ProviderTierProps {
@@ -72,20 +76,52 @@ function getFreeProviders(providers: MovieProviders): ProviderInfo[] {
   });
 }
 
+/** Renders all four provider tiers for a given MovieProviders */
+function ProviderTiers({ providers }: { providers: MovieProviders }) {
+  const freeProviders = getFreeProviders(providers);
+  return (
+    <div>
+      <ProviderTier
+        label="Stream"
+        providers={providers.flatrate ?? []}
+        tmdbLink={providers.tmdb_link}
+      />
+      <ProviderTier
+        label="Free"
+        providers={freeProviders}
+        tmdbLink={providers.tmdb_link}
+      />
+      <ProviderTier
+        label="Rent"
+        providers={providers.rent ?? []}
+        tmdbLink={providers.tmdb_link}
+      />
+      <ProviderTier
+        label="Buy"
+        providers={providers.buy ?? []}
+        tmdbLink={providers.tmdb_link}
+      />
+    </div>
+  );
+}
+
 /**
  * ProviderSection — Streaming availability grouped by tier.
  *
- * Groups providers into Stream / Rent / Buy / Free sections with logos.
- * Each logo links to the TMDB JustWatch link via ExternalLink.
- * Shows "Not available" message with a Find Movie link if no providers. (DISP-05)
+ * Three states:
+ * 1. Has providers — show Stream/Free/Rent/Buy tiers (existing behavior)
+ * 2. Service mismatch — "Not streaming on your selected services" + fallback all providers
+ * 3. Region unavailable — "Not available in your region" + Find Movie link
+ *
  * ARIA labeled for screen readers. (A11Y-02)
  */
 export function ProviderSection({
   providers,
   findMovieLink,
   children,
+  hasServiceMismatch,
+  allProviders,
 }: ProviderSectionProps) {
-  const freeProviders = getFreeProviders(providers);
   const hasProviders = hasAnyProviders(providers);
 
   return (
@@ -96,29 +132,15 @@ export function ProviderSection({
 
       {children}
 
-      {hasProviders ? (
+      {hasServiceMismatch && allProviders && hasAnyProviders(allProviders) ? (
         <div>
-          <ProviderTier
-            label="Stream"
-            providers={providers.flatrate ?? []}
-            tmdbLink={providers.tmdb_link}
-          />
-          <ProviderTier
-            label="Free"
-            providers={freeProviders}
-            tmdbLink={providers.tmdb_link}
-          />
-          <ProviderTier
-            label="Rent"
-            providers={providers.rent ?? []}
-            tmdbLink={providers.tmdb_link}
-          />
-          <ProviderTier
-            label="Buy"
-            providers={providers.buy ?? []}
-            tmdbLink={providers.tmdb_link}
-          />
+          <p className="text-clay-text-muted text-sm mb-3">
+            Not streaming on your selected services
+          </p>
+          <ProviderTiers providers={allProviders} />
         </div>
+      ) : hasProviders ? (
+        <ProviderTiers providers={providers} />
       ) : (
         <div className="text-center py-4">
           <p className="text-clay-text-muted text-sm mb-3">
