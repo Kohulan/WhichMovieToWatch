@@ -78,7 +78,7 @@ export default function BrowsePage() {
         className="
           sticky top-14 z-30
           -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3
-          bg-clay-base/70 backdrop-blur-xl
+          bg-clay-base/92 sm:bg-clay-base/70 backdrop-blur-xl
           border-b border-white/[0.08]
           transition-colors duration-500
         "
