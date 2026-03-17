@@ -66,14 +66,17 @@ export function BrowseFilterSidebar({
     }
   }, [open]);
 
-  // Close on Escape key
+  // Close on Escape key — capture phase ensures we fire before dropdowns
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        onClose();
+      }
     }
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown, true);
+    return () => window.removeEventListener("keydown", handleKeyDown, true);
   }, [open, onClose]);
 
   const handleGenreToggle = useCallback(
@@ -98,6 +101,7 @@ export function BrowseFilterSidebar({
           {/* Backdrop */}
           <motion.div
             key="filter-backdrop"
+            data-testid="filter-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
