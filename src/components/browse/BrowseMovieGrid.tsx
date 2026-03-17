@@ -132,7 +132,7 @@ export function BrowseMovieGrid({
                       }
                       sizes={posterSizes}
                       alt={`${movie.title} poster`}
-                      className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-500 ease-out"
+                      className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out"
                       loading="lazy"
                       decoding="async"
                     />
@@ -144,9 +144,6 @@ export function BrowseMovieGrid({
                       />
                     </div>
                   )}
-
-                  {/* Gradient overlay on hover */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   {/* Rating badge — glass pill */}
                   <div
@@ -164,22 +161,15 @@ export function BrowseMovieGrid({
                   >
                     {ratingPct}%
                   </div>
-
-                  {/* Year badge — appears on hover */}
-                  {year && (
-                    <div className="absolute bottom-2 left-2 text-white/90 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-md">
-                      {year}
-                    </div>
-                  )}
                 </div>
 
-                {/* Title */}
-                <div className="p-2.5">
+                {/* Title + year — solid background for readability */}
+                <div className="p-2.5 bg-clay-surface/80">
                   <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2 group-hover:text-accent transition-colors duration-200">
                     {movie.title}
                   </p>
                   {year && (
-                    <p className="text-clay-text-muted text-[11px] mt-0.5 group-hover:hidden">
+                    <p className="text-clay-text-muted text-[11px] mt-0.5">
                       {year}
                     </p>
                   )}

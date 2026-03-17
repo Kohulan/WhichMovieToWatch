@@ -87,7 +87,9 @@ export default function BrowsePage() {
             "0 4px 24px rgba(0,0,0,0.08), inset 0 -1px 0 rgba(255,255,255,0.04)",
         }}
       >
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Mobile: stack provider on top, sort + filter below */}
+        {/* Desktop: all in one row */}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
           {/* Provider dropdown */}
           <div className="flex-1 min-w-0">
             <MetalDropdown
@@ -99,49 +101,51 @@ export default function BrowsePage() {
             />
           </div>
 
-          {/* Sort dropdown */}
-          <div className="flex-1 min-w-0">
-            <MetalDropdown
-              label=""
-              options={SORT_OPTIONS}
-              value={sortBy}
-              onChange={setSortBy}
-            />
-          </div>
-
-          {/* Filter button — metal hardware style */}
-          <motion.button
-            type="button"
-            onClick={() => setFilterOpen(true)}
-            aria-label="Open filters"
-            whileHover={{ scale: 1.06, y: -1 }}
-            whileTap={{ scale: 0.95 }}
-            className="
-              relative p-2.5 rounded-xl cursor-pointer
-              bg-clay-surface clay-shadow-sm clay-texture
-              text-clay-text-muted hover:text-accent
-              transition-colors duration-200
-              outline-none focus-visible:ring-2 focus-visible:ring-accent
-              border border-white/[0.08]
-            "
-            style={{
-              boxShadow: filtersActive
-                ? "0 0 12px color-mix(in oklch, var(--accent) 30%, transparent), 4px 4px 8px var(--clay-shadow), -2px -2px 6px var(--clay-highlight)"
-                : undefined,
-            }}
-          >
-            <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
-            {/* Active filter indicator — glowing dot */}
-            {filtersActive && (
-              <span
-                className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-accent"
-                style={{
-                  boxShadow:
-                    "0 0 6px var(--accent), 0 0 12px color-mix(in oklch, var(--accent) 50%, transparent)",
-                }}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Sort dropdown */}
+            <div className="flex-1 min-w-0">
+              <MetalDropdown
+                label=""
+                options={SORT_OPTIONS}
+                value={sortBy}
+                onChange={setSortBy}
               />
-            )}
-          </motion.button>
+            </div>
+
+            {/* Filter button — metal hardware style */}
+            <motion.button
+              type="button"
+              onClick={() => setFilterOpen(true)}
+              aria-label="Open filters"
+              whileHover={{ scale: 1.06, y: -1 }}
+              whileTap={{ scale: 0.95 }}
+              className="
+                relative flex-shrink-0 p-2.5 rounded-xl cursor-pointer
+                bg-clay-surface clay-shadow-sm clay-texture
+                text-clay-text-muted hover:text-accent
+                transition-colors duration-200
+                outline-none focus-visible:ring-2 focus-visible:ring-accent
+                border border-white/[0.08]
+              "
+              style={{
+                boxShadow: filtersActive
+                  ? "0 0 12px color-mix(in oklch, var(--accent) 30%, transparent), 4px 4px 8px var(--clay-shadow), -2px -2px 6px var(--clay-highlight)"
+                  : undefined,
+              }}
+            >
+              <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+              {/* Active filter indicator — glowing dot */}
+              {filtersActive && (
+                <span
+                  className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-accent"
+                  style={{
+                    boxShadow:
+                      "0 0 6px var(--accent), 0 0 12px color-mix(in oklch, var(--accent) 50%, transparent)",
+                  }}
+                />
+              )}
+            </motion.button>
+          </div>
         </div>
       </div>
 
