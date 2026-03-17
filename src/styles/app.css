@@ -1,7 +1,7 @@
 @import "tailwindcss";
-@import './clay.css';
-@import './metal.css';
-@import './animations.css';
+@import "./clay.css";
+@import "./metal.css";
+@import "./animations.css";
 
 /* Enable class-based dark mode — the app uses .dark on <html> */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -49,8 +49,8 @@
   --radius-clay-xl: 3rem;
 
   /* Fonts */
-  --font-heading: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
-  --font-body: 'JetBrains Mono Variable', 'JetBrains Mono', monospace;
+  --font-heading: "JetBrains Mono Variable", "JetBrains Mono", monospace;
+  --font-body: "JetBrains Mono Variable", "JetBrains Mono", monospace;
 }
 
 /* ============================================================
@@ -71,13 +71,13 @@
   --clay-surface: oklch(0.97 0.008 70);
   --clay-elevated: oklch(0.99 0.004 70);
   --clay-shadow: oklch(0.78 0.015 60);
-  --clay-highlight: oklch(1.00 0.003 60);
+  --clay-highlight: oklch(1 0.003 60);
   --clay-text: oklch(0.15 0.01 50);
   /* Raised from 0.48 → 0.36 for WCAG AA 4.5:1 on light clay-base (0.95) */
   --clay-text-muted: oklch(0.36 0.015 50);
   --metal-base: oklch(0.72 0.06 70);
-  --metal-shine: oklch(0.90 0.035 75);
-  --metal-dark: oklch(0.50 0.06 65);
+  --metal-shine: oklch(0.9 0.035 75);
+  --metal-dark: oklch(0.5 0.06 65);
   --accent: oklch(0.67 0.22 38);
   --accent-hover: oklch(0.62 0.24 38);
 }
@@ -94,8 +94,8 @@
   --metal-base: oklch(0.55 0.07 70);
   --metal-shine: oklch(0.75 0.06 75);
   --metal-dark: oklch(0.32 0.05 65);
-  --accent: oklch(0.70 0.22 38);
-  --accent-hover: oklch(0.75 0.20 38);
+  --accent: oklch(0.7 0.22 38);
+  --accent-hover: oklch(0.75 0.2 38);
 }
 
 /* --- Gold — Warm luxury, rich gold accent, brass metal --- */
@@ -105,7 +105,7 @@
   --clay-surface: oklch(0.97 0.01 75);
   --clay-elevated: oklch(0.99 0.006 75);
   --clay-shadow: oklch(0.76 0.02 65);
-  --clay-highlight: oklch(1.00 0.004 70);
+  --clay-highlight: oklch(1 0.004 70);
   --clay-text: oklch(0.18 0.015 55);
   /* Raised from 0.46 → 0.36 for WCAG AA 4.5:1 on light clay-base (0.95) */
   --clay-text-muted: oklch(0.36 0.02 55);
@@ -127,7 +127,7 @@
   --clay-text-muted: oklch(0.72 0.015 65);
   --metal-base: oklch(0.52 0.08 75);
   --metal-shine: oklch(0.72 0.07 80);
-  --metal-dark: oklch(0.30 0.06 70);
+  --metal-dark: oklch(0.3 0.06 70);
   --accent: oklch(0.74 0.14 80);
   --accent-hover: oklch(0.79 0.12 80);
 }
@@ -137,9 +137,9 @@
 .theme-clean-white {
   --clay-base: oklch(0.97 0.003 250);
   --clay-surface: oklch(0.98 0.002 250);
-  --clay-elevated: oklch(1.00 0.001 250);
+  --clay-elevated: oklch(1 0.001 250);
   --clay-shadow: oklch(0.82 0.006 250);
-  --clay-highlight: oklch(1.00 0.001 250);
+  --clay-highlight: oklch(1 0.001 250);
   --clay-text: oklch(0.15 0.005 250);
   /* Raised from 0.50 → 0.36 for WCAG AA 4.5:1 on near-white clay-base (0.97) */
   --clay-text-muted: oklch(0.36 0.008 250);
@@ -153,15 +153,36 @@
 .dark.theme-clean-white {
   --clay-base: oklch(0.12 0.005 250);
   --clay-surface: oklch(0.16 0.005 250);
-  --clay-elevated: oklch(0.20 0.006 250);
+  --clay-elevated: oklch(0.2 0.006 250);
   --clay-shadow: oklch(0.06 0.003 250);
   --clay-highlight: oklch(0.24 0.006 250);
   --clay-text: oklch(0.96 0.004 250);
   /* Raised from 0.62 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.12) */
   --clay-text-muted: oklch(0.72 0.008 250);
-  --metal-base: oklch(0.50 0.005 250);
-  --metal-shine: oklch(0.70 0.004 250);
+  --metal-base: oklch(0.5 0.005 250);
+  --metal-shine: oklch(0.7 0.004 250);
   --metal-dark: oklch(0.28 0.005 250);
   --accent: oklch(0.88 0.003 250);
   --accent-hover: oklch(0.95 0.002 250);
+}
+
+/* ── Paint containment for grid cards (reduces layout recalculation scope) ── */
+.contain-card {
+  contain: layout style paint;
+}
+
+/* ── content-visibility for offscreen movie cards (skip rendering until scrolled into view) ── */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 280px;
+}
+
+/* ── Mobile Performance: disable backdrop-blur (GPU-expensive on mobile) ── */
+@media (pointer: coarse) {
+  *,
+  *::before,
+  *::after {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
 }

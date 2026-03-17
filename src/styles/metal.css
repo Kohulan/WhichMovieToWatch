@@ -70,13 +70,12 @@
    Radial gradient dome with ring shadow.
 */
 .metal-knob {
-  background:
-    radial-gradient(
-      ellipse at 40% 30%,
-      var(--metal-shine) 0%,
-      var(--metal-base) 55%,
-      var(--metal-dark) 100%
-    );
+  background: radial-gradient(
+    ellipse at 40% 30%,
+    var(--metal-shine) 0%,
+    var(--metal-base) 55%,
+    var(--metal-dark) 100%
+  );
   box-shadow:
     inset 0 2px 3px rgba(255, 255, 255, 0.35),
     inset 0 -2px 3px rgba(0, 0, 0, 0.2),
@@ -89,7 +88,7 @@
   position: relative;
 }
 .metal-brushed::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -107,8 +106,17 @@
 */
 .metal-knob-enhanced {
   background:
-    radial-gradient(ellipse at 35% 25%, rgba(255,255,255,0.5) 0%, transparent 30%),
-    radial-gradient(ellipse at 40% 30%, var(--metal-shine) 0%, var(--metal-base) 55%, var(--metal-dark) 100%);
+    radial-gradient(
+      ellipse at 35% 25%,
+      rgba(255, 255, 255, 0.5) 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      ellipse at 40% 30%,
+      var(--metal-shine) 0%,
+      var(--metal-base) 55%,
+      var(--metal-dark) 100%
+    );
 }
 
 /* --- Deep Track Shadow ---
@@ -118,10 +126,10 @@
 */
 .metal-track-deep {
   box-shadow:
-    inset 0 3px 6px rgba(0,0,0,0.4),
-    inset 0 1px 3px rgba(0,0,0,0.3),
-    inset 0 -1px 2px rgba(255,255,255,0.08),
-    0 1px 0 rgba(255,255,255,0.05);
+    inset 0 3px 6px rgba(0, 0, 0, 0.4),
+    inset 0 1px 3px rgba(0, 0, 0, 0.3),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 /* --- Metal Knob Rim Light ---
@@ -130,10 +138,10 @@
 */
 .metal-knob-rim {
   box-shadow:
-    0 2px 4px rgba(0,0,0,0.35),
-    0 4px 8px rgba(0,0,0,0.15),
-    inset 0 1px 0 rgba(255,255,255,0.4),
-    inset 0 -1px 2px rgba(0,0,0,0.15);
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.15);
 }
 
 /* --- Accent Glow (Active State) ---
@@ -141,21 +149,22 @@
    Simulates a power indicator LED glow. 2s cycle, gentle pulse.
 */
 @keyframes accent-glow-pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow:
-      inset 0 3px 6px rgba(0,0,0,0.4),
-      inset 0 1px 3px rgba(0,0,0,0.3),
-      inset 0 -1px 2px rgba(255,255,255,0.08),
-      0 1px 0 rgba(255,255,255,0.05),
+      inset 0 3px 6px rgba(0, 0, 0, 0.4),
+      inset 0 1px 3px rgba(0, 0, 0, 0.3),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.08),
+      0 1px 0 rgba(255, 255, 255, 0.05),
       0 0 8px var(--accent),
       0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
   }
   50% {
     box-shadow:
-      inset 0 3px 6px rgba(0,0,0,0.4),
-      inset 0 1px 3px rgba(0,0,0,0.3),
-      inset 0 -1px 2px rgba(255,255,255,0.08),
-      0 1px 0 rgba(255,255,255,0.05),
+      inset 0 3px 6px rgba(0, 0, 0, 0.4),
+      inset 0 1px 3px rgba(0, 0, 0, 0.3),
+      inset 0 -1px 2px rgba(255, 255, 255, 0.08),
+      0 1px 0 rgba(255, 255, 255, 0.05),
       0 0 12px var(--accent),
       0 0 24px color-mix(in srgb, var(--accent) 60%, transparent);
   }
@@ -163,4 +172,24 @@
 
 .accent-glow-active {
   animation: accent-glow-pulse 2s ease-in-out infinite;
+}
+
+/* ── Mobile Performance: simplified metal shadows ── */
+@media (pointer: coarse) {
+  .metal-shadow {
+    box-shadow:
+      0 3px 8px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+  .metal-shadow-hover {
+    box-shadow:
+      0 5px 12px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+  .metal-shadow-pressed {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+  }
+  .metal-track-deep {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
 }

@@ -6,7 +6,7 @@
 //
 // Features:
 //   - Variable column + row spanning via static Tailwind class lookup objects
-//   - Full hover treatment: scale 1.03 + elevated shadow + accent glow
+//   - Full hover treatment: scale 1.02 + accent glow (no animated box-shadow)
 //   - Layout animation with inline borderRadius (prevents FLIP distortion)
 //   - Overlay content that reveals on hover (desktop) or tap-to-expand (mobile)
 //   - Mobile tap-to-expand: first tap shows overlay, second tap calls onClick
@@ -85,7 +85,7 @@ const materialClasses: Record<CellMaterial, string> = {
 /**
  * BentoCell — Individual animated cell for use inside BentoGrid.
  *
- * Desktop hover: scale 1.03 + elevated box shadow + accent glow on border.
+ * Desktop hover: scale 1.02 (no animated box-shadow to avoid repaints).
  * Mobile tap: first tap reveals overlay/expanded content; second tap calls onClick.
  * Auto-collapses after 4s to prevent stale expanded state.
  *
@@ -173,12 +173,10 @@ export function BentoCell({
       ]
         .filter(Boolean)
         .join(" ")}
-      // Hover treatment: scale + elevated shadow + accent glow
+      // Hover treatment: subtle scale (no animated box-shadow to avoid repaints)
       whileHover={{
-        scale: 1.03,
-        boxShadow:
-          "0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px oklch(var(--accent))",
-        transition: { type: "spring", stiffness: 300, damping: 20 },
+        scale: 1.02,
+        transition: { type: "spring", stiffness: 180, damping: 22 },
       }}
       whileTap={{ scale: 0.98 }}
       onClick={isInteractive ? handleClick : undefined}
