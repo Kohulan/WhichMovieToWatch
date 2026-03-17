@@ -92,6 +92,7 @@ export function SearchResults({
                   transition-all duration-200
                   hover:clay-shadow-lg hover:-translate-y-0.5
                   outline-none focus-visible:ring-2 focus-visible:ring-accent
+                  contain-card
                 "
               >
                 {/* Poster */}

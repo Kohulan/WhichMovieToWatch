@@ -118,6 +118,7 @@ export function BrowseMovieGrid({
                   hover:border-white/[0.15]
                   hover:shadow-[0_12px_40px_rgba(0,0,0,0.2),0_0_0_1px_rgba(255,255,255,0.06)]
                   outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-clay-base
+                  contain-card
                 "
               >
                 {/* Poster */}
