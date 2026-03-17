@@ -29,7 +29,7 @@ export default function BrowsePage() {
   const setSortBy = useBrowseStore((s) => s.setSortBy);
   const resetFilters = useBrowseStore((s) => s.resetFilters);
 
-  const { results, isLoading, error, hasMore, totalResults, loadMore } =
+  const { results, isLoading, error, hasMore, totalResults, loadMore, browse } =
     useBrowseMovies();
 
   const { providers: regionProviders } = useRegionProviders();
@@ -123,7 +123,8 @@ export default function BrowsePage() {
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <p className="text-clay-text-muted text-sm">{error}</p>
           <button
-            onClick={() => setProvider(selectedProviderId)}
+            type="button"
+            onClick={() => browse()}
             className="text-sm text-clay-text underline underline-offset-2 hover:opacity-80 transition-opacity"
           >
             Try again

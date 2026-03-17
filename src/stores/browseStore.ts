@@ -83,11 +83,12 @@ export const useBrowseStore = create<BrowseState>()((set) => ({
   setResults: (results, totalResults, totalPages, currentPage) =>
     set({ results, totalResults, totalPages, currentPage }),
 
-  appendResults: (results, currentPage) =>
-    set((state) => ({
-      results: [...state.results, ...results],
-      currentPage,
-    })),
+  appendResults: (newResults, currentPage) =>
+    set((state) => {
+      const existingIds = new Set(state.results.map((m) => m.id));
+      const unique = newResults.filter((m) => !existingIds.has(m.id));
+      return { results: [...state.results, ...unique], currentPage };
+    }),
 
   setLoading: (loading) => set({ isLoading: loading }),
 

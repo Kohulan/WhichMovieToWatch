@@ -75,27 +75,41 @@ export function useBrowseMovies() {
     if (store.currentPage >= store.totalPages || store.isLoading) return;
     if (store.selectedProviderId === null) return;
 
+    const controller = new AbortController();
+    abortRef.current = controller;
+
     store.setLoading(true);
 
     try {
-      const response = await browseMovies({
-        providerId: store.selectedProviderId,
-        region,
-        page: store.currentPage + 1,
-        sortBy: store.sortBy,
-        filters: store.filters,
-      });
+      const response = await browseMovies(
+        {
+          providerId: store.selectedProviderId,
+          region,
+          page: store.currentPage + 1,
+          sortBy: store.sortBy,
+          filters: store.filters,
+        },
+        controller.signal,
+      );
 
-      useBrowseStore.getState().appendResults(response.results, response.page);
+      if (!controller.signal.aborted) {
+        useBrowseStore
+          .getState()
+          .appendResults(response.results, response.page);
+      }
     } catch (err) {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      useBrowseStore
-        .getState()
-        .setError(
-          err instanceof Error ? err.message : "Failed to load more movies",
-        );
+      if (!controller.signal.aborted) {
+        useBrowseStore
+          .getState()
+          .setError(
+            err instanceof Error ? err.message : "Failed to load more movies",
+          );
+      }
     } finally {
-      useBrowseStore.getState().setLoading(false);
+      if (!controller.signal.aborted) {
+        useBrowseStore.getState().setLoading(false);
+      }
     }
   }, [region]);
 
