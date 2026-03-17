@@ -111,14 +111,19 @@ export function SplineScene({
 
   const rawRotateX = useMotionValue(0);
   const rawRotateY = useMotionValue(0);
+  const lastGyroUpdate = useRef(0);
   const springRotateX = useSpring(rawRotateX, { stiffness: 50, damping: 20 });
   const springRotateY = useSpring(rawRotateY, { stiffness: 50, damping: 20 });
   const tiltX = useTransform(springRotateX, [-1, 1], [3, -3]);
   const tiltY = useTransform(springRotateY, [-1, 1], [-3, 3]);
 
   if (isMobileRef.current && permissionState === "granted") {
-    rawRotateX.set(orientation.betaNorm);
-    rawRotateY.set(orientation.gammaNorm);
+    const now = Date.now();
+    if (now - lastGyroUpdate.current >= 60) {
+      lastGyroUpdate.current = now;
+      rawRotateX.set(orientation.betaNorm);
+      rawRotateY.set(orientation.gammaNorm);
+    }
   }
 
   const handleLoad = useCallback(
