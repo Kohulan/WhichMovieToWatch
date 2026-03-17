@@ -83,7 +83,10 @@ export function BrowseBentoHero({
 
               {/* Title + subtitle */}
               <div>
-                <h1 className="text-clay-text font-heading font-bold text-xl leading-tight">
+                <h1
+                  data-testid="browse-heading"
+                  className="text-clay-text font-heading font-bold text-xl leading-tight"
+                >
                   Browse
                 </h1>
                 {providerName ? (

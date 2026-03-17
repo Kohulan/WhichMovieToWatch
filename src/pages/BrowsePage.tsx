@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { SlidersHorizontal, AlertCircle, Tv } from "lucide-react";
 import { motion } from "motion/react";
 import { useBrowseStore } from "@/stores/browseStore";
@@ -57,6 +57,8 @@ export default function BrowsePage() {
   const selectedProviderName =
     regionProviders.find((p) => p.provider_id === selectedProviderId)
       ?.provider_name ?? null;
+
+  const handleFilterClose = useCallback(() => setFilterOpen(false), []);
 
   const filtersActive = hasNonDefaultFilters(filters);
 
@@ -209,10 +211,7 @@ export default function BrowsePage() {
       )}
 
       {/* Filter sidebar */}
-      <BrowseFilterSidebar
-        open={filterOpen}
-        onClose={() => setFilterOpen(false)}
-      />
+      <BrowseFilterSidebar open={filterOpen} onClose={handleFilterClose} />
     </div>
   );
 }
