@@ -1,5 +1,37 @@
 # Changelog
 
+## [2.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.0.0...v2.1.0) (2026-03-17)
+
+
+### Features
+
+* **browse:** add Browse route, navbar tab, and MoreSheet integration ([58ffba7](https://github.com/Kohulan/WhichMovieToWatch/commit/58ffba763499a9e1ae4110c4a9888c501defd0c6))
+* **browse:** add BrowseFilterSidebar with genre, rating, year, language, and runtime filters ([f5f6558](https://github.com/Kohulan/WhichMovieToWatch/commit/f5f6558c4b8d45729c9d38f7f13ef144e7e8b31a))
+* **browse:** add BrowseMovieGrid component with poster cards, rating badges, and Load More ([dddad66](https://github.com/Kohulan/WhichMovieToWatch/commit/dddad66aa5c3df983ad6581fe62c9067ba8a7d06))
+* **browse:** add BrowsePage with provider/sort dropdowns, filter sidebar, and movie grid ([ff217da](https://github.com/Kohulan/WhichMovieToWatch/commit/ff217dad5711222d1a44d1313f6c29f29b79646e))
+* **browse:** add cinematic BrowseBentoHero with accent gradient and stats ([3558b40](https://github.com/Kohulan/WhichMovieToWatch/commit/3558b402be99458092749ba5a2d52059ef6b5b57))
+* **browse:** add TMDB browse service with provider filtering, sorting, and caching ([dfd6252](https://github.com/Kohulan/WhichMovieToWatch/commit/dfd6252b65ddc42767bc38bfe03add5343cd50d3))
+* **browse:** add useBrowseMovies hook with auto-fetch, pagination, and abort handling ([3068544](https://github.com/Kohulan/WhichMovieToWatch/commit/30685441ff1f8251d75cf13d20266ddf33e8dfaf))
+* **browse:** add Zustand browse store with provider, sort, filter, and pagination state ([4af7c38](https://github.com/Kohulan/WhichMovieToWatch/commit/4af7c38518750e0e2e2a7ac2ec26451f0db87b48))
+* **browse:** visual overhaul — glass cards, cinematic empty states, enhanced filter sidebar ([00421b1](https://github.com/Kohulan/WhichMovieToWatch/commit/00421b154ceb0338604aed05a51a985b4bd20f4f))
+
+
+### Bug Fixes
+
+* **browse:** address code review findings ([d7fec19](https://github.com/Kohulan/WhichMovieToWatch/commit/d7fec1952dc38ab5775b53b9e10360bb68ac5e12))
+* **browse:** mobile responsiveness and text readability ([2cd1061](https://github.com/Kohulan/WhichMovieToWatch/commit/2cd1061dd505a06309c4a444632bea8433765613))
+* **browse:** stabilize sidebar close behavior and improve testability ([9c7aec4](https://github.com/Kohulan/WhichMovieToWatch/commit/9c7aec4283aa5ddf0ae60e6c11b45f3de910b35a))
+
+
+### Performance Improvements
+
+* add CSS containment and content-visibility to movie card grids ([ac7a94f](https://github.com/Kohulan/WhichMovieToWatch/commit/ac7a94ff1b8218a928699969601f30303462b144))
+* disable backdrop-blur on mobile, increase bg opacity for readability ([bc657f6](https://github.com/Kohulan/WhichMovieToWatch/commit/bc657f6f370222e3e70fe9ccc2784decad9d4936))
+* reduce BentoCell animation complexity, optimize SW cache limits ([89b1603](https://github.com/Kohulan/WhichMovieToWatch/commit/89b16033d3a2b85d0c078c54f0a5048788045ac0))
+* reduce ParallaxFallback particles and remove blur filters on mobile ([b56f2fa](https://github.com/Kohulan/WhichMovieToWatch/commit/b56f2fa75c209cfef3601ad66168eab83d75fe43))
+* simplify box-shadows to 1-2 layers on mobile devices ([f934358](https://github.com/Kohulan/WhichMovieToWatch/commit/f934358ad40ab6530f145718ff327af1755eb74a))
+* throttle gyroscope updates to ~16 FPS in SplineScene ([14cb268](https://github.com/Kohulan/WhichMovieToWatch/commit/14cb26856623dc20c28ab1472a8a60a231ab21f1))
+
 ## [1.2.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v1.1.0...v1.2.0) (2026-02-21)
 
 
