@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router";
+import { motion } from "motion/react";
+import { Film } from "lucide-react";
 import { getPosterUrl } from "@/services/tmdb/client";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { MetalButton } from "@/components/ui";
@@ -21,9 +23,9 @@ interface BrowseMovieGridProps {
 
 function getRatingColor(voteAverage: number): string {
   const pct = Math.round(voteAverage * 10);
-  if (pct >= 70) return "bg-green-500/80 text-white";
-  if (pct >= 50) return "bg-yellow-500/80 text-white";
-  return "bg-red-500/80 text-white";
+  if (pct >= 70) return "bg-green-500/90 text-white";
+  if (pct >= 50) return "bg-yellow-500/90 text-white";
+  return "bg-red-500/90 text-white";
 }
 
 export function BrowseMovieGrid({
@@ -50,40 +52,47 @@ export function BrowseMovieGrid({
     );
   }
 
-  // Empty state
+  // Empty state — cinematic
   if (!isLoading && results.length === 0) {
     return (
-      <div className="flex flex-col items-center gap-3 py-16 px-4 text-center">
-        <p className="text-clay-text-muted text-sm">
-          No movies found{providerName ? ` on ${providerName}` : ""}. Try
-          adjusting your filters.
-        </p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 24 }}
+        className="flex flex-col items-center gap-4 py-20 px-4 text-center"
+      >
+        <div className="p-3 rounded-2xl bg-clay-surface/50 clay-shadow-sm">
+          <Film className="w-7 h-7 text-clay-text-muted" aria-hidden="true" />
+        </div>
+        <div>
+          <p className="text-clay-text text-sm font-medium mb-1">
+            No movies found
+          </p>
+          <p className="text-clay-text-muted text-xs max-w-xs">
+            {providerName
+              ? `No results on ${providerName} with current filters.`
+              : "Try adjusting your filters or selecting a different platform."}
+          </p>
+        </div>
         <MetalButton variant="ghost" size="sm" onClick={onClearFilters}>
           Clear Filters
         </MetalButton>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-4 pb-4">
-      {/* Results count */}
-      {totalResults > 0 && providerName && (
-        <p className="text-clay-text-muted text-xs px-4">
-          {totalResults.toLocaleString()} movies on {providerName}
-        </p>
-      )}
-
-      {/* Movie grid */}
+    <div className="flex flex-col gap-5 pb-6">
+      {/* Movie grid — responsive poster cards */}
       <StaggerContainer
-        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 px-4"
-        stagger={0.04}
+        className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
+        stagger={0.035}
         direction="up"
         role="list"
         aria-label="Browse movies"
       >
         {results.map((movie) => {
-          const posterUrl = getPosterUrl(movie.poster_path, "w185");
+          const posterUrl = getPosterUrl(movie.poster_path, "w342");
           const year = movie.release_date
             ? new Date(movie.release_date).getFullYear()
             : null;
@@ -92,18 +101,23 @@ export function BrowseMovieGrid({
 
           return (
             <StaggerItem key={movie.id} direction="up">
-              <button
+              <motion.button
                 type="button"
                 role="listitem"
                 onClick={() => handleMovieClick(movie.id)}
+                whileHover={{ y: -4, scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 22 }}
                 aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPct}%`}
                 className="
-                  w-full text-left group
-                  rounded-clay overflow-hidden
-                  bg-clay-surface clay-shadow-md clay-texture
-                  transition-all duration-200
-                  hover:clay-shadow-lg hover:-translate-y-0.5
-                  outline-none focus-visible:ring-2 focus-visible:ring-accent
+                  w-full text-left group cursor-pointer
+                  rounded-2xl overflow-hidden
+                  bg-white/[0.06] backdrop-blur-sm
+                  border border-white/[0.08]
+                  transition-shadow duration-300
+                  hover:border-white/[0.15]
+                  hover:shadow-[0_12px_40px_rgba(0,0,0,0.2),0_0_0_1px_rgba(255,255,255,0.06)]
+                  outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-clay-base
                 "
               >
                 {/* Poster */}
@@ -118,47 +132,71 @@ export function BrowseMovieGrid({
                       }
                       sizes={posterSizes}
                       alt={`${movie.title} poster`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-500 ease-out"
                       loading="lazy"
                       decoding="async"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-clay-text-muted text-xs text-center px-2">
-                        No poster
-                      </span>
+                    <div className="w-full h-full flex items-center justify-center bg-clay-surface">
+                      <Film
+                        className="w-8 h-8 text-clay-text-muted/30"
+                        aria-hidden="true"
+                      />
                     </div>
                   )}
 
-                  {/* Rating badge overlay */}
+                  {/* Gradient overlay on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  {/* Rating badge — glass pill */}
                   <div
-                    className={`absolute top-1.5 right-1.5 text-xs font-bold px-1.5 py-0.5 rounded-md ${ratingColor}`}
+                    className={`
+                      absolute top-2 right-2
+                      text-[11px] font-bold
+                      px-2 py-0.5 rounded-lg
+                      backdrop-blur-md
+                      ${ratingColor}
+                    `}
+                    style={{
+                      boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                    }}
                     aria-hidden="true"
                   >
                     {ratingPct}%
                   </div>
+
+                  {/* Year badge — appears on hover */}
+                  {year && (
+                    <div className="absolute bottom-2 left-2 text-white/90 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-md">
+                      {year}
+                    </div>
+                  )}
                 </div>
 
-                {/* Title + year */}
-                <div className="p-2">
-                  <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2">
+                {/* Title */}
+                <div className="p-2.5">
+                  <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2 group-hover:text-accent transition-colors duration-200">
                     {movie.title}
                   </p>
                   {year && (
-                    <p className="text-clay-text-muted text-xs mt-0.5">
+                    <p className="text-clay-text-muted text-[11px] mt-0.5 group-hover:hidden">
                       {year}
                     </p>
                   )}
                 </div>
-              </button>
+              </motion.button>
             </StaggerItem>
           );
         })}
       </StaggerContainer>
 
-      {/* Load More button */}
+      {/* Load More — centered with accent styling */}
       {hasMore && (
-        <div className="flex justify-center px-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="flex justify-center pt-2 pb-4"
+        >
           <MetalButton
             variant="secondary"
             size="md"
@@ -168,7 +206,7 @@ export function BrowseMovieGrid({
           >
             {isLoading ? "Loading..." : "Load More"}
           </MetalButton>
-        </div>
+        </motion.div>
       )}
     </div>
   );

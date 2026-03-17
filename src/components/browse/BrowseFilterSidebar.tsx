@@ -1,10 +1,11 @@
 import { useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X } from "lucide-react";
+import { X, SlidersHorizontal } from "lucide-react";
 import { useBrowseStore } from "@/stores/browseStore";
 import { MetalCheckbox, MetalButton, MetalDropdown } from "@/components/ui";
 import { DualRangeSlider } from "@/components/shared/DualRangeSlider";
 import { getAllGenres } from "@/lib/genre-map";
+import { hasNonDefaultFilters } from "@/services/tmdb/browse";
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -44,6 +45,16 @@ export function BrowseFilterSidebar({
   const resetFilters = useBrowseStore((s) => s.resetFilters);
 
   const allGenres = getAllGenres();
+  const filtersActive = hasNonDefaultFilters(filters);
+
+  // Count active filters for badge
+  const activeCount = [
+    filters.genres.length > 0,
+    filters.ratingRange[0] !== 0 || filters.ratingRange[1] !== 10,
+    filters.yearRange[0] !== 1900 || filters.yearRange[1] !== CURRENT_YEAR,
+    filters.language !== null,
+    filters.runtimeRange[0] !== 0 || filters.runtimeRange[1] !== 300,
+  ].filter(Boolean).length;
 
   // Lock body scroll when open
   useEffect(() => {
@@ -90,47 +101,69 @@ export function BrowseFilterSidebar({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
 
           {/* Sidebar — slides in from left */}
-          <motion.div
+          <motion.aside
             key="filter-panel"
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 400, damping: 35 }}
+            initial={{ x: "-100%", opacity: 0.8 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: "-100%", opacity: 0.8 }}
+            transition={{ type: "spring", stiffness: 380, damping: 32 }}
+            aria-label="Filter panel"
             className="
               fixed top-0 left-0 bottom-0 z-50
-              w-72 sm:w-80
-              bg-clay-base/95 backdrop-blur-md
-              border-r border-white/[0.12]
-              shadow-[8px_0_40px_rgba(0,0,0,0.25)]
+              w-[280px] sm:w-[320px]
+              bg-clay-base/95 backdrop-blur-xl
+              border-r border-white/[0.1]
               flex flex-col
             "
+            style={{
+              boxShadow:
+                "12px 0 48px rgba(0,0,0,0.3), 4px 0 16px rgba(0,0,0,0.15), inset -1px 0 0 rgba(255,255,255,0.04)",
+            }}
           >
-            {/* Header */}
-            <div className="flex items-center justify-between px-5 pt-[env(safe-area-inset-top)] mt-4 mb-2">
-              <span className="text-sm font-semibold text-clay-text">
-                Filters
-              </span>
-              <button
+            {/* Header — with icon and active count */}
+            <div className="flex items-center justify-between px-5 pt-[env(safe-area-inset-top)] mt-4 mb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-clay-surface clay-shadow-sm">
+                  <SlidersHorizontal
+                    className="w-4 h-4 text-accent"
+                    aria-hidden="true"
+                  />
+                </div>
+                <span className="text-sm font-heading font-semibold text-clay-text">
+                  Filters
+                </span>
+                {activeCount > 0 && (
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-accent text-white text-[10px] font-bold">
+                    {activeCount}
+                  </span>
+                )}
+              </div>
+              <motion.button
                 type="button"
                 onClick={onClose}
                 aria-label="Close filters"
-                className="p-1.5 -mr-1.5 rounded-full text-clay-text-muted hover:text-clay-text transition-colors"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="p-1.5 -mr-1.5 rounded-full text-clay-text-muted hover:text-clay-text transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
-              </button>
+              </motion.button>
             </div>
 
+            {/* Divider */}
+            <div className="mx-5 border-t border-white/[0.06] mb-1" />
+
             {/* Filter content — scrollable */}
-            <div className="flex-1 overflow-y-auto px-5 pb-6 space-y-5">
+            <div className="flex-1 overflow-y-auto px-5 pb-6 space-y-6 pt-4">
               {/* Genre multi-select */}
               <div>
-                <p className="font-body text-sm font-medium text-clay-text mb-2">
+                <p className="font-heading text-xs font-semibold text-clay-text-muted uppercase tracking-wider mb-3">
                   Genre
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -146,6 +179,9 @@ export function BrowseFilterSidebar({
                   ))}
                 </div>
               </div>
+
+              {/* Section divider */}
+              <div className="border-t border-white/[0.04]" />
 
               {/* Rating range */}
               <DualRangeSlider
@@ -167,6 +203,9 @@ export function BrowseFilterSidebar({
                 value={filters.yearRange}
                 onChange={(range) => setFilters({ yearRange: range })}
               />
+
+              {/* Section divider */}
+              <div className="border-t border-white/[0.04]" />
 
               {/* Language */}
               <MetalDropdown
@@ -191,21 +230,24 @@ export function BrowseFilterSidebar({
               />
             </div>
 
-            {/* Footer — Clear Filters */}
-            <div className="px-5 py-3 border-t border-white/[0.08]">
+            {/* Footer — Clear Filters with accent style when active */}
+            <div className="px-5 py-3 border-t border-white/[0.06]">
               <MetalButton
-                variant="ghost"
+                variant={filtersActive ? "primary" : "ghost"}
                 size="sm"
                 onClick={handleClear}
+                disabled={!filtersActive}
                 className="w-full"
               >
-                Clear Filters
+                {filtersActive
+                  ? `Clear ${activeCount} Filter${activeCount !== 1 ? "s" : ""}`
+                  : "No active filters"}
               </MetalButton>
             </div>
 
             {/* Safe area bottom padding */}
             <div className="pb-[env(safe-area-inset-bottom)]" />
-          </motion.div>
+          </motion.aside>
         </>
       )}
     </AnimatePresence>
