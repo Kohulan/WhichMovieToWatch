@@ -1,6 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useMotionValue, useTransform, useSpring, motion } from "motion/react";
 
+const isTouchDevice =
+  typeof window !== "undefined" &&
+  window.matchMedia("(pointer: coarse)").matches;
+
 interface ParallaxFallbackProps {
   className?: string;
 }
@@ -26,7 +30,7 @@ interface ParallaxFallbackProps {
  */
 export function ParallaxFallback({ className = "" }: ParallaxFallbackProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const isTouchDevice = useRef(
+  const isTouchRef = useRef(
     typeof window !== "undefined" &&
       ("ontouchstart" in window || navigator.maxTouchPoints > 0),
   );
@@ -44,7 +48,7 @@ export function ParallaxFallback({ className = "" }: ParallaxFallbackProps) {
   const tiltY = useTransform(rotateY, [-1, 1], [-4, 4]);
 
   useEffect(() => {
-    if (isTouchDevice.current) return;
+    if (isTouchRef.current) return;
 
     function handleMouseMove(e: MouseEvent) {
       const { innerWidth: w, innerHeight: h } = window;
@@ -104,8 +108,8 @@ export function ParallaxFallback({ className = "" }: ParallaxFallbackProps) {
               borderRadius: "50%",
               background:
                 "radial-gradient(circle, color-mix(in oklch, var(--accent) 60%, transparent) 0%, transparent 70%)",
-              opacity: 0.03,
-              filter: "blur(80px)",
+              opacity: isTouchDevice ? 0.25 : 0.03,
+              filter: isTouchDevice ? "none" : "blur(80px)",
             }}
           />
         </div>
@@ -178,7 +182,7 @@ export function ParallaxFallback({ className = "" }: ParallaxFallbackProps) {
               background:
                 "radial-gradient(ellipse at 50% 0%, color-mix(in oklch, var(--accent) 30%, transparent) 0%, transparent 65%)",
               opacity: 0.04,
-              filter: "blur(30px)",
+              filter: isTouchDevice ? "none" : "blur(30px)",
             }}
           />
         </div>
@@ -192,22 +196,24 @@ export function ParallaxFallback({ className = "" }: ParallaxFallbackProps) {
             willChange: "transform",
           }}
         >
-          {DUST_PARTICLES.map((p) => (
-            <div
-              key={p.id}
-              style={{
-                position: "absolute",
-                left: `${p.x}%`,
-                bottom: `${p.startY}%`,
-                width: `${p.size}px`,
-                height: `${p.size}px`,
-                borderRadius: "50%",
-                background: "var(--accent)",
-                opacity: p.opacity,
-                animation: `parallax-dust-drift ${p.duration}s ease-in-out ${p.delay}s infinite alternate`,
-              }}
-            />
-          ))}
+          {(isTouchDevice ? DUST_PARTICLES.slice(0, 3) : DUST_PARTICLES).map(
+            (p) => (
+              <div
+                key={p.id}
+                style={{
+                  position: "absolute",
+                  left: `${p.x}%`,
+                  bottom: `${p.startY}%`,
+                  width: `${p.size}px`,
+                  height: `${p.size}px`,
+                  borderRadius: "50%",
+                  background: "var(--accent)",
+                  opacity: p.opacity,
+                  animation: `parallax-dust-drift ${p.duration}s ease-in-out ${p.delay}s infinite alternate`,
+                }}
+              />
+            ),
+          )}
         </div>
       </motion.div>
 
