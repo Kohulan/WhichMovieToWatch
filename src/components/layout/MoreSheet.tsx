@@ -1,12 +1,13 @@
 import { useEffect } from "react";
 import { NavLink, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { TrendingUp, Film, X, Coffee, Github } from "lucide-react";
+import { TrendingUp, Film, Tv, X, Coffee, Github } from "lucide-react";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { RotaryDial } from "../ui/RotaryDial";
 import { RegionPicker } from "./RegionPicker";
 
 const extraPages = [
+  { to: "/browse", icon: Tv, label: "Browse" },
   { to: "/trending", icon: TrendingUp, label: "Trending" },
   { to: "/free-movies", icon: Film, label: "Free Movies" },
 ];

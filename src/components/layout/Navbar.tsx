@@ -8,6 +8,7 @@ import {
   Compass,
   TrendingUp,
   UtensilsCrossed,
+  Tv,
   Menu,
 } from "lucide-react";
 import logoSrc from "@/../assets/logo.png";
@@ -21,6 +22,7 @@ import { MoreSheet } from "./MoreSheet";
 const allTabs = [
   { to: "/", end: true, icon: Home, label: "Home" },
   { to: "/discover", end: false, icon: Compass, label: "Discover" },
+  { to: "/browse", end: false, icon: Tv, label: "Browse" },
   { to: "/trending", end: false, icon: TrendingUp, label: "Trending" },
   { to: "/dinner-time", end: false, icon: UtensilsCrossed, label: "Dinner" },
   { to: "/free-movies", end: false, icon: Film, label: "Free" },
@@ -30,6 +32,7 @@ const allTabs = [
 const mobileTabs = [
   { to: "/", end: true, icon: Home, label: "Home" },
   { to: "/discover", end: false, icon: Compass, label: "Discover" },
+  { to: "/browse", end: false, icon: Tv, label: "Browse" },
   { to: "/dinner-time", end: false, icon: UtensilsCrossed, label: "Dinner" },
 ];
 

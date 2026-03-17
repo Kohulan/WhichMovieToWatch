@@ -12,6 +12,7 @@ import { DiscoverPage } from "./pages/DiscoverPage";
 import TrendingPage from "./pages/TrendingPage";
 import DinnerTimePage from "./pages/DinnerTimePage";
 import FreeMoviesPage from "./pages/FreeMoviesPage";
+import BrowsePage from "./pages/BrowsePage";
 import PrivacyPage from "./pages/PrivacyPage";
 
 // Unregister any legacy service workers (from the pre-React vanilla JS app)
@@ -38,6 +39,7 @@ const router = createHashRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "discover", element: <DiscoverPage /> },
+      { path: "browse", element: <BrowsePage /> },
       { path: "trending", element: <TrendingPage /> },
       { path: "dinner-time", element: <DinnerTimePage /> },
       { path: "free-movies", element: <FreeMoviesPage /> },
