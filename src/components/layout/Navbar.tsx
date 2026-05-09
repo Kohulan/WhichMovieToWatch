@@ -160,7 +160,7 @@ export function Navbar() {
               className="w-6 h-6 object-contain drop-shadow-[0_0_6px_var(--accent)]"
               whileHover={{ rotate: -8, scale: 1.1 }}
               whileTap={{ scale: 0.92 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             />
             <span className={`hidden lg:inline ${brandTextClass}`}>
               WhichMovieToWatch
