@@ -19,6 +19,9 @@ interface MovieActionsProps {
   directorId?: number;
   onNext: () => void;
   onLove: () => void;
+  /** When true, all action buttons are disabled (e.g. while a discover()
+   *  call is in flight). Prevents double-trigger races on rapid taps. */
+  isLoading?: boolean;
 }
 
 /**
@@ -37,6 +40,7 @@ export function MovieActions({
   directorId,
   onNext,
   onLove,
+  isLoading = false,
 }: MovieActionsProps) {
   const markWatched = useMovieHistoryStore((s) => s.markWatched);
   const markLoved = useMovieHistoryStore((s) => s.markLoved);
@@ -48,6 +52,10 @@ export function MovieActions({
   const [animatingAction, setAnimatingAction] = useState<
     "love" | "watched" | "skip" | null
   >(null);
+
+  // Disable all buttons while a discover() is in flight or while a queued
+  // animation is playing — both states would otherwise allow a double-trigger.
+  const disabled = isLoading || animatingAction !== null;
 
   function handleLove() {
     const genreIds = movieGenres.map((g) => g.id);
@@ -105,6 +113,7 @@ export function MovieActions({
         variant="primary"
         size="sm"
         onClick={handleNext}
+        disabled={disabled}
         aria-label="Show next movie"
       >
         <SkipForward className="w-3.5 h-3.5" aria-hidden="true" />
@@ -115,6 +124,7 @@ export function MovieActions({
         variant="secondary"
         size="sm"
         onClick={handleLove}
+        disabled={disabled}
         aria-label="Love this movie"
       >
         <HeartPulseIcon
@@ -128,6 +138,7 @@ export function MovieActions({
         variant="secondary"
         size="sm"
         onClick={handleWatched}
+        disabled={disabled}
         aria-label="Mark as watched"
       >
         <CheckDrawIcon
@@ -141,6 +152,7 @@ export function MovieActions({
         variant="ghost"
         size="sm"
         onClick={handleNotInterested}
+        disabled={disabled}
         aria-label="Not interested in this movie"
       >
         <XSlideIcon

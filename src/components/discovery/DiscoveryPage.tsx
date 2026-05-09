@@ -352,6 +352,7 @@ export function DiscoveryPage() {
                 releaseYear={currentMovie.release_date?.slice(0, 4) ?? ""}
                 onNext={handleNext}
                 onLove={handleLove}
+                isLoading={showLoading}
               />
 
               {/* Rating badges (DISP-02) */}

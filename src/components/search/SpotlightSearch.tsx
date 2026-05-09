@@ -66,6 +66,11 @@ export function SpotlightSearch({
   // return focus to it when the modal closes.
   const triggerRef = useRef<Element | null>(null);
 
+  // Tracks the latest runDiscoverSearch invocation. Rapid filter changes
+  // (genre then year then rating) issue overlapping requests; only the
+  // most recent one is allowed to commit results to the store.
+  const discoverRequestIdRef = useRef(0);
+
   // Apply initialProviderId when overlay opens with a non-Netflix preset.
   // Netflix mode uses text search — no provider filter needed.
   useEffect(() => {
@@ -139,6 +144,9 @@ export function SpotlightSearch({
   }, [advancedFilters, sortBy, isOpen]);
 
   async function runDiscoverSearch(page: number) {
+    const requestId = ++discoverRequestIdRef.current;
+    const isStale = () => requestId !== discoverRequestIdRef.current;
+
     setLoading(true);
     setError(null);
 
@@ -190,6 +198,7 @@ export function SpotlightSearch({
         "/discover/movie",
         params,
       );
+      if (isStale()) return;
 
       if (page === 1) {
         setResults(
@@ -202,9 +211,10 @@ export function SpotlightSearch({
         appendResults(response.results, response.page);
       }
     } catch (err) {
+      if (isStale()) return;
       setError(err instanceof Error ? err.message : "Discover failed");
     } finally {
-      setLoading(false);
+      if (!isStale()) setLoading(false);
     }
   }
 

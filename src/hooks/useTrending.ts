@@ -14,38 +14,53 @@ export function useTrending() {
   const region = useRegionStore((s) => s.effectiveRegion)();
   const regionRef = useRef(region);
   regionRef.current = region;
+  // Guards against stale state writes when the component unmounts (or the
+  // region changes) before an in-flight refresh resolves.
+  const mountedRef = useRef(true);
+  // Per-call request id; incremented on every refresh so a slower in-flight
+  // call that resolves after a faster newer call cannot overwrite the result.
+  const requestIdRef = useRef(0);
 
   const refresh = useCallback(async () => {
     const currentRegion = regionRef.current;
+    const requestId = ++requestIdRef.current;
+    const isStale = () =>
+      !mountedRef.current || requestId !== requestIdRef.current;
+
     setIsLoading(true);
     setError(null);
 
     try {
       const response = await fetchNowPlaying(currentRegion, 1);
+      if (isStale()) return;
 
       if (response.results.length > 0) {
         setMovies(response.results);
       } else {
         // Fall back to popular movies if now_playing is empty for this region
         const popular = await fetchPopular(1);
+        if (isStale()) return;
         setMovies(popular.results);
       }
     } catch (err) {
+      if (isStale()) return;
       setError(
         err instanceof Error ? err.message : "Failed to load trending movies",
       );
     } finally {
-      setIsLoading(false);
+      if (!isStale()) setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
+    mountedRef.current = true;
     refresh();
 
     // Set up 30-minute auto-refresh
     const intervalId = setInterval(refresh, REFRESH_INTERVAL);
 
     return () => {
+      mountedRef.current = false;
       clearInterval(intervalId);
     };
   }, [region, refresh]);

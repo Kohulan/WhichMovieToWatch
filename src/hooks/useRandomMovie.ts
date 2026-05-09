@@ -11,6 +11,11 @@ import { scoreTasteMatch } from "@/lib/taste-engine";
 import { getGenreName } from "@/lib/genre-map";
 import type { TMDBMovieDetails } from "@/types/movie";
 
+// Module-level request id. Incremented on every discover() call so concurrent
+// calls (rapid "Next" taps) can detect that they're stale and skip writing
+// to the store after their long async chain resolves.
+let discoverRequestId = 0;
+
 /**
  * Safety-net: verify the user's services appear in streaming tiers
  * (flatrate/free/ads) for the given region. TMDB discover is ~100%
@@ -44,6 +49,9 @@ export function useRandomMovie() {
   const relaxationStep = useDiscoveryStore((s) => s.relaxationStep);
 
   const discover = useCallback(async () => {
+    const requestId = ++discoverRequestId;
+    const isStale = () => requestId !== discoverRequestId;
+
     const discoveryState = useDiscoveryStore.getState();
     const historyState = useMovieHistoryStore.getState();
     const regionState = useRegionStore.getState();
@@ -86,6 +94,7 @@ export function useRandomMovie() {
         excludeIds,
         { lockUserFilters: hasUserFilters },
       );
+      if (isStale()) return;
 
       if (result.candidates.length > 0) {
         // Verify candidates against user's streaming services.
@@ -96,6 +105,7 @@ export function useRandomMovie() {
 
         for (const candidate of result.candidates) {
           const details = await fetchMovieDetails(candidate.id);
+          if (isStale()) return;
           if (!firstDetails) firstDetails = details;
 
           if (verifyProviderMatch(details, userServiceIds, region)) {
@@ -103,6 +113,8 @@ export function useRandomMovie() {
             break;
           }
         }
+
+        if (isStale()) return;
 
         // Use verified match, or fall back to first candidate (best effort)
         const chosen = verifiedDetails ?? firstDetails!;
@@ -140,17 +152,21 @@ export function useRandomMovie() {
           msg = "No movies found matching your filters.";
         }
 
+        if (isStale()) return;
         discoveryState.setError(
           `${msg} Pick a different service or genre below.`,
         );
         discoveryState.setRelaxationStep(result.relaxationStep);
       }
     } catch (err) {
+      if (isStale()) return;
       discoveryState.setError(
         err instanceof Error ? err.message : "Failed to discover movie",
       );
     } finally {
-      discoveryState.setLoading(false);
+      // Only the latest call should toggle loading off, otherwise a stale
+      // resolution would clear the spinner mid-flight on the active call.
+      if (!isStale()) discoveryState.setLoading(false);
     }
   }, []);
 

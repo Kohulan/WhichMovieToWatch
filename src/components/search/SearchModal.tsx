@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useSearchMovies";
@@ -70,6 +70,10 @@ export function SearchModal({
   const region = useRegionStore((s) => s.effectiveRegion)();
   const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
+  // Tracks the latest runDiscoverSearch invocation; only the most recent
+  // one commits results when filters change rapidly.
+  const discoverRequestIdRef = useRef(0);
+
   // Apply initialProviderId when modal opens with a preset
   useEffect(() => {
     if (isOpen && initialProviderId != null) {
@@ -127,6 +131,9 @@ export function SearchModal({
   }, [advancedFilters, sortBy, isOpen]);
 
   async function runDiscoverSearch(page: number) {
+    const requestId = ++discoverRequestIdRef.current;
+    const isStale = () => requestId !== discoverRequestIdRef.current;
+
     setLoading(true);
     setError(null);
 
@@ -178,6 +185,7 @@ export function SearchModal({
         "/discover/movie",
         params,
       );
+      if (isStale()) return;
 
       if (page === 1) {
         setResults(
@@ -190,9 +198,10 @@ export function SearchModal({
         appendResults(response.results, response.page);
       }
     } catch (err) {
+      if (isStale()) return;
       setError(err instanceof Error ? err.message : "Discover failed");
     } finally {
-      setLoading(false);
+      if (!isStale()) setLoading(false);
     }
   }
 
