@@ -7,7 +7,8 @@ interface Quote {
   film: string;
 }
 
-/** Classic recognizable movie quotes for loading states (ANIM-06) */
+/** Classic recognizable movie quotes for loading states (ANIM-06).
+ *  Hand-curated, era-balanced, genre-balanced. Avoid AI-slop staples. */
 const QUOTES: Quote[] = [
   { text: "Here's looking at you, kid.", film: "Casablanca" },
   { text: "May the Force be with you.", film: "Star Wars" },
@@ -21,6 +22,10 @@ const QUOTES: Quote[] = [
   { text: "Just keep swimming.", film: "Finding Nemo" },
   { text: "Why so serious?", film: "The Dark Knight" },
   { text: "I am Groot.", film: "Guardians of the Galaxy" },
+  { text: "I'm the king of the world!", film: "Titanic" },
+  { text: "I'll have what she's having.", film: "When Harry Met Sally" },
+  { text: "Get busy living, or get busy dying.", film: "The Shawshank Redemption" },
+  { text: "Houston, we have a problem.", film: "Apollo 13" },
 ];
 
 interface LoadingQuotesProps {
@@ -87,7 +92,7 @@ export function LoadingQuotes({
           transition={{ duration: 0.3 }}
         >
           <p className={quoteClass}>"{quote.text}"</p>
-          <span className={filmClass}>— {quote.film}</span>
+          <span className={filmClass}>{quote.film}</span>
         </motion.div>
       </AnimatePresence>
     </motion.div>

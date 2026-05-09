@@ -5,6 +5,18 @@ interface SplashScreenProps {
   onComplete: () => void;
 }
 
+/** Time-of-day tagline. Picked once on splash mount; rotates only across
+ *  sessions, not within one. Subtle enough that returning users notice
+ *  the variation without it ever feeling cute. */
+function getTagline(now = new Date()): string {
+  const h = now.getHours();
+  if (h >= 22 || h < 5) return "A film for the late shift";
+  if (h < 11) return "What to watch this morning";
+  if (h < 17) return "An afternoon worth watching";
+  if (h < 21) return "Tonight's pick, sorted";
+  return "Discover your next favorite film";
+}
+
 /**
  * SplashScreen — Netflix-style dramatic logo reveal.
  *
@@ -112,14 +124,14 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         ))}
       </motion.div>
 
-      {/* Tagline */}
+      {/* Tagline — varies by time of day; computed once per splash mount */}
       <motion.p
         className="font-body font-light text-sm text-splash-fg/60 mt-4 relative z-10"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
       >
-        Discover your next favorite film
+        {getTagline()}
       </motion.p>
 
       {/* Cinematic progress bar — thin tinted track, accent fill */}

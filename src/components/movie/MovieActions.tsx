@@ -12,6 +12,23 @@ import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { showToast } from "@/components/shared/Toast";
 
+// Milestone copy for the Love and Watched lists. First entry is the
+// first-time message; subsequent entries fire when the count crosses
+// each threshold. Kept short and warm rather than emoji-stuffed.
+const LOVE_MILESTONES: Record<number, string> = {
+  1: "Your first love. Saved.",
+  10: "Ten loved. You have taste.",
+  25: "Twenty-five favorites and counting.",
+  50: "Fifty. Officially a curator.",
+};
+
+const WATCHED_MILESTONES: Record<number, string> = {
+  1: "First watched. Welcome aboard.",
+  10: "Ten down. The list is growing.",
+  25: "Twenty-five watched. Cinephile status.",
+  50: "Fifty. You should be running a film club.",
+};
+
 interface MovieActionsProps {
   movieId: number;
   movieGenres: Array<{ id: number; name: string }>;
@@ -68,7 +85,8 @@ export function MovieActions({
       setAnimatingAction(null);
       markLoved(movieId);
       recordLove(genreIds, decade, directorId);
-      showToast("Added to loved movies", "success");
+      const count = useMovieHistoryStore.getState().lovedMovies.length;
+      showToast(LOVE_MILESTONES[count] ?? "Added to loved movies", "success");
       onLove();
     }, 600);
   }
@@ -79,7 +97,8 @@ export function MovieActions({
     setTimeout(() => {
       setAnimatingAction(null);
       markWatched(movieId);
-      showToast("Marked as watched", "success");
+      const count = useMovieHistoryStore.getState().watchedMovies.length;
+      showToast(WATCHED_MILESTONES[count] ?? "Marked as watched", "success");
       onNext();
     }, 500);
   }

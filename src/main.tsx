@@ -20,6 +20,23 @@ const FreeMoviesPage = lazy(() => import("./pages/FreeMoviesPage"));
 const BrowsePage = lazy(() => import("./pages/BrowsePage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 
+// One-shot DevTools welcome for the curious. Production-only so dev HMR
+// reloads aren't noisy. Uses the project accent color literal so the styled
+// log doesn't depend on theme tokens that are stripped out of the bundle.
+if (
+  typeof window !== "undefined" &&
+  import.meta.env.PROD &&
+  !window.sessionStorage.getItem("__wmtw_console_seen__")
+) {
+  window.sessionStorage.setItem("__wmtw_console_seen__", "1");
+  // eslint-disable-next-line no-console
+  console.log(
+    "%cWhich Movie To Watch%c\nReact 19, Vite, custom Clay+Metal design system.\nSource: github.com/Kohulan/WhichMovieToWatch",
+    "font: 700 18px/1.2 'JetBrains Mono', monospace; color: oklch(0.7 0.22 38); padding: 4px 0;",
+    "font: 12px/1.5 'JetBrains Mono', monospace; color: #888;",
+  );
+}
+
 // Unregister any legacy service workers (from the pre-React vanilla JS app)
 // that may intercept navigation requests and serve stale cached responses.
 // The modern Vite PWA plugin registers its own Workbox-based SW; legacy SWs
