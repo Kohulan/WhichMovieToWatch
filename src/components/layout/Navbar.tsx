@@ -196,10 +196,10 @@ export function Navbar() {
               inline-flex items-center gap-1
               px-2 sm:px-2.5 py-1 rounded-full cursor-pointer
               text-white text-[10px] font-bold tracking-wider uppercase
-              bg-[#E50914] hover:bg-[#F40612]
+              bg-brand-netflix hover:bg-brand-netflix-dark
               transition-colors duration-200
-              outline-none focus-visible:ring-2 focus-visible:ring-[#E50914]/50
-              shadow-[0_2px_8px_rgba(229,9,20,0.35),0_0_12px_rgba(229,9,20,0.15)]
+              outline-none focus-visible:ring-2 focus-visible:ring-brand-netflix/50
+              shadow-[0_2px_8px_color-mix(in_oklch,var(--color-brand-netflix)_35%,transparent),0_0_12px_color-mix(in_oklch,var(--color-brand-netflix)_15%,transparent)]
             "
           >
             Netflix

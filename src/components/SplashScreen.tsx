@@ -20,7 +20,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black overflow-hidden"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-splash-bg overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
@@ -92,7 +92,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         {words.map((word) => (
           <motion.span
             key={word}
-            className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-white"
+            className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-splash-fg"
             variants={{
               hidden: { opacity: 0, y: 30, scale: 0.92 },
               visible: {
@@ -114,7 +114,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
 
       {/* Tagline */}
       <motion.p
-        className="font-body font-light text-sm text-white/60 mt-4 relative z-10"
+        className="font-body font-light text-sm text-splash-fg/60 mt-4 relative z-10"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
@@ -122,9 +122,9 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         Discover your next favorite film
       </motion.p>
 
-      {/* Cinematic progress bar — thin, white track, accent fill */}
+      {/* Cinematic progress bar — thin tinted track, accent fill */}
       <motion.div
-        className="mt-8 w-48 h-0.5 rounded-full overflow-hidden bg-white/10 relative z-10"
+        className="mt-8 w-48 h-0.5 rounded-full overflow-hidden bg-splash-fg/10 relative z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}

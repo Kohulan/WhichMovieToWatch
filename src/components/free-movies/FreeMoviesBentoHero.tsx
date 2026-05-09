@@ -34,7 +34,7 @@ export function FreeMoviesBentoHero() {
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(135deg, #FF0000 0%, #CC0000 50%, #990000 100%)",
+                  "linear-gradient(135deg, var(--color-brand-youtube) 0%, color-mix(in oklch, var(--color-brand-youtube) 75%, black) 50%, color-mix(in oklch, var(--color-brand-youtube) 50%, black) 100%)",
                 opacity: 0.25,
               }}
               aria-hidden="true"
@@ -54,8 +54,7 @@ export function FreeMoviesBentoHero() {
               {/* YouTube branding mark */}
               <div className="flex items-center gap-2">
                 <div
-                  className="flex items-center justify-center w-7 h-5 rounded"
-                  style={{ backgroundColor: "#FF0000" }}
+                  className="flex items-center justify-center w-7 h-5 rounded bg-brand-youtube"
                   aria-hidden="true"
                 >
                   {/* YouTube play triangle */}

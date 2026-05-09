@@ -293,7 +293,7 @@ export function SpotlightSearch({
                 max-h-[90vh] sm:max-h-[80vh]
                 bg-clay-base/95 backdrop-blur-md sm:bg-clay-base/80 sm:backdrop-blur-2xl
                 rounded-2xl
-                border ${netflixMode ? "border-[#E50914]/20" : "border-white/10"}
+                border ${netflixMode ? "border-brand-netflix/20" : "border-white/10"}
                 flex flex-col
                 overflow-hidden
                 pointer-events-auto
@@ -304,7 +304,7 @@ export function SpotlightSearch({
               <div className="flex items-center justify-between px-4 pt-4 pb-2 flex-shrink-0">
                 <h2 className="font-heading font-bold text-lg text-clay-text flex items-center gap-2">
                   {netflixMode && (
-                    <span className="text-[#E50914] font-bold text-xl leading-none">
+                    <span className="text-brand-netflix font-bold text-xl leading-none">
                       N
                     </span>
                   )}

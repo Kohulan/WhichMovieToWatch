@@ -185,8 +185,7 @@ export function FreeMoviesPage() {
                   <MetalButton
                     variant="primary"
                     size="md"
-                    className="w-full sm:w-auto gap-2"
-                    style={{ backgroundColor: "#FF0000" }}
+                    className="w-full sm:w-auto gap-2 !bg-brand-youtube"
                     aria-label={`Watch ${displayTitle} on YouTube`}
                   >
                     <Youtube className="w-5 h-5" aria-hidden="true" />

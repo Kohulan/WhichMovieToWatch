@@ -54,7 +54,7 @@ export function SpotlightInput({
   }, []);
 
   const ringColor = netflixMode
-    ? "focus-within:ring-[#E50914]/60"
+    ? "focus-within:ring-brand-netflix/60"
     : "focus-within:ring-accent/60";
 
   return (
@@ -69,7 +69,7 @@ export function SpotlightInput({
       {/* Icon prefix — Netflix N or search magnifier */}
       {netflixMode ? (
         <span
-          className="flex-shrink-0 text-[#E50914] font-bold text-lg leading-none select-none"
+          className="flex-shrink-0 text-brand-netflix font-bold text-lg leading-none select-none"
           aria-hidden="true"
         >
           N

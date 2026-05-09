@@ -42,10 +42,21 @@ const THEME_ACCENTS: Record<ColorPreset, { dark: string; light: string }> = {
   "clean-white": { dark: "#6b9bd2", light: "#2e5fa3" },
 };
 
+/**
+ * Canvas-safe color constants. Canvas 2D doesn't read CSS variables, so these
+ * mirror the warm-tinted near-white / near-black values used elsewhere
+ * (oklch(0.97 0.005 60) ≈ #fafaf7, oklch(0.18 0.005 60) ≈ #16140e).
+ * Used to keep the rule "no untinted #fff or #000" consistent on exports.
+ */
+const NEAR_WHITE = "#fafaf7";
+const NEAR_WHITE_60 = "rgba(250,250,247,0.6)";
+const NEAR_BLACK = "#16140e";
+const NEAR_BLACK_55 = "rgba(22,20,14,0.55)";
+
 /** Text colors per mode */
 const TEXT_COLORS = {
-  dark: { primary: "#ffffff", secondary: "rgba(255,255,255,0.6)" },
-  light: { primary: "#1a1a1a", secondary: "rgba(0,0,0,0.55)" },
+  dark: { primary: NEAR_WHITE, secondary: NEAR_WHITE_60 },
+  light: { primary: NEAR_BLACK, secondary: NEAR_BLACK_55 },
 };
 
 /**
@@ -135,7 +146,7 @@ export async function generateStoryCard(
     const x = Math.random() * CARD_W;
     const y = Math.random() * CARD_H;
     const size = Math.random() * 3 + 1;
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = NEAR_WHITE;
     ctx.beginPath();
     ctx.arc(x, y, size, 0, Math.PI * 2);
     ctx.fill();
@@ -184,7 +195,7 @@ export async function generateStoryCard(
     ctx.shadowColor = "transparent";
     ctx.shadowBlur = 0;
     ctx.font = "bold 60px Arial, sans-serif";
-    ctx.fillStyle = mode === "dark" ? "#ffffff" : "#1a1a1a";
+    ctx.fillStyle = mode === "dark" ? NEAR_WHITE : NEAR_BLACK;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     // Simple word-wrap for title
@@ -301,7 +312,7 @@ export async function generatePostCard(
     const x = Math.random() * W;
     const y = Math.random() * H;
     const size = Math.random() * 3 + 1;
-    ctx.fillStyle = "#ffffff";
+    ctx.fillStyle = NEAR_WHITE;
     ctx.beginPath();
     ctx.arc(x, y, size, 0, Math.PI * 2);
     ctx.fill();

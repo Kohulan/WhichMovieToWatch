@@ -55,7 +55,7 @@ export function GlobalAvailabilitySection({
     return (
       <section aria-label="Netflix availability worldwide" className="mt-4">
         <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
-          <span className="text-[#E50914] font-bold text-lg leading-none">
+          <span className="text-brand-netflix font-bold text-lg leading-none">
             N
           </span>
           Netflix Availability
@@ -77,7 +77,7 @@ export function GlobalAvailabilitySection({
     return (
       <section aria-label="Netflix availability worldwide" className="mt-4">
         <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
-          <span className="text-[#E50914] font-bold text-lg leading-none">
+          <span className="text-brand-netflix font-bold text-lg leading-none">
             N
           </span>
           Netflix Availability
@@ -92,7 +92,7 @@ export function GlobalAvailabilitySection({
   return (
     <section aria-label="Netflix availability worldwide" className="mt-4">
       <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
-        <span className="text-[#E50914] font-bold text-lg leading-none">N</span>
+        <span className="text-brand-netflix font-bold text-lg leading-none">N</span>
         Available on Netflix in {countries.length}{" "}
         {countries.length === 1 ? "Country" : "Countries"}
       </h3>
@@ -104,8 +104,8 @@ export function GlobalAvailabilitySection({
             className="
               inline-flex items-center gap-1.5 px-2.5 py-1
               text-xs font-semibold rounded-md
-              bg-[#E50914]/10 text-[#E50914]
-              border border-[#E50914]/20
+              bg-brand-netflix/10 text-brand-netflix
+              border border-brand-netflix/20
             "
           >
             {code}
