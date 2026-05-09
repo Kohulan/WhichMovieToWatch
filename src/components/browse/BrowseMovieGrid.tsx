@@ -121,10 +121,14 @@ export function BrowseMovieGrid({
                   contain-card cv-auto
                 "
               >
-                {/* Poster */}
+                {/* Poster — motion.img with shared layoutId enables the
+                    poster to morph into the /discover hero on tap (see
+                    MovieHero). prefers-reduced-motion gates the morph
+                    globally via MotionProvider; the navigation still works. */}
                 <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
                   {posterUrl ? (
-                    <img
+                    <motion.img
+                      layoutId={`movie-poster-${movie.id}`}
                       src={posterUrl}
                       srcSet={
                         movie.poster_path
@@ -133,17 +137,20 @@ export function BrowseMovieGrid({
                       }
                       sizes={posterSizes}
                       alt={`${movie.title} poster`}
-                      className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-out"
+                      className="w-full h-full object-cover"
                       loading="lazy"
                       decoding="async"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-clay-surface">
+                    <motion.div
+                      layoutId={`movie-poster-${movie.id}`}
+                      className="w-full h-full flex items-center justify-center bg-clay-surface"
+                    >
                       <Film
                         className="w-8 h-8 text-clay-text-muted/30"
                         aria-hidden="true"
                       />
-                    </div>
+                    </motion.div>
                   )}
 
                   {/* Rating badge — glass pill */}

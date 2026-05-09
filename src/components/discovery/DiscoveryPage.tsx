@@ -453,7 +453,7 @@ export function DiscoveryPage() {
                           >
                             {posterUrl ? (
                               <motion.img
-                                layoutId={`similar-poster-${movie.id}`}
+                                layoutId={`movie-poster-${movie.id}`}
                                 src={posterUrl}
                                 srcSet={
                                   movie.poster_path
@@ -468,7 +468,7 @@ export function DiscoveryPage() {
                               />
                             ) : (
                               <motion.div
-                                layoutId={`similar-poster-${movie.id}`}
+                                layoutId={`movie-poster-${movie.id}`}
                                 className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center"
                               >
                                 <span className="text-clay-text-muted text-xs text-center px-1">

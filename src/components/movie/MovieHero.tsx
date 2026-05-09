@@ -15,9 +15,10 @@ interface MovieHeroProps {
   /** Extra content rendered below the overview inside the info column */
   children?: ReactNode;
   /**
-   * Optional movie ID for layoutId — connects this hero poster to the similar-movie
-   * thumbnail via Framer Motion's shared layout animation (hero expand effect).
-   * Uses prefix `similar-poster-{movieId}` to match the thumbnail layoutId.
+   * Optional movie ID for layoutId — bridges this hero poster with any other
+   * surface that renders the same movie's poster (browse grid, similar-movies
+   * thumbnails). Framer Motion's shared layout animation morphs the source
+   * poster into this hero on tap. Uses prefix `movie-poster-{movieId}`.
    */
   movieId?: number;
 }
@@ -57,8 +58,13 @@ export function MovieHero({
   const year = extractYear(movie.release_date);
   const runtime = formatRuntime(movie.runtime);
 
-  // layoutId connects this hero poster to the similar-movie thumbnail for hero expand animation
-  const posterLayoutId = movieId ? `similar-poster-${movieId}` : undefined;
+  // Shared layoutId — bridges this hero poster with three sources:
+  //   1. similar-movies thumbnails on /discover (Love → expand)
+  //   2. browse grid posters on /browse (tap → grow into hero)
+  //   3. any future surface that wants to morph a poster in
+  // Naming: `movie-poster-${id}` (renamed from `similar-poster-` to reflect the
+  // unified "this is the poster for movie X" concept).
+  const posterLayoutId = movieId ? `movie-poster-${movieId}` : undefined;
 
   return (
     <div
