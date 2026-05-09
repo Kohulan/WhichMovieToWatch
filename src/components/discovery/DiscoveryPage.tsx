@@ -26,6 +26,7 @@ import { ClaySkeletonCard } from "@/components/ui/ClaySkeletonCard";
 import { MetalButton } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
 import { ScrollReveal } from "@/components/animation/ScrollReveal";
+import { RetryError } from "@/components/shared/RetryError";
 import {
   StaggerContainer,
   StaggerItem,
@@ -402,108 +403,99 @@ export function DiscoveryPage() {
       {/* Skip the heading entirely when there's nothing to show (no movies,
           no skeleton, no error) so we never strand a heading over empty space. */}
       {lovedMovieId !== null &&
-        (similarLoading ||
-          similarError ||
-          similarMovies.length > 0) && (
-        <ScrollReveal travel={60} className="relative z-10 bg-clay-base">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <section aria-label="Similar movies you might enjoy">
-              <h3 className="font-heading text-base font-semibold text-clay-text mb-3">
-                You might also like
-              </h3>
+        (similarLoading || similarError || similarMovies.length > 0) && (
+          <ScrollReveal travel={60} className="relative z-10 bg-clay-base">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+              <section aria-label="Similar movies you might enjoy">
+                <h3 className="font-heading text-base font-semibold text-clay-text mb-3">
+                  You might also like
+                </h3>
 
-              {similarLoading ? (
-                <div className="flex gap-3 overflow-x-auto pb-2">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="flex-shrink-0 w-28 h-44 bg-clay-surface rounded-lg clay-shadow-sm animate-pulse"
-                      aria-hidden="true"
-                    />
-                  ))}
-                </div>
-              ) : similarError ? (
-                <div className="flex flex-col items-start gap-3" role="alert">
-                  <p className="text-clay-text-muted text-sm">
-                    Could not load similar movies.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={retrySimilar}
-                    className="inline-flex items-center justify-center min-h-11 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
+                {similarLoading ? (
+                  <div className="flex gap-3 overflow-x-auto pb-2">
+                    {Array.from({ length: 4 }).map((_, i) => (
+                      <div
+                        key={i}
+                        className="flex-shrink-0 w-28 h-44 bg-clay-surface rounded-lg clay-shadow-sm animate-pulse"
+                        aria-hidden="true"
+                      />
+                    ))}
+                  </div>
+                ) : similarError ? (
+                  <RetryError
+                    message="Could not load similar movies."
+                    onRetry={retrySimilar}
+                    align="start"
+                  />
+                ) : similarMovies.length > 0 ? (
+                  /* StaggerContainer: horizontal slide-in from left for similar movie posters (ANIM-02) */
+                  <StaggerContainer
+                    className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
+                    direction="left"
+                    stagger={0.06}
+                    role="list"
+                    aria-label="Similar movies"
                   >
-                    Try again
-                  </button>
-                </div>
-              ) : similarMovies.length > 0 ? (
-                /* StaggerContainer: horizontal slide-in from left for similar movie posters (ANIM-02) */
-                <StaggerContainer
-                  className="flex gap-3 overflow-x-auto pb-2 -mx-4 px-4 snap-x snap-mandatory"
-                  direction="left"
-                  stagger={0.06}
-                  role="list"
-                  aria-label="Similar movies"
-                >
-                  {similarMovies.slice(0, 10).map((movie) => {
-                    const posterUrl = getPosterUrl(movie.poster_path, "w185");
-                    const year = movie.release_date?.slice(0, 4) ?? "";
+                    {similarMovies.slice(0, 10).map((movie) => {
+                      const posterUrl = getPosterUrl(movie.poster_path, "w185");
+                      const year = movie.release_date?.slice(0, 4) ?? "";
 
-                    return (
-                      <StaggerItem
-                        key={movie.id}
-                        direction="left"
-                        className="flex-shrink-0 snap-start"
-                      >
-                        <button
-                          className="w-28 text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent"
-                          onClick={() => handleSimilarMovieClick(movie.id)}
-                          aria-label={`Load ${movie.title}${year ? ` (${year})` : ""}`}
+                      return (
+                        <StaggerItem
+                          key={movie.id}
+                          direction="left"
+                          className="flex-shrink-0 snap-start"
                         >
-                          {posterUrl ? (
-                            <motion.img
-                              layoutId={`similar-poster-${movie.id}`}
-                              src={posterUrl}
-                              srcSet={
-                                movie.poster_path
-                                  ? tmdbPosterSrcSet(movie.poster_path)
-                                  : undefined
-                              }
-                              sizes={posterSizes}
-                              alt={`${movie.title} poster`}
-                              loading="lazy"
-                              decoding="async"
-                              className="w-full aspect-[2/3] object-cover"
-                            />
-                          ) : (
-                            <motion.div
-                              layoutId={`similar-poster-${movie.id}`}
-                              className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center"
-                            >
-                              <span className="text-clay-text-muted text-xs text-center px-1">
-                                {movie.title}
-                              </span>
-                            </motion.div>
-                          )}
-                          <div className="p-2">
-                            <p className="text-clay-text text-xs font-medium line-clamp-2 leading-tight">
-                              {movie.title}
-                            </p>
-                            {year && (
-                              <p className="text-clay-text-muted text-xs mt-0.5">
-                                {year}
-                              </p>
+                          <button
+                            className="w-28 text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent"
+                            onClick={() => handleSimilarMovieClick(movie.id)}
+                            aria-label={`Load ${movie.title}${year ? ` (${year})` : ""}`}
+                          >
+                            {posterUrl ? (
+                              <motion.img
+                                layoutId={`similar-poster-${movie.id}`}
+                                src={posterUrl}
+                                srcSet={
+                                  movie.poster_path
+                                    ? tmdbPosterSrcSet(movie.poster_path)
+                                    : undefined
+                                }
+                                sizes={posterSizes}
+                                alt={`${movie.title} poster`}
+                                loading="lazy"
+                                decoding="async"
+                                className="w-full aspect-[2/3] object-cover"
+                              />
+                            ) : (
+                              <motion.div
+                                layoutId={`similar-poster-${movie.id}`}
+                                className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center"
+                              >
+                                <span className="text-clay-text-muted text-xs text-center px-1">
+                                  {movie.title}
+                                </span>
+                              </motion.div>
                             )}
-                          </div>
-                        </button>
-                      </StaggerItem>
-                    );
-                  })}
-                </StaggerContainer>
-              ) : null}
-            </section>
-          </div>
-        </ScrollReveal>
-      )}
+                            <div className="p-2">
+                              <p className="text-clay-text text-xs font-medium line-clamp-2 leading-tight">
+                                {movie.title}
+                              </p>
+                              {year && (
+                                <p className="text-clay-text-muted text-xs mt-0.5">
+                                  {year}
+                                </p>
+                              )}
+                            </div>
+                          </button>
+                        </StaggerItem>
+                      );
+                    })}
+                  </StaggerContainer>
+                ) : null}
+              </section>
+            </div>
+          </ScrollReveal>
+        )}
     </div>
   );
 }

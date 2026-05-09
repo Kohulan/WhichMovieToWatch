@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { fetchAllMovieProviders } from "@/services/tmdb/providers";
 import { getCountryName } from "@/lib/country-names";
 import { useReloadKey } from "@/hooks/useReloadKey";
+import { RetryError } from "@/components/shared/RetryError";
 
 const NETFLIX_PROVIDER_ID = 8;
 
@@ -86,27 +87,18 @@ export function GlobalAvailabilitySection({
 
   if (error) {
     return (
-      <section
-        aria-label="Netflix availability worldwide"
-        className="mt-4"
-        role="alert"
-      >
+      <section aria-label="Netflix availability worldwide" className="mt-4">
         <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
           <span className="text-brand-netflix font-bold text-lg leading-none">
             N
           </span>
           Netflix Availability
         </h3>
-        <p className="text-clay-text-muted text-sm mb-3">
-          Could not load Netflix availability.
-        </p>
-        <button
-          type="button"
-          onClick={retry}
-          className="inline-flex items-center justify-center min-w-11 min-h-11 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
-        >
-          Try again
-        </button>
+        <RetryError
+          message="Could not load Netflix availability."
+          onRetry={retry}
+          align="start"
+        />
       </section>
     );
   }

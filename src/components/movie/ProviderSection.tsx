@@ -1,6 +1,7 @@
 // Streaming provider grouped list — Stream/Rent/Buy/Free tiers (DISP-05)
 
 import { ExternalLink } from "@/components/shared/ExternalLink";
+import { RetryError } from "@/components/shared/RetryError";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
 import type { MovieProviders, ProviderInfo } from "@/types/provider";
 
@@ -142,20 +143,10 @@ export function ProviderSection({
       {children}
 
       {error ? (
-        <div className="text-center py-4" role="alert">
-          <p className="text-clay-text-muted text-sm mb-3">
-            Could not load streaming availability.
-          </p>
-          {onRetry && (
-            <button
-              type="button"
-              onClick={onRetry}
-              className="inline-flex items-center justify-center min-w-11 min-h-11 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
-            >
-              Try again
-            </button>
-          )}
-        </div>
+        <RetryError
+          message="Could not load streaming availability."
+          onRetry={onRetry}
+        />
       ) : isLoading && !hasProviders ? (
         <div
           className="flex flex-wrap gap-2"
@@ -170,7 +161,9 @@ export function ProviderSection({
             />
           ))}
         </div>
-      ) : hasServiceMismatch && allProviders && hasAnyProviders(allProviders) ? (
+      ) : hasServiceMismatch &&
+        allProviders &&
+        hasAnyProviders(allProviders) ? (
         <div>
           <p className="text-clay-text-muted text-sm mb-3">
             Not streaming on your selected services
