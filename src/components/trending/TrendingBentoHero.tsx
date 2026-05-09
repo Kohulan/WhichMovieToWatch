@@ -138,7 +138,7 @@ export function TrendingBentoHero() {
               {/* Inline status row: count + freshness — kept compact */}
               <p className="text-clay-text text-sm">
                 <span className="font-heading font-semibold tabular-nums">
-                  {isLoading && movieCount === 0 ? "—" : movieCount}
+                  {isLoading && movieCount === 0 ? "…" : movieCount}
                 </span>{" "}
                 <span className="text-clay-text-muted">
                   in theaters · refreshes every 30 min

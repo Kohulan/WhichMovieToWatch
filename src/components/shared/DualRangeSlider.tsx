@@ -74,7 +74,7 @@ export function DualRangeSlider({
           <span className="font-body text-sm text-clay-text">{label}</span>
         )}
         <span className="font-body text-sm text-clay-text-muted tabular-nums ml-auto">
-          {formatValue(minValue)} — {formatValue(maxValue)}
+          {formatValue(minValue)} to {formatValue(maxValue)}
         </span>
       </div>
 

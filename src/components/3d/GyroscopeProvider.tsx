@@ -160,7 +160,7 @@ export function GyroscopeProvider() {
             display: "block",
             width: "100%",
           }}
-          aria-label="Enable immersive tilt — tap to grant gyroscope access"
+          aria-label="Enable immersive tilt: tap to grant gyroscope access"
         >
           <div
             style={{

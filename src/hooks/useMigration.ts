@@ -69,6 +69,5 @@ export function useMigration(): void {
 
     // Mark migration complete
     localStorage.setItem(MIGRATION_FLAG, String(Date.now()));
-    console.log("Legacy data migrated successfully");
   }, []);
 }

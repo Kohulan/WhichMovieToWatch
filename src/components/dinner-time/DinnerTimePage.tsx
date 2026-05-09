@@ -389,7 +389,7 @@ export function DinnerTimePage({
                     size="sm"
                     onClick={handleGreatPick}
                     className="gap-1.5"
-                    aria-label="Great pick — mark as liked and load next"
+                    aria-label="Great pick: mark as liked and load next"
                   >
                     <ThumbsUp className="w-4 h-4" aria-hidden="true" />
                     Great Pick
@@ -400,7 +400,7 @@ export function DinnerTimePage({
                     size="sm"
                     onClick={handleNotThis}
                     className="gap-1.5"
-                    aria-label="Not this one — mark as disliked and load next"
+                    aria-label="Not this one: mark as disliked and load next"
                   >
                     <ThumbsDown className="w-4 h-4" aria-hidden="true" />
                     Not This
