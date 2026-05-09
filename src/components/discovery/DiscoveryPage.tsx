@@ -95,12 +95,19 @@ export function DiscoveryPage() {
     providers: allProviders,
     myProviders,
     hasServiceMismatch,
+    isLoading: providersLoading,
+    error: providersError,
+    retry: retryProviders,
   } = useWatchProviders(currentMovie?.id ?? null, currentMovie?.title ?? "");
   const providers = myServices.length > 0 ? myProviders : allProviders;
 
   // Similar movies — only triggered after Love action (INTR-01)
-  const { movies: similarMovies, isLoading: similarLoading } =
-    useSimilarMovies(lovedMovieId);
+  const {
+    movies: similarMovies,
+    isLoading: similarLoading,
+    error: similarError,
+    retry: retrySimilar,
+  } = useSimilarMovies(lovedMovieId);
 
   // Full-bleed backdrop URL
   const backdropUrl = currentMovie?.backdrop_path
@@ -372,6 +379,9 @@ export function DiscoveryPage() {
                   findMovieLink={findMovieLink}
                   hasServiceMismatch={hasServiceMismatch}
                   allProviders={allProviders}
+                  isLoading={providersLoading}
+                  error={providersError}
+                  onRetry={retryProviders}
                 >
                   {/* Ticket search — only shown for trending (now playing) movies */}
                   {showTickets && (
@@ -389,7 +399,12 @@ export function DiscoveryPage() {
 
       {/* Below-fold section — opaque bg covers the fixed backdrop as user scrolls */}
       {/* ScrollReveal: section slides up when user scrolls to the "You might also like" area (ANIM-02) */}
-      {lovedMovieId !== null && (
+      {/* Skip the heading entirely when there's nothing to show (no movies,
+          no skeleton, no error) so we never strand a heading over empty space. */}
+      {lovedMovieId !== null &&
+        (similarLoading ||
+          similarError ||
+          similarMovies.length > 0) && (
         <ScrollReveal travel={60} className="relative z-10 bg-clay-base">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <section aria-label="Similar movies you might enjoy">
@@ -406,6 +421,19 @@ export function DiscoveryPage() {
                       aria-hidden="true"
                     />
                   ))}
+                </div>
+              ) : similarError ? (
+                <div className="flex flex-col items-start gap-3" role="alert">
+                  <p className="text-clay-text-muted text-sm">
+                    Could not load similar movies.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={retrySimilar}
+                    className="inline-flex items-center justify-center min-h-11 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
+                  >
+                    Try again
+                  </button>
                 </div>
               ) : similarMovies.length > 0 ? (
                 /* StaggerContainer: horizontal slide-in from left for similar movie posters (ANIM-02) */

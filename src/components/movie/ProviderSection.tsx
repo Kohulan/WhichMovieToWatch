@@ -12,6 +12,12 @@ interface ProviderSectionProps {
   hasServiceMismatch?: boolean;
   /** All providers (unfiltered) — shown as fallback when hasServiceMismatch is true */
   allProviders?: MovieProviders;
+  /** True while the providers fetch is in flight; renders a skeleton row */
+  isLoading?: boolean;
+  /** Non-null when the providers fetch failed; shows retry UI */
+  error?: string | null;
+  /** Retry handler called from the error state's button */
+  onRetry?: () => void;
 }
 
 interface ProviderTierProps {
@@ -121,6 +127,9 @@ export function ProviderSection({
   children,
   hasServiceMismatch,
   allProviders,
+  isLoading,
+  error,
+  onRetry,
 }: ProviderSectionProps) {
   const hasProviders = hasAnyProviders(providers);
 
@@ -132,7 +141,36 @@ export function ProviderSection({
 
       {children}
 
-      {hasServiceMismatch && allProviders && hasAnyProviders(allProviders) ? (
+      {error ? (
+        <div className="text-center py-4" role="alert">
+          <p className="text-clay-text-muted text-sm mb-3">
+            Could not load streaming availability.
+          </p>
+          {onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="inline-flex items-center justify-center min-w-11 min-h-11 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
+            >
+              Try again
+            </button>
+          )}
+        </div>
+      ) : isLoading && !hasProviders ? (
+        <div
+          className="flex flex-wrap gap-2"
+          aria-label="Loading streaming providers"
+          aria-busy="true"
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <div
+              key={i}
+              className="w-10 h-10 rounded-lg bg-clay-surface/60 animate-pulse"
+              aria-hidden="true"
+            />
+          ))}
+        </div>
+      ) : hasServiceMismatch && allProviders && hasAnyProviders(allProviders) ? (
         <div>
           <p className="text-clay-text-muted text-sm mb-3">
             Not streaming on your selected services

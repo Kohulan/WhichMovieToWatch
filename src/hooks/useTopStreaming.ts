@@ -16,6 +16,8 @@ const PROVIDERS = [NETFLIX, PRIME_VIDEO, DISNEY_PLUS].join("|");
 export function useTopStreaming() {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const region = useRegionStore((s) => s.effectiveRegion());
 
   useEffect(() => {
@@ -23,6 +25,7 @@ export function useTopStreaming() {
 
     async function load() {
       setIsLoading(true);
+      setError(null);
       const cacheKey = `top-streaming-${region}`;
 
       const cached = await getCached<TMDBMovie[]>(cacheKey);
@@ -54,7 +57,18 @@ export function useTopStreaming() {
         await setCache(cacheKey, results, TTL.TRENDING);
       } catch (err) {
         console.warn("[useTopStreaming] Failed to load:", err);
-        if (!cancelled) setMovies([]);
+        if (!cancelled) {
+          // Only surface the error when we have nothing cached to show,
+          // otherwise keep displaying stale data silently.
+          if (!cached.value) {
+            setMovies([]);
+            setError(
+              err instanceof Error
+                ? err.message
+                : "Failed to load top streaming movies",
+            );
+          }
+        }
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -64,7 +78,9 @@ export function useTopStreaming() {
     return () => {
       cancelled = true;
     };
-  }, [region]);
+  }, [region, reloadKey]);
 
-  return { movies, isLoading };
+  const retry = () => setReloadKey((k) => k + 1);
+
+  return { movies, isLoading, error, retry };
 }

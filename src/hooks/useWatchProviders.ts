@@ -44,12 +44,15 @@ function mapProviders(
 export function useWatchProviders(movieId: number | null, movieTitle = "") {
   const [rawData, setRawData] = useState<WatchProviderCountry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
   const region = useRegionStore((s) => s.effectiveRegion)();
   const myServices = usePreferencesStore((s) => s.myServices);
 
   useEffect(() => {
     if (movieId === null) {
       setRawData(null);
+      setError(null);
       return;
     }
 
@@ -57,6 +60,7 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
 
     async function load() {
       setIsLoading(true);
+      setError(null);
 
       try {
         // Try reading from movie-details cache first (already fetched by useRandomMovie)
@@ -77,6 +81,9 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
         if (!cancelled) {
           console.warn("[providers] Failed to fetch:", err);
           setRawData(null);
+          setError(
+            err instanceof Error ? err.message : "Failed to load providers",
+          );
         }
       } finally {
         if (!cancelled) {
@@ -90,7 +97,9 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
     return () => {
       cancelled = true;
     };
-  }, [movieId, region]);
+  }, [movieId, region, reloadKey]);
+
+  const retry = () => setReloadKey((k) => k + 1);
 
   // Derive categorized providers from raw data
   const providers: MovieProviders = useMemo(() => {
@@ -149,6 +158,8 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
   return {
     providers,
     isLoading,
+    error,
+    retry,
     myProviders,
     allProviders,
     hasServiceMismatch,

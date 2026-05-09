@@ -17,12 +17,15 @@ export function GlobalAvailabilitySection({
     Array<{ code: string; name: string }>
   >([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       setIsLoading(true);
+      setError(null);
       try {
         const allProviders = await fetchAllMovieProviders(movieId);
         if (cancelled) return;
@@ -38,8 +41,15 @@ export function GlobalAvailabilitySection({
 
         netflixCountries.sort((a, b) => a.name.localeCompare(b.name));
         setCountries(netflixCountries);
-      } catch {
-        if (!cancelled) setCountries([]);
+      } catch (err) {
+        if (!cancelled) {
+          setCountries([]);
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Failed to load Netflix availability",
+          );
+        }
       } finally {
         if (!cancelled) setIsLoading(false);
       }
@@ -49,7 +59,9 @@ export function GlobalAvailabilitySection({
     return () => {
       cancelled = true;
     };
-  }, [movieId]);
+  }, [movieId, reloadKey]);
+
+  const retry = () => setReloadKey((k) => k + 1);
 
   if (isLoading) {
     return (
@@ -69,6 +81,33 @@ export function GlobalAvailabilitySection({
             />
           ))}
         </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section
+        aria-label="Netflix availability worldwide"
+        className="mt-4"
+        role="alert"
+      >
+        <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
+          <span className="text-brand-netflix font-bold text-lg leading-none">
+            N
+          </span>
+          Netflix Availability
+        </h3>
+        <p className="text-clay-text-muted text-sm mb-3">
+          Could not load Netflix availability.
+        </p>
+        <button
+          type="button"
+          onClick={retry}
+          className="inline-flex items-center justify-center min-w-11 min-h-11 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
+        >
+          Try again
+        </button>
       </section>
     );
   }

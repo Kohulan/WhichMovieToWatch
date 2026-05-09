@@ -37,8 +37,29 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+/**
+ * Small inline fallback while the lazy page chunk downloads. Kept in the
+ * eager main bundle so it appears immediately instead of waiting for any
+ * additional JS. Matches the AppShell padding so the layout doesn't jump.
+ */
+function PageSuspenseFallback() {
+  return (
+    <div
+      className="flex items-center justify-center min-h-[60vh] px-4"
+      role="status"
+      aria-live="polite"
+      aria-label="Loading page"
+    >
+      <div className="flex items-center gap-3 text-clay-text-muted text-sm">
+        <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
+        <span>Loading…</span>
+      </div>
+    </div>
+  );
+}
+
 const withSuspense = (node: React.ReactNode) => (
-  <Suspense fallback={null}>{node}</Suspense>
+  <Suspense fallback={<PageSuspenseFallback />}>{node}</Suspense>
 );
 
 const router = createHashRouter([
