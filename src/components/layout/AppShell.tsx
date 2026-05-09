@@ -236,11 +236,17 @@ export function AppShell() {
       <div className="fixed inset-0 z-0" aria-hidden="true">
         <div className="absolute inset-0 bg-clay-base" />
 
+        {/* Two ambient blobs (reduced from three — the third was the smallest
+            contributor and added the most paint during theme-swap with 6 in DOM
+            simultaneously). Desktop blur radii capped at 100px (was 140/120/100)
+            so the AnimatePresence crossfade isn't paint-bound on mid-tier GPUs.
+            Mobile blur sizes unchanged; @media (pointer: coarse) globally
+            disables backdrop-filter elsewhere in the app. */}
         <AnimatePresence mode="sync">
-          {/* Blob 1 — top-right large warm glow (reduced blur on mobile for GPU perf) */}
+          {/* Blob 1 — top-right large warm glow */}
           <motion.div
             key={`blob-1-${preset}`}
-            className="absolute top-[-20%] right-[-10%] w-[80%] h-[70%] rounded-full bg-accent/[0.14] blur-[60px] sm:blur-[140px]"
+            className="absolute top-[-20%] right-[-10%] w-[80%] h-[70%] rounded-full bg-accent/[0.14] blur-[60px] sm:blur-[100px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
@@ -249,20 +255,11 @@ export function AppShell() {
           {/* Blob 2 — bottom-left mid glow */}
           <motion.div
             key={`blob-2-${preset}`}
-            className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/[0.06] blur-[40px] sm:blur-[120px]"
+            className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/[0.06] blur-[40px] sm:blur-[80px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.05 }}
-          />
-          {/* Blob 3 — center-left subtle accent */}
-          <motion.div
-            key={`blob-3-${preset}`}
-            className="absolute top-[30%] left-[20%] w-[30%] h-[30%] rounded-full bg-accent/[0.04] blur-[30px] sm:blur-[100px]"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.1 }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
           />
         </AnimatePresence>
       </div>
