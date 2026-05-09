@@ -37,7 +37,7 @@ const mobileTabs = [
 ];
 
 const brandTextClass =
-  "text-[10px] font-bold tracking-[0.15em] text-clay-text/80 uppercase group-hover:text-clay-text transition-colors duration-200";
+  "text-2xs font-bold tracking-[0.15em] text-clay-text/80 uppercase group-hover:text-clay-text transition-colors duration-200";
 
 export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -195,7 +195,7 @@ export function Navbar() {
             className="
               inline-flex items-center gap-1
               px-2 sm:px-2.5 py-1 rounded-full cursor-pointer
-              text-white text-[10px] font-bold tracking-wider uppercase
+              text-white text-2xs font-bold tracking-wider uppercase
               bg-brand-netflix hover:bg-brand-netflix-dark
               transition-colors duration-200
               outline-none focus-visible:ring-2 focus-visible:ring-brand-netflix/50

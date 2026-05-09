@@ -126,7 +126,7 @@ export function TrendingPreviewCell() {
                         className="w-full aspect-[2/3] rounded-lg shadow-lg flex items-center justify-center"
                         style={{ background: POSTER_GRADIENTS[i] }}
                       >
-                        <span className="text-white/80 text-[10px] font-bold text-center px-1 leading-tight">
+                        <span className="text-white/80 text-2xs font-bold text-center px-1 leading-tight">
                           {movie.title}
                         </span>
                       </div>

@@ -64,6 +64,11 @@
   --shadow-clay-md:
     0 4px 12px -2px var(--clay-shadow), 0 2px 4px -1px var(--clay-shadow);
 
+  /* Font sizes — adds a step below Tailwind's default text-xs (12px) for
+     the project's many uppercase-tracked label captions. */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+
   /* Fonts */
   --font-heading: "JetBrains Mono Variable", "JetBrains Mono", monospace;
   --font-body: "JetBrains Mono Variable", "JetBrains Mono", monospace;

@@ -139,7 +139,7 @@ function NetflixCard({
                   key={code}
                   title={getCountryName(code)}
                   className="
-                    inline-block px-1 py-px text-[10px] font-bold
+                    inline-block px-1 py-px text-2xs font-bold
                     bg-brand-netflix/15 text-brand-netflix rounded
                     border border-brand-netflix/20
                   "
@@ -148,13 +148,13 @@ function NetflixCard({
                 </span>
               ))}
               {overflow > 0 && (
-                <span className="inline-block px-1 py-px text-[10px] font-medium text-clay-text-muted">
+                <span className="inline-block px-1 py-px text-2xs font-medium text-clay-text-muted">
                   +{overflow} more
                 </span>
               )}
             </div>
           ) : (
-            <p className="text-clay-text-muted text-[10px] italic">
+            <p className="text-clay-text-muted text-2xs italic">
               Not on Netflix
             </p>
           )}

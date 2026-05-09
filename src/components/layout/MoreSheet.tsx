@@ -111,7 +111,7 @@ export function MoreSheet({
             <div className="flex-1 overflow-y-auto px-4 pb-6">
               {/* Navigation links */}
               <div className="space-y-1 mb-5">
-                <p className="text-[10px] uppercase tracking-wider text-clay-text-muted px-3 mb-2">
+                <p className="text-2xs uppercase tracking-wider text-clay-text-muted px-3 mb-2">
                   Pages
                 </p>
                 {extraPages.map(({ to, icon: Icon, label }) => {
@@ -146,7 +146,7 @@ export function MoreSheet({
 
               {/* Settings */}
               <div className="space-y-4">
-                <p className="text-[10px] uppercase tracking-wider text-clay-text-muted px-3">
+                <p className="text-2xs uppercase tracking-wider text-clay-text-muted px-3">
                   Settings
                 </p>
 
@@ -169,7 +169,7 @@ export function MoreSheet({
 
             {/* About */}
             <div className="px-5 pb-4 pt-2 border-t border-white/[0.08]">
-              <p className="text-[10px] uppercase tracking-wider text-clay-text-muted mb-2">
+              <p className="text-2xs uppercase tracking-wider text-clay-text-muted mb-2">
                 About
               </p>
               <p className="text-xs text-clay-text-muted leading-relaxed mb-3">

@@ -404,7 +404,7 @@ export function OnboardingWizard({
                                 )}
                               </div>
                               <span
-                                className={`text-[10px] leading-tight text-center line-clamp-1 max-w-full transition-colors ${
+                                className={`text-2xs leading-tight text-center line-clamp-1 max-w-full transition-colors ${
                                   isSelected
                                     ? "text-accent font-semibold"
                                     : "text-clay-text-muted"

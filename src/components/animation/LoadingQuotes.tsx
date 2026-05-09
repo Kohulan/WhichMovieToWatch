@@ -61,7 +61,7 @@ export function LoadingQuotes({
       : "text-clay-text/60 text-sm italic";
   const filmClass =
     size === "sm"
-      ? "text-clay-text/40 text-[10px]"
+      ? "text-clay-text/40 text-2xs"
       : "text-clay-text/40 text-xs";
 
   return (

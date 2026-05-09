@@ -155,7 +155,7 @@ export function RegionPicker({
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         {popular.length > 0 && (
           <>
-            <p className="text-[10px] uppercase tracking-wider text-clay-text-muted px-2 pt-1 pb-1.5">
+            <p className="text-2xs uppercase tracking-wider text-clay-text-muted px-2 pt-1 pb-1.5">
               Popular
             </p>
             {popular.map((c) => (
@@ -168,7 +168,7 @@ export function RegionPicker({
               />
             ))}
             <div className="border-t border-white/[0.06] my-1.5" />
-            <p className="text-[10px] uppercase tracking-wider text-clay-text-muted px-2 pt-1 pb-1.5">
+            <p className="text-2xs uppercase tracking-wider text-clay-text-muted px-2 pt-1 pb-1.5">
               All Countries
             </p>
           </>
@@ -341,7 +341,7 @@ function CountryRow({
     >
       <span className="truncate">{name}</span>
       <span className="flex items-center gap-1.5 flex-shrink-0">
-        <span className="text-[10px] text-clay-text-muted">{code}</span>
+        <span className="text-2xs text-clay-text-muted">{code}</span>
         {isActive && <Check className="w-3.5 h-3.5 text-accent" />}
       </span>
     </button>

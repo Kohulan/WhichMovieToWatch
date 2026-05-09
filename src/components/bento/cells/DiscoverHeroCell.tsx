@@ -112,7 +112,7 @@ export function DiscoverHeroCell() {
               className="w-4 h-4 text-accent drop-shadow-[0_0_8px_var(--accent)]"
               aria-hidden="true"
             />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
+            <span className="text-2xs font-bold uppercase tracking-[0.2em] text-white/60">
               Top on Streaming
             </span>
             {/* Provider logos for the current movie — crossfades when movie changes */}
