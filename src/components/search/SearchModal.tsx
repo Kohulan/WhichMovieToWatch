@@ -5,12 +5,11 @@ import { useSearchMovies } from "@/hooks/useSearchMovies";
 import { useSearchStore } from "@/stores/searchStore";
 import { useRegionStore } from "@/stores/regionStore";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
-import { tmdbFetch } from "@/services/tmdb/client";
+import { runDiscoverSearch as runDiscoverSearchService } from "@/services/tmdb/discover-search";
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
 import { AdvancedFilters } from "./AdvancedFilters";
 import { FilterPresets } from "./FilterPresets";
-import type { TMDBDiscoverResponse } from "@/types/movie";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -56,10 +55,6 @@ export function SearchModal({
   const { search, loadMore, results, isLoading, hasMore } = useSearchMovies();
   const advancedFilters = useSearchStore((s) => s.advancedFilters);
   const sortBy = useSearchStore((s) => s.sortBy);
-  const setResults = useSearchStore((s) => s.setResults);
-  const appendResults = useSearchStore((s) => s.appendResults);
-  const setLoading = useSearchStore((s) => s.setLoading);
-  const setError = useSearchStore((s) => s.setError);
   const reset = useSearchStore((s) => s.reset);
   const setAdvancedFilters = useSearchStore((s) => s.setAdvancedFilters);
   const currentPage = useSearchStore((s) => s.currentPage);
@@ -130,79 +125,16 @@ export function SearchModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [advancedFilters, sortBy, isOpen]);
 
-  async function runDiscoverSearch(page: number) {
+  function runDiscoverSearch(page: number) {
     const requestId = ++discoverRequestIdRef.current;
     const isStale = () => requestId !== discoverRequestIdRef.current;
-
-    setLoading(true);
-    setError(null);
-
-    try {
-      const params: Record<string, string | number | boolean> = {
-        sort_by: sortBy,
-        include_adult: "false",
-        page,
-      };
-
-      if (advancedFilters.genres.length > 0) {
-        params.with_genres = advancedFilters.genres.join(",");
-      }
-
-      if (advancedFilters.yearRange[0] !== 1900) {
-        params["primary_release_date.gte"] =
-          `${advancedFilters.yearRange[0]}-01-01`;
-      }
-      if (advancedFilters.yearRange[1] !== new Date().getFullYear()) {
-        params["primary_release_date.lte"] =
-          `${advancedFilters.yearRange[1]}-12-31`;
-      }
-
-      if (advancedFilters.ratingRange[0] !== 0) {
-        params["vote_average.gte"] = advancedFilters.ratingRange[0];
-      }
-      if (advancedFilters.ratingRange[1] !== 10) {
-        params["vote_average.lte"] = advancedFilters.ratingRange[1];
-      }
-
-      if (advancedFilters.runtimeRange[0] !== 0) {
-        params["with_runtime.gte"] = advancedFilters.runtimeRange[0];
-      }
-      if (advancedFilters.runtimeRange[1] !== 300) {
-        params["with_runtime.lte"] = advancedFilters.runtimeRange[1];
-      }
-
-      if (advancedFilters.language) {
-        params.with_original_language = advancedFilters.language;
-      }
-
-      if (advancedFilters.providerId) {
-        params.with_watch_providers = advancedFilters.providerId;
-        // CRITICAL: with_watch_providers ALWAYS paired with watch_region
-        params.watch_region = region;
-      }
-
-      const response = await tmdbFetch<TMDBDiscoverResponse>(
-        "/discover/movie",
-        params,
-      );
-      if (isStale()) return;
-
-      if (page === 1) {
-        setResults(
-          response.results,
-          response.total_results,
-          response.total_pages,
-          response.page,
-        );
-      } else {
-        appendResults(response.results, response.page);
-      }
-    } catch (err) {
-      if (isStale()) return;
-      setError(err instanceof Error ? err.message : "Discover failed");
-    } finally {
-      if (!isStale()) setLoading(false);
-    }
+    return runDiscoverSearchService({
+      advancedFilters,
+      sortBy,
+      region,
+      page,
+      isStale,
+    });
   }
 
   const handleSearch = useCallback(
