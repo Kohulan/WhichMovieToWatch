@@ -130,9 +130,9 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         transition={{ delay: 0.8 }}
       >
         <motion.div
-          className="h-full rounded-full bg-accent"
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
+          className="h-full w-full rounded-full bg-accent origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
           transition={{ delay: 1.0, duration: 1.3, ease: [0.4, 0, 0.2, 1] }}
           onAnimationComplete={onComplete}
         />

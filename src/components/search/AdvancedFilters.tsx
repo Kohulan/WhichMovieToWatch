@@ -134,17 +134,20 @@ export function AdvancedFilters() {
         )}
       </button>
 
-      {/* Expandable panel */}
+      {/* Expandable panel — grid-template-rows transition (compositor-friendly,
+          no layout thrash from height: 0 → auto). The inner wrapper carries
+          min-height: 0 so the rows track collapses cleanly to 0fr. */}
       <AnimatePresence initial={false}>
         {isExpanded && (
           <motion.div
             id="advanced-filters-panel"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="overflow-hidden"
+            initial={{ gridTemplateRows: "0fr", opacity: 0 }}
+            animate={{ gridTemplateRows: "1fr", opacity: 1 }}
+            exit={{ gridTemplateRows: "0fr", opacity: 0 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="grid overflow-hidden"
           >
+            <div className="min-h-0">
             <div className="space-y-5 py-3">
               {/* Genre multi-select */}
               <div>
@@ -246,6 +249,7 @@ export function AdvancedFilters() {
                   Clear Filters
                 </MetalButton>
               </div>
+            </div>
             </div>
           </motion.div>
         )}

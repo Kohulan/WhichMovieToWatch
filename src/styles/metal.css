@@ -144,35 +144,9 @@
     inset 0 -1px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* --- Accent Glow (Active State) ---
-   Pulsing accent-colored glow applied to controls in checked/active state.
-   Simulates a power indicator LED glow. 2s cycle, gentle pulse.
-*/
-@keyframes accent-glow-pulse {
-  0%,
-  100% {
-    box-shadow:
-      inset 0 3px 6px rgba(0, 0, 0, 0.4),
-      inset 0 1px 3px rgba(0, 0, 0, 0.3),
-      inset 0 -1px 2px rgba(255, 255, 255, 0.08),
-      0 1px 0 rgba(255, 255, 255, 0.05),
-      0 0 8px var(--accent),
-      0 0 16px color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-  50% {
-    box-shadow:
-      inset 0 3px 6px rgba(0, 0, 0, 0.4),
-      inset 0 1px 3px rgba(0, 0, 0, 0.3),
-      inset 0 -1px 2px rgba(255, 255, 255, 0.08),
-      0 1px 0 rgba(255, 255, 255, 0.05),
-      0 0 12px var(--accent),
-      0 0 24px color-mix(in srgb, var(--accent) 60%, transparent);
-  }
-}
-
-.accent-glow-active {
-  animation: accent-glow-pulse 2s ease-in-out infinite;
-}
+/* Note: accent-glow-pulse keyframes + .accent-glow-active live in
+   src/styles/animations.css. Keeping a single source of truth (in oklch)
+   prevents drift across the two files. */
 
 /* ── Mobile Performance: simplified metal shadows ── */
 @media (pointer: coarse) {

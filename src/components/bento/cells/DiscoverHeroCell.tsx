@@ -91,17 +91,18 @@ export function DiscoverHeroCell() {
       {/* Bottom-heavy gradient overlay for text legibility */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-      {/* Shimmer sweep */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 45%, transparent 50%)",
-          backgroundSize: "200% 100%",
-        }}
-        animate={{ backgroundPositionX: ["100%", "-100%"] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-      />
+      {/* Shimmer sweep — transform-only animation (composited, no per-frame paint) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-0 -left-full h-full w-[200%]"
+          style={{
+            background:
+              "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 45%, transparent 50%)",
+          }}
+          animate={{ x: ["0%", "100%"] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
 
       {/* Content */}
       <div className="relative z-10 flex flex-col gap-3">

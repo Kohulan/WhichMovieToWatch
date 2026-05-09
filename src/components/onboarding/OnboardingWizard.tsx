@@ -256,8 +256,8 @@ export function OnboardingWizard({
               <div className="mb-4">
                 <div className="h-1 w-full bg-clay-surface rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-accent rounded-full"
-                    animate={{ width: step === 1 ? "50%" : "100%" }}
+                    className="h-full w-full bg-accent rounded-full origin-left"
+                    animate={{ scaleX: step === 1 ? 0.5 : 1 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 </div>

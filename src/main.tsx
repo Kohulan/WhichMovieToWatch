@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { createHashRouter, RouterProvider } from "react-router";
 
@@ -7,13 +7,18 @@ import "@fontsource-variable/jetbrains-mono";
 import "./styles/app.css";
 import App from "./App";
 import { HomePage } from "./pages/HomePage";
-import { Showcase } from "./pages/Showcase";
-import { DiscoverPage } from "./pages/DiscoverPage";
-import TrendingPage from "./pages/TrendingPage";
-import DinnerTimePage from "./pages/DinnerTimePage";
-import FreeMoviesPage from "./pages/FreeMoviesPage";
-import BrowsePage from "./pages/BrowsePage";
-import PrivacyPage from "./pages/PrivacyPage";
+
+const DiscoverPage = lazy(() =>
+  import("./pages/DiscoverPage").then((m) => ({ default: m.DiscoverPage })),
+);
+const Showcase = lazy(() =>
+  import("./pages/Showcase").then((m) => ({ default: m.Showcase })),
+);
+const TrendingPage = lazy(() => import("./pages/TrendingPage"));
+const DinnerTimePage = lazy(() => import("./pages/DinnerTimePage"));
+const FreeMoviesPage = lazy(() => import("./pages/FreeMoviesPage"));
+const BrowsePage = lazy(() => import("./pages/BrowsePage"));
+const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 
 // Unregister any legacy service workers (from the pre-React vanilla JS app)
 // that may intercept navigation requests and serve stale cached responses.
@@ -32,19 +37,23 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+const withSuspense = (node: React.ReactNode) => (
+  <Suspense fallback={null}>{node}</Suspense>
+);
+
 const router = createHashRouter([
   {
     path: "/",
     element: <App />,
     children: [
       { index: true, element: <HomePage /> },
-      { path: "discover", element: <DiscoverPage /> },
-      { path: "browse", element: <BrowsePage /> },
-      { path: "trending", element: <TrendingPage /> },
-      { path: "dinner-time", element: <DinnerTimePage /> },
-      { path: "free-movies", element: <FreeMoviesPage /> },
-      { path: "showcase", element: <Showcase /> },
-      { path: "privacy", element: <PrivacyPage /> },
+      { path: "discover", element: withSuspense(<DiscoverPage />) },
+      { path: "browse", element: withSuspense(<BrowsePage />) },
+      { path: "trending", element: withSuspense(<TrendingPage />) },
+      { path: "dinner-time", element: withSuspense(<DinnerTimePage />) },
+      { path: "free-movies", element: withSuspense(<FreeMoviesPage />) },
+      { path: "showcase", element: withSuspense(<Showcase />) },
+      { path: "privacy", element: withSuspense(<PrivacyPage />) },
     ],
   },
 ]);
