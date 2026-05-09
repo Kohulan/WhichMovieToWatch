@@ -212,7 +212,8 @@ export function Navbar() {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
             className="
-              p-2 rounded-lg text-clay-text-muted cursor-pointer
+              inline-flex items-center justify-center min-w-11 min-h-11
+              rounded-lg text-clay-text-muted cursor-pointer
               hover:text-clay-text hover:bg-white/[0.06]
               transition-colors duration-200
               outline-none focus-visible:ring-2 focus-visible:ring-accent/50
@@ -230,7 +231,8 @@ export function Navbar() {
             whileTap={{ scale: 0.92 }}
             className="
               sm:hidden
-              p-2 rounded-lg text-clay-text-muted cursor-pointer
+              inline-flex items-center justify-center min-w-11 min-h-11
+              rounded-lg text-clay-text-muted cursor-pointer
               hover:text-clay-text hover:bg-white/[0.06]
               transition-colors duration-200
               outline-none focus-visible:ring-2 focus-visible:ring-accent/50

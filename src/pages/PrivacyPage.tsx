@@ -9,7 +9,7 @@ import { Link } from "react-router";
  */
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-clay-base py-8 pb-24 px-4">
+    <div className="min-h-dvh bg-clay-base py-8 pb-24 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back navigation */}
         <Link

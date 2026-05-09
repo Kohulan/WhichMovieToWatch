@@ -231,7 +231,7 @@ export function AppShell() {
   }, [location.pathname]);
 
   return (
-    <div className="relative min-h-screen bg-clay-base transition-colors duration-500 ease-in-out">
+    <div className="relative min-h-dvh bg-clay-base transition-colors duration-500 ease-in-out">
       {/* Fixed cinematic gradient background with animated blobs on theme change */}
       <div className="fixed inset-0 z-0" aria-hidden="true">
         <div className="absolute inset-0 bg-clay-base" />
@@ -326,7 +326,7 @@ export function AppShell() {
           animate="animate"
           exit="exit"
           transition={activeTransition}
-          className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-screen outline-none"
+          className="relative z-[1] pt-20 pb-[calc(5rem+env(safe-area-inset-bottom,0px))] min-h-dvh outline-none"
         >
           <PageErrorBoundary locationKey={location.pathname}>
             <FrozenOutlet />
