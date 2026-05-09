@@ -115,38 +115,32 @@ export function BrowseBentoHero({
             material="clay"
             className="min-h-[140px]"
           >
-            <div className="p-5 flex flex-col justify-between h-full gap-4">
-              {/* Header */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-clay-text font-heading font-semibold text-base">
-                  Catalog
-                </h2>
-                <Tv
-                  className="w-5 h-5 text-clay-text-muted"
-                  aria-hidden="true"
-                />
-              </div>
-
-              {/* Movie count */}
-              <div>
+            <div className="p-5 grid grid-cols-2 gap-4 h-full items-stretch divide-x divide-clay-border">
+              {/* Left stat \u2014 movie count */}
+              <div className="flex flex-col justify-center pr-2">
+                <span className="text-clay-text-muted text-[11px] uppercase tracking-wider font-medium">
+                  In catalog
+                </span>
                 {isLoading && totalResults === 0 ? (
-                  <div className="h-8 w-24 rounded bg-white/20 animate-pulse mb-1" />
+                  <div className="h-7 w-20 rounded bg-clay-border animate-pulse mt-1" />
                 ) : (
-                  <p className="text-3xl font-heading font-bold text-clay-text leading-none tabular-nums">
+                  <p className="text-2xl font-heading font-bold text-clay-text leading-none tabular-nums mt-1">
                     {totalResults > 0
                       ? totalResults.toLocaleString()
                       : "\u2014"}
                   </p>
                 )}
-                <p className="text-clay-text-muted text-sm mt-1">
-                  {totalResults === 1 ? "movie available" : "movies available"}
-                </p>
               </div>
 
-              {/* Sort indicator */}
-              <p className="text-clay-text-muted text-xs opacity-60">
-                Sorted by {sortLabel.toLowerCase()}
-              </p>
+              {/* Right stat — current sort */}
+              <div className="flex flex-col justify-center pl-4">
+                <span className="text-clay-text-muted text-[11px] uppercase tracking-wider font-medium">
+                  Sorted by
+                </span>
+                <p className="text-base font-heading font-semibold text-clay-text leading-tight mt-1">
+                  {sortLabel}
+                </p>
+              </div>
             </div>
           </BentoCell>
         </StaggerItem>
