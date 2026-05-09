@@ -3,7 +3,10 @@ import { motion } from "motion/react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { useRegionStore } from "@/stores/regionStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
-import { getProviderLogoUrl } from "@/lib/provider-registry";
+import {
+  getProviderLogoUrl,
+  MAJOR_STREAMING_PROVIDERS,
+} from "@/lib/provider-registry";
 
 interface BrowseProviderLauncherProps {
   onSelect: (providerId: number) => void;
@@ -31,6 +34,9 @@ export function BrowseProviderLauncher({
   const [showAll, setShowAll] = useState(false);
 
   const myServicesSet = new Set(myServices);
+  const majorSet = new Set<number>(MAJOR_STREAMING_PROVIDERS);
+
+  // Section 1: user's own services (only renders if non-empty), in user order.
   const myProviders = providers
     .filter((p) => myServicesSet.has(p.provider_id))
     .sort(
@@ -38,11 +44,21 @@ export function BrowseProviderLauncher({
         myServices.indexOf(a.provider_id) - myServices.indexOf(b.provider_id),
     );
 
-  // TMDB display_priorities: lower number = more prominent in this region.
-  // Sort the long-tail by region priority so the most relevant services
-  // surface first; the rest hide behind "Show all".
+  // Section 2: featured majors not already in myServices, in canonical order.
+  // Hide any major TMDB doesn't return for this region (e.g. Hulu in DE).
+  const providerById = new Map(providers.map((p) => [p.provider_id, p]));
+  const featuredMajors = MAJOR_STREAMING_PROVIDERS.filter(
+    (id) => !myServicesSet.has(id),
+  )
+    .map((id) => providerById.get(id))
+    .filter((p): p is RegionProvider => p !== undefined);
+
+  // Section 3: long-tail by region priority. Excludes both myServices AND
+  // majors so the same provider never appears twice on the page.
   const otherProviders = providers
-    .filter((p) => !myServicesSet.has(p.provider_id))
+    .filter(
+      (p) => !myServicesSet.has(p.provider_id) && !majorSet.has(p.provider_id),
+    )
     .sort((a, b) => {
       const ap = a.display_priorities?.[region] ?? Number.MAX_SAFE_INTEGER;
       const bp = b.display_priorities?.[region] ?? Number.MAX_SAFE_INTEGER;
@@ -104,12 +120,33 @@ export function BrowseProviderLauncher({
         </section>
       )}
 
+      {featuredMajors.length > 0 && (
+        <section aria-labelledby="featured-heading">
+          <h2
+            id="featured-heading"
+            className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
+          >
+            {myProviders.length > 0 ? "Featured" : "Streaming services"}
+          </h2>
+          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
+            {featuredMajors.map((p) => (
+              <ProviderCard
+                key={p.provider_id}
+                provider={p}
+                onSelect={onSelect}
+                prominent
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
       <section aria-labelledby="all-platforms-heading">
         <h2
           id="all-platforms-heading"
           className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
         >
-          {myProviders.length > 0 ? "All platforms" : "Pick a platform"}
+          All platforms
         </h2>
         <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-3">
           {visibleOthers.map((p) => (

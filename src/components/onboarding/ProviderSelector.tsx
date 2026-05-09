@@ -2,15 +2,18 @@
 
 import { useState } from "react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
-import { getProviderLogoUrl } from "@/lib/provider-registry";
+import {
+  getProviderLogoUrl,
+  MAJOR_STREAMING_PROVIDERS,
+} from "@/lib/provider-registry";
 
 interface ProviderSelectorProps {
   selectedIds: number[];
   onSelectionChange: (ids: number[]) => void;
 }
 
-/** Top 8 priority provider IDs to feature prominently (PREF-03) */
-const TOP_PROVIDER_IDS = [8, 337, 9, 119, 15, 384, 350, 531, 386];
+/** Top priority provider IDs to feature prominently (PREF-03) */
+const TOP_PROVIDER_IDS = MAJOR_STREAMING_PROVIDERS;
 
 /**
  * ProviderSelector — Logo grid for selecting streaming services.
@@ -39,7 +42,7 @@ export function ProviderSelector({
   }
 
   // Separate top providers from others
-  const topProviderIdSet = new Set(TOP_PROVIDER_IDS);
+  const topProviderIdSet = new Set<number>(TOP_PROVIDER_IDS);
   const topProviders = providers.filter((p) =>
     topProviderIdSet.has(p.provider_id),
   );
