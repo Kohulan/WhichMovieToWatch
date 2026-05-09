@@ -73,7 +73,7 @@ export function SearchResults({
           const ratingColor = getRatingColor(movie.vote_average);
 
           return (
-            <li key={movie.id} role="listitem">
+            <li key={movie.id} role="listitem" className="cv-auto">
               <button
                 type="button"
                 tabIndex={0}

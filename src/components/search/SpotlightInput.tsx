@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, X } from "lucide-react";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { sanitizeInput } from "@/lib/sanitize";
 import { VoiceSearchButton } from "./VoiceSearchButton";
 
 interface SpotlightInputProps {
@@ -8,11 +9,6 @@ interface SpotlightInputProps {
   initialValue?: string;
   netflixMode?: boolean;
   placeholder?: string;
-}
-
-/** Strip HTML tags from input to prevent XSS (SECU-02) */
-function sanitizeInput(input: string): string {
-  return input.replace(/<[^>]*>/g, "").slice(0, 100);
 }
 
 export function SpotlightInput({
@@ -54,7 +50,7 @@ export function SpotlightInput({
   }, []);
 
   const ringColor = netflixMode
-    ? "focus-within:ring-[#E50914]/60"
+    ? "focus-within:ring-brand-netflix/60"
     : "focus-within:ring-accent/60";
 
   return (
@@ -69,7 +65,7 @@ export function SpotlightInput({
       {/* Icon prefix — Netflix N or search magnifier */}
       {netflixMode ? (
         <span
-          className="flex-shrink-0 text-[#E50914] font-bold text-lg leading-none select-none"
+          className="flex-shrink-0 text-brand-netflix font-bold text-lg leading-none select-none"
           aria-hidden="true"
         >
           N

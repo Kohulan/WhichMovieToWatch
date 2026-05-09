@@ -9,7 +9,7 @@ import { Link } from "react-router";
  */
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-clay-base py-8 pb-24 px-4">
+    <div className="min-h-dvh bg-clay-base py-8 pb-24 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Back navigation */}
         <Link
@@ -58,10 +58,10 @@ export default function PrivacyPage() {
             </h2>
             <p className="text-clay-text-muted leading-relaxed mb-3">
               This app does not collect personal data. There are no accounts, no
-              authentication, and no user profiles. All your preferences —
-              watched movies, loved films, genre preferences, streaming service
-              selections, and theme settings — are stored exclusively in your
-              browser's localStorage on your own device.
+              authentication, and no user profiles. All your preferences
+              (watched movies, loved films, genre preferences, streaming
+              service selections, and theme settings) are stored exclusively in
+              your browser's localStorage on your own device.
             </p>
             <p className="text-clay-text-muted leading-relaxed">
               This data never leaves your device and is never transmitted to any
@@ -83,8 +83,8 @@ export default function PrivacyPage() {
               <li>
                 <span className="text-clay-text font-medium">
                   The Movie Database (TMDB) API
-                </span>{" "}
-                — movie metadata, posters, and streaming provider availability.
+                </span>
+                : movie metadata, posters, and streaming provider availability.
                 Subject to{" "}
                 <a
                   href="https://www.themoviedb.org/privacy-policy"
@@ -97,11 +97,11 @@ export default function PrivacyPage() {
                 .
               </li>
               <li>
-                <span className="text-clay-text font-medium">OMDB API</span> —
+                <span className="text-clay-text font-medium">OMDB API</span>:
                 IMDb and Rotten Tomatoes ratings.
               </li>
               <li>
-                <span className="text-clay-text font-medium">IPInfo.io</span> —
+                <span className="text-clay-text font-medium">IPInfo.io</span>:
                 anonymous geolocation to detect your country so we can show
                 relevant regional streaming services. No personal data is
                 stored.
@@ -109,8 +109,8 @@ export default function PrivacyPage() {
               <li>
                 <span className="text-clay-text font-medium">
                   Simple Analytics
-                </span>{" "}
-                — anonymous, cookieless page view tracking (described below).
+                </span>
+                : anonymous, cookieless page view tracking (described below).
               </li>
             </ul>
           </section>
@@ -137,7 +137,7 @@ export default function PrivacyPage() {
             <p className="text-clay-text-muted leading-relaxed">
               Simple Analytics collects only: page URLs, referrer domain (no
               full URL), browser name and version, operating system, screen size
-              (broad category), and country (from IP — the IP itself is never
+              (broad category), and country (from IP; the IP itself is never
               stored). You can review Simple Analytics' full privacy commitment
               at{" "}
               <a
@@ -214,7 +214,7 @@ export default function PrivacyPage() {
                 browser privacy features.
               </li>
               <li>
-                Deny location access when your browser requests it — the app
+                Deny location access when your browser requests it; the app
                 will use a default region.
               </li>
             </ul>

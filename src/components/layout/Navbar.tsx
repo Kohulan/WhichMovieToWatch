@@ -37,7 +37,7 @@ const mobileTabs = [
 ];
 
 const brandTextClass =
-  "text-[10px] font-bold tracking-[0.15em] text-clay-text/80 uppercase group-hover:text-clay-text transition-colors duration-200";
+  "text-2xs font-bold tracking-[0.15em] text-clay-text/80 uppercase group-hover:text-clay-text transition-colors duration-200";
 
 export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -160,7 +160,7 @@ export function Navbar() {
               className="w-6 h-6 object-contain drop-shadow-[0_0_6px_var(--accent)]"
               whileHover={{ rotate: -8, scale: 1.1 }}
               whileTap={{ scale: 0.92 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             />
             <span className={`hidden lg:inline ${brandTextClass}`}>
               WhichMovieToWatch
@@ -195,11 +195,11 @@ export function Navbar() {
             className="
               inline-flex items-center gap-1
               px-2 sm:px-2.5 py-1 rounded-full cursor-pointer
-              text-white text-[10px] font-bold tracking-wider uppercase
-              bg-[#E50914] hover:bg-[#F40612]
+              text-white text-2xs font-bold tracking-wider uppercase
+              bg-brand-netflix hover:bg-brand-netflix-dark
               transition-colors duration-200
-              outline-none focus-visible:ring-2 focus-visible:ring-[#E50914]/50
-              shadow-[0_2px_8px_rgba(229,9,20,0.35),0_0_12px_rgba(229,9,20,0.15)]
+              outline-none focus-visible:ring-2 focus-visible:ring-brand-netflix/50
+              shadow-[0_2px_8px_color-mix(in_oklch,var(--color-brand-netflix)_35%,transparent),0_0_12px_color-mix(in_oklch,var(--color-brand-netflix)_15%,transparent)]
             "
           >
             Netflix
@@ -212,7 +212,8 @@ export function Navbar() {
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
             className="
-              p-2 rounded-lg text-clay-text-muted cursor-pointer
+              inline-flex items-center justify-center min-w-11 min-h-11
+              rounded-lg text-clay-text-muted cursor-pointer
               hover:text-clay-text hover:bg-white/[0.06]
               transition-colors duration-200
               outline-none focus-visible:ring-2 focus-visible:ring-accent/50
@@ -230,7 +231,8 @@ export function Navbar() {
             whileTap={{ scale: 0.92 }}
             className="
               sm:hidden
-              p-2 rounded-lg text-clay-text-muted cursor-pointer
+              inline-flex items-center justify-center min-w-11 min-h-11
+              rounded-lg text-clay-text-muted cursor-pointer
               hover:text-clay-text hover:bg-white/[0.06]
               transition-colors duration-200
               outline-none focus-visible:ring-2 focus-visible:ring-accent/50

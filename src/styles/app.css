@@ -37,6 +37,18 @@
   --color-clay-highlight: var(--clay-highlight);
   --color-clay-text: var(--clay-text);
   --color-clay-text-muted: var(--clay-text-muted);
+  --color-clay-border: var(--clay-border);
+  --color-clay-accent: var(--accent);
+  --color-surface-clay: var(--clay-surface);
+
+  /* Brand colors (fixed; bypass theme rotation) */
+  --color-brand-netflix: oklch(0.55 0.235 27);
+  --color-brand-netflix-dark: oklch(0.5 0.245 27);
+  --color-brand-youtube: oklch(0.62 0.245 28);
+
+  /* Splash screen — cinematic, theme-independent (tinted, not pure #000/#fff) */
+  --color-splash-bg: oklch(0.06 0.005 60);
+  --color-splash-fg: oklch(0.97 0.005 60);
   --color-metal-base: var(--metal-base);
   --color-metal-shine: var(--metal-shine);
   --color-metal-dark: var(--metal-dark);
@@ -47,6 +59,15 @@
   --radius-clay: 1.5rem;
   --radius-clay-lg: 2rem;
   --radius-clay-xl: 3rem;
+
+  /* Shadows */
+  --shadow-clay-md:
+    0 4px 12px -2px var(--clay-shadow), 0 2px 4px -1px var(--clay-shadow);
+
+  /* Font sizes — adds a step below Tailwind's default text-xs (12px) for
+     the project's many uppercase-tracked label captions. */
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
 
   /* Fonts */
   --font-heading: "JetBrains Mono Variable", "JetBrains Mono", monospace;
@@ -75,6 +96,7 @@
   --clay-text: oklch(0.15 0.01 50);
   /* Raised from 0.48 → 0.36 for WCAG AA 4.5:1 on light clay-base (0.95) */
   --clay-text-muted: oklch(0.36 0.015 50);
+  --clay-border: oklch(0.85 0.012 60);
   --metal-base: oklch(0.72 0.06 70);
   --metal-shine: oklch(0.9 0.035 75);
   --metal-dark: oklch(0.5 0.06 65);
@@ -91,6 +113,7 @@
   --clay-text: oklch(0.95 0.01 60);
   /* Raised from 0.65 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.13) */
   --clay-text-muted: oklch(0.72 0.015 60);
+  --clay-border: oklch(0.28 0.008 60);
   --metal-base: oklch(0.55 0.07 70);
   --metal-shine: oklch(0.75 0.06 75);
   --metal-dark: oklch(0.32 0.05 65);
@@ -109,6 +132,7 @@
   --clay-text: oklch(0.18 0.015 55);
   /* Raised from 0.46 → 0.36 for WCAG AA 4.5:1 on light clay-base (0.95) */
   --clay-text-muted: oklch(0.36 0.02 55);
+  --clay-border: oklch(0.85 0.014 65);
   --metal-base: oklch(0.74 0.08 75);
   --metal-shine: oklch(0.92 0.04 80);
   --metal-dark: oklch(0.52 0.08 70);
@@ -125,6 +149,7 @@
   --clay-text: oklch(0.94 0.01 70);
   /* Raised from 0.66 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.14) */
   --clay-text-muted: oklch(0.72 0.015 65);
+  --clay-border: oklch(0.3 0.01 65);
   --metal-base: oklch(0.52 0.08 75);
   --metal-shine: oklch(0.72 0.07 80);
   --metal-dark: oklch(0.3 0.06 70);
@@ -143,6 +168,7 @@
   --clay-text: oklch(0.15 0.005 250);
   /* Raised from 0.50 → 0.36 for WCAG AA 4.5:1 on near-white clay-base (0.97) */
   --clay-text-muted: oklch(0.36 0.008 250);
+  --clay-border: oklch(0.88 0.005 250);
   --metal-base: oklch(0.78 0.005 250);
   --metal-shine: oklch(0.94 0.003 250);
   --metal-dark: oklch(0.58 0.006 250);
@@ -159,6 +185,7 @@
   --clay-text: oklch(0.96 0.004 250);
   /* Raised from 0.62 → 0.72 for WCAG AA 4.5:1 on dark clay-base (0.12) */
   --clay-text-muted: oklch(0.72 0.008 250);
+  --clay-border: oklch(0.27 0.006 250);
   --metal-base: oklch(0.5 0.005 250);
   --metal-shine: oklch(0.7 0.004 250);
   --metal-dark: oklch(0.28 0.005 250);

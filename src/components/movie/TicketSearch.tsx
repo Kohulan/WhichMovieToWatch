@@ -4,24 +4,24 @@ import { useState, useCallback } from "react";
 import { motion } from "motion/react";
 import { Ticket, Search, ExternalLink as ExternalLinkIcon } from "lucide-react";
 import { ExternalLink } from "@/components/shared/ExternalLink";
+import { sanitizeInput } from "@/lib/sanitize";
 
 interface TicketSearchProps {
   movieTitle: string;
   releaseYear?: string;
 }
 
-/**
- * TicketSearch — Search for movie tickets via Google.
- *
- * Shows a compact search bar pre-filled with the movie title.
- * User can optionally add their city/area before searching.
- * Opens Google search in a new tab with "buy [title] tickets near me".
- */
+// Wider cap than the default 100: a movie title plus a city can run long,
+// and the result feeds into a Google search URL where 200 chars is fine.
+const MAX_QUERY_LEN = 200;
+
 export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
   const defaultQuery = releaseYear
     ? `${movieTitle} (${releaseYear})`
     : movieTitle;
-  const [query, setQuery] = useState(defaultQuery);
+  const [query, setQuery] = useState(() =>
+    sanitizeInput(defaultQuery, MAX_QUERY_LEN),
+  );
 
   const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(
     `buy ${query} movie tickets near me`,
@@ -53,7 +53,10 @@ export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) =>
+              setQuery(sanitizeInput(e.target.value, MAX_QUERY_LEN))
+            }
+            maxLength={MAX_QUERY_LEN}
             placeholder="Movie name + your city..."
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/[0.06] backdrop-blur-md border border-white/10 text-clay-text text-sm font-body placeholder:text-clay-text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/30 transition-all"
             aria-label="Search for movie tickets"

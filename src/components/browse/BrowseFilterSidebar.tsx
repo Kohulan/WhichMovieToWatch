@@ -143,7 +143,7 @@ export function BrowseFilterSidebar({
                   Filters
                 </span>
                 {activeCount > 0 && (
-                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-accent text-white text-[10px] font-bold">
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-accent text-white text-2xs font-bold">
                     {activeCount}
                   </span>
                 )}
@@ -154,7 +154,7 @@ export function BrowseFilterSidebar({
                 aria-label="Close filters"
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className="p-1.5 -mr-1.5 rounded-full text-clay-text-muted hover:text-clay-text transition-colors cursor-pointer"
+                className="inline-flex items-center justify-center min-w-11 min-h-11 -mr-2 rounded-full text-clay-text-muted hover:text-clay-text transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </motion.button>

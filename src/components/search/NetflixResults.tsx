@@ -85,8 +85,9 @@ function NetflixCard({
         bg-clay-surface clay-shadow-md clay-texture
         transition-all duration-200
         hover:clay-shadow-lg hover:-translate-y-0.5
-        outline-none focus-visible:ring-2 focus-visible:ring-[#E50914]/60
-        ${hasNetflix ? "ring-1 ring-[#E50914]/20" : ""}
+        outline-none focus-visible:ring-2 focus-visible:ring-brand-netflix/60
+        contain-card cv-auto
+        ${hasNetflix ? "ring-1 ring-brand-netflix/20" : ""}
       `}
     >
       <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
@@ -139,22 +140,22 @@ function NetflixCard({
                   key={code}
                   title={getCountryName(code)}
                   className="
-                    inline-block px-1 py-px text-[10px] font-bold
-                    bg-[#E50914]/15 text-[#E50914] rounded
-                    border border-[#E50914]/20
+                    inline-block px-1 py-px text-2xs font-bold
+                    bg-brand-netflix/15 text-brand-netflix rounded
+                    border border-brand-netflix/20
                   "
                 >
                   {code}
                 </span>
               ))}
               {overflow > 0 && (
-                <span className="inline-block px-1 py-px text-[10px] font-medium text-clay-text-muted">
+                <span className="inline-block px-1 py-px text-2xs font-medium text-clay-text-muted">
                   +{overflow} more
                 </span>
               )}
             </div>
           ) : (
-            <p className="text-clay-text-muted text-[10px] italic">
+            <p className="text-clay-text-muted text-2xs italic">
               Not on Netflix
             </p>
           )}

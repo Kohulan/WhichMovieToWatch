@@ -74,7 +74,7 @@ export function DualRangeSlider({
           <span className="font-body text-sm text-clay-text">{label}</span>
         )}
         <span className="font-body text-sm text-clay-text-muted tabular-nums ml-auto">
-          {formatValue(minValue)} — {formatValue(maxValue)}
+          {formatValue(minValue)} to {formatValue(maxValue)}
         </span>
       </div>
 
@@ -118,6 +118,8 @@ export function DualRangeSlider({
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-5
             [&::-webkit-slider-thumb]:h-5
+            pointer-coarse:[&::-webkit-slider-thumb]:w-11
+            pointer-coarse:[&::-webkit-slider-thumb]:h-11
             [&::-webkit-slider-thumb]:rounded-full
             [&::-webkit-slider-thumb]:cursor-grab
             [&::-webkit-slider-thumb]:active:cursor-grabbing
@@ -126,6 +128,8 @@ export function DualRangeSlider({
             [&::-webkit-slider-thumb]:[box-shadow:0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.3)]
             [&::-moz-range-thumb]:w-5
             [&::-moz-range-thumb]:h-5
+            pointer-coarse:[&::-moz-range-thumb]:w-11
+            pointer-coarse:[&::-moz-range-thumb]:h-11
             [&::-moz-range-thumb]:rounded-full
             [&::-moz-range-thumb]:border-0
             [&::-moz-range-thumb]:[background:linear-gradient(135deg,var(--metal-shine),var(--metal-base),var(--metal-dark))]
@@ -159,6 +163,8 @@ export function DualRangeSlider({
             [&::-webkit-slider-thumb]:appearance-none
             [&::-webkit-slider-thumb]:w-5
             [&::-webkit-slider-thumb]:h-5
+            pointer-coarse:[&::-webkit-slider-thumb]:w-11
+            pointer-coarse:[&::-webkit-slider-thumb]:h-11
             [&::-webkit-slider-thumb]:rounded-full
             [&::-webkit-slider-thumb]:cursor-grab
             [&::-webkit-slider-thumb]:active:cursor-grabbing
@@ -167,6 +173,8 @@ export function DualRangeSlider({
             [&::-webkit-slider-thumb]:[box-shadow:0_2px_4px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.3)]
             [&::-moz-range-thumb]:w-5
             [&::-moz-range-thumb]:h-5
+            pointer-coarse:[&::-moz-range-thumb]:w-11
+            pointer-coarse:[&::-moz-range-thumb]:h-11
             [&::-moz-range-thumb]:rounded-full
             [&::-moz-range-thumb]:border-0
             [&::-moz-range-thumb]:[background:linear-gradient(135deg,var(--metal-shine),var(--metal-base),var(--metal-dark))]

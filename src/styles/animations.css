@@ -8,26 +8,44 @@
 
 /* --------------------------------
    Accent Glow Pulse
-   Gentle breathing box-shadow glow on active controls.
-   Uses will-change: box-shadow for GPU compositing hint.
+   Gentle breathing glow on active controls.
+
+   The outer element carries a static low-intensity glow.
+   A ::after pseudo-element holds the higher-intensity glow
+   and animates its opacity (compositor-friendly) instead of
+   animating box-shadow directly. box-shadow is not on the
+   composite thread, so animating it forces per-frame paints.
+   Animating opacity on a stacked layer is GPU-cheap.
    -------------------------------- */
-@keyframes accent-glow-pulse {
+@keyframes accent-glow-fade {
   0%,
   100% {
-    box-shadow:
-      0 0 8px var(--accent),
-      0 0 16px color-mix(in oklch, var(--accent) 40%, transparent);
+    opacity: 0;
   }
   50% {
-    box-shadow:
-      0 0 12px var(--accent),
-      0 0 24px color-mix(in oklch, var(--accent) 50%, transparent);
+    opacity: 1;
   }
 }
 
 .accent-glow-active {
-  animation: accent-glow-pulse 2s ease-in-out infinite;
-  will-change: box-shadow;
+  position: relative;
+  box-shadow:
+    0 0 8px var(--accent),
+    0 0 16px color-mix(in oklch, var(--accent) 40%, transparent);
+}
+
+.accent-glow-active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow:
+    0 0 12px var(--accent),
+    0 0 24px color-mix(in oklch, var(--accent) 50%, transparent);
+  opacity: 0;
+  animation: accent-glow-fade 2s ease-in-out infinite;
+  will-change: opacity;
 }
 
 /* --------------------------------
@@ -144,11 +162,9 @@
    causes per-frame repaints that are expensive on mobile GPUs.
    ============================================================ */
 @media (pointer: coarse) {
-  .accent-glow-active {
+  .accent-glow-active::after {
     animation: none;
-    box-shadow:
-      0 0 8px var(--accent),
-      0 0 16px color-mix(in oklch, var(--accent) 40%, transparent);
+    opacity: 0;
   }
 }
 
@@ -164,8 +180,9 @@
    still fire (some JS logic depends on them).
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .accent-glow-active {
+  .accent-glow-active::after {
     animation: none;
+    opacity: 0;
   }
 
   *,

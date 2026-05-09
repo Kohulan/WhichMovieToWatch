@@ -90,7 +90,10 @@ export function TrendingBentoHero() {
           </BentoCell>
         </StaggerItem>
 
-        {/* Cell 2 — Stats: movie count + trending icon + auto-refresh note */}
+        {/* Cell 2 — Liveness pulse strip + freshness label.
+            Deliberately not the [big number + label + note] template; the
+            visual centerpiece is a row of pulse bars conveying "live data"
+            instead of a single stat. */}
         <StaggerItem direction="up" className="md:col-span-2 lg:col-span-3">
           <BentoCell
             colSpan={{ tablet: 2, desktop: 3 }}
@@ -98,37 +101,48 @@ export function TrendingBentoHero() {
             material="clay"
             className="min-h-[140px]"
           >
-            <div className="p-5 flex flex-col justify-between h-full gap-4">
-              {/* Header */}
-              <div className="flex items-center justify-between">
-                <h2 className="text-clay-text font-heading font-semibold text-base">
-                  Now Playing
-                </h2>
+            <div className="p-5 flex flex-col h-full gap-3">
+              {/* Status pill — replaces the [Heading + Icon] header */}
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/15 text-accent text-[11px] font-semibold uppercase tracking-wider">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"
+                    aria-hidden="true"
+                  />
+                  Live
+                </span>
                 <TrendingUp
-                  className="w-5 h-5 text-clay-text-muted"
+                  className="w-4 h-4 text-clay-text-muted"
                   aria-hidden="true"
                 />
               </div>
 
-              {/* Movie count */}
-              <div>
-                {isLoading && movieCount === 0 ? (
-                  <div className="h-8 w-24 rounded bg-white/20 animate-pulse mb-1" />
-                ) : (
-                  <p className="text-3xl font-heading font-bold text-clay-text leading-none">
-                    {movieCount > 0 ? `${movieCount}` : "—"}
-                  </p>
-                )}
-                <p className="text-clay-text-muted text-sm mt-1">
-                  {movieCount === 1
-                    ? "movie in theaters"
-                    : "movies in theaters"}
-                </p>
+              {/* Pulse bar row — animated bars instead of a big number */}
+              <div
+                className="flex items-end gap-1 h-8 flex-1"
+                aria-hidden="true"
+              >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <span
+                    key={i}
+                    className="flex-1 rounded-sm bg-accent/30 animate-pulse"
+                    style={{
+                      height: `${30 + ((i * 17) % 70)}%`,
+                      animationDelay: `${i * 80}ms`,
+                      animationDuration: "1.6s",
+                    }}
+                  />
+                ))}
               </div>
 
-              {/* Auto-refresh note */}
-              <p className="text-clay-text-muted text-xs opacity-60">
-                Updated every 30 min
+              {/* Inline status row: count + freshness — kept compact */}
+              <p className="text-clay-text text-sm">
+                <span className="font-heading font-semibold tabular-nums">
+                  {isLoading && movieCount === 0 ? "…" : movieCount}
+                </span>{" "}
+                <span className="text-clay-text-muted">
+                  in theaters · refreshes every 30 min
+                </span>
               </p>
             </div>
           </BentoCell>

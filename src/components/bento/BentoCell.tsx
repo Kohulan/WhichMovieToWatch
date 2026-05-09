@@ -22,7 +22,7 @@ import { useState, useEffect, useCallback, type ReactNode } from "react";
 
 export type CellMaterial = "glass" | "clay";
 
-export interface BentoCellProps {
+interface BentoCellBase {
   children: ReactNode;
   /** Column span at each breakpoint. Use lookup objects, not dynamic classes. */
   colSpan?: {
@@ -37,11 +37,26 @@ export interface BentoCellProps {
   className?: string;
   /** Content revealed on hover (desktop) and on tap-to-expand (mobile) */
   overlay?: ReactNode;
-  /** Click/tap handler — if provided, enables tap-to-expand on mobile */
-  onClick?: () => void;
   /** Hide on mobile (decorative cells) */
   hideOnMobile?: boolean;
 }
+
+/**
+ * BentoCellProps is a discriminated union: an interactive cell (onClick set)
+ * MUST also pass ariaLabel; a non-interactive cell may omit both. This makes
+ * the prior runtime "required when isInteractive" rule a compile-time error.
+ */
+export type BentoCellProps =
+  | (BentoCellBase & {
+      /** Click/tap handler — if provided, enables tap-to-expand on mobile */
+      onClick: () => void;
+      /** Accessible name for the button role. Required when onClick is set. */
+      ariaLabel: string;
+    })
+  | (BentoCellBase & {
+      onClick?: undefined;
+      ariaLabel?: undefined;
+    });
 
 // --- Static Tailwind class lookup objects ---
 // NEVER construct these with template literals — Tailwind v4 static analysis won't detect them.
@@ -101,6 +116,7 @@ export function BentoCell({
   overlay,
   onClick,
   hideOnMobile = false,
+  ariaLabel,
 }: BentoCellProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -183,6 +199,7 @@ export function BentoCell({
       onKeyDown={isInteractive ? handleKeyDown : undefined}
       role={isInteractive ? "button" : undefined}
       tabIndex={isInteractive ? 0 : undefined}
+      aria-label={isInteractive ? ariaLabel : undefined}
       aria-expanded={isInteractive && overlay ? expanded : undefined}
     >
       {/* Main cell content */}

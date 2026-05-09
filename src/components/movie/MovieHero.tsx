@@ -125,13 +125,11 @@ export function MovieHero({
           </div>
         )}
 
-        {/* Overview with left border accent */}
+        {/* Overview */}
         {movie.overview && (
-          <div className="mt-4 border-l-2 border-accent pl-4">
-            <p className="text-clay-text font-light leading-relaxed text-sm line-clamp-5">
-              {movie.overview}
-            </p>
-          </div>
+          <p className="mt-4 text-clay-text font-light leading-relaxed text-sm line-clamp-5">
+            {movie.overview}
+          </p>
         )}
 
         {/* Slotted content — actions, ratings, providers, etc. */}

@@ -48,7 +48,10 @@ export function useSearchMovies() {
   const loadMore = useCallback(async () => {
     const store = useSearchStore.getState();
 
-    if (store.currentPage >= store.totalPages) return;
+    // Guard against concurrent calls: a double-tap on Load More would
+    // otherwise issue two fetches for the same currentPage + 1 and
+    // appendResults() twice with duplicate movies.
+    if (store.isLoading || store.currentPage >= store.totalPages) return;
 
     store.setLoading(true);
 

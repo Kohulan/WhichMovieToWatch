@@ -428,7 +428,7 @@ export function Showcase() {
                   className="w-full h-16 sm:h-20"
                   style={{ backgroundColor: `var(${variable})` }}
                 />
-                <p className="font-body text-[10px] sm:text-xs text-clay-text-muted text-center py-2 px-1 truncate">
+                <p className="font-body text-2xs sm:text-xs text-clay-text-muted text-center py-2 px-1 truncate">
                   {label}
                 </p>
               </div>

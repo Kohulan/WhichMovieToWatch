@@ -4,13 +4,12 @@ import { X } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useSearchMovies";
 import { useSearchStore } from "@/stores/searchStore";
 import { useRegionStore } from "@/stores/regionStore";
-import { tmdbFetch } from "@/services/tmdb/client";
+import { runDiscoverSearch as runDiscoverSearchService } from "@/services/tmdb/discover-search";
 import { SpotlightInput } from "./SpotlightInput";
 import { SpotlightResults } from "./SpotlightResults";
 import { NetflixResults } from "./NetflixResults";
 import { AdvancedFilters } from "./AdvancedFilters";
 import { FilterPresets } from "./FilterPresets";
-import type { TMDBDiscoverResponse } from "@/types/movie";
 
 interface SpotlightSearchProps {
   isOpen: boolean;
@@ -48,10 +47,6 @@ export function SpotlightSearch({
   const { search, loadMore, results, isLoading, hasMore } = useSearchMovies();
   const advancedFilters = useSearchStore((s) => s.advancedFilters);
   const sortBy = useSearchStore((s) => s.sortBy);
-  const setResults = useSearchStore((s) => s.setResults);
-  const appendResults = useSearchStore((s) => s.appendResults);
-  const setLoading = useSearchStore((s) => s.setLoading);
-  const setError = useSearchStore((s) => s.setError);
   const reset = useSearchStore((s) => s.reset);
   const setAdvancedFilters = useSearchStore((s) => s.setAdvancedFilters);
   const resetAdvancedFilters = useSearchStore((s) => s.resetAdvancedFilters);
@@ -65,6 +60,11 @@ export function SpotlightSearch({
   // A11Y-01: Capture the element that triggered the modal open, so we can
   // return focus to it when the modal closes.
   const triggerRef = useRef<Element | null>(null);
+
+  // Tracks the latest runDiscoverSearch invocation. Rapid filter changes
+  // (genre then year then rating) issue overlapping requests; only the
+  // most recent one is allowed to commit results to the store.
+  const discoverRequestIdRef = useRef(0);
 
   // Apply initialProviderId when overlay opens with a non-Netflix preset.
   // Netflix mode uses text search — no provider filter needed.
@@ -138,74 +138,16 @@ export function SpotlightSearch({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [advancedFilters, sortBy, isOpen]);
 
-  async function runDiscoverSearch(page: number) {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const params: Record<string, string | number | boolean> = {
-        sort_by: sortBy,
-        include_adult: "false",
-        page,
-      };
-
-      if (advancedFilters.genres.length > 0) {
-        params.with_genres = advancedFilters.genres.join(",");
-      }
-
-      if (advancedFilters.yearRange[0] !== 1900) {
-        params["primary_release_date.gte"] =
-          `${advancedFilters.yearRange[0]}-01-01`;
-      }
-      if (advancedFilters.yearRange[1] !== new Date().getFullYear()) {
-        params["primary_release_date.lte"] =
-          `${advancedFilters.yearRange[1]}-12-31`;
-      }
-
-      if (advancedFilters.ratingRange[0] !== 0) {
-        params["vote_average.gte"] = advancedFilters.ratingRange[0];
-      }
-      if (advancedFilters.ratingRange[1] !== 10) {
-        params["vote_average.lte"] = advancedFilters.ratingRange[1];
-      }
-
-      if (advancedFilters.runtimeRange[0] !== 0) {
-        params["with_runtime.gte"] = advancedFilters.runtimeRange[0];
-      }
-      if (advancedFilters.runtimeRange[1] !== 300) {
-        params["with_runtime.lte"] = advancedFilters.runtimeRange[1];
-      }
-
-      if (advancedFilters.language) {
-        params.with_original_language = advancedFilters.language;
-      }
-
-      if (advancedFilters.providerId) {
-        params.with_watch_providers = advancedFilters.providerId;
-        // CRITICAL: with_watch_providers ALWAYS paired with watch_region
-        params.watch_region = region;
-      }
-
-      const response = await tmdbFetch<TMDBDiscoverResponse>(
-        "/discover/movie",
-        params,
-      );
-
-      if (page === 1) {
-        setResults(
-          response.results,
-          response.total_results,
-          response.total_pages,
-          response.page,
-        );
-      } else {
-        appendResults(response.results, response.page);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Discover failed");
-    } finally {
-      setLoading(false);
-    }
+  function runDiscoverSearch(page: number) {
+    const requestId = ++discoverRequestIdRef.current;
+    const isStale = () => requestId !== discoverRequestIdRef.current;
+    return runDiscoverSearchService({
+      advancedFilters,
+      sortBy,
+      region,
+      page,
+      isStale,
+    });
   }
 
   const handleSearch = useCallback(
@@ -293,7 +235,7 @@ export function SpotlightSearch({
                 max-h-[90vh] sm:max-h-[80vh]
                 bg-clay-base/95 backdrop-blur-md sm:bg-clay-base/80 sm:backdrop-blur-2xl
                 rounded-2xl
-                border ${netflixMode ? "border-[#E50914]/20" : "border-white/10"}
+                border ${netflixMode ? "border-brand-netflix/20" : "border-white/10"}
                 flex flex-col
                 overflow-hidden
                 pointer-events-auto
@@ -304,7 +246,7 @@ export function SpotlightSearch({
               <div className="flex items-center justify-between px-4 pt-4 pb-2 flex-shrink-0">
                 <h2 className="font-heading font-bold text-lg text-clay-text flex items-center gap-2">
                   {netflixMode && (
-                    <span className="text-[#E50914] font-bold text-xl leading-none">
+                    <span className="text-brand-netflix font-bold text-xl leading-none">
                       N
                     </span>
                   )}

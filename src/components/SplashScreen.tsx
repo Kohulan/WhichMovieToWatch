@@ -5,6 +5,18 @@ interface SplashScreenProps {
   onComplete: () => void;
 }
 
+/** Time-of-day tagline. Picked once on splash mount; rotates only across
+ *  sessions, not within one. Subtle enough that returning users notice
+ *  the variation without it ever feeling cute. */
+function getTagline(now = new Date()): string {
+  const h = now.getHours();
+  if (h >= 22 || h < 5) return "A film for the late shift";
+  if (h < 11) return "What to watch this morning";
+  if (h < 17) return "An afternoon worth watching";
+  if (h < 21) return "Tonight's pick, sorted";
+  return "Discover your next favorite film";
+}
+
 /**
  * SplashScreen — Netflix-style dramatic logo reveal.
  *
@@ -20,7 +32,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black overflow-hidden"
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-splash-bg overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,
@@ -92,7 +104,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         {words.map((word) => (
           <motion.span
             key={word}
-            className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-white"
+            className="font-heading font-bold text-4xl sm:text-5xl md:text-6xl text-splash-fg"
             variants={{
               hidden: { opacity: 0, y: 30, scale: 0.92 },
               visible: {
@@ -112,27 +124,27 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
         ))}
       </motion.div>
 
-      {/* Tagline */}
+      {/* Tagline — varies by time of day; computed once per splash mount */}
       <motion.p
-        className="font-body font-light text-sm text-white/60 mt-4 relative z-10"
+        className="font-body font-light text-sm text-splash-fg/60 mt-4 relative z-10"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
       >
-        Discover your next favorite film
+        {getTagline()}
       </motion.p>
 
-      {/* Cinematic progress bar — thin, white track, accent fill */}
+      {/* Cinematic progress bar — thin tinted track, accent fill */}
       <motion.div
-        className="mt-8 w-48 h-0.5 rounded-full overflow-hidden bg-white/10 relative z-10"
+        className="mt-8 w-48 h-0.5 rounded-full overflow-hidden bg-splash-fg/10 relative z-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
       >
         <motion.div
-          className="h-full rounded-full bg-accent"
-          initial={{ width: "0%" }}
-          animate={{ width: "100%" }}
+          className="h-full w-full rounded-full bg-accent origin-left"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
           transition={{ delay: 1.0, duration: 1.3, ease: [0.4, 0, 0.2, 1] }}
           onAnimationComplete={onComplete}
         />

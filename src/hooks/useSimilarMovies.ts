@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { tmdbFetch } from "@/services/tmdb/client";
 import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import { useReloadKey } from "@/hooks/useReloadKey";
 import type { TMDBMovie, TMDBDiscoverResponse } from "@/types/movie";
 
 /**
@@ -17,10 +18,13 @@ import type { TMDBMovie, TMDBDiscoverResponse } from "@/types/movie";
 export function useSimilarMovies(movieId: number | null) {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [reloadKey, retry] = useReloadKey();
 
   useEffect(() => {
     if (movieId === null) {
       setMovies([]);
+      setError(null);
       return;
     }
 
@@ -35,6 +39,7 @@ export function useSimilarMovies(movieId: number | null) {
 
       if (cached.value && !cached.isStale) {
         setMovies(cached.value);
+        setError(null);
         return;
       }
 
@@ -44,6 +49,7 @@ export function useSimilarMovies(movieId: number | null) {
       } else {
         setIsLoading(true);
       }
+      setError(null);
 
       try {
         const response = await tmdbFetch<TMDBDiscoverResponse>(
@@ -62,9 +68,15 @@ export function useSimilarMovies(movieId: number | null) {
             "[useSimilarMovies] Failed to fetch similar movies:",
             err,
           );
-          // Keep stale data if available, otherwise set empty
+          // Surface the error only when we have nothing to show; if stale
+          // data is on screen, keep it (silent refresh failure).
           if (!cached.value) {
             setMovies([]);
+            setError(
+              err instanceof Error
+                ? err.message
+                : "Failed to load similar movies",
+            );
           }
         }
       } finally {
@@ -79,7 +91,7 @@ export function useSimilarMovies(movieId: number | null) {
     return () => {
       cancelled = true;
     };
-  }, [movieId]);
+  }, [movieId, reloadKey]);
 
-  return { movies, isLoading };
+  return { movies, isLoading, error, retry };
 }

@@ -55,10 +55,10 @@ export function TabBar() {
 
         {/* Right: copyright + Privacy */}
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-clay-text-muted/60 hidden sm:inline">
+          <span className="text-2xs text-clay-text-muted/60 hidden sm:inline">
             &copy; {year} Kohulan Rajan. All rights reserved.
           </span>
-          <span className="text-[10px] text-clay-text-muted/60 sm:hidden">
+          <span className="text-2xs text-clay-text-muted/60 sm:hidden">
             &copy; {year}
           </span>
           <span className="text-clay-text-muted/30">|</span>

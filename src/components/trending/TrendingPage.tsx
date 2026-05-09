@@ -133,7 +133,7 @@ export function TrendingPage() {
               <button
                 role="listitem"
                 onClick={() => handleMovieClick(movie.id)}
-                className="w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl contain-card"
+                className="w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl contain-card cv-auto"
                 aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPercent}%`}
               >
                 {/* Poster */}

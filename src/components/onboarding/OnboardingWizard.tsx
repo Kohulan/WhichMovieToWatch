@@ -8,6 +8,7 @@ import { MetalButton } from "@/components/ui";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useDiscoveryStore } from "@/stores/discoveryStore";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
 import { getAllGenres } from "@/lib/genre-map";
 
@@ -88,6 +89,7 @@ export function OnboardingWizard({
   const { providers, isLoading: providersLoading } = useRegionProviders();
   const genres = getAllGenres();
   const titleId = useId();
+  const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   // Sort providers: top ones first, then alphabetical
   const sortedProviders = [...providers].sort((a, b) => {
@@ -211,6 +213,7 @@ export function OnboardingWizard({
 
           {/* Modal panel — flex column, overflow managed internally */}
           <motion.div
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
@@ -242,8 +245,7 @@ export function OnboardingWizard({
               <div className="flex justify-end mb-3">
                 <button
                   onClick={handleSkip}
-                  autoFocus
-                  className="p-2 rounded-xl bg-white/[0.08] border border-white/10 text-clay-text-muted hover:text-clay-text hover:bg-white/[0.12] transition-colors cursor-pointer"
+                  className="inline-flex items-center justify-center min-w-11 min-h-11 rounded-xl bg-white/[0.08] border border-white/10 text-clay-text-muted hover:text-clay-text hover:bg-white/[0.12] transition-colors cursor-pointer"
                   aria-label="Close"
                 >
                   <X className="w-4 h-4" />
@@ -254,8 +256,8 @@ export function OnboardingWizard({
               <div className="mb-4">
                 <div className="h-1 w-full bg-clay-surface rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-accent rounded-full"
-                    animate={{ width: step === 1 ? "50%" : "100%" }}
+                    className="h-full w-full bg-accent rounded-full origin-left"
+                    animate={{ scaleX: step === 1 ? 0.5 : 1 }}
                     transition={{ type: "spring", stiffness: 300, damping: 30 }}
                   />
                 </div>
@@ -402,7 +404,7 @@ export function OnboardingWizard({
                                 )}
                               </div>
                               <span
-                                className={`text-[10px] leading-tight text-center line-clamp-1 max-w-full transition-colors ${
+                                className={`text-2xs leading-tight text-center line-clamp-1 max-w-full transition-colors ${
                                   isSelected
                                     ? "text-accent font-semibold"
                                     : "text-clay-text-muted"

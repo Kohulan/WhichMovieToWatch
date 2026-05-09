@@ -161,7 +161,9 @@ export function SplineScene({
         className={`fixed inset-0 ${className}`}
         style={{
           width: "100vw",
-          height: "100vh",
+          // 100dvh tracks the visible viewport (mobile address-bar aware);
+          // 100vh fallback for browsers that predate dynamic viewport units.
+          height: "100dvh",
           opacity: loaded ? 1 : 0,
           transition: "opacity 0.8s ease-out",
           pointerEvents: "none",

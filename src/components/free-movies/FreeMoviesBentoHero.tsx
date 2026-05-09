@@ -34,7 +34,7 @@ export function FreeMoviesBentoHero() {
               className="absolute inset-0"
               style={{
                 background:
-                  "linear-gradient(135deg, #FF0000 0%, #CC0000 50%, #990000 100%)",
+                  "linear-gradient(135deg, var(--color-brand-youtube) 0%, color-mix(in oklch, var(--color-brand-youtube) 75%, black) 50%, color-mix(in oklch, var(--color-brand-youtube) 50%, black) 100%)",
                 opacity: 0.25,
               }}
               aria-hidden="true"
@@ -43,8 +43,11 @@ export function FreeMoviesBentoHero() {
             <div className="relative z-10 p-5 flex flex-col justify-between h-full gap-3">
               {/* Icon + heading */}
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-red-500/20 backdrop-blur-sm">
-                  <Film className="w-5 h-5 text-red-400" aria-hidden="true" />
+                <div className="p-2 rounded-xl bg-brand-youtube/20">
+                  <Film
+                    className="w-5 h-5 text-brand-youtube"
+                    aria-hidden="true"
+                  />
                 </div>
                 <h2 className="text-clay-text font-heading font-semibold text-base leading-tight">
                   Free on YouTube
@@ -54,8 +57,7 @@ export function FreeMoviesBentoHero() {
               {/* YouTube branding mark */}
               <div className="flex items-center gap-2">
                 <div
-                  className="flex items-center justify-center w-7 h-5 rounded"
-                  style={{ backgroundColor: "#FF0000" }}
+                  className="flex items-center justify-center w-7 h-5 rounded bg-brand-youtube"
                   aria-hidden="true"
                 >
                   {/* YouTube play triangle */}
@@ -76,7 +78,10 @@ export function FreeMoviesBentoHero() {
           </BentoCell>
         </StaggerItem>
 
-        {/* Cell 2 — Movie count stat */}
+        {/* Cell 2 — Stacked trust badges (3 chips).
+            Deliberately not the [big number + label + note] template; uses a
+            vertical chip stack to feel structurally distinct from sibling
+            heroes on Browse and Trending. */}
         <StaggerItem direction="up" className="md:col-span-2 lg:col-span-3">
           <BentoCell
             colSpan={{ tablet: 2, desktop: 3 }}
@@ -84,21 +89,49 @@ export function FreeMoviesBentoHero() {
             material="clay"
             className="min-h-[140px]"
           >
-            <div className="p-5 flex flex-col justify-between h-full gap-4">
-              {/* Large count stat */}
-              <div>
-                <p className="text-4xl font-heading font-bold text-clay-text leading-none">
-                  1,000+
-                </p>
-                <p className="text-clay-text-muted text-sm mt-1.5">
-                  Free movies available
+            <div className="p-5 flex flex-col justify-center h-full gap-2.5">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-clay-surface clay-shadow-sm">
+                  <Film
+                    className="w-4 h-4 text-accent"
+                    aria-hidden="true"
+                  />
+                </div>
+                <p className="text-clay-text text-sm font-medium leading-tight">
+                  <span className="font-heading font-bold">1,000+</span> films,
+                  curated weekly
                 </p>
               </div>
 
-              {/* No subscription note */}
-              <p className="text-clay-text-muted text-xs opacity-60">
-                No subscription needed
-              </p>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-clay-surface clay-shadow-sm">
+                  <span
+                    className="text-accent text-base font-bold leading-none"
+                    aria-hidden="true"
+                  >
+                    $
+                  </span>
+                </div>
+                <p className="text-clay-text text-sm font-medium leading-tight">
+                  No subscription, no sign-in
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-clay-surface clay-shadow-sm">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="w-3.5 h-3.5 text-accent"
+                    aria-hidden="true"
+                  >
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                </div>
+                <p className="text-clay-text text-sm font-medium leading-tight">
+                  Stream on YouTube, ad-supported
+                </p>
+              </div>
             </div>
           </BentoCell>
         </StaggerItem>
