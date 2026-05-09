@@ -24,16 +24,20 @@ export function useTopStreaming() {
     let cancelled = false;
 
     async function load() {
-      setIsLoading(true);
-      setError(null);
       const cacheKey = `top-streaming-${region}`;
-
       const cached = await getCached<TMDBMovie[]>(cacheKey);
+      if (cancelled) return;
+
+      // Cache-hit fast path: no spinner flash on warm reloads.
       if (cached.value && !cached.isStale) {
         setMovies(cached.value);
         setIsLoading(false);
+        setError(null);
         return;
       }
+
+      setIsLoading(true);
+      setError(null);
 
       try {
         const response = await tmdbFetch<TMDBDiscoverResponse>(

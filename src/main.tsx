@@ -62,15 +62,13 @@ if ("serviceWorker" in navigator) {
 function PageSuspenseFallback() {
   return (
     <div
-      className="flex items-center justify-center min-h-[60vh] px-4"
+      className="flex items-center justify-center gap-3 min-h-[60vh] px-4 text-clay-text-muted text-sm"
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
-      <div className="flex items-center gap-3 text-clay-text-muted text-sm">
-        <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
-        <span>Loading…</span>
-      </div>
+      <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
+      <span>Loading…</span>
     </div>
   );
 }

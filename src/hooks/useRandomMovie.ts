@@ -1,6 +1,6 @@
 // Discovery hook with filter relaxation, taste scoring, and provider verification
 
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { discoverCandidates } from "@/services/tmdb/discover";
 import { fetchMovieDetails } from "@/services/tmdb/details";
 import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
@@ -10,11 +10,6 @@ import { useRegionStore } from "@/stores/regionStore";
 import { scoreTasteMatch } from "@/lib/taste-engine";
 import { getGenreName } from "@/lib/genre-map";
 import type { TMDBMovieDetails } from "@/types/movie";
-
-// Module-level request id. Incremented on every discover() call so concurrent
-// calls (rapid "Next" taps) can detect that they're stale and skip writing
-// to the store after their long async chain resolves.
-let discoverRequestId = 0;
 
 /**
  * Safety-net: verify the user's services appear in streaming tiers
@@ -48,9 +43,16 @@ export function useRandomMovie() {
   const error = useDiscoveryStore((s) => s.error);
   const relaxationStep = useDiscoveryStore((s) => s.relaxationStep);
 
+  // Per-instance request id. Incremented on every discover() call so concurrent
+  // calls (rapid "Next" taps) can detect that they're stale and skip writing
+  // to the store after their long async chain resolves. Per-instance so multiple
+  // useRandomMovie consumers (e.g. StrictMode double-invocation) cannot stomp
+  // each other's counter.
+  const discoverRequestIdRef = useRef(0);
+
   const discover = useCallback(async () => {
-    const requestId = ++discoverRequestId;
-    const isStale = () => requestId !== discoverRequestId;
+    const requestId = ++discoverRequestIdRef.current;
+    const isStale = () => requestId !== discoverRequestIdRef.current;
 
     const discoveryState = useDiscoveryStore.getState();
     const historyState = useMovieHistoryStore.getState();
