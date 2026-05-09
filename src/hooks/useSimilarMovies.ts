@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { tmdbFetch } from "@/services/tmdb/client";
 import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
+import { useReloadKey } from "@/hooks/useReloadKey";
 import type { TMDBMovie, TMDBDiscoverResponse } from "@/types/movie";
 
 /**
@@ -18,7 +19,7 @@ export function useSimilarMovies(movieId: number | null) {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
+  const [reloadKey, retry] = useReloadKey();
 
   useEffect(() => {
     if (movieId === null) {
@@ -91,8 +92,6 @@ export function useSimilarMovies(movieId: number | null) {
       cancelled = true;
     };
   }, [movieId, reloadKey]);
-
-  const retry = () => setReloadKey((k) => k + 1);
 
   return { movies, isLoading, error, retry };
 }

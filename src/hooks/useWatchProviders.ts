@@ -9,6 +9,7 @@ import { getCached } from "@/services/cache/cache-manager";
 import { useRegionStore } from "@/stores/regionStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { isFreeProvider, getProviderDeepLink } from "@/lib/provider-registry";
+import { useReloadKey } from "@/hooks/useReloadKey";
 import type {
   WatchProviderCountry,
   WatchProvider,
@@ -45,7 +46,7 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
   const [rawData, setRawData] = useState<WatchProviderCountry | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
+  const [reloadKey, retry] = useReloadKey();
   const region = useRegionStore((s) => s.effectiveRegion)();
   const myServices = usePreferencesStore((s) => s.myServices);
 
@@ -98,8 +99,6 @@ export function useWatchProviders(movieId: number | null, movieTitle = "") {
       cancelled = true;
     };
   }, [movieId, region, reloadKey]);
-
-  const retry = () => setReloadKey((k) => k + 1);
 
   // Derive categorized providers from raw data
   const providers: MovieProviders = useMemo(() => {

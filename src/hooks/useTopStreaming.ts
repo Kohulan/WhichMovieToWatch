@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { tmdbFetch } from "@/services/tmdb/client";
 import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
 import { useRegionStore } from "@/stores/regionStore";
+import { useReloadKey } from "@/hooks/useReloadKey";
 import type { TMDBDiscoverResponse, TMDBMovie } from "@/types/movie";
 
 // TMDB provider IDs
@@ -17,7 +18,7 @@ export function useTopStreaming() {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
+  const [reloadKey, retry] = useReloadKey();
   const region = useRegionStore((s) => s.effectiveRegion());
 
   useEffect(() => {
@@ -83,8 +84,6 @@ export function useTopStreaming() {
       cancelled = true;
     };
   }, [region, reloadKey]);
-
-  const retry = () => setReloadKey((k) => k + 1);
 
   return { movies, isLoading, error, retry };
 }

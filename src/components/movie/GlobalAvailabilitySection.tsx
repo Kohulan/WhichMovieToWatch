@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { fetchAllMovieProviders } from "@/services/tmdb/providers";
 import { getCountryName } from "@/lib/country-names";
+import { useReloadKey } from "@/hooks/useReloadKey";
 
 const NETFLIX_PROVIDER_ID = 8;
 
@@ -18,7 +19,7 @@ export function GlobalAvailabilitySection({
   >([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
+  const [reloadKey, retry] = useReloadKey();
 
   useEffect(() => {
     let cancelled = false;
@@ -60,8 +61,6 @@ export function GlobalAvailabilitySection({
       cancelled = true;
     };
   }, [movieId, reloadKey]);
-
-  const retry = () => setReloadKey((k) => k + 1);
 
   if (isLoading) {
     return (
@@ -131,7 +130,9 @@ export function GlobalAvailabilitySection({
   return (
     <section aria-label="Netflix availability worldwide" className="mt-4">
       <h3 className="font-heading text-base font-semibold text-clay-text mb-3 flex items-center gap-2">
-        <span className="text-brand-netflix font-bold text-lg leading-none">N</span>
+        <span className="text-brand-netflix font-bold text-lg leading-none">
+          N
+        </span>
         Available on Netflix in {countries.length}{" "}
         {countries.length === 1 ? "Country" : "Countries"}
       </h3>
