@@ -17,11 +17,22 @@ interface TicketSearchProps {
  * User can optionally add their city/area before searching.
  * Opens Google search in a new tab with "buy [title] tickets near me".
  */
+/** Hard cap matches SearchBar's SECU-02 sanitization. Anything beyond
+ *  this length cannot meaningfully improve a Google query and could
+ *  bloat the URL or be a paste accident. */
+const MAX_QUERY_LEN = 200;
+
+/** Strip HTML-ish tokens to keep deep-link / paste content benign in the
+ *  search URL. Same shape as the searchBar sanitizer. */
+function sanitizeQuery(input: string): string {
+  return input.replace(/[<>]/g, "").slice(0, MAX_QUERY_LEN);
+}
+
 export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
   const defaultQuery = releaseYear
     ? `${movieTitle} (${releaseYear})`
     : movieTitle;
-  const [query, setQuery] = useState(defaultQuery);
+  const [query, setQuery] = useState(() => sanitizeQuery(defaultQuery));
 
   const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(
     `buy ${query} movie tickets near me`,
@@ -53,7 +64,8 @@ export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => setQuery(sanitizeQuery(e.target.value))}
+            maxLength={MAX_QUERY_LEN}
             placeholder="Movie name + your city..."
             className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/[0.06] backdrop-blur-md border border-white/10 text-clay-text text-sm font-body placeholder:text-clay-text-muted/50 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/30 transition-all"
             aria-label="Search for movie tickets"
