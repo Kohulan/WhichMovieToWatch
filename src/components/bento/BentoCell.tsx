@@ -41,6 +41,8 @@ export interface BentoCellProps {
   onClick?: () => void;
   /** Hide on mobile (decorative cells) */
   hideOnMobile?: boolean;
+  /** Required when onClick is provided — accessible name for the button role */
+  ariaLabel?: string;
 }
 
 // --- Static Tailwind class lookup objects ---
@@ -101,6 +103,7 @@ export function BentoCell({
   overlay,
   onClick,
   hideOnMobile = false,
+  ariaLabel,
 }: BentoCellProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -183,6 +186,7 @@ export function BentoCell({
       onKeyDown={isInteractive ? handleKeyDown : undefined}
       role={isInteractive ? "button" : undefined}
       tabIndex={isInteractive ? 0 : undefined}
+      aria-label={isInteractive ? ariaLabel : undefined}
       aria-expanded={isInteractive && overlay ? expanded : undefined}
     >
       {/* Main cell content */}

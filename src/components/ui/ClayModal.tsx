@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import type { ReactNode } from "react";
 import { useEffect, useId } from "react";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 interface ClayModalProps {
   isOpen: boolean;
@@ -11,13 +12,6 @@ interface ClayModalProps {
   className?: string;
 }
 
-/**
- * ClayModal — Floating clay panel with backdrop blur overlay.
- *
- * Enters with spring scale animation, exits with fade-out.
- * Backdrop click closes the modal. Includes basic focus trapping
- * (autoFocus on close button) and full ARIA attributes.
- */
 export function ClayModal({
   isOpen,
   onClose,
@@ -26,6 +20,7 @@ export function ClayModal({
   className = "",
 }: ClayModalProps) {
   const titleId = useId();
+  const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   // Close on Escape key
   useEffect(() => {
@@ -64,6 +59,7 @@ export function ClayModal({
 
           {/* Modal panel */}
           <motion.div
+            ref={panelRef}
             role="dialog"
             aria-modal="true"
             aria-labelledby={title ? titleId : undefined}
@@ -96,8 +92,7 @@ export function ClayModal({
               )}
               <button
                 onClick={onClose}
-                autoFocus
-                className="ml-auto p-2 rounded-xl bg-white/[0.08] border border-white/10 text-clay-text-muted hover:text-clay-text hover:bg-white/[0.12] transition-colors"
+                className="ml-auto inline-flex items-center justify-center min-w-11 min-h-11 rounded-xl bg-white/[0.08] border border-white/10 text-clay-text-muted hover:text-clay-text hover:bg-white/[0.12] transition-colors"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />

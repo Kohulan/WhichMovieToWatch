@@ -426,8 +426,7 @@ export function DiscoveryPage() {
                         className="flex-shrink-0 snap-start"
                       >
                         <button
-                          role="listitem"
-                          className="w-28 text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-clay-accent"
+                          className="w-28 text-left rounded-lg overflow-hidden bg-clay-surface clay-shadow-sm hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-accent"
                           onClick={() => handleSimilarMovieClick(movie.id)}
                           aria-label={`Load ${movie.title}${year ? ` (${year})` : ""}`}
                         >

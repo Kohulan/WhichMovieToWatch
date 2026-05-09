@@ -77,6 +77,7 @@ export function HomePage() {
               material="glass"
               colSpan={{ tablet: 2, desktop: 6 }}
               rowSpan={2}
+              ariaLabel="Discover a movie"
               onClick={() => navigate("/discover")}
               overlay={
                 <div className="w-full p-3 text-xs text-white/80 font-medium bg-black/30 backdrop-blur-sm">
@@ -94,6 +95,7 @@ export function HomePage() {
               material="glass"
               colSpan={{ desktop: 3 }}
               rowSpan={2}
+              ariaLabel="Browse trending movies"
               onClick={() => navigate("/trending")}
               overlay={
                 <div className="w-full p-3 text-xs text-white/80 font-medium bg-black/30 backdrop-blur-sm">
@@ -110,6 +112,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 3 }}
+              ariaLabel="See top-rated movies"
               onClick={() => navigate("/trending")}
             >
               <RatingShowcaseCell />
@@ -132,6 +135,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
+              ariaLabel="Pick a quick movie for dinner time"
               onClick={() => navigate("/dinner-time")}
               overlay={
                 <div className="w-full p-3 text-xs text-clay-text-muted font-medium bg-clay-base/40 backdrop-blur-sm">
@@ -148,6 +152,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
+              ariaLabel="Watch free movies"
               onClick={() => navigate("/free-movies")}
               overlay={
                 <div className="w-full p-3 text-xs text-clay-text-muted font-medium bg-clay-base/40 backdrop-blur-sm">
@@ -164,6 +169,7 @@ export function HomePage() {
             <BentoCell
               material="clay"
               colSpan={{ desktop: 4 }}
+              ariaLabel="Search movies"
               onClick={() =>
                 window.dispatchEvent(new CustomEvent("open-search"))
               }

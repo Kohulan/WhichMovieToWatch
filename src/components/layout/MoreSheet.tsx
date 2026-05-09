@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useId } from "react";
 import { NavLink, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { TrendingUp, Film, Tv, X, Coffee, Github } from "lucide-react";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { RotaryDial } from "../ui/RotaryDial";
 import { RegionPicker } from "./RegionPicker";
@@ -26,6 +27,8 @@ export function MoreSheet({
   onClose: () => void;
 }) {
   const location = useLocation();
+  const titleId = useId();
+  const panelRef = useFocusTrap<HTMLDivElement>(open);
 
   // Close on route change
   useEffect(() => {
@@ -33,15 +36,22 @@ export function MoreSheet({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 
-  // Lock body scroll when open
+  // Lock body scroll + close on Escape when open
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-      return () => {
-        document.body.style.overflow = "";
-      };
+    if (!open) return;
+
+    document.body.style.overflow = "hidden";
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
     }
-  }, [open]);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [open, onClose]);
 
   return (
     <AnimatePresence>
@@ -60,7 +70,11 @@ export function MoreSheet({
 
           {/* Side drawer — slides in from right */}
           <motion.div
+            ref={panelRef}
             key="drawer-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -77,12 +91,17 @@ export function MoreSheet({
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 pt-[env(safe-area-inset-top)] mt-4 mb-2">
-              <span className="text-sm font-semibold text-clay-text">Menu</span>
+              <span
+                id={titleId}
+                className="text-sm font-semibold text-clay-text"
+              >
+                Menu
+              </span>
               <button
                 type="button"
                 onClick={onClose}
                 aria-label="Close menu"
-                className="p-1.5 -mr-1.5 rounded-full text-clay-text-muted hover:text-clay-text transition-colors"
+                className="inline-flex items-center justify-center min-w-11 min-h-11 -mr-2 rounded-full text-clay-text-muted hover:text-clay-text transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>

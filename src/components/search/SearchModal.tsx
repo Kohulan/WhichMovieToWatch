@@ -4,6 +4,7 @@ import { X } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useSearchMovies";
 import { useSearchStore } from "@/stores/searchStore";
 import { useRegionStore } from "@/stores/regionStore";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { tmdbFetch } from "@/services/tmdb/client";
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";
@@ -67,6 +68,7 @@ export function SearchModal({
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [currentQuery, setCurrentQuery] = useState("");
   const region = useRegionStore((s) => s.effectiveRegion)();
+  const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   // Apply initialProviderId when modal opens with a preset
   useEffect(() => {
@@ -256,6 +258,7 @@ export function SearchModal({
 
           {/* Content panel — dramatic slide-up from bottom with spring entrance */}
           <motion.div
+            ref={panelRef}
             key="search-panel"
             initial={{ y: "100%", opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
