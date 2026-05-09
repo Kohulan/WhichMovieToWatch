@@ -110,24 +110,24 @@ export function BrowseFilterSidebar({
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
 
-          {/* Sidebar — slides in from left */}
+          {/* Sidebar — slides in from right (standard browse pattern) */}
           <motion.aside
             key="filter-panel"
-            initial={{ x: "-100%", opacity: 0.8 }}
+            initial={{ x: "100%", opacity: 0.8 }}
             animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "-100%", opacity: 0.8 }}
+            exit={{ x: "100%", opacity: 0.8 }}
             transition={{ type: "spring", stiffness: 380, damping: 32 }}
             aria-label="Filter panel"
             className="
-              fixed top-0 left-0 bottom-0 z-50
+              fixed top-0 right-0 bottom-0 z-50
               w-[280px] sm:w-[320px]
               bg-clay-base/95 backdrop-blur-xl
-              border-r border-white/[0.1]
+              border-l border-white/[0.1]
               flex flex-col
             "
             style={{
               boxShadow:
-                "12px 0 48px rgba(0,0,0,0.3), 4px 0 16px rgba(0,0,0,0.15), inset -1px 0 0 rgba(255,255,255,0.04)",
+                "-12px 0 48px rgba(0,0,0,0.3), -4px 0 16px rgba(0,0,0,0.15), inset 1px 0 0 rgba(255,255,255,0.04)",
             }}
           >
             {/* Header — with icon and active count */}
