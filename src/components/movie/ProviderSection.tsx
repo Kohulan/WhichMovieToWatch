@@ -122,6 +122,8 @@ function ProviderTiers({ providers }: { providers: MovieProviders }) {
  *
  * ARIA labeled for screen readers. (A11Y-02)
  */
+type Variant = "error" | "loading" | "mismatch" | "providers" | "empty";
+
 export function ProviderSection({
   providers,
   findMovieLink,
@@ -133,6 +135,71 @@ export function ProviderSection({
   onRetry,
 }: ProviderSectionProps) {
   const hasProviders = hasAnyProviders(providers);
+  const showMismatch =
+    !!hasServiceMismatch && !!allProviders && hasAnyProviders(allProviders);
+
+  function getVariant(): Variant {
+    if (error) return "error";
+    if (isLoading && !hasProviders) return "loading";
+    if (showMismatch) return "mismatch";
+    if (hasProviders) return "providers";
+    return "empty";
+  }
+
+  function renderBody() {
+    switch (getVariant()) {
+      case "error":
+        return (
+          <RetryError
+            message="Could not load streaming availability."
+            onRetry={onRetry}
+          />
+        );
+      case "loading":
+        return (
+          <div
+            className="flex flex-wrap gap-2"
+            aria-label="Loading streaming providers"
+            aria-busy="true"
+          >
+            {[0, 1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="w-10 h-10 rounded-lg bg-clay-surface/60 animate-pulse"
+                aria-hidden="true"
+              />
+            ))}
+          </div>
+        );
+      case "mismatch":
+        return (
+          <div>
+            <p className="text-clay-text-muted text-sm mb-3">
+              Not streaming on your selected services
+            </p>
+            {allProviders && <ProviderTiers providers={allProviders} />}
+          </div>
+        );
+      case "providers":
+        return <ProviderTiers providers={providers} />;
+      case "empty":
+        return (
+          <div className="text-center py-4">
+            <p className="text-clay-text-muted text-sm mb-3">
+              Not available in your region
+            </p>
+            {findMovieLink && (
+              <ExternalLink
+                href={findMovieLink}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
+              >
+                Find Movie
+              </ExternalLink>
+            )}
+          </div>
+        );
+    }
+  }
 
   return (
     <section aria-label="Streaming availability" className="mt-4">
@@ -142,51 +209,7 @@ export function ProviderSection({
 
       {children}
 
-      {error ? (
-        <RetryError
-          message="Could not load streaming availability."
-          onRetry={onRetry}
-        />
-      ) : isLoading && !hasProviders ? (
-        <div
-          className="flex flex-wrap gap-2"
-          aria-label="Loading streaming providers"
-          aria-busy="true"
-        >
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="w-10 h-10 rounded-lg bg-clay-surface/60 animate-pulse"
-              aria-hidden="true"
-            />
-          ))}
-        </div>
-      ) : hasServiceMismatch &&
-        allProviders &&
-        hasAnyProviders(allProviders) ? (
-        <div>
-          <p className="text-clay-text-muted text-sm mb-3">
-            Not streaming on your selected services
-          </p>
-          <ProviderTiers providers={allProviders} />
-        </div>
-      ) : hasProviders ? (
-        <ProviderTiers providers={providers} />
-      ) : (
-        <div className="text-center py-4">
-          <p className="text-clay-text-muted text-sm mb-3">
-            Not available in your region
-          </p>
-          {findMovieLink && (
-            <ExternalLink
-              href={findMovieLink}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-clay-surface text-clay-text text-sm font-medium hover:opacity-80 transition-opacity border border-clay-border"
-            >
-              Find Movie
-            </ExternalLink>
-          )}
-        </div>
-      )}
+      {renderBody()}
     </section>
   );
 }
