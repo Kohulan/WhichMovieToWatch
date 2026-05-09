@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Search, X } from "lucide-react";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
+import { sanitizeInput } from "@/lib/sanitize";
 import { VoiceSearchButton } from "./VoiceSearchButton";
 
 interface SpotlightInputProps {
@@ -8,11 +9,6 @@ interface SpotlightInputProps {
   initialValue?: string;
   netflixMode?: boolean;
   placeholder?: string;
-}
-
-/** Strip HTML tags from input to prevent XSS (SECU-02) */
-function sanitizeInput(input: string): string {
-  return input.replace(/<[^>]*>/g, "").slice(0, 100);
 }
 
 export function SpotlightInput({
