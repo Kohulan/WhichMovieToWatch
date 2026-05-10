@@ -7,6 +7,7 @@ import {
   getProviderLogoUrl,
   MAJOR_STREAMING_PROVIDERS,
 } from "@/lib/provider-registry";
+import { getProviderLayoutId } from "@/lib/layout-ids";
 
 interface BrowseProviderLauncherProps {
   onSelect: (providerId: number) => void;
@@ -242,6 +243,7 @@ interface ProviderCardProps {
 
 function ProviderCard({ provider, onSelect, prominent }: ProviderCardProps) {
   const dim = prominent ? 96 : 72;
+  const layoutId = getProviderLayoutId(provider.provider_id);
   return (
     <motion.button
       type="button"
@@ -268,7 +270,7 @@ function ProviderCard({ provider, onSelect, prominent }: ProviderCardProps) {
       >
         {provider.logo_path ? (
           <motion.img
-            layoutId={`browse-provider-${provider.provider_id}`}
+            layoutId={layoutId}
             src={getProviderLogoUrl(provider.logo_path)}
             alt=""
             width={dim}
@@ -279,7 +281,7 @@ function ProviderCard({ provider, onSelect, prominent }: ProviderCardProps) {
           />
         ) : (
           <motion.div
-            layoutId={`browse-provider-${provider.provider_id}`}
+            layoutId={layoutId}
             className="w-full h-full flex items-center justify-center text-clay-text-muted text-sm font-semibold"
           >
             {provider.provider_name.slice(0, 3)}

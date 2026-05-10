@@ -2,6 +2,7 @@ import { useNavigate } from "react-router";
 import { motion } from "motion/react";
 import { Film } from "lucide-react";
 import { getPosterUrl } from "@/services/tmdb/client";
+import { getMoviePosterLayoutId } from "@/lib/layout-ids";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { MetalButton } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
@@ -123,7 +124,7 @@ export function BrowseMovieGrid({
                 <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
                   {posterUrl ? (
                     <motion.img
-                      layoutId={`movie-poster-${movie.id}`}
+                      layoutId={getMoviePosterLayoutId(movie.id)}
                       src={posterUrl}
                       srcSet={
                         movie.poster_path
@@ -138,7 +139,7 @@ export function BrowseMovieGrid({
                     />
                   ) : (
                     <motion.div
-                      layoutId={`movie-poster-${movie.id}`}
+                      layoutId={getMoviePosterLayoutId(movie.id)}
                       className="w-full h-full flex items-center justify-center bg-clay-surface"
                     >
                       <Film

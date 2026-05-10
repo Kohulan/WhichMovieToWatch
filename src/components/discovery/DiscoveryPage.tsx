@@ -12,6 +12,7 @@ import { useOmdbRatings } from "@/hooks/useOmdbRatings";
 import { useWatchProviders } from "@/hooks/useWatchProviders";
 import { useSimilarMovies } from "@/hooks/useSimilarMovies";
 import { useDeepLink } from "@/hooks/useDeepLink";
+import { getMoviePosterLayoutId } from "@/lib/layout-ids";
 import { useAnnounce } from "@/components/shared/ScreenReaderAnnouncer";
 import { MovieHero } from "@/components/movie/MovieHero";
 import { RatingBadges } from "@/components/movie/RatingBadges";
@@ -453,7 +454,7 @@ export function DiscoveryPage() {
                           >
                             {posterUrl ? (
                               <motion.img
-                                layoutId={`movie-poster-${movie.id}`}
+                                layoutId={getMoviePosterLayoutId(movie.id)}
                                 src={posterUrl}
                                 srcSet={
                                   movie.poster_path
@@ -468,7 +469,7 @@ export function DiscoveryPage() {
                               />
                             ) : (
                               <motion.div
-                                layoutId={`movie-poster-${movie.id}`}
+                                layoutId={getMoviePosterLayoutId(movie.id)}
                                 className="w-full aspect-[2/3] bg-clay-base flex items-center justify-center"
                               >
                                 <span className="text-clay-text-muted text-xs text-center px-1">

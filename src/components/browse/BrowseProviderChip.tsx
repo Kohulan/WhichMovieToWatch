@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { X } from "lucide-react";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
+import { getProviderLayoutId } from "@/lib/layout-ids";
 
 interface BrowseProviderChipProps {
   providerId: number;
@@ -15,9 +16,7 @@ export function BrowseProviderChip({
   logoPath,
   onClear,
 }: BrowseProviderChipProps) {
-  // layoutId bridges this chip with the launcher's ProviderCard. Tapping a
-  // launcher card morphs its logo into this slot via Framer Motion's FLIP.
-  const layoutId = `browse-provider-${providerId}`;
+  const layoutId = getProviderLayoutId(providerId);
 
   return (
     <div
