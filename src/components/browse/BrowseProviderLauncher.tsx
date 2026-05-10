@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { useRegionStore } from "@/stores/regionStore";
@@ -53,37 +53,40 @@ export function BrowseProviderLauncher({
   const region = useRegionStore((s) => s.effectiveRegion)();
   const [showAll, setShowAll] = useState(false);
 
-  const myServicesSet = new Set(myServices);
-  const majorSet = new Set<number>(MAJOR_STREAMING_PROVIDERS);
+  const { myProviders, featuredMajors, otherProviders } = useMemo(() => {
+    const myServicesSet = new Set(myServices);
+    const majorSet = new Set(MAJOR_STREAMING_PROVIDERS);
+    const providerById = new Map(providers.map((p) => [p.provider_id, p]));
 
-  // Section 1: user's own services (only renders if non-empty), in user order.
-  const myProviders = providers
-    .filter((p) => myServicesSet.has(p.provider_id))
-    .sort(
-      (a, b) =>
-        myServices.indexOf(a.provider_id) - myServices.indexOf(b.provider_id),
-    );
+    const my = providers
+      .filter((p) => myServicesSet.has(p.provider_id))
+      .sort(
+        (a, b) =>
+          myServices.indexOf(a.provider_id) - myServices.indexOf(b.provider_id),
+      );
 
-  // Section 2: featured majors not already in myServices, in canonical order.
-  // Hide any major TMDB doesn't return for this region (e.g. Hulu in DE).
-  const providerById = new Map(providers.map((p) => [p.provider_id, p]));
-  const featuredMajors = MAJOR_STREAMING_PROVIDERS.filter(
-    (id) => !myServicesSet.has(id),
-  )
-    .map((id) => providerById.get(id))
-    .filter((p): p is RegionProvider => p !== undefined);
-
-  // Section 3: long-tail by region priority. Excludes both myServices AND
-  // majors so the same provider never appears twice on the page.
-  const otherProviders = providers
-    .filter(
-      (p) => !myServicesSet.has(p.provider_id) && !majorSet.has(p.provider_id),
+    // Hide any major TMDB doesn't return for this region (e.g. Hulu in DE).
+    const major = MAJOR_STREAMING_PROVIDERS.filter(
+      (id) => !myServicesSet.has(id),
     )
-    .sort((a, b) => {
-      const ap = a.display_priorities?.[region] ?? Number.MAX_SAFE_INTEGER;
-      const bp = b.display_priorities?.[region] ?? Number.MAX_SAFE_INTEGER;
-      return ap - bp;
-    });
+      .map((id) => providerById.get(id))
+      .filter((p): p is RegionProvider => p !== undefined);
+
+    // Exclude both myServices AND majors so no provider appears twice.
+    // TMDB display_priorities: lower number = more prominent in this region.
+    const other = providers
+      .filter(
+        (p) =>
+          !myServicesSet.has(p.provider_id) && !majorSet.has(p.provider_id),
+      )
+      .sort((a, b) => {
+        const ap = a.display_priorities?.[region] ?? Number.MAX_SAFE_INTEGER;
+        const bp = b.display_priorities?.[region] ?? Number.MAX_SAFE_INTEGER;
+        return ap - bp;
+      });
+
+    return { myProviders: my, featuredMajors: major, otherProviders: other };
+  }, [providers, myServices, region]);
 
   const visibleOthers = showAll
     ? otherProviders
@@ -172,7 +175,10 @@ export function BrowseProviderLauncher({
         </motion.section>
       )}
 
-      <motion.section variants={sectionItem} aria-labelledby="all-platforms-heading">
+      <motion.section
+        variants={sectionItem}
+        aria-labelledby="all-platforms-heading"
+      >
         <h2
           id="all-platforms-heading"
           className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"

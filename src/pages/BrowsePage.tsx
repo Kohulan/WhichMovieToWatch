@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import { SlidersHorizontal, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useBrowseStore } from "@/stores/browseStore";
 import { useBrowseMovies } from "@/hooks/useBrowseMovies";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { usePreferencesStore } from "@/stores/preferencesStore";
+import { useScrolled } from "@/hooks/useScrolled";
 import { hasNonDefaultFilters } from "@/services/tmdb/browse";
 import { MetalDropdown } from "@/components/ui";
 import { BrowseMovieGrid } from "@/components/browse/BrowseMovieGrid";
@@ -32,19 +33,7 @@ const PANEL_EXIT = {
 
 export default function BrowsePage() {
   const [filterOpen, setFilterOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  // Subtle elevation on the sticky toolbar once the user starts scrolling.
-  // Conveys the "this bar floats above content" affordance only when needed,
-  // not as static decoration.
-  useEffect(() => {
-    function onScroll() {
-      setScrolled(window.scrollY > 8);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  const scrolled = useScrolled(8);
 
   const selectedProviderId = useBrowseStore((s) => s.selectedProviderId);
   const sortBy = useBrowseStore((s) => s.sortBy);
@@ -74,11 +63,14 @@ export default function BrowsePage() {
     }
   }, [myServices, selectedProviderId, setProvider]);
 
-  const selectedProvider =
-    selectedProviderId !== null
-      ? (regionProviders.find((p) => p.provider_id === selectedProviderId) ??
-        null)
-      : null;
+  const selectedProvider = useMemo(
+    () =>
+      selectedProviderId === null
+        ? null
+        : (regionProviders.find((p) => p.provider_id === selectedProviderId) ??
+          null),
+    [regionProviders, selectedProviderId],
+  );
 
   const handleClearProvider = useCallback(
     () => setProvider(null),
@@ -128,9 +120,8 @@ export default function BrowsePage() {
                 : "Movie catalog"
             }
           >
-            {/* Sticky toolbar — chip on the left, sort+filter pinned right.
-                Box-shadow strengthens once scrolled so the bar reads as a
-                floating panel instead of a flat band. */}
+            {/* Box-shadow strengthens once scrolled so the bar reads as a
+                floating panel only when it's actually floating. */}
             <div
               className="
                 sticky top-14 z-30
@@ -201,7 +192,6 @@ export default function BrowsePage() {
                 </div>
               </div>
 
-              {/* Result count — small caption row, only when count is meaningful */}
               {totalResults > 0 && (
                 <p className="text-clay-text-muted text-xs mt-2 tabular-nums">
                   {totalResults.toLocaleString()}{" "}
