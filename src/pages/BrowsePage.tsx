@@ -22,11 +22,10 @@ const SORT_OPTIONS = [
   { value: "title.desc", label: "Z → A" },
 ];
 
-// The visible motion during empty↔filled is carried by the card→chip
-// layoutId morph. Panels enter instantly (no fade-in) and exit by fading
-// out beneath the entering panel — eliminates the mid-transition blank gap
-// a crossfade would create while the entering content is still at low opacity.
-const PANEL_EXIT = {
+// Only the exit is animated. Entering panels start at opacity 1 so the
+// card→chip layoutId morph carries the motion alone; an enter fade would
+// just fight the morph and create a blank mid-transition gap.
+const EXIT_TRANSITION = {
   duration: 0.18,
   ease: [0.22, 1, 0.36, 1] as const,
 };
@@ -85,7 +84,7 @@ export default function BrowsePage() {
             key="launcher"
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: PANEL_EXIT }}
+            exit={{ opacity: 0, transition: EXIT_TRANSITION }}
             className="py-8 sm:py-12"
             aria-label="Pick a streaming service to browse"
           >
@@ -108,7 +107,7 @@ export default function BrowsePage() {
             key="results"
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: PANEL_EXIT }}
+            exit={{ opacity: 0, transition: EXIT_TRANSITION }}
             className="pt-3"
             aria-label={
               selectedProvider
