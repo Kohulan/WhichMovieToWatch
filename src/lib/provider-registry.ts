@@ -10,7 +10,7 @@ export const PROVIDER_LOGOS_BASE = "https://image.tmdb.org/t/p/original";
  * personalized via myServices. Used by the onboarding wizard's ProviderSelector
  * and the /browse provider launcher; keep them in sync via this single source.
  *
- * Region filter via display_priorities (in fetchRegionProviders) hides any
+ * Region filter via display_priorities (in fetchProvidersForRegion) hides any
  * entry that doesn't operate in the user's region: Hulu and Peacock drop out
  * outside US; everyone else surfaces wherever the service launched.
  *

@@ -30,7 +30,7 @@ interface TMDBRegionResponse {
   results: TMDBRegionResult[];
 }
 
-export async function fetchRegionProviders(
+export async function fetchProvidersForRegion(
   region: string,
 ): Promise<TMDBProviderResult[]> {
   // Fetch the GLOBAL provider list (no watch_region) and filter by
