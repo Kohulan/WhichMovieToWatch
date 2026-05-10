@@ -3,16 +3,22 @@ import { X } from "lucide-react";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
 
 interface BrowseProviderChipProps {
+  providerId: number;
   providerName: string;
   logoPath: string | null;
   onClear: () => void;
 }
 
 export function BrowseProviderChip({
+  providerId,
   providerName,
   logoPath,
   onClear,
 }: BrowseProviderChipProps) {
+  // layoutId bridges this chip with the launcher's ProviderCard. Tapping a
+  // launcher card morphs its logo into this slot via Framer Motion's FLIP.
+  const layoutId = `browse-provider-${providerId}`;
+
   return (
     <div
       className="
@@ -23,7 +29,8 @@ export function BrowseProviderChip({
       "
     >
       {logoPath ? (
-        <img
+        <motion.img
+          layoutId={layoutId}
           src={getProviderLogoUrl(logoPath)}
           alt=""
           width={28}
@@ -33,12 +40,13 @@ export function BrowseProviderChip({
           decoding="async"
         />
       ) : (
-        <span
+        <motion.span
+          layoutId={layoutId}
           className="w-7 h-7 rounded-full bg-clay-base flex items-center justify-center text-clay-text-muted text-2xs font-semibold flex-shrink-0"
           aria-hidden="true"
         >
           {providerName.slice(0, 2)}
-        </span>
+        </motion.span>
       )}
       <span className="text-clay-text font-semibold text-sm truncate min-w-0">
         {providerName}

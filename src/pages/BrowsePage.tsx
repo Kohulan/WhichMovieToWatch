@@ -21,13 +21,30 @@ const SORT_OPTIONS = [
   { value: "title.desc", label: "Z → A" },
 ];
 
-const PANEL_TRANSITION = {
-  duration: 0.25,
-  ease: [0.25, 0.1, 0.25, 1] as const,
+// The visible motion during empty↔filled is carried by the card→chip
+// layoutId morph. Panels enter instantly (no fade-in) and exit by fading
+// out beneath the entering panel — eliminates the mid-transition blank gap
+// a crossfade would create while the entering content is still at low opacity.
+const PANEL_EXIT = {
+  duration: 0.18,
+  ease: [0.22, 1, 0.36, 1] as const,
 };
 
 export default function BrowsePage() {
   const [filterOpen, setFilterOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Subtle elevation on the sticky toolbar once the user starts scrolling.
+  // Conveys the "this bar floats above content" affordance only when needed,
+  // not as static decoration.
+  useEffect(() => {
+    function onScroll() {
+      setScrolled(window.scrollY > 8);
+    }
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const selectedProviderId = useBrowseStore((s) => s.selectedProviderId);
   const sortBy = useBrowseStore((s) => s.sortBy);
@@ -78,10 +95,9 @@ export default function BrowsePage() {
         {isEmpty ? (
           <motion.section
             key="launcher"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={PANEL_TRANSITION}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: PANEL_EXIT }}
             className="py-8 sm:py-12"
             aria-label="Pick a streaming service to browse"
           >
@@ -93,7 +109,7 @@ export default function BrowsePage() {
                 Browse
               </h1>
               <p className="text-clay-text-muted text-sm sm:text-base mt-1.5 max-w-prose">
-                Pick a service to see what's on it.
+                Pick a service. The night is yours.
               </p>
             </header>
 
@@ -102,10 +118,9 @@ export default function BrowsePage() {
         ) : (
           <motion.section
             key="results"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={PANEL_TRANSITION}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: PANEL_EXIT }}
             className="pt-3"
             aria-label={
               selectedProvider
@@ -113,19 +128,27 @@ export default function BrowsePage() {
                 : "Movie catalog"
             }
           >
-            {/* Sticky toolbar — chip on the left, sort+filter pinned right */}
+            {/* Sticky toolbar — chip on the left, sort+filter pinned right.
+                Box-shadow strengthens once scrolled so the bar reads as a
+                floating panel instead of a flat band. */}
             <div
               className="
                 sticky top-14 z-30
                 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3
                 bg-clay-base/92 sm:bg-clay-base/70 backdrop-blur-xl
                 border-b border-white/[0.08]
-                transition-colors duration-500
+                transition-shadow duration-300
               "
+              style={{
+                boxShadow: scrolled
+                  ? "0 8px 24px -12px rgba(0,0,0,0.32)"
+                  : "0 0 0 transparent",
+              }}
             >
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 {selectedProvider && (
                   <BrowseProviderChip
+                    providerId={selectedProvider.provider_id}
                     providerName={selectedProvider.provider_name}
                     logoPath={selectedProvider.logo_path}
                     onClear={handleClearProvider}
@@ -163,9 +186,15 @@ export default function BrowsePage() {
                   >
                     <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
                     {filtersActive && (
-                      <span
+                      <motion.span
                         className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent"
                         aria-hidden="true"
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{
+                          duration: 1.6,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
                       />
                     )}
                   </motion.button>

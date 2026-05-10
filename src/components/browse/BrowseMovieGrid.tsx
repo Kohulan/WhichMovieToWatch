@@ -66,12 +66,12 @@ export function BrowseMovieGrid({
         </div>
         <div>
           <p className="text-clay-text text-sm font-medium mb-1">
-            No movies found
+            Nothing matches.
           </p>
           <p className="text-clay-text-muted text-xs max-w-xs">
             {providerName
-              ? `No results on ${providerName} with current filters.`
-              : "Try adjusting your filters or selecting a different platform."}
+              ? `Loosen a filter to see more from ${providerName}.`
+              : "Loosen a filter or try a different platform."}
           </p>
         </div>
         <MetalButton variant="ghost" size="sm" onClick={onClearFilters}>

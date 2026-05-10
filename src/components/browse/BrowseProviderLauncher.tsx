@@ -22,6 +22,26 @@ interface RegionProvider {
 /** Top-tier providers shown by default. Long-tail hidden behind "Show all". */
 const DEFAULT_LIMIT = 24;
 
+/**
+ * Section stagger for the launcher entrance. Subtle: 80ms gap, ease-out-quint,
+ * 8px y-offset. Reads as "the page composes itself" rather than a page-load
+ * choreography. Disabled under prefers-reduced-motion via the project's
+ * MotionProvider (reducedMotion='user').
+ */
+const sectionContainer = {
+  initial: {},
+  animate: { transition: { staggerChildren: 0.08, delayChildren: 0.04 } },
+};
+
+const sectionItem = {
+  initial: { opacity: 0, y: 8 },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
 export function BrowseProviderLauncher({
   onSelect,
 }: BrowseProviderLauncherProps) {
@@ -91,16 +111,24 @@ export function BrowseProviderLauncher({
   if (providers.length === 0) {
     return (
       <p className="text-clay-text-muted text-sm py-8">
-        No streaming services available in your region yet. Try changing the
-        region in the navbar.
+        No streaming in this region yet. Try a different country from the
+        navbar.
       </p>
     );
   }
 
   return (
-    <div className="space-y-10 sm:space-y-12">
+    <motion.div
+      className="space-y-10 sm:space-y-12"
+      variants={sectionContainer}
+      initial="initial"
+      animate="animate"
+    >
       {myProviders.length > 0 && (
-        <section aria-labelledby="my-services-heading">
+        <motion.section
+          variants={sectionItem}
+          aria-labelledby="my-services-heading"
+        >
           <h2
             id="my-services-heading"
             className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
@@ -117,11 +145,14 @@ export function BrowseProviderLauncher({
               />
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
       {featuredMajors.length > 0 && (
-        <section aria-labelledby="featured-heading">
+        <motion.section
+          variants={sectionItem}
+          aria-labelledby="featured-heading"
+        >
           <h2
             id="featured-heading"
             className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
@@ -138,10 +169,10 @@ export function BrowseProviderLauncher({
               />
             ))}
           </div>
-        </section>
+        </motion.section>
       )}
 
-      <section aria-labelledby="all-platforms-heading">
+      <motion.section variants={sectionItem} aria-labelledby="all-platforms-heading">
         <h2
           id="all-platforms-heading"
           className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
@@ -192,8 +223,8 @@ export function BrowseProviderLauncher({
             Show fewer
           </button>
         )}
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }
 
@@ -230,7 +261,8 @@ function ProviderCard({ provider, onSelect, prominent }: ProviderCardProps) {
         "
       >
         {provider.logo_path ? (
-          <img
+          <motion.img
+            layoutId={`browse-provider-${provider.provider_id}`}
             src={getProviderLogoUrl(provider.logo_path)}
             alt=""
             width={dim}
@@ -240,9 +272,12 @@ function ProviderCard({ provider, onSelect, prominent }: ProviderCardProps) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-clay-text-muted text-sm font-semibold">
+          <motion.div
+            layoutId={`browse-provider-${provider.provider_id}`}
+            className="w-full h-full flex items-center justify-center text-clay-text-muted text-sm font-semibold"
+          >
             {provider.provider_name.slice(0, 3)}
-          </div>
+          </motion.div>
         )}
       </div>
       <span
