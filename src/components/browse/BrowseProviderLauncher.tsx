@@ -3,11 +3,9 @@ import { motion } from "motion/react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { useRegionStore } from "@/stores/regionStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
-import {
-  getProviderLogoUrl,
-  MAJOR_STREAMING_PROVIDERS,
-} from "@/lib/provider-registry";
+import { MAJOR_STREAMING_PROVIDERS } from "@/lib/provider-registry";
 import { getProviderLayoutId } from "@/lib/layout-ids";
+import { ProviderLogo } from "@/components/shared/ProviderLogo";
 
 interface BrowseProviderLauncherProps {
   onSelect: (providerId: number) => void;
@@ -269,15 +267,10 @@ function ProviderCard({ provider, onSelect, prominent }: ProviderCardProps) {
         "
       >
         {provider.logo_path ? (
-          <motion.img
+          <ProviderLogo
+            logoPath={provider.logo_path}
+            size={dim}
             layoutId={layoutId}
-            src={getProviderLogoUrl(provider.logo_path)}
-            alt=""
-            width={dim}
-            height={dim}
-            loading="lazy"
-            decoding="async"
-            className="w-full h-full object-cover"
           />
         ) : (
           <motion.div

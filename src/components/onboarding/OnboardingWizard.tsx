@@ -9,7 +9,7 @@ import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useDiscoveryStore } from "@/stores/discoveryStore";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
-import { getProviderLogoUrl } from "@/lib/provider-registry";
+import { ProviderLogo } from "@/components/shared/ProviderLogo";
 import { getAllGenres } from "@/lib/genre-map";
 
 interface OnboardingWizardProps {
@@ -363,11 +363,9 @@ export function OnboardingWizard({
                                 `}
                               >
                                 {provider.logo_path ? (
-                                  <img
-                                    src={getProviderLogoUrl(provider.logo_path)}
-                                    alt=""
-                                    loading="lazy"
-                                    className="w-full h-full object-cover"
+                                  <ProviderLogo
+                                    logoPath={provider.logo_path}
+                                    size={48}
                                   />
                                 ) : (
                                   <div className="w-full h-full bg-clay-surface flex items-center justify-center">

@@ -2,10 +2,8 @@
 
 import { useState } from "react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
-import {
-  getProviderLogoUrl,
-  MAJOR_STREAMING_PROVIDERS,
-} from "@/lib/provider-registry";
+import { MAJOR_STREAMING_PROVIDERS } from "@/lib/provider-registry";
+import { ProviderLogo } from "@/components/shared/ProviderLogo";
 
 interface ProviderSelectorProps {
   selectedIds: number[];
@@ -108,14 +106,7 @@ export function ProviderSelector({
           `}
         >
           {logo_path ? (
-            <img
-              src={getProviderLogoUrl(logo_path)}
-              alt={provider_name}
-              width={48}
-              height={48}
-              loading="lazy"
-              className="w-full h-full object-cover"
-            />
+            <ProviderLogo logoPath={logo_path} size={48} />
           ) : (
             <div className="w-full h-full bg-clay-base flex items-center justify-center">
               <span className="text-clay-text-muted text-xs text-center px-0.5 leading-tight">

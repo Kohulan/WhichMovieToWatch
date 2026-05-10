@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { X } from "lucide-react";
-import { getProviderLogoUrl } from "@/lib/provider-registry";
 import { getProviderLayoutId } from "@/lib/layout-ids";
+import { ProviderLogo } from "@/components/shared/ProviderLogo";
 
 interface BrowseProviderChipProps {
   providerId: number;
@@ -28,15 +28,11 @@ export function BrowseProviderChip({
       "
     >
       {logoPath ? (
-        <motion.img
+        <ProviderLogo
+          logoPath={logoPath}
+          size={28}
           layoutId={layoutId}
-          src={getProviderLogoUrl(logoPath)}
-          alt=""
-          width={28}
-          height={28}
           className="w-7 h-7 rounded-full object-cover flex-shrink-0"
-          loading="lazy"
-          decoding="async"
         />
       ) : (
         <motion.span

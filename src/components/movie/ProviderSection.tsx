@@ -1,8 +1,8 @@
 // Streaming provider grouped list — Stream/Rent/Buy/Free tiers (DISP-05)
 
 import { ExternalLink } from "@/components/shared/ExternalLink";
+import { ProviderLogo } from "@/components/shared/ProviderLogo";
 import { RetryError } from "@/components/shared/RetryError";
-import { getProviderLogoUrl } from "@/lib/provider-registry";
 import type { MovieProviders, ProviderInfo } from "@/types/provider";
 
 interface ProviderSectionProps {
@@ -44,12 +44,9 @@ function ProviderTier({ label, providers, tmdbLink }: ProviderTierProps) {
             className="block rounded-lg overflow-hidden hover:opacity-80 transition-opacity"
             title={provider.provider_name}
           >
-            <img
-              src={getProviderLogoUrl(provider.logo_path)}
-              alt={provider.provider_name}
-              width={40}
-              height={40}
-              loading="lazy"
+            <ProviderLogo
+              logoPath={provider.logo_path}
+              size={40}
               className="w-10 h-10 rounded-lg object-cover"
             />
           </ExternalLink>
