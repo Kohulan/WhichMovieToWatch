@@ -5,6 +5,13 @@ import { DEFAULT_FILTERS } from "@/services/tmdb/browse";
 
 interface BrowseState {
   selectedProviderId: number | null;
+  /**
+   * True once the user has explicitly cleared the chip (or this session has
+   * already auto-selected once). BrowsePage uses this to suppress the
+   * one-time auto-select from myServices on subsequent ✕-clicks within the
+   * same session, so the launcher stays open until the user picks again.
+   */
+  userDidClear: boolean;
   results: TMDBMovie[];
   currentPage: number;
   totalPages: number;
@@ -31,6 +38,7 @@ interface BrowseState {
 
 export const useBrowseStore = create<BrowseState>()((set) => ({
   selectedProviderId: null,
+  userDidClear: false,
   results: [],
   currentPage: 1,
   totalPages: 0,
@@ -43,6 +51,7 @@ export const useBrowseStore = create<BrowseState>()((set) => ({
   setProvider: (id) =>
     set({
       selectedProviderId: id,
+      userDidClear: id === null,
       results: [],
       currentPage: 1,
       totalPages: 0,

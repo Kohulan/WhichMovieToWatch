@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { SlidersHorizontal, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useBrowseStore } from "@/stores/browseStore";
@@ -36,6 +36,7 @@ export default function BrowsePage() {
   const scrolled = useScrolled(8);
 
   const selectedProviderId = useBrowseStore((s) => s.selectedProviderId);
+  const userDidClear = useBrowseStore((s) => s.userDidClear);
   const sortBy = useBrowseStore((s) => s.sortBy);
   const filters = useBrowseStore((s) => s.filters);
   const setProvider = useBrowseStore((s) => s.setProvider);
@@ -48,20 +49,15 @@ export default function BrowsePage() {
   const { providers: regionProviders } = useRegionProviders();
   const myServices = usePreferencesStore((s) => s.myServices);
 
-  // Auto-pick first saved service on FIRST visit only — subsequent X-clicks
-  // return to the launcher and stay there until the user picks again.
-  const autoSelectDone = useRef(false);
+  // Auto-pick first saved service on first arrival. Once the user clears
+  // the chip, userDidClear is true and the launcher stays open until the
+  // user picks again. setProvider(null) sets userDidClear=true; picking
+  // any provider implicitly leaves userDidClear at whatever it was, but
+  // selectedProviderId !== null guards subsequent runs anyway.
   useEffect(() => {
-    if (autoSelectDone.current) return;
-    if (selectedProviderId !== null) {
-      autoSelectDone.current = true;
-      return;
-    }
-    if (myServices.length > 0) {
-      setProvider(myServices[0]);
-      autoSelectDone.current = true;
-    }
-  }, [myServices, selectedProviderId, setProvider]);
+    if (selectedProviderId !== null || userDidClear) return;
+    if (myServices.length > 0) setProvider(myServices[0]);
+  }, [myServices, selectedProviderId, userDidClear, setProvider]);
 
   const selectedProvider = useMemo(
     () =>
