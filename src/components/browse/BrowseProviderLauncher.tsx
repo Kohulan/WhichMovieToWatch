@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { useRegionStore } from "@/stores/regionStore";
@@ -127,109 +127,116 @@ export function BrowseProviderLauncher({
       animate="animate"
     >
       {myProviders.length > 0 && (
-        <motion.section
-          variants={sectionItem}
-          aria-labelledby="my-services-heading"
-        >
-          <h2
-            id="my-services-heading"
-            className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
-          >
-            Your services
-          </h2>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-            {myProviders.map((p) => (
-              <ProviderCard
-                key={p.provider_id}
-                provider={p}
-                onSelect={onSelect}
-                prominent
-              />
-            ))}
-          </div>
-        </motion.section>
+        <ProviderSection
+          headingId="my-services-heading"
+          heading="Your services"
+          providers={myProviders}
+          onSelect={onSelect}
+          prominent
+        />
       )}
 
       {featuredMajors.length > 0 && (
-        <motion.section
-          variants={sectionItem}
-          aria-labelledby="featured-heading"
-        >
-          <h2
-            id="featured-heading"
-            className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
-          >
-            {myProviders.length > 0 ? "Featured" : "Streaming services"}
-          </h2>
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4">
-            {featuredMajors.map((p) => (
-              <ProviderCard
-                key={p.provider_id}
-                provider={p}
-                onSelect={onSelect}
-                prominent
-              />
-            ))}
-          </div>
-        </motion.section>
+        <ProviderSection
+          headingId="featured-heading"
+          heading={myProviders.length > 0 ? "Featured" : "Streaming services"}
+          providers={featuredMajors}
+          onSelect={onSelect}
+          prominent
+        />
       )}
 
-      <motion.section
-        variants={sectionItem}
-        aria-labelledby="all-platforms-heading"
+      <ProviderSection
+        headingId="all-platforms-heading"
+        heading="All platforms"
+        providers={visibleOthers}
+        onSelect={onSelect}
+        gridClass="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-3"
       >
-        <h2
-          id="all-platforms-heading"
-          className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
-        >
-          All platforms
-        </h2>
-        <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-3">
-          {visibleOthers.map((p) => (
-            <ProviderCard
-              key={p.provider_id}
-              provider={p}
-              onSelect={onSelect}
-            />
-          ))}
-        </div>
-
         {hiddenCount > 0 && !showAll && (
-          <button
-            type="button"
-            onClick={() => setShowAll(true)}
-            className="
-              mt-6 inline-flex items-center gap-1
-              text-sm text-clay-text-muted hover:text-clay-text
-              underline underline-offset-4 decoration-clay-border
-              hover:decoration-clay-text-muted
-              transition-colors duration-200 cursor-pointer
-              outline-none focus-visible:ring-2 focus-visible:ring-accent rounded
-            "
-            aria-expanded="false"
-          >
+          <ToggleAllLink expanded={false} onClick={() => setShowAll(true)}>
             Show {hiddenCount} more
-          </button>
+          </ToggleAllLink>
         )}
         {showAll && otherProviders.length > DEFAULT_LIMIT && (
-          <button
-            type="button"
-            onClick={() => setShowAll(false)}
-            className="
-              mt-6 inline-flex items-center gap-1
-              text-sm text-clay-text-muted hover:text-clay-text
-              underline underline-offset-4 decoration-clay-border
-              hover:decoration-clay-text-muted
-              transition-colors duration-200 cursor-pointer
-              outline-none focus-visible:ring-2 focus-visible:ring-accent rounded
-            "
-            aria-expanded="true"
-          >
+          <ToggleAllLink expanded={true} onClick={() => setShowAll(false)}>
             Show fewer
-          </button>
+          </ToggleAllLink>
         )}
-      </motion.section>
+      </ProviderSection>
     </motion.div>
+  );
+}
+
+interface ProviderSectionProps {
+  headingId: string;
+  heading: string;
+  providers: RegionProvider[];
+  onSelect: (id: number) => void;
+  prominent?: boolean;
+  /** Override the default 6-col prominent grid for the long-tail. */
+  gridClass?: string;
+  children?: ReactNode;
+}
+
+const PROMINENT_GRID =
+  "grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4";
+
+function ProviderSection({
+  headingId,
+  heading,
+  providers,
+  onSelect,
+  prominent,
+  gridClass,
+  children,
+}: ProviderSectionProps) {
+  return (
+    <motion.section variants={sectionItem} aria-labelledby={headingId}>
+      <h2
+        id={headingId}
+        className="text-clay-text-muted text-xs uppercase tracking-wider font-semibold mb-4"
+      >
+        {heading}
+      </h2>
+      <div className={gridClass ?? PROMINENT_GRID}>
+        {providers.map((p) => (
+          <ProviderCard
+            key={p.provider_id}
+            provider={p}
+            onSelect={onSelect}
+            prominent={prominent}
+          />
+        ))}
+      </div>
+      {children}
+    </motion.section>
+  );
+}
+
+interface ToggleAllLinkProps {
+  expanded: boolean;
+  onClick: () => void;
+  children: ReactNode;
+}
+
+function ToggleAllLink({ expanded, onClick, children }: ToggleAllLinkProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-expanded={expanded}
+      className="
+        mt-6 inline-flex items-center gap-1
+        text-sm text-clay-text-muted hover:text-clay-text
+        underline underline-offset-4 decoration-clay-border
+        hover:decoration-clay-text-muted
+        transition-colors duration-200 cursor-pointer
+        outline-none focus-visible:ring-2 focus-visible:ring-accent rounded
+      "
+    >
+      {children}
+    </button>
   );
 }
 
