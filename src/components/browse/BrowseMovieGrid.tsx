@@ -83,7 +83,6 @@ export function BrowseMovieGrid({
 
   return (
     <div className="flex flex-col gap-5 pb-6">
-      {/* Movie grid — responsive poster cards */}
       <StaggerContainer
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
         stagger={0.035}
@@ -121,10 +120,6 @@ export function BrowseMovieGrid({
                   contain-card cv-auto
                 "
               >
-                {/* Poster — motion.img with shared layoutId enables the
-                    poster to morph into the /discover hero on tap (see
-                    MovieHero). prefers-reduced-motion gates the morph
-                    globally via MotionProvider; the navigation still works. */}
                 <div className="relative w-full aspect-[2/3] bg-clay-base overflow-hidden">
                   {posterUrl ? (
                     <motion.img
@@ -153,7 +148,6 @@ export function BrowseMovieGrid({
                     </motion.div>
                   )}
 
-                  {/* Rating badge — glass pill */}
                   <div
                     className={`
                       absolute top-2 right-2
@@ -171,7 +165,6 @@ export function BrowseMovieGrid({
                   </div>
                 </div>
 
-                {/* Title + year — solid background for readability */}
                 <div className="p-2.5 bg-clay-surface/80">
                   <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2 group-hover:text-accent transition-colors duration-200">
                     {movie.title}
@@ -188,7 +181,6 @@ export function BrowseMovieGrid({
         })}
       </StaggerContainer>
 
-      {/* Load More — centered with accent styling */}
       {hasMore && (
         <motion.div
           initial={{ opacity: 0 }}

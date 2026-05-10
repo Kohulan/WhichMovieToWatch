@@ -42,7 +42,7 @@ export function ProviderSelector({
   }
 
   // Separate top providers from others
-  const topProviderIdSet = new Set<number>(TOP_PROVIDER_IDS);
+  const topProviderIdSet = new Set(TOP_PROVIDER_IDS);
   const topProviders = providers.filter((p) =>
     topProviderIdSet.has(p.provider_id),
   );

@@ -18,9 +18,9 @@ export const PROVIDER_LOGOS_BASE = "https://image.tmdb.org/t/p/original";
  *      Peacock. (Dead IDs 119 [Amazon Prime alt-region duplicate] and 384
  *      [HBO Max → renamed to Max id 1899] removed.)
  */
-export const MAJOR_STREAMING_PROVIDERS = [
+export const MAJOR_STREAMING_PROVIDERS: readonly number[] = [
   8, 337, 9, 350, 531, 1899, 15, 386,
-] as const;
+];
 
 /** Construct full logo URL from TMDB logo_path */
 export function getProviderLogoUrl(logoPath: string): string {
