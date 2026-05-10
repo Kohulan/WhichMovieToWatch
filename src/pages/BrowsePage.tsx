@@ -139,9 +139,7 @@ export default function BrowsePage() {
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 {selectedProvider && (
                   <BrowseProviderChip
-                    providerId={selectedProvider.provider_id}
-                    providerName={selectedProvider.provider_name}
-                    logoPath={selectedProvider.logo_path}
+                    provider={selectedProvider}
                     onClear={handleClearProvider}
                   />
                 )}
