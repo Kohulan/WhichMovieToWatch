@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   fetchMovieProviders,
-  fetchRegionProviders,
+  fetchProvidersForRegion,
 } from "@/services/tmdb/providers";
 import { getCached } from "@/services/cache/cache-manager";
 import { useRegionStore } from "@/stores/regionStore";
@@ -186,7 +186,7 @@ export function useRegionProviders() {
       setIsLoading(true);
 
       try {
-        const results = await fetchRegionProviders(region);
+        const results = await fetchProvidersForRegion(region);
         if (!cancelled) {
           setProviders(
             results.map((p) => ({

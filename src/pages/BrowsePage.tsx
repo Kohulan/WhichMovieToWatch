@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { SlidersHorizontal, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { useBrowseStore } from "@/stores/browseStore";
 import { useBrowseMovies } from "@/hooks/useBrowseMovies";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { usePreferencesStore } from "@/stores/preferencesStore";
+import { useScrolled } from "@/hooks/useScrolled";
 import { hasNonDefaultFilters } from "@/services/tmdb/browse";
 import { MetalDropdown } from "@/components/ui";
 import { BrowseMovieGrid } from "@/components/browse/BrowseMovieGrid";
@@ -21,15 +22,20 @@ const SORT_OPTIONS = [
   { value: "title.desc", label: "Z → A" },
 ];
 
-const PANEL_TRANSITION = {
-  duration: 0.25,
-  ease: [0.25, 0.1, 0.25, 1] as const,
+// Only the exit is animated. Entering panels start at opacity 1 so the
+// card→chip layoutId morph carries the motion alone; an enter fade would
+// just fight the morph and create a blank mid-transition gap.
+const EXIT_TRANSITION = {
+  duration: 0.18,
+  ease: [0.22, 1, 0.36, 1] as const,
 };
 
 export default function BrowsePage() {
   const [filterOpen, setFilterOpen] = useState(false);
+  const scrolled = useScrolled(8);
 
   const selectedProviderId = useBrowseStore((s) => s.selectedProviderId);
+  const userDidClear = useBrowseStore((s) => s.userDidClear);
   const sortBy = useBrowseStore((s) => s.sortBy);
   const filters = useBrowseStore((s) => s.filters);
   const setProvider = useBrowseStore((s) => s.setProvider);
@@ -42,26 +48,24 @@ export default function BrowsePage() {
   const { providers: regionProviders } = useRegionProviders();
   const myServices = usePreferencesStore((s) => s.myServices);
 
-  // Auto-pick first saved service on FIRST visit only — subsequent X-clicks
-  // return to the launcher and stay there until the user picks again.
-  const autoSelectDone = useRef(false);
+  // Auto-pick first saved service on first arrival. Once the user clears
+  // the chip, userDidClear is true and the launcher stays open until the
+  // user picks again. setProvider(null) sets userDidClear=true; picking
+  // any provider implicitly leaves userDidClear at whatever it was, but
+  // selectedProviderId !== null guards subsequent runs anyway.
   useEffect(() => {
-    if (autoSelectDone.current) return;
-    if (selectedProviderId !== null) {
-      autoSelectDone.current = true;
-      return;
-    }
-    if (myServices.length > 0) {
-      setProvider(myServices[0]);
-      autoSelectDone.current = true;
-    }
-  }, [myServices, selectedProviderId, setProvider]);
+    if (selectedProviderId !== null || userDidClear) return;
+    if (myServices.length > 0) setProvider(myServices[0]);
+  }, [myServices, selectedProviderId, userDidClear, setProvider]);
 
-  const selectedProvider =
-    selectedProviderId !== null
-      ? (regionProviders.find((p) => p.provider_id === selectedProviderId) ??
-        null)
-      : null;
+  const selectedProvider = useMemo(
+    () =>
+      selectedProviderId === null
+        ? null
+        : (regionProviders.find((p) => p.provider_id === selectedProviderId) ??
+          null),
+    [regionProviders, selectedProviderId],
+  );
 
   const handleClearProvider = useCallback(
     () => setProvider(null),
@@ -78,10 +82,9 @@ export default function BrowsePage() {
         {isEmpty ? (
           <motion.section
             key="launcher"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={PANEL_TRANSITION}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: EXIT_TRANSITION }}
             className="py-8 sm:py-12"
             aria-label="Pick a streaming service to browse"
           >
@@ -93,7 +96,7 @@ export default function BrowsePage() {
                 Browse
               </h1>
               <p className="text-clay-text-muted text-sm sm:text-base mt-1.5 max-w-prose">
-                Pick a service to see what's on it.
+                Pick a service. The night is yours.
               </p>
             </header>
 
@@ -102,10 +105,9 @@ export default function BrowsePage() {
         ) : (
           <motion.section
             key="results"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={PANEL_TRANSITION}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: EXIT_TRANSITION }}
             className="pt-3"
             aria-label={
               selectedProvider
@@ -113,21 +115,26 @@ export default function BrowsePage() {
                 : "Movie catalog"
             }
           >
-            {/* Sticky toolbar — chip on the left, sort+filter pinned right */}
+            {/* Box-shadow strengthens once scrolled so the bar reads as a
+                floating panel only when it's actually floating. */}
             <div
               className="
                 sticky top-14 z-30
                 -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3
                 bg-clay-base/92 sm:bg-clay-base/70 backdrop-blur-xl
                 border-b border-white/[0.08]
-                transition-colors duration-500
+                transition-shadow duration-300
               "
+              style={{
+                boxShadow: scrolled
+                  ? "0 8px 24px -12px rgba(0,0,0,0.32)"
+                  : "0 0 0 transparent",
+              }}
             >
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 {selectedProvider && (
                   <BrowseProviderChip
-                    providerName={selectedProvider.provider_name}
-                    logoPath={selectedProvider.logo_path}
+                    provider={selectedProvider}
                     onClear={handleClearProvider}
                   />
                 )}
@@ -163,16 +170,21 @@ export default function BrowsePage() {
                   >
                     <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
                     {filtersActive && (
-                      <span
+                      <motion.span
                         className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent"
                         aria-hidden="true"
+                        animate={{ opacity: [0.6, 1, 0.6] }}
+                        transition={{
+                          duration: 1.6,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
                       />
                     )}
                   </motion.button>
                 </div>
               </div>
 
-              {/* Result count — small caption row, only when count is meaningful */}
               {totalResults > 0 && (
                 <p className="text-clay-text-muted text-xs mt-2 tabular-nums">
                   {totalResults.toLocaleString()}{" "}

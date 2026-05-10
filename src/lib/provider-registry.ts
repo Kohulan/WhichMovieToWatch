@@ -1,6 +1,27 @@
 /** Base URL for constructing full TMDB provider logo URLs */
 export const PROVIDER_LOGOS_BASE = "https://image.tmdb.org/t/p/original";
 
+/**
+ * Major streaming services pinned to the top of any provider grid.
+ * TMDB's per-region display_priorities deprioritizes these in non-US regions
+ * (e.g. Disney+ ranks below RTL+ in Germany), so we promote them explicitly.
+ *
+ * Order matters: this is the canonical display order when none of these are
+ * personalized via myServices. Used by the onboarding wizard's ProviderSelector
+ * and the /browse provider launcher; keep them in sync via this single source.
+ *
+ * Region filter via display_priorities (in fetchProvidersForRegion) hides any
+ * entry that doesn't operate in the user's region: Hulu and Peacock drop out
+ * outside US; everyone else surfaces wherever the service launched.
+ *
+ * IDs: Netflix, Disney+, Prime Video, Apple TV+, Paramount+, Max, Hulu,
+ *      Peacock. (Dead IDs 119 [Amazon Prime alt-region duplicate] and 384
+ *      [HBO Max → renamed to Max id 1899] removed.)
+ */
+export const MAJOR_STREAMING_PROVIDERS: readonly number[] = [
+  8, 337, 9, 350, 531, 1899, 15, 386,
+];
+
 /** Construct full logo URL from TMDB logo_path */
 export function getProviderLogoUrl(logoPath: string): string {
   return `${PROVIDER_LOGOS_BASE}${logoPath}`;

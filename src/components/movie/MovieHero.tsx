@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { Film } from "lucide-react";
 import { getPosterUrl } from "@/services/tmdb/client";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { getMoviePosterLayoutId } from "@/lib/layout-ids";
 import type { TMDBMovieDetails } from "@/types/movie";
 import { GenreBadges } from "./GenreBadges";
 
@@ -15,10 +16,9 @@ interface MovieHeroProps {
   /** Extra content rendered below the overview inside the info column */
   children?: ReactNode;
   /**
-   * Optional movie ID for layoutId — bridges this hero poster with any other
-   * surface that renders the same movie's poster (browse grid, similar-movies
-   * thumbnails). Framer Motion's shared layout animation morphs the source
-   * poster into this hero on tap. Uses prefix `movie-poster-{movieId}`.
+   * Optional movie ID. When present, the hero poster gets a shared layoutId
+   * (via getMoviePosterLayoutId) so a matching poster on another surface
+   * (browse grid, similar-movies thumbnails) morphs into this hero on tap.
    */
   movieId?: number;
 }
@@ -58,13 +58,7 @@ export function MovieHero({
   const year = extractYear(movie.release_date);
   const runtime = formatRuntime(movie.runtime);
 
-  // Shared layoutId — bridges this hero poster with three sources:
-  //   1. similar-movies thumbnails on /discover (Love → expand)
-  //   2. browse grid posters on /browse (tap → grow into hero)
-  //   3. any future surface that wants to morph a poster in
-  // Naming: `movie-poster-${id}` (renamed from `similar-poster-` to reflect the
-  // unified "this is the poster for movie X" concept).
-  const posterLayoutId = movieId ? `movie-poster-${movieId}` : undefined;
+  const posterLayoutId = movieId ? getMoviePosterLayoutId(movieId) : undefined;
 
   return (
     <div

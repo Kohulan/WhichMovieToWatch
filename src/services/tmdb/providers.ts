@@ -30,24 +30,36 @@ interface TMDBRegionResponse {
   results: TMDBRegionResult[];
 }
 
-export async function fetchRegionProviders(
+export async function fetchProvidersForRegion(
   region: string,
 ): Promise<TMDBProviderResult[]> {
-  const cacheKey = `providers-region-${region}`;
+  // Fetch the GLOBAL provider list (no watch_region) and filter by
+  // display_priorities[region]. TMDB's regional endpoint silently omits
+  // providers it deems low-volume in that region — Disney+ has DE priority 3
+  // (top tier) but is missing from /watch/providers/movie?watch_region=DE.
+  // Filtering on display_priorities is the source of truth for "operates in
+  // this region" and surfaces those omitted services correctly.
+  const cacheKey = `providers-all-v2`;
 
+  let allProviders: TMDBProviderResult[];
   const cached = await getCached<TMDBProviderResult[]>(cacheKey);
   if (cached.value && !cached.isStale) {
-    return cached.value;
+    allProviders = cached.value;
+  } else {
+    const response = await tmdbFetch<TMDBProviderListResponse>(
+      "/watch/providers/movie",
+    );
+    allProviders = response.results;
+    await setCache(cacheKey, allProviders, TTL.PROVIDER_LIST);
   }
 
-  const response = await tmdbFetch<TMDBProviderListResponse>(
-    "/watch/providers/movie",
-    { watch_region: region },
-  );
-
-  await setCache(cacheKey, response.results, TTL.PROVIDER_LIST);
-
-  return response.results;
+  return allProviders
+    .filter((p) => p.display_priorities?.[region] !== undefined)
+    .sort(
+      (a, b) =>
+        (a.display_priorities[region] ?? Number.MAX_SAFE_INTEGER) -
+        (b.display_priorities[region] ?? Number.MAX_SAFE_INTEGER),
+    );
 }
 
 export async function fetchMovieProviders(

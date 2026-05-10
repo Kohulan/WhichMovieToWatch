@@ -7,8 +7,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
+import { ProviderLogo } from "@/components/shared/ProviderLogo";
 
-const TMDB_LOGO_BASE = "https://image.tmdb.org/t/p/original";
 const VISIBLE_COUNT = 3;
 const CYCLE_MS = 2500;
 
@@ -66,11 +66,9 @@ export function ProviderLogosCell() {
               exit={{ opacity: 0, scale: 0.7, rotateY: -90 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
             >
-              <img
-                src={`${TMDB_LOGO_BASE}${provider.logo_path}`}
-                alt={provider.provider_name}
-                className="w-full h-full object-cover"
-                loading="lazy"
+              <ProviderLogo
+                logoPath={provider.logo_path}
+                size={48}
                 onError={(e) => {
                   (e.currentTarget as HTMLImageElement).style.display = "none";
                 }}
