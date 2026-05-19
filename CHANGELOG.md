@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.3.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.2.0...v2.3.0) (2026-05-10)
+
+
+### Features
+
+* **browse:** card→chip morph, section stagger, scroll elevation, cinematic copy ([1e63d1f](https://github.com/Kohulan/WhichMovieToWatch/commit/1e63d1f13fb612552c7a5792ee010678bc4f0a70))
+* **browse:** morph poster from grid into discover hero on tap ([f856c15](https://github.com/Kohulan/WhichMovieToWatch/commit/f856c153eaa9774bc36ce21e7403f0452feee6ba))
+* **browse:** two-state layout — provider launcher + chip toolbar ([07f2eec](https://github.com/Kohulan/WhichMovieToWatch/commit/07f2eec5a523899713cd4747a3f3f3723686fd12))
+
+
+### Bug Fixes
+
+* **browse:** surface Disney+ and other majors in the launcher ([a7ef070](https://github.com/Kohulan/WhichMovieToWatch/commit/a7ef070573d8c0f382852530974ca4f9e53dec52))
+
 ## [2.2.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.1.0...v2.2.0) (2026-05-09)
 
 
