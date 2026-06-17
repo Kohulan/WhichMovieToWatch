@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.1](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.3.0...v2.3.1) (2026-06-17)
+
+
+### Bug Fixes
+
+* **deps:** resolve Dependabot alerts (react-router XSS/RCE/DoS, esbuild) ([6938aa3](https://github.com/Kohulan/WhichMovieToWatch/commit/6938aa3e19436b67f4d98bfea011a9e22a9d2726))
+
 ## [2.3.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.2.0...v2.3.0) (2026-05-10)
 
 
