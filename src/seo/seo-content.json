@@ -1,0 +1,329 @@
+{
+  "site": {
+    "origin": "https://whichmovietowatch.online",
+    "name": "Which Movie To Watch",
+    "defaultOgImage": "https://whichmovietowatch.online/favicon_io/android-chrome-512x512.png"
+  },
+  "routes": [
+    {
+      "path": "/",
+      "title": "Which Movie To Watch — Find What to Watch Tonight",
+      "description": "Stuck scrolling? Get instant movie picks by mood, genre, or streaming service. Trending films, free movies, and personal recommendations — no signup.",
+      "h1": "Find your next favorite movie",
+      "intro": "Which Movie To Watch ends the endless scroll. Tell us what you're in the mood for — or let the discovery engine surprise you — and get one great movie at a time, complete with ratings from IMDb and Rotten Tomatoes, a trailer, and the streaming services where you can watch it right now. Browse what's trending in cinemas, filter the full catalogs of Netflix, Prime Video, and Disney+, spin up a family-friendly pick for dinner time, or dip into more than a thousand free, legal movies on YouTube. Everything runs in your browser with no account, no signup, and no tracking of who you are — your watchlist and taste profile stay on your device.",
+      "changes": "daily",
+      "list": { "kind": "trending" }
+    },
+    {
+      "path": "/what-to-watch-tonight",
+      "title": "What Movie Should I Watch Tonight? Picks Updated Daily",
+      "description": "Can't decide what movie to watch tonight? A daily-updated shortlist of widely loved, highly rated films — with where to stream each one.",
+      "h1": "What to watch tonight",
+      "intro": "The nightly dilemma, solved. This list is rebuilt every day from films that clear a high bar: strong audience scores, thousands of ratings, and genuine staying power — not just whatever a studio is promoting this week. It deliberately mixes eras and genres, so alongside this year's breakout hits you'll find modern classics that somehow slipped past you. Every pick links to a detail page with ratings, a trailer, and the streaming services that carry it in your region. If nothing here fits your mood, jump into the discovery engine and answer two quick questions — it will hand you a single tailored pick instead of another wall of posters to scroll through.",
+      "changes": "daily",
+      "list": { "kind": "tonight" }
+    },
+    {
+      "path": "/trending",
+      "title": "Trending Movies This Week (Updated Daily)",
+      "description": "See which movies are trending right now — what's playing in cinemas and topping streaming charts today, refreshed daily with ratings and trailers.",
+      "h1": "Trending movies right now",
+      "intro": "This is what the world is watching this week. The list blends films currently playing in cinemas with the titles surging on streaming platforms, refreshed daily straight from TMDB's live popularity data. Each poster leads to a full detail page: audience scores, a plot rundown without spoilers, the trailer, and — most usefully — exactly which streaming services carry the film in your country, so you're never left googling \"where can I watch…\" at 9pm. Check back tomorrow and the list will have moved; that's the point. For picks matched to your own taste rather than the crowd's, try the discovery engine or browse by your streaming services.",
+      "changes": "daily",
+      "list": { "kind": "trending" }
+    },
+    {
+      "path": "/discover",
+      "title": "Movie Discovery Engine — One Great Pick at a Time",
+      "description": "Answer two quick questions and get one hand-picked movie with ratings, trailer, and streaming availability. No endless grids, no decision fatigue.",
+      "h1": "Discover your next movie",
+      "intro": "Most movie sites hand you ten thousand options and call it help. Discover does the opposite: it gives you one film at a time, chosen against your streaming services, your favorite genres, and what you've already seen and loved. Every card shows the essentials at a glance — IMDb and Rotten Tomatoes scores, runtime, a spoiler-free synopsis, the trailer, and the logos of the services where it's streaming tonight. Not feeling it? One tap deals the next pick, and the engine quietly learns from every skip and every heart. It's the difference between browsing a video store and having a friend who knows your taste hand you the right box.",
+      "changes": "static",
+      "lastmod": "2026-07-04",
+      "list": null
+    },
+    {
+      "path": "/browse",
+      "title": "Browse Movies by Streaming Service, Genre & Year",
+      "description": "Filter the full movie catalogs of Netflix, Prime Video, Disney+ and more by genre, rating, year, and language — find what's actually worth streaming.",
+      "h1": "Browse movies on your services",
+      "intro": "Pick a streaming service and slice its entire movie catalog your way. Stack filters for genre, minimum rating, release year, runtime, and language, then sort by popularity, score, or recency to surface what's actually worth your evening — not just what the platform's algorithm wants to autoplay. It's the power-user answer to the question every subscription raises: \"I'm paying for this thing, what's actually good on it?\" Every result links to a full detail page with ratings, trailer, and complete streaming availability, and every film can be saved to your on-device watch history so the discovery engine gets smarter about what to deal you next.",
+      "changes": "static",
+      "lastmod": "2026-07-04",
+      "list": null
+    },
+    {
+      "path": "/dinner-time",
+      "title": "Dinner Time Movies — Easy Picks Everyone Can Agree On",
+      "description": "Family-friendly, feel-good movies that work with food on the table. One tap deals a crowd-pleasing pick from your streaming services.",
+      "h1": "Something easy for dinner time",
+      "intro": "Dinner-time viewing has its own rules: nothing too dark, nothing you have to rewind because someone asked a question, nothing that dies the moment a plate clatters. This mode deals exactly that kind of film — warm comedies, adventures, animated favorites, and gentle dramas drawn from the services you already pay for, with the heavy, the harrowing, and the two-hour-forty epics filtered out. It's built for the fifteen-minute window between \"food's ready\" and \"fine, just pick something.\" Tap once, get a movie the whole table can live with, and actually eat while the opening credits roll instead of scrolling through menus until the food goes cold.",
+      "changes": "static",
+      "lastmod": "2026-07-04",
+      "list": null
+    },
+    {
+      "path": "/free-movies",
+      "title": "1,000+ Free Movies to Watch Legally on YouTube",
+      "description": "A curated library of more than a thousand full-length movies you can watch free and legally on YouTube — classics, cult gems, and hidden finds.",
+      "h1": "Free movies, watched legally",
+      "intro": "No subscription, no signup, no gray-area streaming sites — just a curated library of more than a thousand full-length films that studios and rights holders have made freely available on YouTube. The collection leans into what free catalogs do best: golden-age classics, cult favorites, overlooked genre gems, and documentaries you won't find promoted anywhere else. Each entry plays right here with a poster, synopsis, and ratings, so you can judge before you commit. It's the easiest answer to \"I want to watch something but I'm not paying for another service this month\" — and a genuinely fun place to gamble an evening on a film you've never heard of.",
+      "changes": "static",
+      "lastmod": "2026-07-04",
+      "list": null
+    },
+    {
+      "path": "/privacy",
+      "title": "Privacy Policy — Which Movie To Watch",
+      "description": "Which Movie To Watch stores your preferences on your own device, uses cookieless analytics, and never sells data. Read the full privacy policy.",
+      "h1": "Privacy policy",
+      "intro": "Which Movie To Watch is built to know your taste in movies without knowing who you are. Your watch history, loved films, and preferences live in your own browser's storage — they never leave your device and we could not read them if we wanted to. Analytics are cookieless and aggregate, movie data comes from TMDB and OMDb, and location is only ever used to show the right streaming services for your country. This page spells out exactly what is stored where, which third-party services are involved, and how to wipe everything with one click. No accounts, no ad trackers, no data sales — the policy below is short because there's honestly not much to disclose.",
+      "changes": "static",
+      "lastmod": "2026-07-04",
+      "list": null
+    },
+    {
+      "path": "/movies/genre/action",
+      "title": "Best Action Movies to Watch Right Now (2026)",
+      "description": "The best action movies to stream right now — explosive blockbusters and acclaimed thrillers ranked by popularity, with streaming availability.",
+      "h1": "Best action movies right now",
+      "intro": "From white-knuckle chase sequences to one-versus-everyone showdowns, this is the current state of the action genre — rebuilt daily from what audiences are actually watching and rating, not a static listicle from three years ago. Expect a mix of this year's blockbusters, franchise heavyweights, and the leaner, meaner thrillers that critics quietly rate higher than the tentpoles. Every film links to a detail page showing IMDb and Rotten Tomatoes scores, the trailer, and which of your streaming services carries it tonight. If you want to narrow things further — action on Netflix only, action from the 90s, action under two hours — the Browse page stacks those filters in two taps.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 28 }
+    },
+    {
+      "path": "/movies/genre/adventure",
+      "title": "Best Adventure Movies to Watch Right Now (2026)",
+      "description": "The best adventure movies streaming today — quests, journeys, and larger-than-life stakes across cinemas and services, updated daily.",
+      "h1": "Best adventure movies right now",
+      "intro": "Adventure runs on momentum: a group of unlikely companions, a map or a mission that keeps expanding, and a world worth the trip even when the plot is thin. This list tracks the genre as it actually plays out today, rebuilt daily from what's popular and well-reviewed rather than a fixed roll call of old favorites. You'll find sprawling fantasy quests next to grounded survival stories and globe-trotting treasure hunts, because the genre has always stretched that wide. Every title opens onto a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the exact streaming services carrying it in your region, so the only decision left is which journey to start tonight.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 12 }
+    },
+    {
+      "path": "/movies/genre/animation",
+      "title": "Best Animated Movies to Watch Right Now (2026)",
+      "description": "Top-rated animated movies right now, from hand-drawn classics to modern CG features — full ratings and streaming links, refreshed daily.",
+      "h1": "Best animated movies right now",
+      "intro": "Animation isn't a genre for kids that adults happen to enjoy — it's a medium, and this list treats it that way. Expect a daily-refreshed mix of studio CG features, hand-drawn work, stop-motion, and imported anime, spanning stories built for six-year-olds and stories built for nobody under thirty. What holds it together is craft: character design, movement, and visual style doing narrative work that live action can't. Every entry links to a full detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it where you live, so you can tell in ten seconds whether tonight's pick is a family watch or one to save for after the kids are in bed.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 16 }
+    },
+    {
+      "path": "/movies/genre/comedy",
+      "title": "Best Comedy Movies to Watch Right Now (2026)",
+      "description": "The funniest movies streaming right now, from broad slapstick to dry satire, ranked by popularity and rating — refreshed every day.",
+      "h1": "Best comedy movies right now",
+      "intro": "Comedy is the hardest genre to rank because taste in funny is so personal, so this list leans on the crowd: what's actually making large audiences laugh right now, rebuilt daily from live popularity and rating data. That spread covers a lot of ground — broad slapstick, awkward-cringe character studies, dry satire, and the occasional comedy that sneaks in real heartbreak alongside the jokes. What unites them is timing and tone control, the two things that separate a film that's genuinely funny from one that's just trying. Each pick links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your region, so you can gauge the vibe before committing an evening.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 35 }
+    },
+    {
+      "path": "/movies/genre/crime",
+      "title": "Best Crime Movies to Watch Right Now (2026)",
+      "description": "The best crime movies streaming now — heists, procedurals, and morally gray leads on the wrong side of the law, updated daily.",
+      "h1": "Best crime movies right now",
+      "intro": "Crime cinema thrives on people operating just outside the law, or just inside it and hating every minute — detectives, con artists, crews planning one last job that never stays simple. This list follows the genre as it's performing right now, rebuilt daily so a breakout heist thriller or a quietly acclaimed procedural surfaces the moment audiences catch on, rather than months later. The through-line across eras is moral friction: characters weighing what they're willing to do and what it costs them, more than whether they get caught. Every film links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services that carry it in your country, ready whenever you want to watch someone's plan fall apart.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 80 }
+    },
+    {
+      "path": "/movies/genre/documentary",
+      "title": "Best Documentaries to Watch Right Now (2026)",
+      "description": "The best documentaries streaming right now, spanning true crime, nature, biography, and history — ratings and streaming links, updated daily.",
+      "h1": "Best documentaries right now",
+      "intro": "Documentaries answer a different question than fiction does: not \"what if\" but \"what actually happened, and why does it matter.\" This list gathers the nonfiction films audiences are watching and rating most right now, rebuilt daily so a breakout true-crime series or a quietly devastating nature film doesn't stay buried under algorithm noise. The range runs wide — investigative journalism stretched to feature length, intimate biography, natural history shot over years, archival history built entirely from footage that already existed. What separates a good one from a dutiful one is a real point of view, not just facts in order. Every title links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your region.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 99 }
+    },
+    {
+      "path": "/movies/genre/drama",
+      "title": "Best Drama Movies to Watch Right Now (2026)",
+      "description": "The best drama movies streaming today — character-driven stories and award-caliber performances, ranked by rating and updated daily.",
+      "h1": "Best drama movies right now",
+      "intro": "Drama asks for patience that action and comedy don't: it earns its moments through character rather than incident, and the payoff is usually a feeling rather than a twist. This list tracks what's resonating with audiences right now, rebuilt daily from live rating and popularity data rather than a fixed prestige canon that never changes. Expect a mix of awards-season contenders, quieter festival discoveries, and studio dramas built around a single performance strong enough to carry the whole film. The common thread is people under pressure — from grief, ambition, family, or circumstance — rendered specifically enough to feel true. Every pick links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it where you live.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 18 }
+    },
+    {
+      "path": "/movies/genre/family",
+      "title": "Best Family Movies to Watch Right Now (2026)",
+      "description": "The best family movies to watch tonight — safe, heartwarming picks for all ages, live-action and animated, refreshed daily with ratings.",
+      "h1": "Best family movies right now",
+      "intro": "Family movies have to clear a bar most genres don't: hold a five-year-old's attention, not bore the adult on the couch next to them, and leave nobody needing a follow-up conversation about what they just saw. This list is rebuilt daily from titles that manage that balance, mixing animated adventures, live-action comedies, and gentle stories built around a lesson that doesn't feel like homework. It spans decades on purpose — a new studio release sitting next to an older favorite that's aged well, because family-friendly doesn't mean forgettable. Every entry links to a full detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your region, so you can vet the content before the whole household settles in.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 10751 }
+    },
+    {
+      "path": "/movies/genre/fantasy",
+      "title": "Best Fantasy Movies to Watch Right Now (2026)",
+      "description": "The best fantasy movies streaming right now — invented worlds, magic systems, and mythic stakes, ranked by rating and updated daily.",
+      "h1": "Best fantasy movies right now",
+      "intro": "Fantasy runs on the promise of a world that doesn't play by our rules — magic with real consequences, creatures that don't exist anywhere else, and stakes that can be genuinely mythic because the story isn't bound by physics or history. This list tracks the genre as it's performing today, rebuilt daily so a sleeper hit built on an obscure book series surfaces alongside the big franchise entries. The range spans sword-and-sorcery epics, fairy-tale reimaginings, and lower-key stories where the magic is almost incidental to a very human plot. Every film links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your country, ready whenever you want to leave this world for a while.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 14 }
+    },
+    {
+      "path": "/movies/genre/history",
+      "title": "Best History Movies to Watch Right Now (2026)",
+      "description": "The best historical movies streaming now — real events and figures brought to the screen, ranked by rating and refreshed daily.",
+      "h1": "Best history movies right now",
+      "intro": "History films carry a different kind of weight than pure fiction: the ending is often already known, so the tension comes from how a director stages events you can look up afterward and decide for yourself how faithfully they were told. This list is rebuilt daily from what audiences are watching and rating right now, covering wartime epics, political biographies, and smaller stories set against events most people only know from textbooks. The best of them find a specific, human angle on something enormous rather than trying to cover an entire era. Every pick links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it where you live, so tonight's history lesson comes with somewhere to actually watch it.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 36 }
+    },
+    {
+      "path": "/movies/genre/horror",
+      "title": "Best Horror Movies to Watch Right Now (2026)",
+      "description": "The best horror movies to stream tonight — dread, jump scares, and slow-burn terror, ranked by popularity and updated daily.",
+      "h1": "Best horror movies right now",
+      "intro": "Horror covers more ground than jump scares — this list spans slow-burn dread that lingers for days, supernatural stories built on things that shouldn't exist, and psychological horror where the scariest thing on screen is a character's own mind unraveling. It's rebuilt daily from what's actually landing with audiences right now, so a small, unnervingly effective film can surface next to a bigger studio release the same week it starts trending. What separates a good scare from a cheap one is atmosphere and pacing more than volume, and the ranking here reflects that. Every title links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your region — worth checking before you commit to watching alone after dark.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 27 }
+    },
+    {
+      "path": "/movies/genre/music",
+      "title": "Best Music Movies to Watch Right Now (2026)",
+      "description": "The best music movies and musicals streaming now — biopics, concert films, and sound-driven stories, ranked and updated daily.",
+      "h1": "Best music movies right now",
+      "intro": "Music films use sound as the engine of the story, not just the backdrop — a musical number that reveals what a character can't say out loud, a biopic built around the real recordings that made someone famous, a concert film that puts you in the room for a performance you'll never see live. This list is rebuilt daily from what's resonating with audiences right now, covering classic movie musicals, artist biographies, and documentaries about the music itself. The genre rewards people who want a story they can also just listen to. Every entry links to a full detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your country, so you know where to press play tonight.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 10402 }
+    },
+    {
+      "path": "/movies/genre/mystery",
+      "title": "Best Mystery Movies to Watch Right Now (2026)",
+      "description": "The best mystery movies streaming right now — whodunits and puzzle-box plots built to be solved, ranked by rating and updated daily.",
+      "h1": "Best mystery movies right now",
+      "intro": "A good mystery is a contract with the audience: every clue you need is on screen somewhere, and the fun is in noticing it before the reveal does the work for you. This list tracks the genre as it's performing today, rebuilt daily so a sharply plotted new whodunit lands next to the classic detective stories that taught the genre its rules. Expect withheld information, unreliable narrators, and endings built to make you want to rewatch the first act with new eyes. It overlaps with thriller and crime but keeps its own identity around the puzzle itself. Every pick links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it where you live, ready for whenever you're in the mood to work for the answer.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 9648 }
+    },
+    {
+      "path": "/movies/genre/romance",
+      "title": "Best Romance Movies to Watch Right Now (2026)",
+      "description": "The best romance movies to watch tonight — from meet-cute comedies to heartbreak dramas, ranked by rating and refreshed daily.",
+      "h1": "Best romance movies right now",
+      "intro": "Romance runs on the space between two people — the will-they moment stretched across a runtime, the timing that keeps almost working, the choice one character has to make when it finally counts. This list follows the genre as it's landing with audiences right now, rebuilt daily so a new romantic comedy sits alongside the slower, more aching love stories that don't promise a happy ending. It spans lighthearted meet-cutes and quieter dramas about people who love each other badly or at the wrong time, because the genre has room for both. Every film links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your region, whichever mood tonight calls for.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 10749 }
+    },
+    {
+      "path": "/movies/genre/science-fiction",
+      "title": "Best Sci-Fi Movies to Watch Right Now (2026)",
+      "description": "The best sci-fi movies streaming right now — speculative futures, space, and big ideas, ranked by popularity and updated daily.",
+      "h1": "Best sci-fi movies right now",
+      "intro": "Science fiction is the genre of the good question: what happens if this technology works exactly as promised, what does a society actually look like a century from now, what changes about being human once one variable shifts. This list tracks what's landing with audiences right now, rebuilt daily so a smart, mid-budget premise film surfaces next to the effects-driven space epics the genre is known for. The range runs from hard, plausible extrapolation to pure space opera, and both belong here. What holds it together is a premise doing real work, not just a futuristic setting. Every title links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your country.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 878 }
+    },
+    {
+      "path": "/movies/genre/tv-movie",
+      "title": "Best TV Movies to Watch Right Now (2026)",
+      "description": "The best made-for-TV movies streaming now — network films, holiday favorites, and book adaptations, ranked and updated daily.",
+      "h1": "Best TV movies right now",
+      "intro": "Made-for-television movies live by their own rules: tighter budgets, faster shooting schedules, and a directness about plot that theatrical releases sometimes lose in the pursuit of prestige. This list is rebuilt daily from what's actually being watched right now, covering holiday-season favorites, book adaptations built for a network audience, and the occasional TV movie that outgrew its modest origins entirely. They tend to move fast and resolve cleanly, which makes them dependable when you want a complete story without a long emotional runway. Every entry links to a full detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it where you live, so tonight's low-commitment pick is one tap away.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 10770 }
+    },
+    {
+      "path": "/movies/genre/thriller",
+      "title": "Best Thriller Movies to Watch Right Now (2026)",
+      "description": "The best thriller movies to stream now — tense, twist-driven stories built to keep you on edge, ranked by rating and updated daily.",
+      "h1": "Best thriller movies right now",
+      "intro": "A thriller's job is to keep you leaning forward — a ticking clock, a plan that could unravel at any moment, a twist that reframes everything that came before it. This list tracks the genre as it's performing right now, rebuilt daily so a tightly wound new release surfaces next to the slow-burn suspense films that have earned a following over years. It sits close to crime and mystery but is defined by pace and tension rather than a puzzle to solve or a crime to untangle. What separates the best from the merely tense is control — knowing exactly when to hold back and when to let go. Every film links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your region.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 53 }
+    },
+    {
+      "path": "/movies/genre/war",
+      "title": "Best War Movies to Watch Right Now (2026)",
+      "description": "The best war movies streaming right now — combat, sacrifice, and the human cost of conflict, ranked by rating and updated daily.",
+      "h1": "Best war movies right now",
+      "intro": "War films are rarely about the fighting alone — the strongest ones use combat as the pressure that reveals what characters actually value, and what they lose getting there. This list follows the genre as it's landing with audiences right now, rebuilt daily so a new release about a recent conflict sits alongside the older films that set the template for how war gets depicted on screen. Expect ground-level accounts of specific battles, home-front stories about what waiting does to a family, and the occasional film willing to sit with the moral cost rather than the heroics. Every title links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it in your country.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 10752 }
+    },
+    {
+      "path": "/movies/genre/western",
+      "title": "Best Western Movies to Watch Right Now (2026)",
+      "description": "The best western movies to watch tonight — frontier landscapes, gunfights, and moral codes, ranked by rating and updated daily.",
+      "h1": "Best western movies right now",
+      "intro": "Westerns run on wide open space and a moral code that gets tested the moment the landscape stops being empty — a stranger rides into town, a debt comes due, someone has to decide what kind of person they are when the law is three days' ride away. This list tracks the genre as it's performing today, rebuilt daily so newer, revisionist takes on the frontier surface next to the classic studio westerns that defined it. The setting varies less than the stance the film takes toward violence and justice, and that's usually where the interesting differences show up. Every pick links to a detail page with IMDb and Rotten Tomatoes scores, a trailer, and the streaming services carrying it where you live.",
+      "changes": "daily",
+      "list": { "kind": "genre", "genreId": 37 }
+    },
+    {
+      "path": "/streaming/netflix",
+      "title": "Best Movies on Netflix Right Now (Updated Daily)",
+      "description": "What to watch on Netflix tonight: the best and most popular movies streaming on Netflix now, updated daily with ratings and trailers.",
+      "h1": "Best movies on Netflix right now",
+      "intro": "Netflix's catalog is enormous and its homepage shows you a sliver of it, ranked by what keeps you subscribed rather than what's good. This page cuts through that: the most popular, best-reviewed films currently streaming on Netflix, refreshed every day from live availability data — so nothing here has quietly left the service. Each pick opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to play it on Netflix. Want more control? The Browse page lets you filter the entire Netflix movie catalog by genre, rating, year, and runtime, and the discovery engine can fold Netflix availability into one-at-a-time personal picks.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 8, "region": "US" }
+    },
+    {
+      "path": "/streaming/prime-video",
+      "title": "Best Movies on Prime Video Right Now (Updated Daily)",
+      "description": "The best movies on Prime Video right now — top Amazon Originals and licensed titles included with your subscription, updated daily.",
+      "h1": "Best movies on Prime Video right now",
+      "intro": "Prime Video mixes a deep licensed-movie library with a growing slate of Amazon Original films, and the two aren't always easy to tell apart when you're just scrolling the homepage. This page separates the signal from the noise: the best and most popular movies actually included with a Prime Video subscription right now, rebuilt daily from live catalog data so nothing here has quietly moved behind a rental fee. Each title opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Prime Video. If you want to slice the catalog further — by genre, minimum rating, or release year — the Browse page applies those filters to the full Prime Video library in a couple of taps.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 9, "region": "US" }
+    },
+    {
+      "path": "/streaming/disney-plus",
+      "title": "Best Movies on Disney+ Right Now (Updated Daily)",
+      "description": "The best movies on Disney+ right now — Marvel, Star Wars, Pixar, and family favorites, ranked by popularity and updated daily.",
+      "h1": "Best movies on Disney+ right now",
+      "intro": "Disney+ has a catalog identity none of its competitors can copy: Marvel's entire cinematic universe, the Star Wars saga, Pixar's back catalog, and decades of animated and live-action family films all in one place. This page tracks the best and most popular movies actually streaming on Disney+ right now, rebuilt daily so a new Marvel release or a resurfacing childhood favorite shows up the moment it's trending. Every pick opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Disney+, useful whether you're planning a family movie night or just chasing the next franchise entry. The Browse page adds genre, rating, and year filters across the whole Disney+ library if you want more control.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 337, "region": "US" }
+    },
+    {
+      "path": "/streaming/apple-tv-plus",
+      "title": "Best Movies on Apple TV+ Right Now (Updated Daily)",
+      "description": "The best movies on Apple TV+ right now — a small, prestige-focused catalog of acclaimed originals, ranked and updated daily.",
+      "h1": "Best movies on Apple TV+ right now",
+      "intro": "Apple TV+ plays a different game than the bigger streamers: instead of a sprawling back catalog, it leans on a smaller, carefully curated slate of original films, several of which have gone on to real awards attention. That makes a ranked, up-to-date list more useful here than almost anywhere else, since there's less noise to sort through and more reason to trust that what's popular is also genuinely good. This page tracks the best and most popular movies actually streaming on Apple TV+ right now, rebuilt daily from live catalog data. Every title opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Apple TV+, so a subscription that's easy to underuse gets put to actual use.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 350, "region": "US" }
+    },
+    {
+      "path": "/streaming/paramount-plus",
+      "title": "Best Movies on Paramount+ Right Now (Updated Daily)",
+      "description": "The best movies on Paramount+ right now — Paramount Pictures classics, Star Trek, and CBS library titles, updated daily with ratings.",
+      "h1": "Best movies on Paramount+ right now",
+      "intro": "Paramount+ draws on one of Hollywood's oldest studio libraries, which means a catalog that leans as heavily on decades of Paramount Pictures classics and franchises like Star Trek as it does on newer releases. This page tracks the best and most popular movies actually streaming on Paramount+ right now, rebuilt daily so the mix stays accurate as titles rotate in and out of the catalog. Every pick opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Paramount+, which makes it easy to tell whether tonight's option is a newer release or a studio classic worth revisiting. The Browse page can filter the full Paramount+ catalog by genre, rating, and year for more targeted digging.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 531, "region": "US" }
+    },
+    {
+      "path": "/streaming/max",
+      "title": "Best Movies on Max Right Now (Updated Daily)",
+      "description": "The best movies on Max right now — HBO originals, Warner Bros. releases, and prestige favorites, ranked by rating and updated daily.",
+      "h1": "Best movies on Max right now",
+      "intro": "Max carries HBO's reputation for prestige alongside the full weight of the Warner Bros. theatrical catalog, which gives it a distinct identity: awards-season dramas and HBO original films sitting next to major studio blockbusters. This page tracks the best and most popular movies actually streaming on Max right now, rebuilt daily from live catalog data so nothing here has quietly rotated off the service. Each title opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Max, useful whether you're chasing this year's big theatrical release or an HBO film that critics won't stop talking about. For deeper filtering by genre, rating, or year, the Browse page covers the entire Max catalog.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 1899, "region": "US" }
+    },
+    {
+      "path": "/streaming/hulu",
+      "title": "Best Movies on Hulu Right Now (Updated Daily)",
+      "description": "The best movies on Hulu right now for US viewers — studio and indie titles alongside next-day network content, updated daily.",
+      "h1": "Best movies on Hulu right now",
+      "intro": "Hulu is a US-only service, and its movie catalog reflects a specific mix: a solid rotating base of studio and indie films alongside the network television library the platform built its name on, from FX dramas to next-day broadcast content. This page tracks the best and most popular movies actually streaming on Hulu right now for US viewers, rebuilt daily so the list matches what's really available rather than what left the catalog last month. Every pick opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Hulu. If you want more control over the mix, the Browse page filters the full Hulu movie catalog by genre, rating, year, and runtime.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 15, "region": "US" }
+    },
+    {
+      "path": "/streaming/peacock",
+      "title": "Best Movies on Peacock Right Now (Updated Daily)",
+      "description": "The best movies on Peacock right now for US viewers — NBCUniversal and Illumination titles, ranked by rating and updated daily.",
+      "h1": "Best movies on Peacock right now",
+      "intro": "Peacock is a US-only service built on the NBCUniversal library, which means a catalog leaning on Illumination's animated hits, Universal Pictures releases, and a deep bench of comedy and genre titles the studio has produced over the decades. This page tracks the best and most popular movies actually streaming on Peacock right now for US viewers, rebuilt daily from live catalog data so the list reflects what's actually available today. Every title opens a detail page with IMDb and Rotten Tomatoes scores, a trailer, and a direct link to watch it on Peacock, whether you're after a recent Universal release or an animated family favorite. The Browse page can filter the whole Peacock catalog by genre, rating, and year if you want to dig further.",
+      "changes": "daily",
+      "list": { "kind": "provider", "providerId": 386, "region": "US" }
+    }
+  ]
+}
