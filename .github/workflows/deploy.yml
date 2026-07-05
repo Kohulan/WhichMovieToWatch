@@ -3,6 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  schedule:
+    # Daily rebuild — refreshes trending/hub lists, movie pages, and sitemap lastmod
+    - cron: "23 4 * * *"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -29,19 +33,25 @@ jobs:
 
       - run: npm ci
 
+      - run: npm test
+
       - run: npm run build
         env:
           VITE_TMDB_API_KEY: ${{ secrets.API_KEY }}
           VITE_OMDB_API_KEY: ${{ secrets.OMDB_API_KEY }}
 
-      - name: Lighthouse audit
-        uses: treosh/lighthouse-ci-action@v12
+      # Rolling TMDB snapshot so a TMDB outage never breaks the scheduled deploy
+      - uses: actions/cache@v4
         with:
-          staticDistDir: dist
-          uploadArtifacts: true
-          temporaryPublicStorage: true
-          runs: 1
-        continue-on-error: true
+          path: tools/.tmdb-snapshot.json
+          key: tmdb-snapshot-${{ github.run_id }}
+          restore-keys: |
+            tmdb-snapshot-
+
+      - name: Prerender SEO pages
+        run: npm run prerender
+        env:
+          VITE_TMDB_API_KEY: ${{ secrets.API_KEY }}
 
       - uses: actions/configure-pages@v5
 
