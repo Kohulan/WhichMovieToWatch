@@ -1,47 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="/favicon_io/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon_io/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon_io/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicon_io/apple-touch-icon.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/favicon_io/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/favicon_io/favicon-16x16.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/favicon_io/apple-touch-icon.png"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="title" content="Which Movie To Watch - Find Your Next Movie" />
-    <meta name="description" content="Discover your next favorite movie with a visually immersive experience that makes browsing feel as cinematic as watching." />
+    <meta
+      name="description"
+      content="Discover your next favorite movie with a visually immersive experience that makes browsing feel as cinematic as watching."
+    />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="Which Movie To Watch - Find Your Next Movie" />
-    <meta property="og:description" content="Discover your next favorite movie with a visually immersive experience that makes browsing feel as cinematic as watching." />
-    <meta property="og:image" content="https://www.whichmovietowatch.online/favicon_io/android-chrome-512x512.png" />
+    <meta
+      property="og:title"
+      content="Which Movie To Watch - Find Your Next Movie"
+    />
+    <meta
+      property="og:description"
+      content="Discover your next favorite movie with a visually immersive experience that makes browsing feel as cinematic as watching."
+    />
+    <meta
+      property="og:image"
+      content="https://www.whichmovietowatch.online/favicon_io/android-chrome-512x512.png"
+    />
     <meta property="og:url" content="https://www.whichmovietowatch.online/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Which Movie To Watch" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Which Movie To Watch - Find Your Next Movie" />
-    <meta name="twitter:description" content="Discover your next favorite movie with a visually immersive experience." />
-    <meta name="twitter:image" content="https://www.whichmovietowatch.online/favicon_io/android-chrome-512x512.png" />
+    <meta
+      name="twitter:title"
+      content="Which Movie To Watch - Find Your Next Movie"
+    />
+    <meta
+      name="twitter:description"
+      content="Discover your next favorite movie with a visually immersive experience."
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.whichmovietowatch.online/favicon_io/android-chrome-512x512.png"
+    />
 
     <title>Which Movie To Watch!</title>
     <script>
-      (function() {
+      // SEO boot shims (must run before the app loads):
+      // 1. Legacy hash-URL redirect: /#/discover?movie=123 → /discover?movie=123
+      //    (old shared links keep working after the HashRouter → BrowserRouter migration)
+      // 2. GitHub Pages SPA fallback restore: 404.html stashes the requested
+      //    path in sessionStorage and bounces to /; we restore it here.
+      (function () {
         try {
-          var stored = JSON.parse(localStorage.getItem('theme-preferences'));
+          var redirect = sessionStorage.getItem("wmtw:redirect");
+          if (redirect) {
+            sessionStorage.removeItem("wmtw:redirect");
+            history.replaceState(null, "", redirect);
+          } else if (location.hash.indexOf("#/") === 0) {
+            var target = location.hash.slice(1);
+            // Old links sometimes used /#/?movie=123 (home + param) — the
+            // discovery page owns movie deep links, so send those there.
+            if (target.indexOf("/?movie=") === 0) {
+              target = "/discover" + target.slice(1);
+            }
+            history.replaceState(null, "", target);
+          }
+        } catch (e) {
+          /* sessionStorage unavailable — fine, land on / */
+        }
+      })();
+    </script>
+    <script>
+      (function () {
+        try {
+          var stored = JSON.parse(localStorage.getItem("theme-preferences"));
           if (stored && stored.state) {
-            if (stored.state.mode === 'dark') document.documentElement.classList.add('dark');
-            if (stored.state.preset) document.documentElement.classList.add('theme-' + stored.state.preset);
+            if (stored.state.mode === "dark")
+              document.documentElement.classList.add("dark");
+            if (stored.state.preset)
+              document.documentElement.classList.add(
+                "theme-" + stored.state.preset,
+              );
           } else {
             // First visit: check system preference
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-              document.documentElement.classList.add('dark');
+            if (
+              window.matchMedia &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches
+            ) {
+              document.documentElement.classList.add("dark");
             }
             // Default preset
-            document.documentElement.classList.add('theme-cinema-gold');
+            document.documentElement.classList.add("theme-cinema-gold");
           }
-        } catch(e) {
-          document.documentElement.classList.add('theme-cinema-gold');
+        } catch (e) {
+          document.documentElement.classList.add("theme-cinema-gold");
         }
       })();
     </script>
@@ -63,7 +131,10 @@
                         corsproxy — story card CORS poster fetch, simpleanalyticscdn — analytics beacon,
                         prod.spline.design — .splinecode scene files, unpkg.com — detect-gpu benchmarks
     -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://scripts.simpleanalyticscdn.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https://image.tmdb.org data: blob: https://*.simpleanalyticscdn.com; connect-src 'self' https://api.themoviedb.org https://www.omdbapi.com https://ipinfo.io https://corsproxy.io https://queue.simpleanalyticscdn.com https://prod.spline.design https://unpkg.com; media-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' https://scripts.simpleanalyticscdn.com; worker-src 'self' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https://image.tmdb.org data: blob: https://*.simpleanalyticscdn.com; connect-src 'self' https://api.themoviedb.org https://www.omdbapi.com https://ipinfo.io https://corsproxy.io https://queue.simpleanalyticscdn.com https://prod.spline.design https://unpkg.com; media-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self';"
+    />
   </head>
   <body>
     <div id="root"></div>

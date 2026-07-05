@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex" />
+    <title>Which Movie To Watch</title>
+    <script>
+      // GitHub Pages SPA fallback: stash the requested path and bounce to /
+      // where index.html's boot script restores it via history.replaceState.
+      try {
+        sessionStorage.setItem(
+          "wmtw:redirect",
+          location.pathname + location.search + location.hash,
+        );
+      } catch (e) {}
+      location.replace("/");
+    </script>
+    <style>
+      body {
+        background: oklch(0.13 0.005 60);
+        color: oklch(0.95 0.01 60);
+        font-family: system-ui, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <p>
+      Taking you to
+      <a href="/" style="color: oklch(0.7 0.22 38)">Which Movie To Watch</a>…
+    </p>
+  </body>
+</html>

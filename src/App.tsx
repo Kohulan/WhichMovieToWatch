@@ -17,7 +17,7 @@ function App() {
   useMigration();
 
   // Simple Analytics — cookieless, GDPR-compliant page view tracking (Plan 08-04, PRIV-02)
-  // Manual script injection with hash mode for HashRouter navigation tracking.
+  // Manual script injection; auto mode tracks History API navigation (BrowserRouter).
   // Loaded outside splash guard so analytics fires immediately regardless of onboarding state.
   // Note: The noscript.gif pixel is NOT injected here — it only works in a static <noscript> tag
   // for non-JS environments. Since this is a React SPA that requires JS, it serves no purpose.
@@ -27,7 +27,6 @@ function App() {
     script.src = "https://scripts.simpleanalyticscdn.com/latest.js";
     script.async = true;
     script.defer = true;
-    script.dataset.mode = "hash";
     document.body.appendChild(script);
 
     return () => {

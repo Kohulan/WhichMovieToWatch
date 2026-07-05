@@ -1,6 +1,6 @@
 import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
-import { createHashRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
 
 import "@fontsource-variable/jetbrains-mono";
 
@@ -77,7 +77,7 @@ const withSuspense = (node: React.ReactNode) => (
   <Suspense fallback={<PageSuspenseFallback />}>{node}</Suspense>
 );
 
-const router = createHashRouter([
+const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,

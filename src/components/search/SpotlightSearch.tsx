@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router";
 import { X } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useSearchMovies";
 import { useSearchStore } from "@/stores/searchStore";
@@ -44,6 +45,7 @@ export function SpotlightSearch({
   initialProviderId,
   netflixMode = false,
 }: SpotlightSearchProps) {
+  const navigate = useNavigate();
   const { search, loadMore, results, isLoading, hasMore } = useSearchMovies();
   const advancedFilters = useSearchStore((s) => s.advancedFilters);
   const sortBy = useSearchStore((s) => s.sortBy);
@@ -184,9 +186,9 @@ export function SpotlightSearch({
       const params = netflixMode
         ? `movie=${movieId}&providers=all`
         : `movie=${movieId}`;
-      window.location.hash = `/discover?${params}`;
+      navigate(`/discover?${params}`);
     },
-    [onClose, netflixMode],
+    [onClose, netflixMode, navigate],
   );
 
   const hasMoreResults = hasMore || currentPage < totalPages;

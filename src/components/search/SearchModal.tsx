@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router";
 import { X } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useSearchMovies";
 import { useSearchStore } from "@/stores/searchStore";
@@ -45,13 +46,14 @@ function hasNonDefaultFilters(
  * Auto-focuses search input on open (A11Y-03).
  * Uses useSearchMovies for text-only search.
  * Uses tmdbFetch /discover/movie when advanced filters are active.
- * onSelectMovie navigates to /#/?movie={id} for deep-link (SRCH-04).
+ * onSelectMovie navigates to /discover?movie={id} for deep-link (SRCH-04).
  */
 export function SearchModal({
   isOpen,
   onClose,
   initialProviderId,
 }: SearchModalProps) {
+  const navigate = useNavigate();
   const { search, loadMore, results, isLoading, hasMore } = useSearchMovies();
   const advancedFilters = useSearchStore((s) => s.advancedFilters);
   const sortBy = useSearchStore((s) => s.sortBy);
@@ -174,9 +176,9 @@ export function SearchModal({
     (movieId: number) => {
       onClose();
       // Navigate to discovery page with deep-link
-      window.location.hash = `/?movie=${movieId}`;
+      navigate(`/discover?movie=${movieId}`);
     },
-    [onClose],
+    [onClose, navigate],
   );
 
   const hasMoreResults = hasMore || currentPage < totalPages;
