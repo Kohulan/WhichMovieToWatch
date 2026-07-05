@@ -13,7 +13,7 @@ export function escapeHtml(s) {
 
 function setMeta(html, attr, name, value) {
   const re = new RegExp(`(<meta ${attr}="${name}" content=")[^"]*(")`);
-  return html.replace(re, `$1${escapeHtml(value)}$2`);
+  return html.replace(re, (_m, p1, p2) => p1 + escapeHtml(value) + p2);
 }
 
 /**
@@ -26,7 +26,7 @@ export function applyHead(
 ) {
   let out = html.replace(
     /<title>[^<]*<\/title>/,
-    `<title>${escapeHtml(title)}</title>`,
+    () => `<title>${escapeHtml(title)}</title>`,
   );
   out = setMeta(out, "name", "title", title);
   out = setMeta(out, "name", "description", description);
@@ -47,7 +47,7 @@ export function applyHead(
         `<script type="application/ld+json">${JSON.stringify(ld).replaceAll("</", "<\\/")}</script>`,
     ),
   ].join("\n");
-  return out.replace("</head>", `${extra}\n</head>`);
+  return out.replace("</head>", () => `${extra}\n</head>`);
 }
 
 const STATIC_CSS = `
@@ -65,6 +65,9 @@ body{background:oklch(0.13 0.005 60)}
 
 export function injectRoot(html, bodyHtml) {
   return html
-    .replace("</head>", `<style id="seo-static">${STATIC_CSS}</style>\n</head>`)
-    .replace('<div id="root"></div>', `<div id="root">${bodyHtml}</div>`);
+    .replace(
+      "</head>",
+      () => `<style id="seo-static">${STATIC_CSS}</style>\n</head>`,
+    )
+    .replace('<div id="root"></div>', () => `<div id="root">${bodyHtml}</div>`);
 }

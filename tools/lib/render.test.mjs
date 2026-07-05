@@ -80,3 +80,39 @@ test("bodies escape HTML in titles", () => {
   });
   assert.ok(!html.includes("<script>alert"));
 });
+
+test("movie posters escape the poster_path so it cannot break the src attribute", () => {
+  const html = renderListBody({
+    entry: { path: "/x", h1: "X", intro: "i" },
+    movies: [
+      {
+        id: 2,
+        title: "Quote Test",
+        poster_path: '/x".jpg',
+        release_date: "2020-01-01",
+        vote_average: 5,
+      },
+    ],
+    site,
+  });
+  assert.ok(html.includes("&quot;"));
+  assert.ok(!html.includes('/x".jpg'));
+});
+
+test("renderMovieBody rating has no NaN when vote_average is missing but vote_count is set", () => {
+  const html = renderMovieBody({
+    movie: {
+      id: 5,
+      title: "No Rating Data",
+      overview: "test",
+      poster_path: null,
+      release_date: "2021-01-01",
+      runtime: 100,
+      vote_average: undefined,
+      vote_count: 10,
+      genres: [],
+    },
+    site,
+  });
+  assert.ok(!html.includes("NaN"));
+});

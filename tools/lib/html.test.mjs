@@ -58,3 +58,28 @@ test("injectRoot fills the root div and adds the static stylesheet", () => {
   assert.ok(out.includes('<style id="seo-static">'));
   assert.ok(out.includes("<script"), "app script must survive");
 });
+
+test("applyHead does not $-interpret dynamic content in String.replace", () => {
+  const out = applyHead(TEMPLATE, {
+    title: "The $100,000 Pyramid",
+    description: "Prizes worth $& more.",
+    canonical: "https://whichmovietowatch.online/x",
+    ogType: "website",
+    jsonLd: [],
+  });
+  assert.ok(out.includes("The $100,000 Pyramid"));
+  assert.ok(
+    out.includes(
+      '<meta name="description" content="Prizes worth $&amp; more." />',
+    ),
+  );
+  assert.ok(
+    !/content="[^"]*<meta/.test(out),
+    "content attribute must not contain a nested <meta tag",
+  );
+});
+
+test("injectRoot passes $-patterns in bodyHtml through literally", () => {
+  const out = injectRoot(TEMPLATE, "<p>Deals under $& 100</p>");
+  assert.ok(out.includes('<div id="root"><p>Deals under $& 100</p></div>'));
+});

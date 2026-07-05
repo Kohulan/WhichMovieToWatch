@@ -23,7 +23,7 @@ function nav() {
 
 function posterImg(movie, size = "w342") {
   if (!movie.poster_path) return "";
-  return `<img src="https://image.tmdb.org/t/p/${size}${movie.poster_path}" alt="${escapeHtml(movie.title)} poster" loading="lazy" width="342" height="513" />`;
+  return `<img src="https://image.tmdb.org/t/p/${size}${escapeHtml(movie.poster_path)}" alt="${escapeHtml(movie.title)} poster" loading="lazy" width="342" height="513" />`;
 }
 
 function movieCard(movie) {
@@ -52,7 +52,7 @@ export function renderMovieBody({ movie, site }) {
     movie.runtime ? `${movie.runtime} min` : null,
     (movie.genres ?? []).map((g) => escapeHtml(g.name)).join(", ") || null,
     movie.vote_count > 0
-      ? `★ ${Number(movie.vote_average).toFixed(1)}/10 (${movie.vote_count.toLocaleString("en-US")} ratings)`
+      ? `★ ${Number(movie.vote_average ?? 0).toFixed(1)}/10 (${movie.vote_count.toLocaleString("en-US")} ratings)`
       : null,
   ]
     .filter(Boolean)
