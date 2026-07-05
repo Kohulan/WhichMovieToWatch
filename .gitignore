@@ -206,3 +206,6 @@ PRODUCT.md
 
 #superpowers
 docs/
+
+# prerender build cache
+tools/.tmdb-snapshot.json
