@@ -70,6 +70,14 @@
       //    (old shared links keep working after the HashRouter → BrowserRouter migration)
       // 2. GitHub Pages SPA fallback restore: 404.html stashes the requested
       //    path in sessionStorage and bounces to /; we restore it here.
+      // 3. Literal .html URL normalization: prerendered pages are written to
+      //    disk as e.g. /trending.html, and GitHub Pages serves that path
+      //    verbatim. If someone loads the literal .html URL, strip the
+      //    suffix so the client router's pathname matches the canonical
+      //    route once React hydrates. Runs as a final pass over whatever
+      //    pathname is current after steps 1-2 (a restored/redirected path
+      //    could itself end in .html), so it's read fresh here rather than
+      //    branched on above.
       (function () {
         try {
           var redirect = sessionStorage.getItem("wmtw:redirect");
@@ -87,6 +95,21 @@
           }
         } catch (e) {
           /* sessionStorage unavailable — fine, land on / */
+        }
+        try {
+          if (location.pathname.slice(-5) === ".html") {
+            var path =
+              location.pathname === "/index.html"
+                ? "/"
+                : location.pathname.slice(0, -5);
+            history.replaceState(
+              null,
+              "",
+              path + location.search + location.hash,
+            );
+          }
+        } catch (e) {
+          /* history API unavailable — fine, literal .html URL just won't normalize */
         }
       })();
     </script>
