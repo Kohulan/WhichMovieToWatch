@@ -121,10 +121,15 @@ export function DiscoveryPage() {
 
   // Initialize on mount: show onboarding for new users, apply persisted filters + discover for returning users.
   // Post-onboarding discover is handled by handleOnboardingComplete — no deps needed here.
+  // Also skip both branches when the store already has a movie (discoveryMovie) — this
+  // component remounts when clearDeepLink() navigates /movie/:slug -> /discover (different
+  // route component at that Outlet slot), and the just-loaded deep-linked movie lives in
+  // the Zustand store, not component state, so it survives the remount and must not be
+  // clobbered by a fresh onboarding prompt or an unrelated random discover().
   useEffect(() => {
-    if (!hasCompletedOnboarding && !deepLinkMovieId) {
+    if (!hasCompletedOnboarding && !deepLinkMovieId && !discoveryMovie) {
       setShowOnboarding(true);
-    } else if (hasCompletedOnboarding && !deepLinkMovieId) {
+    } else if (hasCompletedOnboarding && !deepLinkMovieId && !discoveryMovie) {
       // Returning user — restore persisted filters and discover
       const providerIds =
         myServices.length > 0

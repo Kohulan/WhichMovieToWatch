@@ -11,6 +11,9 @@ import { HomePage } from "./pages/HomePage";
 const DiscoverPage = lazy(() =>
   import("./pages/DiscoverPage").then((m) => ({ default: m.DiscoverPage })),
 );
+const MoviePage = lazy(() =>
+  import("./pages/MoviePage").then((m) => ({ default: m.MoviePage })),
+);
 const Showcase = lazy(() =>
   import("./pages/Showcase").then((m) => ({ default: m.Showcase })),
 );
@@ -84,11 +87,14 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "discover", element: withSuspense(<DiscoverPage />) },
+      { path: "movie/:slug", element: withSuspense(<MoviePage />) },
       { path: "browse", element: withSuspense(<BrowsePage />) },
       { path: "trending", element: withSuspense(<TrendingPage />) },
       { path: "dinner-time", element: withSuspense(<DinnerTimePage />) },
       { path: "free-movies", element: withSuspense(<FreeMoviesPage />) },
-      { path: "showcase", element: withSuspense(<Showcase />) },
+      ...(import.meta.env.DEV
+        ? [{ path: "showcase", element: withSuspense(<Showcase />) }]
+        : []),
       { path: "privacy", element: withSuspense(<PrivacyPage />) },
     ],
   },
