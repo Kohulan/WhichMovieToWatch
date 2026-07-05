@@ -75,6 +75,7 @@ export function DiscoverHeroCell() {
             alt={movie?.title ?? "Movie backdrop"}
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
+            fetchPriority="high"
             decoding="async"
             initial={{ opacity: 0, scale: 1.08 }}
             animate={{ opacity: ready ? 1 : 0, scale: ready ? 1 : 1.08 }}

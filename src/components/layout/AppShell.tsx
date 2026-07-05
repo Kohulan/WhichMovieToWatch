@@ -201,6 +201,32 @@ export function AppShell() {
   const activeVariants = use3DTransitions ? pageVariants3D : pageVariants;
   const activeTransition = use3DTransitions ? pageTransition3D : pageTransition;
 
+  // Defer the 1.4MB-gzip Spline runtime until the browser is idle so it never
+  // competes with first paint / first interaction (INP).
+  //
+  // Note: lib.dom declares requestIdleCallback as a mandatory (non-optional)
+  // Window member, so a plain `"requestIdleCallback" in window` check narrows
+  // the fallback branch's type to `never`. Casting through `unknown` to a
+  // shape with an optional member sidesteps that false narrowing while still
+  // feature-detecting at runtime for Safari/older browsers that lack it.
+  const [idleReady, setIdleReady] = useState(false);
+  useEffect(() => {
+    const ric = (
+      window as unknown as {
+        requestIdleCallback?: (
+          callback: () => void,
+          options?: { timeout?: number },
+        ) => number;
+      }
+    ).requestIdleCallback;
+    if (ric) {
+      const id = ric(() => setIdleReady(true), { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const t = window.setTimeout(() => setIdleReady(true), 1500);
+    return () => window.clearTimeout(t);
+  }, []);
+
   // A11Y-01: Ref to main content for programmatic focus on route change.
   const mainRef = useRef<HTMLElement>(null);
 
@@ -284,6 +310,7 @@ export function AppShell() {
       >
         {showParallax && <ParallaxFallback />}
         {!sceneError &&
+          idleReady &&
           (capability === "full-3d" || capability === "reduced-3d") && (
             <SplineErrorBoundary>
               <Suspense fallback={null}>

@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import logoSrc from "@/../assets/logo.png";
+import logoSrc from "@/../assets/logo-splash.png";
 
 interface SplashScreenProps {
   onComplete: () => void;
@@ -20,7 +20,7 @@ function getTagline(now = new Date()): string {
 /**
  * SplashScreen — Netflix-style dramatic logo reveal.
  *
- * Always plays on app launch (~2.5s). Dark background with accent-colored
+ * Plays once per browser session (~2.5s). Dark background with accent-colored
  * ambient light bloom, specular glow behind Film icon, bold white text with
  * blur-in stagger, and a thin cinematic progress bar. No skip button —
  * this is the brand moment. (Per user decision in CONTEXT.md)

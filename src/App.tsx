@@ -9,9 +9,16 @@ import { ReloadPrompt } from "@/components/pwa/ReloadPrompt";
 import { InstallBanner } from "@/components/pwa/InstallBanner";
 import { MotionProvider } from "@/components/animation/MotionProvider";
 import { Scene3DProvider } from "@/components/3d/Scene3DProvider";
+import { getSessionFlag, setSessionFlag } from "@/lib/session-flags";
+
+const SPLASH_SEEN_KEY = "wmtw:splash-seen";
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
+  // Splash plays once per browser session (SEO/CWV: an unskippable splash on
+  // every load makes a good LCP impossible; first impression stays intact).
+  const [showSplash, setShowSplash] = useState(
+    () => !getSessionFlag(SPLASH_SEEN_KEY),
+  );
 
   // Run legacy localStorage migration on mount (Plan 02-02)
   useMigration();
@@ -41,7 +48,13 @@ function App() {
 
       <AnimatePresence mode="wait">
         {showSplash && (
-          <SplashScreen key="splash" onComplete={() => setShowSplash(false)} />
+          <SplashScreen
+            key="splash"
+            onComplete={() => {
+              setSessionFlag(SPLASH_SEEN_KEY);
+              setShowSplash(false);
+            }}
+          />
         )}
       </AnimatePresence>
 
