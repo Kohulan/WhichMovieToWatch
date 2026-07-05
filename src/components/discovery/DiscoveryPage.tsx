@@ -1,6 +1,7 @@
 // Main discovery screen — cinematic hero, ratings, providers, actions, similar movies
 
 import { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router";
 import { AnimatePresence, motion } from "motion/react";
 import { SlidersHorizontal } from "lucide-react";
 import { useDiscoveryStore } from "@/stores/discoveryStore";
@@ -55,6 +56,7 @@ import type { TMDBMovieDetails } from "@/types/movie";
  * similar movies section triggered by Love action. (DISC-01 through DISC-04, INTR-01 through INTR-04)
  */
 export function DiscoveryPage() {
+  const navigate = useNavigate();
   const [announce, Announcer] = useAnnounce();
   const [lovedMovieId, setLovedMovieId] = useState<number | null>(null);
   const [globalProviders, setGlobalProviders] = useState(false);
@@ -186,14 +188,22 @@ export function DiscoveryPage() {
 
   // Settings saved — clear old movie and re-discover with new filters.
   // Clearing currentMovie ensures the error state can render if discovery fails.
+  // Same deep-link-pinning problem as handleNext: while a deep link pins the display,
+  // setCurrentMovie(null) + discover() would be invisible (currentMovie still resolves
+  // to the pinned deepLinkMovie). Leave deep-link mode first and let the post-remount
+  // mount effect run the fresh discover().
   const handleSettingsSaved = useCallback(() => {
     setSettingsOpen(false);
     setLovedMovieId(null);
     setGlobalProviders(false);
     setShowTickets(false);
+    if (deepLinkMovieId !== null) {
+      clearDeepLink();
+      return;
+    }
     setCurrentMovie(null);
     discover();
-  }, [discover, setCurrentMovie]);
+  }, [discover, setCurrentMovie, deepLinkMovieId, clearDeepLink]);
 
   // Handle Next action — resets global provider view back to regional.
   // While a deep link pins the display (deepLinkMovieId), currentMovie always
@@ -237,13 +247,22 @@ export function DiscoveryPage() {
       const { fetchMovieDetails } = await import("@/services/tmdb/details");
       try {
         const details = await fetchMovieDetails(movieId);
+        if (isCanonicalMoviePath) {
+          // currentMovie always prefers the pinned deep-link movie while the URL
+          // stays on /movie/:slug — setCurrentMovie() alone would be invisible.
+          // Navigate to the new movie's own canonical page instead; the resulting
+          // remount picks it up as the new deep link, keeping the URL/canonical in
+          // sync with what's actually displayed.
+          navigate(moviePath(details));
+          return;
+        }
         setCurrentMovie(details);
         setLovedMovieId(null);
       } catch (err) {
         console.warn("[DiscoveryPage] Failed to load similar movie:", err);
       }
     },
-    [setCurrentMovie],
+    [setCurrentMovie, isCanonicalMoviePath, navigate],
   );
 
   // Determine TMDB find-movie link for cross-region search (DISP-05)
