@@ -60,6 +60,32 @@ if ("serviceWorker" in navigator) {
   });
 }
 
+// Delete legacy caches from the pre-React vanilla JS app. Long-stuck
+// browsers that never picked up a Workbox SW can still be holding these
+// open, serving stale cached responses indefinitely. The modern Workbox
+// caches (workbox-*, pages-cache, tmdb-*, omdb-*) are intentionally left
+// alone — cleanupOutdatedCaches in vite.config.ts already manages those.
+if ("caches" in window) {
+  const legacyCachePrefixes = [
+    "moviewatch-",
+    "runtime-cache",
+    "movie-data",
+    "movie-images",
+  ];
+  caches
+    .keys()
+    .then((cacheNames) => {
+      for (const cacheName of cacheNames) {
+        if (
+          legacyCachePrefixes.some((prefix) => cacheName.startsWith(prefix))
+        ) {
+          caches.delete(cacheName);
+        }
+      }
+    })
+    .catch(() => {});
+}
+
 /**
  * Small inline fallback while the lazy page chunk downloads. Kept in the
  * eager main bundle so it appears immediately instead of waiting for any

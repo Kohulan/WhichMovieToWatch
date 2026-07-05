@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
-      registerType: "prompt",
+      registerType: "autoUpdate",
       injectRegister: "auto",
       includeAssets: [
         "offline.html",
@@ -59,6 +59,13 @@ export default defineConfig({
         // route below for every navigation, online or not.
         navigateFallback: null,
         cleanupOutdatedCaches: true,
+        // New SW activates immediately on install and takes control of any
+        // open tabs, instead of waiting for a SKIP_WAITING message from the
+        // (now-removed) update-prompt UI. Combined with registerType:
+        // "autoUpdate" above, this is what makes updates apply automatically
+        // — users are never stuck on a stale precached build.
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             // All page navigations: network first (real prerendered HTML),
