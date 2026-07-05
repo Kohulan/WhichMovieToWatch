@@ -51,10 +51,27 @@ export default defineConfig({
         // It is served via NetworkFirst runtime caching instead (see runtimeCaching below).
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
         globIgnores: ["**/spline-vendor-*.js", "**/SplineHero-*.js"],
-        navigateFallback: "/offline.html",
-        navigateFallbackDenylist: [/^\/api\//],
+        // vite-plugin-pwa defaults navigateFallback to "index.html" when the
+        // key is absent from this object (app-shell SPA behavior). We rely on
+        // NetworkFirst + precacheFallback below instead, so it must be
+        // explicitly nulled out here or the plugin's default silently
+        // reintroduces a NavigationRoute that shadows the runtimeCaching
+        // route below for every navigation, online or not.
+        navigateFallback: null,
         cleanupOutdatedCaches: true,
         runtimeCaching: [
+          {
+            // All page navigations: network first (real prerendered HTML),
+            // cached copy when offline, branded offline page as last resort.
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkFirst",
+            options: {
+              cacheName: "pages-cache",
+              networkTimeoutSeconds: 5,
+              expiration: { maxEntries: 100, maxAgeSeconds: 86400 * 7 },
+              precacheFallback: { fallbackURL: "/offline.html" },
+            },
+          },
           {
             urlPattern: /^https:\/\/api\.themoviedb\.org\/.*/i,
             handler: "NetworkFirst",
