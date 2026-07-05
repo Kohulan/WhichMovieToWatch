@@ -3,17 +3,15 @@
 // Designed as col-span-4, row-span-1 on desktop.
 // Clay material cell. Click navigates to /free-movies.
 
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { motion } from "motion/react";
 import { Film, ArrowRight } from "lucide-react";
 
 export function FreeMoviesCell() {
-  const navigate = useNavigate();
-
   return (
-    <div
+    <Link
+      to="/free-movies"
       className="w-full h-full flex items-center gap-4 p-4"
-      onClick={() => navigate("/free-movies")}
     >
       {/* Icon with film reel spin */}
       <motion.div
@@ -39,6 +37,6 @@ export function FreeMoviesCell() {
         className="flex-shrink-0 w-4 h-4 text-clay-text-muted"
         aria-hidden="true"
       />
-    </div>
+    </Link>
   );
 }

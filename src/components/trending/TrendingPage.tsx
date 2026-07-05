@@ -1,9 +1,10 @@
 // Trending (Now Playing) page — horizontal scroll strip with auto-refresh (TRND-01, TRND-02, TRND-03, TRND-04)
 
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { RefreshCw, Clock, AlertCircle } from "lucide-react";
 import { useTrending } from "@/hooks/useTrending";
 import { getPosterUrl } from "@/services/tmdb/client";
+import { moviePath } from "@/lib/movie-url";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { ClaySkeletonCard } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
@@ -18,16 +19,10 @@ import {
  * Shows region-aware Now Playing movies from TMDB. Automatically falls back to
  * popular movies if now_playing returns empty for the current region.
  * Auto-refreshes every 30 minutes. Supports manual refresh via refresh button.
- * Tapping a movie navigates to /#/?movie={id} for full discovery view. (TRND-04)
+ * Tapping a movie navigates to /movie/<slug>?source=trending. (TRND-04)
  */
 export function TrendingPage() {
   const { movies, isLoading, error, refresh } = useTrending();
-  const navigate = useNavigate();
-
-  function handleMovieClick(movieId: number) {
-    // Navigate to discovery page with deep-link to load full movie details
-    navigate(`/discover?movie=${movieId}&source=trending`);
-  }
 
   if (isLoading && movies.length === 0) {
     return (
@@ -130,9 +125,9 @@ export function TrendingPage() {
               direction="up"
               className="flex-shrink-0 snap-start w-40 md:w-full"
             >
-              <button
+              <Link
                 role="listitem"
-                onClick={() => handleMovieClick(movie.id)}
+                to={`${moviePath(movie)}?source=trending`}
                 className="w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl contain-card cv-auto"
                 aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPercent}%`}
               >
@@ -180,7 +175,7 @@ export function TrendingPage() {
                     </p>
                   )}
                 </div>
-              </button>
+              </Link>
             </StaggerItem>
           );
         })}

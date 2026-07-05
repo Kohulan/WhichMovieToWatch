@@ -4,7 +4,7 @@
 // DiscoverHeroCell and TrendingPreviewCell.
 
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Star } from "lucide-react";
 import { useTopStreaming } from "@/hooks/useTopStreaming";
@@ -15,7 +15,6 @@ const ANIMATION_STEPS = 20;
 const STEP_INTERVAL_MS = ANIMATION_DURATION_MS / ANIMATION_STEPS;
 
 export function RatingShowcaseCell() {
-  const navigate = useNavigate();
   const { movies, isLoading } = useTopStreaming();
   const featuredIndex = useFeaturedStore((s) => s.index);
 
@@ -44,9 +43,9 @@ export function RatingShowcaseCell() {
   }, [targetRating]);
 
   return (
-    <div
+    <Link
+      to="/trending"
       className="w-full h-full flex flex-col justify-center p-4 gap-1"
-      onClick={() => navigate("/trending")}
     >
       {/* Label */}
       <span className="text-xs font-semibold text-clay-text-muted uppercase tracking-wide">
@@ -84,6 +83,6 @@ export function RatingShowcaseCell() {
           </motion.p>
         )}
       </AnimatePresence>
-    </div>
+    </Link>
   );
 }

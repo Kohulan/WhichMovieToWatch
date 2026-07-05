@@ -43,7 +43,7 @@ import { ShareButton } from "@/components/share/ShareButton";
 import { Seo, routeSeoProps } from "@/components/seo/Seo";
 import { getRouteMeta, SITE } from "@/seo/meta";
 import { movieJsonLd } from "@/../tools/lib/jsonld.mjs";
-import { movieSlug } from "@/../tools/lib/slug.mjs";
+import { moviePath } from "@/lib/movie-url";
 import type { TMDBMovieDetails } from "@/types/movie";
 
 /**
@@ -296,7 +296,7 @@ export function DiscoveryPage() {
         <Seo
           title={`${currentMovie.title} — Where to Stream & Ratings`}
           description={`${currentMovie.title}${currentMovie.release_date ? ` (${currentMovie.release_date.slice(0, 4)})` : ""} — ${(currentMovie.overview ?? "").slice(0, 120)}…`}
-          path={`/movie/${movieSlug(currentMovie)}`}
+          path={moviePath(currentMovie)}
           ogImage={
             currentMovie.poster_path
               ? `https://image.tmdb.org/t/p/w1280${currentMovie.poster_path}`

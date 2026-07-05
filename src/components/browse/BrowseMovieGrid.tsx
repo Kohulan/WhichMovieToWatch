@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { motion } from "motion/react";
 import { Film } from "lucide-react";
 import { getPosterUrl } from "@/services/tmdb/client";
 import { getMoviePosterLayoutId } from "@/lib/layout-ids";
+import { moviePath } from "@/lib/movie-url";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { MetalButton } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
@@ -11,6 +12,10 @@ import {
   StaggerItem,
 } from "@/components/animation/StaggerContainer";
 import type { TMDBMovie } from "@/types/movie";
+
+// motion.create() wraps react-router's Link so cards are real <a href>
+// elements (crawlable) while keeping the whileHover/whileTap micro-interactions.
+const MotionLink = motion.create(Link);
 
 interface BrowseMovieGridProps {
   results: TMDBMovie[];
@@ -38,12 +43,6 @@ export function BrowseMovieGrid({
   providerName,
   onClearFilters,
 }: BrowseMovieGridProps) {
-  const navigate = useNavigate();
-
-  function handleMovieClick(movieId: number) {
-    navigate(`/discover?movie=${movieId}&source=browse`);
-  }
-
   // Initial loading state
   if (isLoading && results.length === 0) {
     return (
@@ -101,10 +100,10 @@ export function BrowseMovieGrid({
 
           return (
             <StaggerItem key={movie.id} direction="up">
-              <motion.button
-                type="button"
+              <MotionLink
+                to={moviePath(movie)}
+                state={{ source: "browse" }}
                 role="listitem"
-                onClick={() => handleMovieClick(movie.id)}
                 whileHover={{ y: -4, scale: 1.02 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 400, damping: 22 }}
@@ -176,7 +175,7 @@ export function BrowseMovieGrid({
                     </p>
                   )}
                 </div>
-              </motion.button>
+              </MotionLink>
             </StaggerItem>
           );
         })}

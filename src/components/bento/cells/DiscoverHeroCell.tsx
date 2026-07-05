@@ -6,7 +6,7 @@
 // Fetches watch providers for the featured movie and shows which service it's on.
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Play, Sparkles } from "lucide-react";
 import { useTopStreaming } from "@/hooks/useTopStreaming";
@@ -20,7 +20,6 @@ import { tmdbBackdropSrcSet, backdropSizes } from "@/hooks/useResponsiveImage";
 const STREAMING_IDS = new Set([8, 9, 337]); // Netflix, Prime Video, Disney+
 
 export function DiscoverHeroCell() {
-  const navigate = useNavigate();
   const { movies, isLoading } = useTopStreaming();
   const featuredIndex = useFeaturedStore((s) => s.index);
 
@@ -163,18 +162,16 @@ export function DiscoverHeroCell() {
           </AnimatePresence>
         </div>
 
-        <MetalButton
-          size="sm"
-          variant="primary"
-          onClick={(e) => {
-            e.stopPropagation();
-            navigate("/discover");
-          }}
+        <Link
+          to="/discover"
           className="self-start"
+          onClick={(e) => e.stopPropagation()}
         >
-          <Play className="w-4 h-4" aria-hidden="true" />
-          Start Discovering
-        </MetalButton>
+          <MetalButton size="sm" variant="primary">
+            <Play className="w-4 h-4" aria-hidden="true" />
+            Start Discovering
+          </MetalButton>
+        </Link>
       </div>
     </div>
   );

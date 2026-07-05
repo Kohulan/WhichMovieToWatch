@@ -15,6 +15,7 @@ import { useTheme } from "../../hooks/useTheme";
 import { useThemeStore } from "@/stores/themeStore";
 import { useScene3dStore } from "@/stores/scene3dStore";
 import { Navbar } from "./Navbar";
+import { SiteFooter } from "./SiteFooter";
 import {
   pageVariants,
   pageTransition,
@@ -330,6 +331,8 @@ export function AppShell() {
           </PageErrorBoundary>
         </motion.main>
       </AnimatePresence>
+
+      <SiteFooter />
     </div>
   );
 }

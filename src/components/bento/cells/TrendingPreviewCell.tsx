@@ -5,7 +5,7 @@
 // DiscoverHeroCell and RatingShowcaseCell.
 
 import { useMemo } from "react";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { TrendingUp } from "lucide-react";
 import { useTrending } from "@/hooks/useTrending";
@@ -30,7 +30,6 @@ const POSITIONS = [
 const SLOT_ASSIGNMENT = [1, 2, 0] as const;
 
 export function TrendingPreviewCell() {
-  const navigate = useNavigate();
   const { movies, isLoading } = useTrending();
   const featuredIndex = useFeaturedStore((s) => s.index);
 
@@ -46,9 +45,9 @@ export function TrendingPreviewCell() {
   }, [movies, featuredIndex]);
 
   return (
-    <div
+    <Link
+      to="/trending"
       className="w-full h-full min-h-[180px] flex flex-col p-4 gap-3"
-      onClick={() => navigate("/trending")}
     >
       {/* Label with live dot */}
       <div className="flex items-center gap-1.5">
@@ -154,6 +153,6 @@ export function TrendingPreviewCell() {
           </motion.p>
         )}
       </AnimatePresence>
-    </div>
+    </Link>
   );
 }
