@@ -12,6 +12,8 @@ import { BrowseMovieGrid } from "@/components/browse/BrowseMovieGrid";
 import { BrowseFilterSidebar } from "@/components/browse/BrowseFilterSidebar";
 import { BrowseProviderLauncher } from "@/components/browse/BrowseProviderLauncher";
 import { BrowseProviderChip } from "@/components/browse/BrowseProviderChip";
+import { Seo, routeSeoProps } from "@/components/seo/Seo";
+import { getRouteMeta } from "@/seo/meta";
 
 const SORT_OPTIONS = [
   { value: "popularity.desc", label: "Most Popular" },
@@ -78,6 +80,7 @@ export default function BrowsePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Seo {...routeSeoProps(getRouteMeta("/browse")!)} />
       <AnimatePresence mode="sync" initial={false}>
         {isEmpty ? (
           <motion.section

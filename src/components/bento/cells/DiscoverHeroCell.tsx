@@ -30,7 +30,10 @@ export function DiscoverHeroCell() {
     : null;
 
   // Fetch providers for the currently featured movie
-  const { providers } = useWatchProviders(movie?.id ?? null, movie?.title ?? "");
+  const { providers } = useWatchProviders(
+    movie?.id ?? null,
+    movie?.title ?? "",
+  );
 
   // Filter flatrate providers to only Netflix/Prime/Disney+
   const streamingLogos = useMemo(() => {

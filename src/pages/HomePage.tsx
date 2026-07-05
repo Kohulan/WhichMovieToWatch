@@ -22,6 +22,9 @@ import {
 } from "@/components/animation/StaggerContainer";
 import { useTopStreaming } from "@/hooks/useTopStreaming";
 import { useFeaturedStore } from "@/stores/featuredStore";
+import { Seo, routeSeoProps } from "@/components/seo/Seo";
+import { getRouteMeta, SITE } from "@/seo/meta";
+import { webSiteJsonLd, organizationJsonLd } from "@/../tools/lib/jsonld.mjs";
 
 import { DiscoverHeroCell } from "@/components/bento/cells/DiscoverHeroCell";
 import { TrendingPreviewCell } from "@/components/bento/cells/TrendingPreviewCell";
@@ -53,6 +56,11 @@ export function HomePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <Seo
+        {...routeSeoProps(getRouteMeta("/")!)}
+        jsonLd={[webSiteJsonLd(SITE), organizationJsonLd(SITE)]}
+      />
+
       {/* Page header */}
       <div className="mb-5">
         <h1 className="font-heading text-xl font-bold text-clay-text">

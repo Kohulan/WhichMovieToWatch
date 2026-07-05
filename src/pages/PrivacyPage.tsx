@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { Seo, routeSeoProps } from "@/components/seo/Seo";
+import { getRouteMeta } from "@/seo/meta";
 
 /**
  * PrivacyPage — Full-page privacy policy at /privacy route.
@@ -10,6 +12,7 @@ import { Link } from "react-router";
 export default function PrivacyPage() {
   return (
     <div className="min-h-dvh bg-clay-base py-8 pb-24 px-4">
+      <Seo {...routeSeoProps(getRouteMeta("/privacy")!)} />
       <div className="max-w-3xl mx-auto">
         {/* Back navigation */}
         <Link
@@ -59,9 +62,9 @@ export default function PrivacyPage() {
             <p className="text-clay-text-muted leading-relaxed mb-3">
               This app does not collect personal data. There are no accounts, no
               authentication, and no user profiles. All your preferences
-              (watched movies, loved films, genre preferences, streaming
-              service selections, and theme settings) are stored exclusively in
-              your browser's localStorage on your own device.
+              (watched movies, loved films, genre preferences, streaming service
+              selections, and theme settings) are stored exclusively in your
+              browser's localStorage on your own device.
             </p>
             <p className="text-clay-text-muted leading-relaxed">
               This data never leaves your device and is never transmitted to any
@@ -214,8 +217,8 @@ export default function PrivacyPage() {
                 browser privacy features.
               </li>
               <li>
-                Deny location access when your browser requests it; the app
-                will use a default region.
+                Deny location access when your browser requests it; the app will
+                use a default region.
               </li>
             </ul>
           </section>

@@ -5,6 +5,8 @@ import { DinnerTimeBentoHero } from "@/components/dinner-time/DinnerTimeBentoHer
 import { DinnerTimePage as DinnerTimePageComponent } from "@/components/dinner-time/DinnerTimePage";
 import { useDinnerTime } from "@/hooks/useDinnerTime";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
+import { Seo, routeSeoProps } from "@/components/seo/Seo";
+import { getRouteMeta } from "@/seo/meta";
 
 // DinnerTimePageComponent manages its own full-width layout with a fixed backdrop.
 // Bento hero sits below the movie content and fades in on scroll.
@@ -26,6 +28,7 @@ export default function DinnerTimePage() {
 
   return (
     <>
+      <Seo {...routeSeoProps(getRouteMeta("/dinner-time")!)} />
       <DinnerTimePageComponent
         dinnerTime={dinnerTime}
         regionProviders={regionProviders}

@@ -28,9 +28,8 @@ export function useFocusTrap<T extends HTMLElement>(active: boolean) {
     const container = containerRef.current;
     if (!container) return;
 
-    const focusables = container.querySelectorAll<HTMLElement>(
-      FOCUSABLE_SELECTOR,
-    );
+    const focusables =
+      container.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
     if (focusables.length > 0) {
       // Defer one frame so any sibling autoFocus effect can run first.
       // Only steal focus if nothing inside the container has it yet.

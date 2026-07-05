@@ -148,108 +148,110 @@ export function AdvancedFilters() {
             className="grid overflow-hidden"
           >
             <div className="min-h-0">
-            <div className="space-y-5 py-3">
-              {/* Genre multi-select */}
-              <div>
-                <p className="font-body text-sm font-medium text-clay-text mb-2">
-                  Genre
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {allGenres.map((genre) => (
-                    <MetalCheckbox
-                      key={genre.id}
-                      checked={advancedFilters.genres.includes(genre.id)}
-                      onChange={(checked) =>
-                        handleGenreToggle(genre.id, checked)
-                      }
-                      label={genre.name}
-                    />
-                  ))}
+              <div className="space-y-5 py-3">
+                {/* Genre multi-select */}
+                <div>
+                  <p className="font-body text-sm font-medium text-clay-text mb-2">
+                    Genre
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {allGenres.map((genre) => (
+                      <MetalCheckbox
+                        key={genre.id}
+                        checked={advancedFilters.genres.includes(genre.id)}
+                        onChange={(checked) =>
+                          handleGenreToggle(genre.id, checked)
+                        }
+                        label={genre.name}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Year range (ADVS-07) */}
+                <DualRangeSlider
+                  label="Release Year"
+                  min={1900}
+                  max={CURRENT_YEAR}
+                  step={1}
+                  value={advancedFilters.yearRange}
+                  onChange={(range) => setAdvancedFilters({ yearRange: range })}
+                />
+
+                {/* Rating range (ADVS-07) */}
+                <DualRangeSlider
+                  label="Rating"
+                  min={0}
+                  max={10}
+                  step={0.5}
+                  value={advancedFilters.ratingRange}
+                  onChange={(range) =>
+                    setAdvancedFilters({ ratingRange: range })
+                  }
+                  formatValue={(v) => v.toFixed(1)}
+                />
+
+                {/* Runtime range (ADVS-07) */}
+                <DualRangeSlider
+                  label="Runtime"
+                  min={0}
+                  max={300}
+                  step={15}
+                  value={advancedFilters.runtimeRange}
+                  onChange={(range) =>
+                    setAdvancedFilters({ runtimeRange: range })
+                  }
+                  formatValue={formatRuntime}
+                />
+
+                {/* Language (ADVS-02) */}
+                <MetalDropdown
+                  label="Language"
+                  options={LANGUAGES}
+                  value={advancedFilters.language ?? ""}
+                  onChange={(val) =>
+                    setAdvancedFilters({ language: val === "" ? null : val })
+                  }
+                  placeholder="Any language"
+                />
+
+                {/* Streaming service (ADVS-02) */}
+                <MetalDropdown
+                  label="Streaming Service"
+                  options={providerOptions}
+                  value={
+                    advancedFilters.providerId
+                      ? String(advancedFilters.providerId)
+                      : ""
+                  }
+                  onChange={(val) =>
+                    setAdvancedFilters({
+                      providerId: val === "" ? null : Number(val),
+                    })
+                  }
+                  placeholder="Any service"
+                />
+
+                {/* Sort by (ADVS-03) */}
+                <MetalDropdown
+                  label="Sort By"
+                  options={SORT_OPTIONS}
+                  value={sortBy}
+                  onChange={setSortBy}
+                />
+
+                {/* Clear filters button */}
+                <div className="flex justify-end">
+                  <MetalButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearFilters}
+                    disabled={!hasActiveFilters}
+                  >
+                    Clear Filters
+                  </MetalButton>
                 </div>
               </div>
-
-              {/* Year range (ADVS-07) */}
-              <DualRangeSlider
-                label="Release Year"
-                min={1900}
-                max={CURRENT_YEAR}
-                step={1}
-                value={advancedFilters.yearRange}
-                onChange={(range) => setAdvancedFilters({ yearRange: range })}
-              />
-
-              {/* Rating range (ADVS-07) */}
-              <DualRangeSlider
-                label="Rating"
-                min={0}
-                max={10}
-                step={0.5}
-                value={advancedFilters.ratingRange}
-                onChange={(range) => setAdvancedFilters({ ratingRange: range })}
-                formatValue={(v) => v.toFixed(1)}
-              />
-
-              {/* Runtime range (ADVS-07) */}
-              <DualRangeSlider
-                label="Runtime"
-                min={0}
-                max={300}
-                step={15}
-                value={advancedFilters.runtimeRange}
-                onChange={(range) =>
-                  setAdvancedFilters({ runtimeRange: range })
-                }
-                formatValue={formatRuntime}
-              />
-
-              {/* Language (ADVS-02) */}
-              <MetalDropdown
-                label="Language"
-                options={LANGUAGES}
-                value={advancedFilters.language ?? ""}
-                onChange={(val) =>
-                  setAdvancedFilters({ language: val === "" ? null : val })
-                }
-                placeholder="Any language"
-              />
-
-              {/* Streaming service (ADVS-02) */}
-              <MetalDropdown
-                label="Streaming Service"
-                options={providerOptions}
-                value={
-                  advancedFilters.providerId
-                    ? String(advancedFilters.providerId)
-                    : ""
-                }
-                onChange={(val) =>
-                  setAdvancedFilters({
-                    providerId: val === "" ? null : Number(val),
-                  })
-                }
-                placeholder="Any service"
-              />
-
-              {/* Sort by (ADVS-03) */}
-              <MetalDropdown
-                label="Sort By"
-                options={SORT_OPTIONS}
-                value={sortBy}
-                onChange={setSortBy}
-              />
-
-              {/* Clear filters button */}
-              <div className="flex justify-end">
-                <MetalButton
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearFilters}
-                  disabled={!hasActiveFilters}
-                >
-                  Clear Filters
-                </MetalButton>
-              </div>
-            </div>
             </div>
           </motion.div>
         )}

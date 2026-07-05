@@ -92,10 +92,7 @@ export function FreeMoviesBentoHero() {
             <div className="p-5 flex flex-col justify-center h-full gap-2.5">
               <div className="flex items-center gap-3">
                 <div className="flex items-center justify-center w-9 h-9 rounded-full bg-clay-surface clay-shadow-sm">
-                  <Film
-                    className="w-4 h-4 text-accent"
-                    aria-hidden="true"
-                  />
+                  <Film className="w-4 h-4 text-accent" aria-hidden="true" />
                 </div>
                 <p className="text-clay-text text-sm font-medium leading-tight">
                   <span className="font-heading font-bold">1,000+</span> films,

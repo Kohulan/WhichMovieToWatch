@@ -40,7 +40,10 @@ import {
   posterSizes,
 } from "@/hooks/useResponsiveImage";
 import { ShareButton } from "@/components/share/ShareButton";
-import { MovieMetaTags } from "@/components/share/MovieMetaTags";
+import { Seo, routeSeoProps } from "@/components/seo/Seo";
+import { getRouteMeta, SITE } from "@/seo/meta";
+import { movieJsonLd } from "@/../tools/lib/jsonld.mjs";
+import { movieSlug } from "@/../tools/lib/slug.mjs";
 import type { TMDBMovieDetails } from "@/types/movie";
 
 /**
@@ -226,6 +229,7 @@ export function DiscoveryPage() {
   if (showOnboarding) {
     return (
       <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[60vh] px-4 py-6">
+        <Seo {...routeSeoProps(getRouteMeta("/discover")!)} />
         <Announcer />
         <OnboardingWizard
           isOpen
@@ -240,6 +244,7 @@ export function DiscoveryPage() {
   if (showLoading) {
     return (
       <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[60vh] px-4 py-6">
+        <Seo {...routeSeoProps(getRouteMeta("/discover")!)} />
         <Announcer />
         <LoadingQuotes />
       </div>
@@ -250,6 +255,7 @@ export function DiscoveryPage() {
   if (error && !currentMovie) {
     return (
       <div className="relative z-10 w-full flex flex-col items-center justify-center min-h-[60vh] px-4 py-6">
+        <Seo {...routeSeoProps(getRouteMeta("/discover")!)} />
         <Announcer />
         <OnboardingWizard
           isOpen
@@ -265,6 +271,7 @@ export function DiscoveryPage() {
   if (!currentMovie) {
     return (
       <div className="relative z-10 w-full px-4 py-6">
+        <Seo {...routeSeoProps(getRouteMeta("/discover")!)} />
         <Announcer />
         <ClayCard className="max-w-7xl mx-auto">
           <div className="p-6 text-center">
@@ -284,8 +291,23 @@ export function DiscoveryPage() {
     <div className="w-full">
       <Announcer />
 
-      {/* Dynamic OG/Twitter Card meta tags — React 19 native hoisting (SOCL-02, SOCL-03) */}
-      <MovieMetaTags movie={currentMovie} />
+      {/* Dynamic OG/Twitter Card meta tags + Movie JSON-LD — React 19 native hoisting (SOCL-02, SOCL-03) */}
+      {currentMovie ? (
+        <Seo
+          title={`${currentMovie.title} — Where to Stream & Ratings`}
+          description={`${currentMovie.title}${currentMovie.release_date ? ` (${currentMovie.release_date.slice(0, 4)})` : ""} — ${(currentMovie.overview ?? "").slice(0, 120)}…`}
+          path={`/movie/${movieSlug(currentMovie)}`}
+          ogImage={
+            currentMovie.poster_path
+              ? `https://image.tmdb.org/t/p/w1280${currentMovie.poster_path}`
+              : undefined
+          }
+          ogType="video.movie"
+          jsonLd={[movieJsonLd(currentMovie, SITE.origin)]}
+        />
+      ) : (
+        <Seo {...routeSeoProps(getRouteMeta("/discover")!)} />
+      )}
 
       {/* Settings modal — same wizard in settings mode */}
       <OnboardingWizard

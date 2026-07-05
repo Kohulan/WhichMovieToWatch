@@ -24,7 +24,10 @@ const QUOTES: Quote[] = [
   { text: "I am Groot.", film: "Guardians of the Galaxy" },
   { text: "I'm the king of the world!", film: "Titanic" },
   { text: "I'll have what she's having.", film: "When Harry Met Sally" },
-  { text: "Get busy living, or get busy dying.", film: "The Shawshank Redemption" },
+  {
+    text: "Get busy living, or get busy dying.",
+    film: "The Shawshank Redemption",
+  },
   { text: "Houston, we have a problem.", film: "Apollo 13" },
 ];
 
@@ -65,9 +68,7 @@ export function LoadingQuotes({
       ? "text-clay-text/60 text-xs italic"
       : "text-clay-text/60 text-sm italic";
   const filmClass =
-    size === "sm"
-      ? "text-clay-text/40 text-2xs"
-      : "text-clay-text/40 text-xs";
+    size === "sm" ? "text-clay-text/40 text-2xs" : "text-clay-text/40 text-xs";
 
   return (
     <motion.div
