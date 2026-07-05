@@ -82,8 +82,13 @@ export function DiscoveryPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
 
   // Deep link support (DISC-04)
-  const { deepLinkMovieId, showAllProviders, isTrendingSource, clearDeepLink } =
-    useDeepLink();
+  const {
+    deepLinkMovieId,
+    showAllProviders,
+    isTrendingSource,
+    isCanonicalMoviePath,
+    clearDeepLink,
+  } = useDeepLink();
   const { data: deepLinkMovie, isLoading: deepLinkLoading } =
     useMovieDetails(deepLinkMovieId);
 
@@ -121,15 +126,16 @@ export function DiscoveryPage() {
 
   // Initialize on mount: show onboarding for new users, apply persisted filters + discover for returning users.
   // Post-onboarding discover is handled by handleOnboardingComplete — no deps needed here.
-  // Also skip both branches when the store already has a movie (discoveryMovie) — this
-  // component remounts when clearDeepLink() navigates /movie/:slug -> /discover (different
-  // route component at that Outlet slot), and the just-loaded deep-linked movie lives in
-  // the Zustand store, not component state, so it survives the remount and must not be
-  // clobbered by a fresh onboarding prompt or an unrelated random discover().
+  // Skipped entirely when a deep link pins a movie (deepLinkMovieId) — that movie takes
+  // over the display and onboarding/discover would only race with it. Canonical
+  // /movie/:slug pages keep their URL for the whole visit (see the deep-link effect
+  // below), so this mount effect never re-fires mid-visit; it only runs again once the
+  // user explicitly leaves via Next/Skip, landing on plain /discover — at which point a
+  // fresh onboarding prompt or discover() is exactly the intended (pre-existing) behavior.
   useEffect(() => {
-    if (!hasCompletedOnboarding && !deepLinkMovieId && !discoveryMovie) {
+    if (!hasCompletedOnboarding && !deepLinkMovieId) {
       setShowOnboarding(true);
-    } else if (hasCompletedOnboarding && !deepLinkMovieId && !discoveryMovie) {
+    } else if (hasCompletedOnboarding && !deepLinkMovieId) {
       // Returning user — restore persisted filters and discover
       const providerIds =
         myServices.length > 0
@@ -145,14 +151,22 @@ export function DiscoveryPage() {
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // When deep link movie is loaded, set it as current movie in store and clear param.
-  // Capture showAllProviders before clearing — URL params disappear after clearDeepLink().
+  // When deep link movie is loaded, set it as current movie in store.
+  // Capture showAllProviders/isTrendingSource before any clearing — URL params
+  // disappear after clearDeepLink(). On the canonical /movie/:slug path, the URL is
+  // NOT auto-cleared: it must stay put for the whole visit (shareable link, SEO
+  // canonical, and clearing it would remount the page and reset showTickets/
+  // globalProviders back to their initial false). Only the legacy ?movie=ID query
+  // form strips its params here — same route, no remount, so it's harmless.
+  // Leaving /movie/:slug happens explicitly via Next/Skip (see handleNext).
   useEffect(() => {
     if (deepLinkMovie) {
       setGlobalProviders(showAllProviders);
       setShowTickets(isTrendingSource);
       setCurrentMovie(deepLinkMovie);
-      clearDeepLink();
+      if (!isCanonicalMoviePath) {
+        clearDeepLink();
+      }
     }
   }, [deepLinkMovie]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -181,13 +195,22 @@ export function DiscoveryPage() {
     discover();
   }, [discover, setCurrentMovie]);
 
-  // Handle Next action — resets global provider view back to regional
+  // Handle Next action — resets global provider view back to regional.
+  // While a deep link pins the display (deepLinkMovieId), currentMovie always
+  // resolves to that pinned movie regardless of discover() — so leave deep-link
+  // mode first. On /movie/:slug that navigates to /discover, remounting this
+  // component; its mount-only effect then runs the fresh discover() (avoids
+  // kicking off a second, redundant discover() call here that would race it).
   const handleNext = useCallback(() => {
     setLovedMovieId(null);
     setGlobalProviders(false);
     setShowTickets(false);
+    if (deepLinkMovieId !== null) {
+      clearDeepLink();
+      return;
+    }
     discover();
-  }, [discover]);
+  }, [discover, deepLinkMovieId, clearDeepLink]);
 
   // Handle Love action (INTR-01, INTR-04)
   const handleLove = useCallback(() => {

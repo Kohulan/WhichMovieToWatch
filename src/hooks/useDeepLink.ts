@@ -17,6 +17,12 @@ import { parseMovieIdFromSlug } from "@/lib/movie-url";
  *   /discover?movie=27205         (legacy deep link — still works)
  * Also reads ?providers=all (global availability) and ?source=trending|browse.
  * clearDeepLink() returns the user to plain /discover (random discovery).
+ *
+ * `isCanonicalMoviePath` lets callers (DiscoveryPage) know they're on the
+ * canonical /movie/:slug URL so they can avoid auto-clearing it — clearing
+ * navigates away and would both remount the page and destroy the shareable/
+ * indexable URL right after load. Callers should only clear it in response
+ * to an explicit user action (e.g. Next/Skip).
  */
 export function useDeepLink() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,9 +38,10 @@ export function useDeepLink() {
 
   const showAllProviders = searchParams.get("providers") === "all";
   const isTrendingSource = searchParams.get("source") === "trending";
+  const isCanonicalMoviePath = location.pathname.startsWith("/movie/");
 
   function clearDeepLink() {
-    if (location.pathname.startsWith("/movie/")) {
+    if (isCanonicalMoviePath) {
       navigate("/discover", { replace: true });
       return;
     }
@@ -50,5 +57,11 @@ export function useDeepLink() {
     );
   }
 
-  return { deepLinkMovieId, showAllProviders, isTrendingSource, clearDeepLink };
+  return {
+    deepLinkMovieId,
+    showAllProviders,
+    isTrendingSource,
+    isCanonicalMoviePath,
+    clearDeepLink,
+  };
 }
