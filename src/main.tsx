@@ -22,6 +22,9 @@ const DinnerTimePage = lazy(() => import("./pages/DinnerTimePage"));
 const FreeMoviesPage = lazy(() => import("./pages/FreeMoviesPage"));
 const BrowsePage = lazy(() => import("./pages/BrowsePage"));
 const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
+const TonightPage = lazy(() => import("./pages/TonightPage"));
+const GenrePage = lazy(() => import("./pages/GenrePage"));
+const ProviderPage = lazy(() => import("./pages/ProviderPage"));
 
 // One-shot DevTools welcome for the curious. Production-only so dev HMR
 // reloads aren't noisy. Uses the project accent color literal so the styled
@@ -92,6 +95,18 @@ const router = createBrowserRouter([
       { path: "trending", element: withSuspense(<TrendingPage />) },
       { path: "dinner-time", element: withSuspense(<DinnerTimePage />) },
       { path: "free-movies", element: withSuspense(<FreeMoviesPage />) },
+      {
+        path: "what-to-watch-tonight",
+        element: withSuspense(<TonightPage />),
+      },
+      {
+        path: "movies/genre/:genreSlug",
+        element: withSuspense(<GenrePage />),
+      },
+      {
+        path: "streaming/:providerSlug",
+        element: withSuspense(<ProviderPage />),
+      },
       ...(import.meta.env.DEV
         ? [{ path: "showcase", element: withSuspense(<Showcase />) }]
         : []),

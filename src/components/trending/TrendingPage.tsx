@@ -1,17 +1,17 @@
 // Trending (Now Playing) page — horizontal scroll strip with auto-refresh (TRND-01, TRND-02, TRND-03, TRND-04)
 
-import { Link } from "react-router";
 import { RefreshCw, Clock, AlertCircle } from "lucide-react";
 import { useTrending } from "@/hooks/useTrending";
-import { getPosterUrl } from "@/services/tmdb/client";
-import { moviePath } from "@/lib/movie-url";
-import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { ClaySkeletonCard } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
 import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/animation/StaggerContainer";
+import { MoviePosterCard } from "@/components/seo/MoviePosterCard";
+import { Seo, routeSeoProps } from "@/components/seo/Seo";
+import { getRouteMeta, SITE } from "@/seo/meta";
+import { itemListJsonLd } from "../../../tools/lib/jsonld.mjs";
 
 /**
  * TrendingPage — Horizontal scroll row of now-playing movies with auto-refresh.
@@ -62,6 +62,18 @@ export function TrendingPage() {
 
   return (
     <section className="space-y-3 p-4" aria-labelledby="trending-heading">
+      {movies.length > 0 && (
+        <Seo
+          {...routeSeoProps(getRouteMeta("/trending")!)}
+          jsonLd={[
+            itemListJsonLd({
+              movies,
+              pageUrl: `${SITE.origin}/trending`,
+              origin: SITE.origin,
+            }),
+          ]}
+        />
+      )}
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2
@@ -105,80 +117,15 @@ export function TrendingPage() {
         role="list"
         aria-label="Now playing movies"
       >
-        {movies.map((movie) => {
-          const posterUrl = getPosterUrl(movie.poster_path, "w185");
-          const year = movie.release_date
-            ? new Date(movie.release_date).getFullYear()
-            : null;
-          const ratingPercent = Math.round(movie.vote_average * 10);
-
-          let ratingColor = "bg-red-500/80 text-white";
-          if (ratingPercent >= 70) {
-            ratingColor = "bg-green-500/80 text-white";
-          } else if (ratingPercent >= 50) {
-            ratingColor = "bg-yellow-500/80 text-white";
-          }
-
-          return (
-            <StaggerItem
-              key={movie.id}
-              direction="up"
-              className="flex-shrink-0 snap-start w-40 md:w-full"
-            >
-              <Link
-                role="listitem"
-                to={`${moviePath(movie)}?source=trending`}
-                className="w-full flex flex-col gap-2 text-left group focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-2xl contain-card cv-auto"
-                aria-label={`${movie.title}${year ? `, ${year}` : ""}, rated ${ratingPercent}%`}
-              >
-                {/* Poster */}
-                <div className="w-40 md:w-full h-60 rounded-2xl overflow-hidden bg-white/[0.05] border border-white/10 relative transition-all duration-300 group-hover:border-white/20 group-hover:shadow-lg group-hover:shadow-accent/10">
-                  {posterUrl ? (
-                    <img
-                      src={posterUrl}
-                      srcSet={
-                        movie.poster_path
-                          ? tmdbPosterSrcSet(movie.poster_path)
-                          : undefined
-                      }
-                      sizes={posterSizes}
-                      alt={`${movie.title} poster`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-clay-surface">
-                      <span className="text-clay-text-muted text-xs text-center px-2">
-                        No poster
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Rating badge overlay */}
-                  <div
-                    className={`absolute top-2 right-2 text-xs font-bold px-1.5 py-0.5 rounded-md ${ratingColor}`}
-                    aria-hidden="true"
-                  >
-                    {ratingPercent}%
-                  </div>
-                </div>
-
-                {/* Title + year */}
-                <div className="px-0.5">
-                  <p className="text-clay-text text-sm font-semibold leading-tight line-clamp-2 group-hover:text-clay-accent transition-colors">
-                    {movie.title}
-                  </p>
-                  {year && (
-                    <p className="text-clay-text-muted text-xs mt-0.5">
-                      {year}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            </StaggerItem>
-          );
-        })}
+        {movies.map((movie) => (
+          <StaggerItem
+            key={movie.id}
+            direction="up"
+            className="flex-shrink-0 snap-start w-40 md:w-full"
+          >
+            <MoviePosterCard movie={movie} search="?source=trending" />
+          </StaggerItem>
+        ))}
       </StaggerContainer>
     </section>
   );
