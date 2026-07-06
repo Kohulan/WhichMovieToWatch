@@ -14,8 +14,6 @@ interface ShareButtonProps {
   movie: StoryCardMovie;
 }
 
-const SHARE_URL_BASE = "https://www.whichmovietowatch.online/#/discover?movie=";
-
 export function ShareButton({ movie }: ShareButtonProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 

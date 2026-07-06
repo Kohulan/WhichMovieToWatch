@@ -11,9 +11,27 @@ export function escapeHtml(s) {
     .replaceAll("'", "&#39;");
 }
 
+function escapeRegExp(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Matches the whole `<meta ... >` tag containing the target attr/name pair,
+// then rewrites its content="" value in place. Vite's build output (and the
+// hand-authored source index.html) wraps long meta tags across multiple
+// lines with one attribute per line — a regex assuming `attr="name"
+// content="..."` are adjacent on one line would silently fail to match
+// (setMeta's return value == its input), leaving stale content behind
+// instead of throwing. Matching the full tag via `[^>]*` (which spans
+// newlines) and locating attr/content independently inside it is agnostic
+// to attribute order and line breaks.
 function setMeta(html, attr, name, value) {
-  const re = new RegExp(`(<meta ${attr}="${name}" content=")[^"]*(")`);
-  return html.replace(re, (_m, p1, p2) => p1 + escapeHtml(value) + p2);
+  const tagRe = new RegExp(
+    `<meta\\b[^>]*\\b${attr}="${escapeRegExp(name)}"[^>]*>`,
+  );
+  const escaped = escapeHtml(value);
+  return html.replace(tagRe, (tag) =>
+    tag.replace(/content="[^"]*"/, () => `content="${escaped}"`),
+  );
 }
 
 /**

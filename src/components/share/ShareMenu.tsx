@@ -24,13 +24,13 @@ import type { StoryCardMovie } from "./StoryCardGenerator";
 import { useShare } from "@/hooks/useShare";
 import { useThemeStore } from "@/stores/themeStore";
 import { showToast } from "@/components/shared/Toast";
+import { SITE } from "@/seo/meta";
+import { moviePath } from "@/lib/movie-url";
 
 interface ShareMenuProps {
   movie: StoryCardMovie;
   onClose: () => void;
 }
-
-const SHARE_URL_BASE = "https://www.whichmovietowatch.online/#/discover?movie=";
 
 export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   const { copyToClipboard } = useShare();
@@ -39,7 +39,7 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   const [generatingPost, setGeneratingPost] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  const shareUrl = `${SHARE_URL_BASE}${movie.id}`;
+  const shareUrl = `${SITE.origin}${moviePath(movie)}`;
 
   // Close on Escape key
   useEffect(() => {

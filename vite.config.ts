@@ -50,7 +50,22 @@ export default defineConfig({
         // 3D runtime that should only load on capable devices, not on every SW install.
         // It is served via NetworkFirst runtime caching instead (see runtimeCaching below).
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
-        globIgnores: ["**/spline-vendor-*.js", "**/SplineHero-*.js"],
+        // index.html/404.html are excluded from the precache manifest: the
+        // manifest (and its content-hash revision) is computed here at
+        // vite-build time, BEFORE tools/prerender.mjs rewrites dist/index.html
+        // per-route. If either were precached, the service worker would pin
+        // whatever content existed at the very first deploy forever — the
+        // revision hash never changes on later deploys since this file's
+        // bytes (pre-prerender) are identical every time. Navigations are
+        // already served fresh via the NetworkFirst pages-cache rule below,
+        // with offline.html (precached separately via includeAssets) as the
+        // last-resort fallback.
+        globIgnores: [
+          "**/spline-vendor-*.js",
+          "**/SplineHero-*.js",
+          "**/index.html",
+          "**/404.html",
+        ],
         // vite-plugin-pwa defaults navigateFallback to "index.html" when the
         // key is absent from this object (app-shell SPA behavior). We rely on
         // NetworkFirst + precacheFallback below instead, so it must be
