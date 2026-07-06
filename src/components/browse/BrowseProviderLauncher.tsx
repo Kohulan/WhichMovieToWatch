@@ -95,7 +95,7 @@ export function BrowseProviderLauncher({
   if (isLoading && providers.length === 0) {
     return (
       <div
-        className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-3"
+        className="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2.5"
         aria-busy="true"
         aria-label="Loading streaming services"
       >
@@ -151,7 +151,7 @@ export function BrowseProviderLauncher({
         heading="All platforms"
         providers={visibleOthers}
         onSelect={onSelect}
-        gridClass="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-7 gap-3"
+        gridClass="grid grid-cols-4 sm:grid-cols-6 lg:grid-cols-8 gap-2.5"
       >
         {hiddenCount > 0 && !showAll && (
           <ToggleAllLink expanded={false} onClick={() => setShowAll(true)}>

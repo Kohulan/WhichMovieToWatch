@@ -191,11 +191,13 @@ export function MetalDropdown({
           select-none
         "
       >
-        <span className={`relative z-10 ${selectedOption ? "" : "opacity-60"}`}>
+        <span
+          className={`relative z-10 min-w-0 truncate whitespace-nowrap text-left ${selectedOption ? "" : "opacity-60"}`}
+        >
           {displayLabel}
         </span>
         <motion.span
-          className="relative z-10"
+          className="relative z-10 flex-shrink-0"
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >

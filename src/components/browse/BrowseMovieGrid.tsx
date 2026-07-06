@@ -111,11 +111,9 @@ export function BrowseMovieGrid({
                 className="
                   w-full text-left group cursor-pointer
                   rounded-2xl overflow-hidden
-                  bg-white/[0.06] backdrop-blur-sm
-                  border border-white/[0.08]
+                  bg-clay-surface clay-shadow-sm
                   transition-shadow duration-300
-                  hover:border-white/[0.15]
-                  hover:shadow-[0_12px_40px_rgba(0,0,0,0.2),0_0_0_1px_rgba(255,255,255,0.06)]
+                  hover:shadow-[0_8px_24px_rgba(0,0,0,0.16),0_0_0_1px_color-mix(in_oklch,var(--accent)_35%,transparent)]
                   outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-clay-base
                   contain-card cv-auto
                 "
@@ -153,7 +151,6 @@ export function BrowseMovieGrid({
                       absolute top-2 right-2
                       text-[11px] font-bold
                       px-2 py-0.5 rounded-lg
-                      backdrop-blur-md
                       ${ratingColor}
                     `}
                     style={{
@@ -165,8 +162,8 @@ export function BrowseMovieGrid({
                   </div>
                 </div>
 
-                <div className="p-2.5 bg-clay-surface/80">
-                  <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2 group-hover:text-accent transition-colors duration-200">
+                <div className="p-2.5">
+                  <p className="text-clay-text text-xs font-semibold leading-tight line-clamp-2 min-h-[2lh] group-hover:text-accent transition-colors duration-200">
                     {movie.title}
                   </p>
                   {year && (

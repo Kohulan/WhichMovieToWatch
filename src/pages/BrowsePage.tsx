@@ -142,6 +142,13 @@ export default function BrowsePage() {
                   />
                 )}
 
+                {totalResults > 0 && (
+                  <p className="hidden md:block text-clay-text-muted text-xs tabular-nums whitespace-nowrap flex-shrink-0">
+                    {totalResults.toLocaleString()}{" "}
+                    {totalResults === 1 ? "movie" : "movies"}
+                  </p>
+                )}
+
                 <div className="ml-auto flex items-center gap-2 sm:gap-3 flex-shrink-0">
                   <div className="w-[150px] sm:w-[180px]">
                     <MetalDropdown
@@ -173,28 +180,22 @@ export default function BrowsePage() {
                   >
                     <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
                     {filtersActive && (
-                      <motion.span
-                        className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent"
+                      <span
+                        className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent ring-2 ring-clay-surface"
                         aria-hidden="true"
-                        animate={{ opacity: [0.6, 1, 0.6] }}
-                        transition={{
-                          duration: 1.6,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
                       />
                     )}
                   </motion.button>
                 </div>
               </div>
-
-              {totalResults > 0 && (
-                <p className="text-clay-text-muted text-xs mt-2 tabular-nums">
-                  {totalResults.toLocaleString()}{" "}
-                  {totalResults === 1 ? "movie" : "movies"}
-                </p>
-              )}
             </div>
+
+            {totalResults > 0 && (
+              <p className="md:hidden text-clay-text-muted text-xs mt-3 tabular-nums">
+                {totalResults.toLocaleString()}{" "}
+                {totalResults === 1 ? "movie" : "movies"}
+              </p>
+            )}
 
             {error && (
               <motion.div
