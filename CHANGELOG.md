@@ -1,5 +1,49 @@
 # Changelog
 
+## [2.3.1](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.3.0...v2.3.1) (2026-06-17)
+
+
+### Bug Fixes
+
+* **deps:** resolve Dependabot alerts (react-router XSS/RCE/DoS, esbuild) ([6938aa3](https://github.com/Kohulan/WhichMovieToWatch/commit/6938aa3e19436b67f4d98bfea011a9e22a9d2726))
+
+## [2.3.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.2.0...v2.3.0) (2026-05-10)
+
+
+### Features
+
+* **browse:** card→chip morph, section stagger, scroll elevation, cinematic copy ([1e63d1f](https://github.com/Kohulan/WhichMovieToWatch/commit/1e63d1f13fb612552c7a5792ee010678bc4f0a70))
+* **browse:** morph poster from grid into discover hero on tap ([f856c15](https://github.com/Kohulan/WhichMovieToWatch/commit/f856c153eaa9774bc36ce21e7403f0452feee6ba))
+* **browse:** two-state layout — provider launcher + chip toolbar ([07f2eec](https://github.com/Kohulan/WhichMovieToWatch/commit/07f2eec5a523899713cd4747a3f3f3723686fd12))
+
+
+### Bug Fixes
+
+* **browse:** surface Disney+ and other majors in the launcher ([a7ef070](https://github.com/Kohulan/WhichMovieToWatch/commit/a7ef070573d8c0f382852530974ca4f9e53dec52))
+
+## [2.2.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.1.0...v2.2.0) (2026-05-09)
+
+
+### Features
+
+* **delight:** time-aware tagline, milestone toasts, console egg, more quotes ([4ad1f71](https://github.com/Kohulan/WhichMovieToWatch/commit/4ad1f71e102834b6e23b8f6da87b47ac619f91dc))
+
+
+### Bug Fixes
+
+* **a11y, responsive:** 44px touch targets; 100dvh for mobile address bar ([2684301](https://github.com/Kohulan/WhichMovieToWatch/commit/2684301ee3906e33c2e681bf76989b9adeb7bae6))
+* **a11y, theming:** focus traps in modals; define phantom tokens ([2228dec](https://github.com/Kohulan/WhichMovieToWatch/commit/2228decbcc3d12676d3640e0fe96a8ce16823e9b))
+* **deps:** patch 12 Dependabot vulnerabilities via npm audit fix ([b9cc5e3](https://github.com/Kohulan/WhichMovieToWatch/commit/b9cc5e384e2f0fcdb0de51a09ab64f8f3b763637))
+* **harden:** error and empty state coverage across data hooks ([4f3725f](https://github.com/Kohulan/WhichMovieToWatch/commit/4f3725f80195c313189775c2daf920e59e742fca))
+* **harden:** guard concurrent fetches; disable buttons while loading ([0ff6d4d](https://github.com/Kohulan/WhichMovieToWatch/commit/0ff6d4d4549dfedac2d2075c52d174b0b71315d3))
+* **harden:** sanitize TicketSearch input length and HTML tokens ([dfd32d6](https://github.com/Kohulan/WhichMovieToWatch/commit/dfd32d6feffc8c8e21e60d68aa2951a6730b930e))
+
+
+### Performance Improvements
+
+* composite accent-glow; cv-auto on movie grids; drop dead font deps ([3352972](https://github.com/Kohulan/WhichMovieToWatch/commit/3352972558c28f3cff4e6e422b87e2e50f966302))
+* lazy-load routes; replace layout-property animations with transforms ([70f2aee](https://github.com/Kohulan/WhichMovieToWatch/commit/70f2aee57ff614fedee3c6729ba48e198a01d848))
+
 ## [2.1.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.0.0...v2.1.0) (2026-03-17)
 
 
