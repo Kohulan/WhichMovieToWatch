@@ -191,3 +191,13 @@ createRoot(document.getElementById("root")!).render(
     <RouterProvider router={router} />
   </StrictMode>,
 );
+
+// Signal to the boot watchdog (inline script in index.html) that the app
+// bundle downloaded and executed. This runs at module-eval time right after
+// the render() call is issued — it proves the JS actually ran, which is the
+// failure mode the watchdog guards against (a broken/stale SW serving a
+// bundle that never loads at all). A component that throws during render is
+// a separate concern already handled by RouteErrorBoundary/error boundaries;
+// this flag only needs to prove the bundle executed, not that render
+// succeeded end-to-end.
+window.__WMTW_MOUNTED = true;

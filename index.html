@@ -114,6 +114,52 @@
       })();
     </script>
     <script>
+      // SW recovery watchdog: if the app bundle hasn't executed within 12s on
+      // a service-worker-controlled page, the SW/caches are serving a broken
+      // build. Nuke registrations+caches and reload once (session-guarded, no
+      // loops). window.__WMTW_MOUNTED is set by src/main.tsx immediately
+      // after render() is called, proving the bundle downloaded and ran.
+      (function () {
+        try {
+          if (!("serviceWorker" in navigator)) return;
+          if (sessionStorage.getItem("wmtw:sw-recovered")) return;
+          setTimeout(function () {
+            if (window.__WMTW_MOUNTED) return;
+            if (!navigator.serviceWorker.controller) return;
+            try {
+              sessionStorage.setItem("wmtw:sw-recovered", "1");
+            } catch (e) {}
+            var work = [];
+            work.push(
+              navigator.serviceWorker.getRegistrations().then(function (rs) {
+                return Promise.all(
+                  rs.map(function (r) {
+                    return r.unregister();
+                  }),
+                );
+              }),
+            );
+            if (window.caches && caches.keys) {
+              work.push(
+                caches.keys().then(function (keys) {
+                  return Promise.all(
+                    keys.map(function (k) {
+                      return caches.delete(k);
+                    }),
+                  );
+                }),
+              );
+            }
+            Promise.all(work)
+              .catch(function () {})
+              .then(function () {
+                location.reload();
+              });
+          }, 12000);
+        } catch (e) {}
+      })();
+    </script>
+    <script>
       (function () {
         try {
           var stored = JSON.parse(localStorage.getItem("theme-preferences"));
