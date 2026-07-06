@@ -1,6 +1,7 @@
 import { StrictMode, Suspense, lazy } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
+import { AlertCircle, RefreshCcw } from "lucide-react";
 
 import "@fontsource-variable/jetbrains-mono";
 
@@ -25,6 +26,7 @@ const PrivacyPage = lazy(() => import("./pages/PrivacyPage"));
 const TonightPage = lazy(() => import("./pages/TonightPage"));
 const GenrePage = lazy(() => import("./pages/GenrePage"));
 const ProviderPage = lazy(() => import("./pages/ProviderPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 // One-shot DevTools welcome for the curious. Production-only so dev HMR
 // reloads aren't noisy. Uses the project accent color literal so the styled
@@ -109,10 +111,42 @@ const withSuspense = (node: React.ReactNode) => (
   <Suspense fallback={<PageSuspenseFallback />}>{node}</Suspense>
 );
 
+/**
+ * RouteErrorBoundary — createBrowserRouter `errorElement` for the root route.
+ * Catches errors react-router itself surfaces (loader/render throws that
+ * happen before or outside AppShell's own PageErrorBoundary, failed lazy
+ * chunk imports, etc.) so they never fall through to the browser's default
+ * unstyled error screen. Kept inline (not in NotFoundPage.tsx) so that
+ * page's default export stays a clean, standalone lazy chunk — this
+ * component is statically referenced by the router config below.
+ */
+function RouteErrorBoundary() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-dvh px-6 text-center bg-clay-base">
+      <AlertCircle className="w-12 h-12 text-red-400 mb-4" aria-hidden="true" />
+      <h2 className="text-lg font-semibold text-clay-text mb-2">
+        Something went wrong
+      </h2>
+      <p className="text-sm text-clay-text-muted mb-6">
+        This page encountered an error. Please try again.
+      </p>
+      <button
+        type="button"
+        onClick={() => window.location.reload()}
+        className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-accent/20 text-accent text-sm font-medium hover:bg-accent/30 transition-colors"
+      >
+        <RefreshCcw className="w-4 h-4" aria-hidden="true" />
+        Reload
+      </button>
+    </div>
+  );
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <RouteErrorBoundary />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "discover", element: withSuspense(<DiscoverPage />) },
@@ -137,9 +171,20 @@ const router = createBrowserRouter([
         ? [{ path: "showcase", element: withSuspense(<Showcase />) }]
         : []),
       { path: "privacy", element: withSuspense(<PrivacyPage />) },
+      { path: "*", element: withSuspense(<NotFoundPage />) },
     ],
   },
 ]);
+
+// Prerendered pages ship a static JSON-LD <script data-prerender> block baked
+// in by tools/prerender.mjs so crawlers see structured data before hydration.
+// Once React hydrates and mounts its own <Seo> (with live, always-current
+// data), the static block is redundant and — if ever left stale relative to
+// the fetched-at-runtime content — would leave two divergent JSON-LD blocks
+// on the page. Remove it so hydrated pages own their JSON-LD exclusively.
+document
+  .querySelectorAll('script[type="application/ld+json"][data-prerender]')
+  .forEach((el) => el.remove());
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -11,7 +11,10 @@ import {
 import { MoviePosterCard } from "@/components/seo/MoviePosterCard";
 import { Seo, routeSeoProps } from "@/components/seo/Seo";
 import { getRouteMeta, SITE } from "@/seo/meta";
-import { itemListJsonLd } from "../../../tools/lib/jsonld.mjs";
+import {
+  itemListJsonLd,
+  breadcrumbJsonLd,
+} from "../../../tools/lib/jsonld.mjs";
 
 /**
  * TrendingPage — Horizontal scroll row of now-playing movies with auto-refresh.
@@ -71,6 +74,13 @@ export function TrendingPage() {
               pageUrl: `${SITE.origin}/trending`,
               origin: SITE.origin,
             }),
+            breadcrumbJsonLd(
+              [
+                { name: "Home", path: "/" },
+                { name: "Trending Movies", path: "/trending" },
+              ],
+              SITE.origin,
+            ),
           ]}
         />
       )}

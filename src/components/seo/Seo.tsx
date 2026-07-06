@@ -7,7 +7,10 @@
  * same values into static HTML); this component keeps the head correct
  * during client-side navigation.
  */
+import { useContext } from "react";
+import { useLocation } from "react-router";
 import { SITE } from "@/seo/meta";
+import { FrozenPathContext } from "@/components/layout/frozen-path-context";
 
 interface SeoProps {
   title: string;
@@ -27,6 +30,14 @@ export function Seo({
   ogType = "website",
   jsonLd = [],
 }: SeoProps) {
+  // Bail out if this instance is mounted inside a FrozenOutlet subtree that
+  // is no longer the live route (i.e. it's fading out during a page
+  // transition) — otherwise it keeps racing the entering page's <Seo> for
+  // control of the document head. See frozen-path-context.ts.
+  const frozenPath = useContext(FrozenPathContext);
+  const livePath = useLocation().pathname;
+  if (frozenPath !== null && frozenPath !== livePath) return null;
+
   const url = SITE.origin + (path === "/" ? "/" : path);
   return (
     <>
@@ -47,7 +58,9 @@ export function Seo({
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(ld).replaceAll("</", "<\\/"),
+          }}
         />
       ))}
     </>

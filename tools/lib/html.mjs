@@ -62,7 +62,7 @@ export function applyHead(
     `<link rel="canonical" href="${escapeHtml(canonical)}" />`,
     ...jsonLd.map(
       (ld) =>
-        `<script type="application/ld+json">${JSON.stringify(ld).replaceAll("</", "<\\/")}</script>`,
+        `<script type="application/ld+json" data-prerender>${JSON.stringify(ld).replaceAll("</", "<\\/")}</script>`,
     ),
   ].join("\n");
   return out.replace("</head>", () => `${extra}\n</head>`);

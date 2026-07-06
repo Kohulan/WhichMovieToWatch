@@ -12,9 +12,7 @@ interface MoviePosterCardProps {
 
 export function MoviePosterCard({ movie, search = "" }: MoviePosterCardProps) {
   const posterUrl = getPosterUrl(movie.poster_path, "w185");
-  const year = movie.release_date
-    ? new Date(movie.release_date).getFullYear()
-    : null;
+  const year = movie.release_date ? movie.release_date.slice(0, 4) : null;
   const ratingPercent = Math.round(movie.vote_average * 10);
 
   let ratingColor = "bg-red-500/80 text-white";

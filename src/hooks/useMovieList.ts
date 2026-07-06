@@ -11,6 +11,7 @@ export function useMovieList(key: string, loader: () => Promise<TMDBMovie[]>) {
     let cancelled = false;
     setIsLoading(true);
     setError(null);
+    setMovies([]);
     loader()
       .then((result) => {
         if (!cancelled) setMovies(result);

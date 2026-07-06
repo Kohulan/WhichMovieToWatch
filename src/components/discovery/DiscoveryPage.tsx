@@ -253,6 +253,11 @@ export function DiscoveryPage() {
           // Navigate to the new movie's own canonical page instead; the resulting
           // remount picks it up as the new deep link, keeping the URL/canonical in
           // sync with what's actually displayed.
+          // Set the store first: the zustand store survives the slug→slug
+          // remount, so the freshly-mounted page renders this movie instantly
+          // instead of flashing the old movie while useMovieDetails re-resolves
+          // it (from cache) after the remount.
+          setCurrentMovie(details);
           navigate(moviePath(details));
           return;
         }
@@ -339,7 +344,12 @@ export function DiscoveryPage() {
       <Announcer />
 
       {/* Dynamic OG/Twitter Card meta tags + Movie JSON-LD — React 19 native hoisting (SOCL-02, SOCL-03) */}
-      {currentMovie ? (
+      {/* Only claim the movie's own canonical when the URL actually pins it
+          (canonical /movie/:slug, or legacy /discover?movie=ID). A random
+          discover() result on plain /discover keeps the route's own
+          canonical — otherwise every reshuffled random movie would hijack
+          /discover's canonical to point at itself (DISC-canonical bug). */}
+      {currentMovie && (isCanonicalMoviePath || deepLinkMovieId !== null) ? (
         <Seo
           title={`${currentMovie.title} — Where to Stream & Ratings`}
           description={`${currentMovie.title}${currentMovie.release_date ? ` (${currentMovie.release_date.slice(0, 4)})` : ""} — ${(currentMovie.overview ?? "").slice(0, 120)}…`}

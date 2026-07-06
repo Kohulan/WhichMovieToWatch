@@ -23,6 +23,7 @@ import {
   pageTransition3D,
 } from "@/components/animation/PageTransition";
 import { ParallaxFallback } from "@/components/3d/ParallaxFallback";
+import { FrozenPathContext } from "./frozen-path-context";
 
 /**
  * Catches Spline runtime errors (e.g. invalid .splinecode) that throw during
@@ -147,11 +148,23 @@ const LazyCameraTransitionManager = lazy(
  * By freezing the outlet with useState (captured once on mount, never updated),
  * the exiting wrapper keeps rendering the OLD route's content during exit.
  * The entering wrapper gets a fresh FrozenOutlet that captures the NEW route.
+ *
+ * Also freezes the mount pathname and provides it via FrozenPathContext so
+ * <Seo> can detect when it's rendering inside an exiting (stale) subtree and
+ * stop emitting head tags — otherwise the exiting page's <Seo> races the
+ * entering page's <Seo> for control of the document head during the fade
+ * (see frozen-path-context.ts).
  */
 function FrozenOutlet() {
   const outlet = useOutlet();
   const [frozen] = useState(outlet);
-  return frozen;
+  const location = useLocation();
+  const [frozenPath] = useState(location.pathname);
+  return (
+    <FrozenPathContext.Provider value={frozenPath}>
+      {frozen}
+    </FrozenPathContext.Provider>
+  );
 }
 
 /**
