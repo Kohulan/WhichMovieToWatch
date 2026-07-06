@@ -78,6 +78,13 @@ export default function BrowsePage() {
   const filtersActive = hasNonDefaultFilters(filters);
   const isEmpty = selectedProviderId === null;
 
+  // Launcher ⇄ results is a full content swap on the SAME route, so AppShell's
+  // route-keyed scroll reset never fires. Without this, clearing the chip while
+  // deep in a long grid strands the viewport below the (much shorter) launcher.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [isEmpty]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <Seo {...routeSeoProps(getRouteMeta("/browse")!)} />
