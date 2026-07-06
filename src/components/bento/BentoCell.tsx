@@ -209,7 +209,7 @@ export function BentoCell({
       {overlay && (
         <div
           className={[
-            "absolute inset-0 flex items-end",
+            "absolute inset-0 flex items-end pointer-events-none",
             // Desktop: CSS-based hover reveal via group-hover
             "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
           ].join(" ")}
