@@ -4,7 +4,7 @@
 
 <br/>
 
-<a href="https://www.whichmovietowatch.online">
+<a href="https://whichmovietowatch.online">
   <img src="assets/logo.png" alt="Which Movie To Watch" width="140"/>
 </a>
 
@@ -14,13 +14,13 @@
 
 <br/>
 
-[![Live App](https://img.shields.io/badge/Live_App-whichmovietowatch.online-F97316?style=for-the-badge&logo=googlechrome&logoColor=white)](https://www.whichmovietowatch.online)
+[![Live App](https://img.shields.io/badge/Live_App-whichmovietowatch.online-F97316?style=for-the-badge&logo=googlechrome&logoColor=white)](https://whichmovietowatch.online)
 [![License](https://img.shields.io/badge/License-MIT_Commons_Clause-3B82F6?style=for-the-badge)](LICENSE)
-[![Deploy](https://img.shields.io/github/deployments/Kohulan/WhichMovieToWatch/github-pages?style=for-the-badge&label=Deploy&logo=githubpages&logoColor=white)](https://www.whichmovietowatch.online)
+[![Deploy](https://img.shields.io/github/deployments/Kohulan/WhichMovieToWatch/github-pages?style=for-the-badge&label=Deploy&logo=githubpages&logoColor=white)](https://whichmovietowatch.online)
 
 <br/>
 
-<a href="https://www.whichmovietowatch.online">
+<a href="https://whichmovietowatch.online">
   <img src="assets/images/website.png" alt="App Preview" width="90%" style="border-radius:12px;" />
 </a>
 
