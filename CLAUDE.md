@@ -36,7 +36,7 @@ API keys: create `.env.local` with `VITE_TMDB_API_KEY=…` and `VITE_OMDB_API_KE
 - Every route must keep a real path URL (no hash routing) and a unique `<Seo>` block.
 - Internal navigation uses `<Link>` (real anchors) — never bare `onClick={navigate}` for primary nav.
 - Movie URLs: `/movie/<kebab-title>-<tmdbId>`; the ID is parsed from the trailing segment.
-- New indexable routes must be added to `src/seo/seo-content.json` (the prerender script, sitemap, footer nav, and React router all derive from it).
+- New indexable routes must be added to `src/seo/seo-content.json` (the prerender script, sitemap, and React router all derive from it). Note: the SiteFooter link graph was removed at the user's request (2026-07-18) — genre/provider hub pages are now discoverable only via sitemap.xml; do not re-add the footer without asking.
 - `public/404.html` + the boot script in `index.html` implement the GitHub Pages SPA fallback and legacy `/#/…` redirects.
 - tools/lib/html.mjs uses function-based replacers everywhere dynamic text enters String.replace — $ sequences in movie titles corrupt output otherwise; keep it that way.
 
