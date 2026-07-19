@@ -23,7 +23,7 @@ import {
 import { useTopStreaming } from "@/hooks/useTopStreaming";
 import { useFeaturedStore } from "@/stores/featuredStore";
 import { Seo, routeSeoProps } from "@/components/seo/Seo";
-import { getRouteMeta, SITE } from "@/seo/meta";
+import { SITE, HOME_META } from "@/seo/site";
 import { webSiteJsonLd, organizationJsonLd } from "@/../tools/lib/jsonld.mjs";
 
 import { DiscoverHeroCell } from "@/components/bento/cells/DiscoverHeroCell";
@@ -57,7 +57,7 @@ export function HomePage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <Seo
-        {...routeSeoProps(getRouteMeta("/")!)}
+        {...routeSeoProps(HOME_META)}
         jsonLd={[webSiteJsonLd(SITE), organizationJsonLd(SITE)]}
       />
 

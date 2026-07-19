@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, lazy, Suspense } from "react";
 import { NavLink, useLocation } from "react-router";
 import { motion } from "motion/react";
 import {
@@ -14,9 +14,23 @@ import {
 import logoSrc from "@/../assets/logo.png";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { RotaryDial } from "../ui/RotaryDial";
-import { SpotlightSearch } from "../search/SpotlightSearch";
 import { RegionPicker } from "./RegionPicker";
-import { MoreSheet } from "./MoreSheet";
+
+// The search overlay (SpotlightSearch + its results/filters cluster) and the
+// mobile More sheet are on-demand UI (~1300 lines) that used to ship in the
+// eager index chunk because Navbar imported them statically. They're lazy
+// now, mounted once `overlaysReady` flips — on browser idle (prefetch, so the
+// chunk is warm before the first tap) or on the first open click, whichever
+// comes first — and stay mounted afterwards so close animations and internal
+// state behave exactly as before.
+const SpotlightSearch = lazy(() =>
+  import("../search/SpotlightSearch").then((m) => ({
+    default: m.SpotlightSearch,
+  })),
+);
+const MoreSheet = lazy(() =>
+  import("./MoreSheet").then((m) => ({ default: m.MoreSheet })),
+);
 
 /** All tabs — shown on desktop (sm+) */
 const allTabs = [
@@ -43,14 +57,38 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchPreset, setSearchPreset] = useState<number | null>(null);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [overlaysReady, setOverlaysReady] = useState(false);
   const location = useLocation();
 
+  // Warm the lazy overlay chunk during idle time so the first tap on
+  // Search/Netflix/More doesn't wait on a network fetch. Same
+  // requestIdleCallback-with-setTimeout-fallback shape as AppShell's
+  // idleReady (see the type-narrowing note there).
+  useEffect(() => {
+    const ric = (
+      window as unknown as {
+        requestIdleCallback?: (
+          callback: () => void,
+          options?: { timeout?: number },
+        ) => number;
+      }
+    ).requestIdleCallback;
+    if (ric) {
+      const id = ric(() => setOverlaysReady(true), { timeout: 4000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const t = window.setTimeout(() => setOverlaysReady(true), 1500);
+    return () => window.clearTimeout(t);
+  }, []);
+
   const openSearch = useCallback(() => {
+    setOverlaysReady(true);
     setSearchPreset(null);
     setSearchOpen(true);
   }, []);
 
   function openNetflixSearch() {
+    setOverlaysReady(true);
     setSearchPreset(8);
     setSearchOpen(true);
   }
@@ -229,7 +267,10 @@ export function Navbar() {
           {/* More button — mobile only, opens bottom sheet */}
           <motion.button
             type="button"
-            onClick={() => setMoreOpen(true)}
+            onClick={() => {
+              setOverlaysReady(true);
+              setMoreOpen(true);
+            }}
             aria-label="More options"
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
@@ -256,14 +297,22 @@ export function Navbar() {
         </div>
       </nav>
 
-      <SpotlightSearch
-        isOpen={searchOpen}
-        onClose={handleClose}
-        initialProviderId={searchPreset}
-        netflixMode={searchPreset === 8}
-      />
+      {/* Mount-gated: placing the lazy subtree in the JSX is what triggers
+          the dynamic import — an ungated <Suspense> would fetch on initial
+          mount, same as the old static imports. fallback={null} matches the
+          closed state's appearance, so pre-load renders nothing either way. */}
+      {overlaysReady && (
+        <Suspense fallback={null}>
+          <SpotlightSearch
+            isOpen={searchOpen}
+            onClose={handleClose}
+            initialProviderId={searchPreset}
+            netflixMode={searchPreset === 8}
+          />
 
-      <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
+          <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

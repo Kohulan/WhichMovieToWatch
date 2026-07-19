@@ -15,11 +15,10 @@ import {
   X,
   Share2,
 } from "lucide-react";
-import {
-  generateStoryCard,
-  generatePostCard,
-  shareImageBlob,
-} from "./StoryCardGenerator";
+// StoryCardGenerator (~490 lines of canvas-drawing code) is only needed when
+// the user picks "Instagram Story"/"Create Post" — loaded on demand inside
+// those handlers instead of shipping with every page that renders a
+// ShareButton. The type-only import is erased at compile time.
 import type { StoryCardMovie } from "./StoryCardGenerator";
 import { useShare } from "@/hooks/useShare";
 import { useThemeStore } from "@/stores/themeStore";
@@ -68,6 +67,8 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   async function handleStoryCard() {
     setGeneratingStory(true);
     try {
+      const { generateStoryCard, shareImageBlob } =
+        await import("./StoryCardGenerator");
       const blob = await generateStoryCard(movie, preset, mode);
       if (!blob) {
         showToast("Failed to generate story card.", "error");
@@ -95,6 +96,8 @@ export function ShareMenu({ movie, onClose }: ShareMenuProps) {
   async function handlePostCard() {
     setGeneratingPost(true);
     try {
+      const { generatePostCard, shareImageBlob } =
+        await import("./StoryCardGenerator");
       const blob = await generatePostCard(movie, preset, mode);
       if (!blob) {
         showToast("Failed to generate post card.", "error");

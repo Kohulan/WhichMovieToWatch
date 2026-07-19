@@ -1,5 +1,9 @@
 // Typed accessor for the SEO content config.
 // The JSON is the single source of truth shared with tools/prerender.mjs.
+//
+// NOTE: this module inlines the ENTIRE seo-content.json into whatever chunk
+// imports it — only lazy pages may import it. Eager modules (HomePage, Seo)
+// must use ./site instead, which carries just the site block + home route.
 
 import content from "./seo-content.json";
 
@@ -19,11 +23,9 @@ export interface RouteMeta {
     | { kind: "provider"; providerId: number; region: string };
 }
 
-export const SITE = content.site as {
-  origin: string;
-  name: string;
-  defaultOgImage: string;
-};
+// SITE lives in ./site (fed by the eager-safe virtual module); re-exported
+// here so lazy pages can keep importing everything from one place.
+export { SITE } from "./site";
 
 const byPath = new Map<string, RouteMeta>(
   (content.routes as RouteMeta[]).map((r) => [r.path, r]),

@@ -9,7 +9,7 @@
  */
 import { useContext } from "react";
 import { useLocation } from "react-router";
-import { SITE } from "@/seo/meta";
+import { SITE } from "@/seo/site";
 import { FrozenPathContext } from "@/components/layout/frozen-path-context";
 
 interface SeoProps {
