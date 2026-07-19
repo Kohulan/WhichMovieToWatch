@@ -10,7 +10,11 @@ import { motion, AnimatePresence } from "motion/react";
 import { TrendingUp } from "lucide-react";
 import { useTrending } from "@/hooks/useTrending";
 import { useFeaturedStore } from "@/stores/featuredStore";
-import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import {
+  tmdbPosterSrcSet,
+  posterSizes,
+  tmdbImageUrl,
+} from "@/hooks/useResponsiveImage";
 
 // Gradient fallbacks for cards without poster images
 const POSTER_GRADIENTS = [
@@ -82,7 +86,7 @@ export function TrendingPreviewCell() {
                 if (!movie) return null;
                 const pos = POSITIONS[SLOT_ASSIGNMENT[i]];
                 const posterUrl = movie.poster_path
-                  ? `https://image.tmdb.org/t/p/w342${movie.poster_path}`
+                  ? tmdbImageUrl(movie.poster_path, "w342")
                   : null;
 
                 return (

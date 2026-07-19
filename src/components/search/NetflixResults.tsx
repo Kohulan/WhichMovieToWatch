@@ -9,7 +9,7 @@ import {
 } from "@/components/animation/StaggerContainer";
 import { useNetflixAvailability } from "@/hooks/useNetflixAvailability";
 import { getCountryName } from "@/lib/country-names";
-import { ratingColorClass } from "@/lib/rating-color";
+import { ratingColorClass, getMovieYear } from "@/lib/rating-color";
 import type { TMDBMovie } from "@/types/movie";
 
 interface NetflixResultsProps {
@@ -52,9 +52,7 @@ function NetflixCard({
     movie.id,
   );
   const posterUrl = getPosterUrl(movie.poster_path, "w185");
-  const year = movie.release_date
-    ? new Date(movie.release_date).getFullYear()
-    : null;
+  const year = getMovieYear(movie.release_date);
   const ratingPct = Math.round(movie.vote_average * 10);
   const ratingColor = ratingColorClass(movie.vote_average);
   const hasNetflix = countries.length > 0;

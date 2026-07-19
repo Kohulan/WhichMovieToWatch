@@ -7,7 +7,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/animation/StaggerContainer";
-import { ratingColorClass } from "@/lib/rating-color";
+import { ratingColorClass, getMovieYear } from "@/lib/rating-color";
 import type { TMDBMovie } from "@/types/movie";
 
 interface SpotlightResultsProps {
@@ -84,9 +84,7 @@ export function SpotlightResults({
       >
         {sorted.map((movie) => {
           const posterUrl = getPosterUrl(movie.poster_path, "w185");
-          const year = movie.release_date
-            ? new Date(movie.release_date).getFullYear()
-            : null;
+          const year = getMovieYear(movie.release_date);
           const ratingPct = Math.round(movie.vote_average * 10);
           const ratingColor = ratingColorClass(movie.vote_average);
 

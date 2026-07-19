@@ -39,6 +39,7 @@ import {
   backdropSizes,
   tmdbPosterSrcSet,
   posterSizes,
+  tmdbImageUrl,
 } from "@/hooks/useResponsiveImage";
 import { ShareButton } from "@/components/share/ShareButton";
 import { Seo, routeSeoProps } from "@/components/seo/Seo";
@@ -356,7 +357,7 @@ export function DiscoveryPage() {
           path={moviePath(currentMovie)}
           ogImage={
             currentMovie.poster_path
-              ? `https://image.tmdb.org/t/p/w1280${currentMovie.poster_path}`
+              ? tmdbImageUrl(currentMovie.poster_path, "w1280")
               : undefined
           }
           ogType="video.movie"

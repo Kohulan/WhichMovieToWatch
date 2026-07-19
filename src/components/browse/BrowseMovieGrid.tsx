@@ -5,7 +5,7 @@ import { getPosterUrl } from "@/services/tmdb/client";
 import { getMoviePosterLayoutId } from "@/lib/layout-ids";
 import { moviePath } from "@/lib/movie-url";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
-import { ratingColorClass } from "@/lib/rating-color";
+import { ratingColorClass, getMovieYear } from "@/lib/rating-color";
 import { MetalButton } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
 import {
@@ -86,9 +86,7 @@ export function BrowseMovieGrid({
       >
         {results.map((movie) => {
           const posterUrl = getPosterUrl(movie.poster_path, "w342");
-          const year = movie.release_date
-            ? new Date(movie.release_date).getFullYear()
-            : null;
+          const year = getMovieYear(movie.release_date);
           const ratingPct = Math.round(movie.vote_average * 10);
           const ratingColor = ratingColorClass(movie.vote_average);
 

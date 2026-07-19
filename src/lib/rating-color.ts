@@ -16,3 +16,8 @@ export function ratingColorClass(voteAverage: number): string {
   if (pct >= 50) return "bg-score-mid/80 text-white";
   return "bg-score-bad/80 text-white";
 }
+
+/** Extract the release year from a TMDB date string, or null if unset. */
+export function getMovieYear(releaseDate: string): number | null {
+  return releaseDate ? new Date(releaseDate).getFullYear() : null;
+}

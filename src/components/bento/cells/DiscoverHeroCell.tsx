@@ -12,7 +12,11 @@ import { useTopStreaming } from "@/hooks/useTopStreaming";
 import { useWatchProviders } from "@/hooks/useWatchProviders";
 import { useFeaturedStore } from "@/stores/featuredStore";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
-import { tmdbBackdropSrcSet, backdropSizes } from "@/hooks/useResponsiveImage";
+import {
+  tmdbBackdropSrcSet,
+  backdropSizes,
+  tmdbImageUrl,
+} from "@/hooks/useResponsiveImage";
 
 // TMDB provider IDs for the three target services
 const STREAMING_IDS = new Set([8, 9, 337]); // Netflix, Prime Video, Disney+
@@ -23,7 +27,7 @@ export function DiscoverHeroCell() {
 
   const movie = movies[featuredIndex] ?? movies[0];
   const backdropUrl = movie?.backdrop_path
-    ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+    ? tmdbImageUrl(movie.backdrop_path, "w1280")
     : null;
 
   // Fetch providers for the currently featured movie

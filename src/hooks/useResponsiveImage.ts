@@ -67,6 +67,15 @@ export const posterSizes =
   "(max-width: 640px) 185px, (max-width: 1024px) 342px, 500px";
 
 /**
+ * The `sizes` attribute for MovieHero's poster specifically.
+ * MovieHero renders its poster at a fixed width — w-48 (192px) below the
+ * md breakpoint, md:w-[280px] (280px) at ≥768px — rather than the fluid
+ * grid widths `posterSizes` describes, so it needs its own breakpoint map
+ * to avoid over-fetching (e.g. w500 for a 280px paint).
+ */
+export const heroPosterSizes = "(max-width: 767px) 192px, 280px";
+
+/**
  * The `sizes` attribute for backdrop images.
  * - ≤640px viewport: 300px wide backdrop
  * - ≤1024px viewport: 780px wide backdrop

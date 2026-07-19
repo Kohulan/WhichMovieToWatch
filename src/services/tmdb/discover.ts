@@ -37,15 +37,12 @@ const RELAXATION_STEPS: RelaxationOverrides[] = [
   { providerIds: [] }, // Step 4: remove provider constraint
 ];
 
-export async function discoverMovie(
+// Apply cumulative relaxation overrides up to current step
+function applyRelaxation(
   filters: DiscoverFilters,
-  excludeIds: Set<number>,
-  relaxationStep = 0,
-  options: DiscoverOptions = {},
-): Promise<{ movie: TMDBMovie | null; relaxationStep: number }> {
-  const { lockUserFilters = false } = options;
-
-  // Apply cumulative relaxation overrides up to current step
+  relaxationStep: number,
+  lockUserFilters: boolean,
+): DiscoverFilters {
   const relaxed = { ...filters };
   for (let i = 0; i <= relaxationStep; i++) {
     const step = RELAXATION_STEPS[i];
@@ -63,7 +60,14 @@ export async function discoverMovie(
       relaxed.providerIds = step.providerIds ?? [];
     }
   }
+  return relaxed;
+}
 
+// Build TMDB discover params, fetch page 1 to learn total_pages, then pick a
+// random page within the valid range (TMDB caps at 500 pages).
+async function fetchDiscoverPage(
+  relaxed: DiscoverFilters,
+): Promise<TMDBDiscoverResponse> {
   // Build TMDB discover params (page 1 first to learn total_pages)
   const params: Record<string, string | number | boolean> = {
     sort_by: "popularity.desc",
@@ -110,6 +114,20 @@ export async function discoverMovie(
     }
   }
 
+  return response;
+}
+
+export async function discoverMovie(
+  filters: DiscoverFilters,
+  excludeIds: Set<number>,
+  relaxationStep = 0,
+  options: DiscoverOptions = {},
+): Promise<{ movie: TMDBMovie | null; relaxationStep: number }> {
+  const { lockUserFilters = false } = options;
+
+  const relaxed = applyRelaxation(filters, relaxationStep, lockUserFilters);
+  const response = await fetchDiscoverPage(relaxed);
+
   // Filter out already-seen movies
   const available = response.results.filter((m) => !excludeIds.has(m.id));
 
@@ -145,63 +163,8 @@ export async function discoverCandidates(
     relaxationStep < RELAXATION_STEPS.length;
     relaxationStep++
   ) {
-    // Apply cumulative relaxation overrides up to current step
-    const relaxed = { ...filters };
-    for (let i = 0; i <= relaxationStep; i++) {
-      const step = RELAXATION_STEPS[i];
-      if (step.minRating !== undefined) relaxed.minRating = step.minRating;
-      if (step.minVoteCount !== undefined)
-        relaxed.minVoteCount = step.minVoteCount;
-      if ("genreId" in step && !(lockUserFilters && filters.genreId)) {
-        relaxed.genreId = step.genreId ?? null;
-      }
-      if (
-        "providerIds" in step &&
-        !(lockUserFilters && filters.providerIds.length > 0)
-      ) {
-        relaxed.providerIds = step.providerIds ?? [];
-      }
-    }
-
-    const params: Record<string, string | number | boolean> = {
-      sort_by: "popularity.desc",
-      "vote_count.gte": relaxed.minVoteCount,
-      "vote_average.gte": relaxed.minRating,
-      include_adult: "false",
-      page: 1,
-    };
-
-    if (relaxed.genreId) {
-      params.with_genres = relaxed.genreId;
-    }
-
-    params.watch_region = relaxed.region;
-    params.with_watch_monetization_types = "flatrate";
-
-    if (relaxed.providerIds.length > 0) {
-      params.with_watch_providers = relaxed.providerIds.join("|");
-    }
-
-    // Fetch page 1 to learn total_pages, then pick a random page
-    const firstPage = await tmdbFetch<TMDBDiscoverResponse>(
-      "/discover/movie",
-      params,
-    );
-
-    let response = firstPage;
-    if (firstPage.total_pages > 1) {
-      const maxPage = Math.min(firstPage.total_pages, 500);
-      const randomPage = Math.floor(Math.random() * maxPage) + 1;
-      if (randomPage > 1) {
-        const randomResponse = await tmdbFetch<TMDBDiscoverResponse>(
-          "/discover/movie",
-          { ...params, page: randomPage },
-        );
-        if (randomResponse.results.length > 0) {
-          response = randomResponse;
-        }
-      }
-    }
+    const relaxed = applyRelaxation(filters, relaxationStep, lockUserFilters);
+    const response = await fetchDiscoverPage(relaxed);
 
     // Filter out already-seen movies
     const available = response.results.filter((m) => !excludeIds.has(m.id));
