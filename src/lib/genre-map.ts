@@ -38,12 +38,17 @@ export function getGenreName(id: number): string | undefined {
   return GENRE_MAP[id];
 }
 
+/** Precomputed, alphabetically sorted genre list — GENRE_MAP is static and never mutates. */
+const ALL_GENRES: Array<{ id: number; name: string }> = Object.entries(
+  GENRE_MAP,
+)
+  .map(([id, name]) => ({ id: Number(id), name }))
+  .sort((a, b) => a.name.localeCompare(b.name));
+
 /**
  * Get all genres as a sorted array of { id, name } objects.
  * Sorted alphabetically by name.
  */
 export function getAllGenres(): Array<{ id: number; name: string }> {
-  return Object.entries(GENRE_MAP)
-    .map(([id, name]) => ({ id: Number(id), name }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  return ALL_GENRES;
 }

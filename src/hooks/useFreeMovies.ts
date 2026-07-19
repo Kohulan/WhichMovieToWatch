@@ -1,6 +1,6 @@
 // Free YouTube movies hook — parses movies.txt, picks random entries with TMDB enrichment (FREE-01, FREE-02)
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { searchMovies } from "@/services/tmdb/search";
 import { fetchMovieDetails } from "@/services/tmdb/details";
 import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
@@ -98,12 +98,22 @@ export function useFreeMovies(): UseFreeMoviesReturn {
   const trackShown = useMovieHistoryStore((s) => s.trackShown);
   const shownMovies = useMovieHistoryStore((s) => s.shownMovies);
 
+  // Per-instance request id. Incremented on every loadNextMovie() call so
+  // overlapping calls (double-tap "Next Suggestion", or unmount mid-fetch)
+  // can detect that they're stale and skip writing to state after their
+  // long async chain resolves.
+  const requestIdRef = useRef(0);
+
   const loadNextMovie = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
+    const isStale = () => requestId !== requestIdRef.current;
+
     setIsLoading(true);
     setError(null);
 
     try {
       const entries = await loadMoviesList();
+      if (isStale()) return;
 
       if (entries.length === 0) {
         setError("No free movies found in the list.");
@@ -125,6 +135,7 @@ export function useFreeMovies(): UseFreeMoviesReturn {
       try {
         // Search TMDB by title to get metadata (FREE-02)
         const searchResults = await searchMovies(selected.title);
+        if (isStale()) return;
 
         if (searchResults.results.length > 0) {
           // Find first result not in the shown set
@@ -135,6 +146,7 @@ export function useFreeMovies(): UseFreeMoviesReturn {
 
           // Fetch full movie details
           tmdbDetails = await fetchMovieDetails(target.id);
+          if (isStale()) return;
           trackShown(target.id);
         }
       } catch {
@@ -142,18 +154,20 @@ export function useFreeMovies(): UseFreeMoviesReturn {
         // with title only, no metadata
       }
 
+      if (isStale()) return;
       setMovie({
         youtubeId: selected.youtubeId,
         title: selected.title,
         tmdbDetails,
       });
     } catch (err) {
+      if (isStale()) return;
       setError(
         err instanceof Error ? err.message : "Failed to load free movies list",
       );
       setMovie(null);
     } finally {
-      setIsLoading(false);
+      if (!isStale()) setIsLoading(false);
     }
   }, [trackShown, shownMovies]);
 

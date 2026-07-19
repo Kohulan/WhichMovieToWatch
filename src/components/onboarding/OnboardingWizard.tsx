@@ -1,7 +1,7 @@
 // Cinematic 2-step onboarding wizard for provider + genre preferences
 // Supports both first-visit onboarding and re-edit settings mode.
 
-import { useState, useCallback, useEffect, useId } from "react";
+import { useState, useCallback, useEffect, useId, useMemo } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Tv, Sparkles, ArrowLeft, ArrowRight, X } from "lucide-react";
 import { MetalButton } from "@/components/ui";
@@ -92,13 +92,17 @@ export function OnboardingWizard({
   const panelRef = useFocusTrap<HTMLDivElement>(isOpen);
 
   // Sort providers: top ones first, then alphabetical
-  const sortedProviders = [...providers].sort((a, b) => {
-    const aTop = TOP_PROVIDER_IDS.has(a.provider_id);
-    const bTop = TOP_PROVIDER_IDS.has(b.provider_id);
-    if (aTop && !bTop) return -1;
-    if (!aTop && bTop) return 1;
-    return a.provider_name.localeCompare(b.provider_name);
-  });
+  const sortedProviders = useMemo(
+    () =>
+      [...providers].sort((a, b) => {
+        const aTop = TOP_PROVIDER_IDS.has(a.provider_id);
+        const bTop = TOP_PROVIDER_IDS.has(b.provider_id);
+        if (aTop && !bTop) return -1;
+        if (!aTop && bTop) return 1;
+        return a.provider_name.localeCompare(b.provider_name);
+      }),
+    [providers],
+  );
 
   // Toggle provider in/out of multi-select set
   const handleProviderSelect = useCallback((providerId: number) => {
