@@ -4,8 +4,9 @@ import { useState, type ReactNode } from "react";
 import { motion } from "motion/react";
 import { Film } from "lucide-react";
 import { getPosterUrl } from "@/services/tmdb/client";
-import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { tmdbPosterSrcSet, heroPosterSizes } from "@/hooks/useResponsiveImage";
 import { getMoviePosterLayoutId } from "@/lib/layout-ids";
+import { formatRuntime } from "@/lib/format-runtime";
 import type { TMDBMovieDetails } from "@/types/movie";
 import { GenreBadges } from "./GenreBadges";
 
@@ -21,16 +22,6 @@ interface MovieHeroProps {
    * (browse grid, similar-movies thumbnails) morphs into this hero on tap.
    */
   movieId?: number;
-}
-
-/** Format runtime from minutes to "Xh Ym" */
-function formatRuntime(minutes: number | null): string {
-  if (!minutes) return "";
-  const hours = Math.floor(minutes / 60);
-  const mins = minutes % 60;
-  if (hours === 0) return `${mins}m`;
-  if (mins === 0) return `${hours}h`;
-  return `${hours}h ${mins}m`;
 }
 
 /** Extract 4-digit year from release_date (e.g. "2023-05-15" → "2023") */
@@ -56,7 +47,7 @@ export function MovieHero({
 
   const posterUrl = getPosterUrl(movie.poster_path, "w342");
   const year = extractYear(movie.release_date);
-  const runtime = formatRuntime(movie.runtime);
+  const runtime = movie.runtime ? formatRuntime(movie.runtime) : "";
 
   const posterLayoutId = movieId ? getMoviePosterLayoutId(movieId) : undefined;
 
@@ -73,7 +64,7 @@ export function MovieHero({
             layoutId={posterLayoutId}
             src={posterUrl}
             srcSet={tmdbPosterSrcSet(movie.poster_path)}
-            sizes={posterSizes}
+            sizes={heroPosterSizes}
             alt={`${movie.title} poster`}
             loading="lazy"
             decoding="async"
@@ -100,7 +91,10 @@ export function MovieHero({
 
       {/* Info column */}
       <div className="flex flex-col justify-center min-w-0">
-        <h1 className="font-heading font-semibold text-2xl md:text-3xl text-clay-text leading-tight">
+        {/* Halo in the page's own base color: invisible when the hero sits on a
+            plain surface, a guaranteed scrim when it sits over a per-movie
+            backdrop (adapts to light/dark since --clay-base flips per theme). */}
+        <h1 className="font-heading font-semibold text-2xl md:text-3xl text-clay-text leading-tight [text-shadow:0_1px_2px_var(--clay-base),0_2px_16px_var(--clay-base)]">
           {movie.title}
         </h1>
 

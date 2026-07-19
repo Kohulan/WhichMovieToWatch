@@ -7,8 +7,8 @@ export const PROVIDER_LOGOS_BASE = "https://image.tmdb.org/t/p/original";
  * (e.g. Disney+ ranks below RTL+ in Germany), so we promote them explicitly.
  *
  * Order matters: this is the canonical display order when none of these are
- * personalized via myServices. Used by the onboarding wizard's ProviderSelector
- * and the /browse provider launcher; keep them in sync via this single source.
+ * personalized via myServices. Used by OnboardingWizard and the /browse
+ * provider launcher; keep them in sync via this single source.
  *
  * Region filter via display_priorities (in fetchProvidersForRegion) hides any
  * entry that doesn't operate in the user's region: Hulu and Peacock drop out

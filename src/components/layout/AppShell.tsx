@@ -15,7 +15,6 @@ import { useTheme } from "../../hooks/useTheme";
 import { useThemeStore } from "@/stores/themeStore";
 import { useScene3dStore } from "@/stores/scene3dStore";
 import { Navbar } from "./Navbar";
-import { SiteFooter } from "./SiteFooter";
 import {
   pageVariants,
   pageTransition,
@@ -346,7 +345,7 @@ export function AppShell() {
       {/* Skip navigation */}
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:px-4 focus:py-2 focus:bg-clay-surface focus:text-clay-text focus:rounded-lg focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[var(--z-splash)] focus:px-4 focus:py-2 focus:bg-clay-surface focus:text-clay-text focus:rounded-lg focus:shadow-lg"
       >
         Skip to main content
       </a>
@@ -372,7 +371,6 @@ export function AppShell() {
         </motion.main>
       </AnimatePresence>
 
-      <SiteFooter />
     </div>
   );
 }

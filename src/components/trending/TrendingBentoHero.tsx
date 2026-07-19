@@ -104,7 +104,7 @@ export function TrendingBentoHero() {
             <div className="p-5 flex flex-col h-full gap-3">
               {/* Status pill — replaces the [Heading + Icon] header */}
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/15 text-accent text-[11px] font-semibold uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent/15 text-clay-text text-[11px] font-semibold uppercase tracking-wider">
                   <span
                     className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"
                     aria-hidden="true"

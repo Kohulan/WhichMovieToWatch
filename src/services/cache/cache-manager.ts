@@ -14,17 +14,26 @@ export const TTL = {
 export async function getCached<T>(
   key: string,
 ): Promise<{ value: T | null; isStale: boolean }> {
-  const db = await getDB();
-  const entry = await db.get("api-cache", key);
+  try {
+    const db = await getDB();
+    const entry = await db.get("api-cache", key);
 
-  if (!entry) {
+    if (!entry) {
+      return { value: null, isStale: true };
+    }
+
+    const age = Date.now() - entry.cachedAt;
+    const isStale = age > entry.ttl;
+
+    return { value: entry.value as T, isStale };
+  } catch (err) {
+    // Any cache-layer failure (blocked/broken IndexedDB, corrupted entry,
+    // private-browsing quota errors, …) degrades to a cache miss — byte
+    // identical to the normal "no entry" shape so callers never need to
+    // special-case a broken cache.
+    console.warn("[cache-manager] getCached failed:", err);
     return { value: null, isStale: true };
   }
-
-  const age = Date.now() - entry.cachedAt;
-  const isStale = age > entry.ttl;
-
-  return { value: entry.value as T, isStale };
 }
 
 export async function setCache<T>(
@@ -32,48 +41,61 @@ export async function setCache<T>(
   value: T,
   ttlMs: number,
 ): Promise<void> {
-  const db = await getDB();
-  await db.put("api-cache", {
-    key,
-    value,
-    cachedAt: Date.now(),
-    ttl: ttlMs,
-  } as CacheEntry);
+  try {
+    const db = await getDB();
+    await db.put("api-cache", {
+      key,
+      value,
+      cachedAt: Date.now(),
+      ttl: ttlMs,
+    } as CacheEntry);
+  } catch (err) {
+    console.warn("[cache-manager] setCache failed:", err);
+  }
 }
 
 export async function invalidateByPrefix(prefix: string): Promise<void> {
-  const db = await getDB();
-  const tx = db.transaction("api-cache", "readwrite");
-  const store = tx.objectStore("api-cache");
-  let cursor = await store.openCursor();
+  try {
+    const db = await getDB();
+    const tx = db.transaction("api-cache", "readwrite");
+    const store = tx.objectStore("api-cache");
+    let cursor = await store.openCursor();
 
-  while (cursor) {
-    if (cursor.key.startsWith(prefix)) {
-      await cursor.delete();
+    while (cursor) {
+      if (cursor.key.startsWith(prefix)) {
+        await cursor.delete();
+      }
+      cursor = await cursor.continue();
     }
-    cursor = await cursor.continue();
-  }
 
-  await tx.done;
+    await tx.done;
+  } catch (err) {
+    console.warn("[cache-manager] invalidateByPrefix failed:", err);
+  }
 }
 
 export async function evictExpired(): Promise<number> {
-  const db = await getDB();
-  const tx = db.transaction("api-cache", "readwrite");
-  const store = tx.objectStore("api-cache");
-  let cursor = await store.openCursor();
-  let evictedCount = 0;
-  const now = Date.now();
+  try {
+    const db = await getDB();
+    const tx = db.transaction("api-cache", "readwrite");
+    const store = tx.objectStore("api-cache");
+    let cursor = await store.openCursor();
+    let evictedCount = 0;
+    const now = Date.now();
 
-  while (cursor) {
-    const entry = cursor.value;
-    if (now - entry.cachedAt > entry.ttl) {
-      await cursor.delete();
-      evictedCount++;
+    while (cursor) {
+      const entry = cursor.value;
+      if (now - entry.cachedAt > entry.ttl) {
+        await cursor.delete();
+        evictedCount++;
+      }
+      cursor = await cursor.continue();
     }
-    cursor = await cursor.continue();
-  }
 
-  await tx.done;
-  return evictedCount;
+    await tx.done;
+    return evictedCount;
+  } catch (err) {
+    console.warn("[cache-manager] evictExpired failed:", err);
+    return 0;
+  }
 }

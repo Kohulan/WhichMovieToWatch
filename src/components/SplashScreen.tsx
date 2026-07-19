@@ -32,7 +32,7 @@ export function SplashScreen({ onComplete }: SplashScreenProps) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-splash-bg overflow-hidden"
+      className="fixed inset-0 z-[var(--z-splash)] flex flex-col items-center justify-center bg-splash-bg overflow-hidden"
       initial={{ opacity: 1 }}
       exit={{
         opacity: 0,

@@ -79,11 +79,8 @@ export function RotaryDial({ className = "" }: { className?: string }) {
   return (
     <div
       className={`relative inline-flex flex-col items-center ${className}`}
-      role="listbox"
-      aria-label="Color theme selector"
-      aria-activedescendant={`preset-${preset}`}
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
+      role="group"
+      aria-label="Color theme"
     >
       <div
         className={`relative w-14 h-14 flex items-center justify-center ${isGlowing ? "accent-glow-active" : ""}`}
@@ -113,10 +110,14 @@ export function RotaryDial({ className = "" }: { className?: string }) {
 
         <motion.div
           onClick={handleClick}
+          onKeyDown={handleKeyDown}
+          role="button"
+          tabIndex={0}
           animate={{ rotate: targetAngle }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="metal-knob-enhanced metal-shadow w-12 h-12 rounded-full cursor-pointer relative flex items-center justify-center"
-          aria-label={`Current preset: ${PRESET_LABELS[preset]}`}
+          className="metal-knob-enhanced metal-shadow w-12 h-12 rounded-full cursor-pointer relative flex items-center justify-center outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          aria-label={`Color theme: ${PRESET_LABELS[preset]}. Activate to change.`}
+          title="Change color theme"
         >
           <div
             className="absolute top-1 left-1/2 -translate-x-1/2 w-1 h-2.5 rounded-full"
@@ -135,18 +136,6 @@ export function RotaryDial({ className = "" }: { className?: string }) {
           />
         </motion.div>
       </div>
-
-      {PRESETS.map((p) => (
-        <div
-          key={p}
-          id={`preset-${p}`}
-          role="option"
-          aria-selected={p === preset}
-          className="sr-only"
-        >
-          {PRESET_LABELS[p]}
-        </div>
-      ))}
     </div>
   );
 }

@@ -8,6 +8,8 @@ import "@fontsource-variable/jetbrains-mono";
 import "./styles/app.css";
 import App from "./App";
 import { HomePage } from "./pages/HomePage";
+import { evictExpired } from "./services/cache/cache-manager";
+import { getSessionFlag, setSessionFlag } from "./lib/session-flags";
 
 const DiscoverPage = lazy(() =>
   import("./pages/DiscoverPage").then((m) => ({ default: m.DiscoverPage })),
@@ -34,9 +36,9 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 if (
   typeof window !== "undefined" &&
   import.meta.env.PROD &&
-  !window.sessionStorage.getItem("__wmtw_console_seen__")
+  !getSessionFlag("__wmtw_console_seen__")
 ) {
-  window.sessionStorage.setItem("__wmtw_console_seen__", "1");
+  setSessionFlag("__wmtw_console_seen__");
   // eslint-disable-next-line no-console
   console.log(
     "%cWhich Movie To Watch%c\nReact 19, Vite, custom Clay+Metal design system.\nSource: github.com/Kohulan/WhichMovieToWatch",
@@ -88,6 +90,18 @@ if ("caches" in window) {
     .catch(() => {});
 }
 
+// Evict expired cache entries once the browser is idle. Fire-and-forget
+// housekeeping deferred off the critical path (matches the idle-callback-
+// with-setTimeout-fallback pattern used elsewhere in src, e.g. SplineScene)
+// so it never competes with first paint / first interaction.
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(() => evictExpired().catch(() => {}), {
+    timeout: 4000,
+  });
+} else {
+  setTimeout(() => evictExpired().catch(() => {}), 1500);
+}
+
 /**
  * Small inline fallback while the lazy page chunk downloads. Kept in the
  * eager main bundle so it appears immediately instead of waiting for any
@@ -96,13 +110,23 @@ if ("caches" in window) {
 function PageSuspenseFallback() {
   return (
     <div
-      className="flex items-center justify-center gap-3 min-h-[60vh] px-4 text-clay-text-muted text-sm"
+      className="flex flex-col items-center justify-center gap-4 min-h-[60vh] px-4 text-clay-text-muted"
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
-      <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
-      <span>Loading…</span>
+      {/* Three staggered dots read as an intentional loading state rather than
+          a stray pixel dwarfed by the ambient background wordmark. */}
+      <span className="flex items-center gap-2" aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="inline-block w-2.5 h-2.5 rounded-full bg-accent animate-pulse"
+            style={{ animationDelay: `${i * 160}ms` }}
+          />
+        ))}
+      </span>
+      <span className="text-sm font-medium">Loading…</span>
     </div>
   );
 }

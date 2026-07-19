@@ -25,6 +25,13 @@ export function getDB(): Promise<IDBPDatabase<MovieCacheDB>> {
         const store = db.createObjectStore("api-cache", { keyPath: "key" });
         store.createIndex("by-cached-at", "cachedAt");
       },
+    }).catch((err) => {
+      // A rejected promise is cached forever by the `!dbPromise` guard above
+      // (a rejected promise is still truthy) — one failed open would poison
+      // every future cache call for the rest of the session. Clear it so the
+      // next getDB() call gets a fresh attempt.
+      dbPromise = null;
+      throw err;
     });
   }
   return dbPromise;

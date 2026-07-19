@@ -74,6 +74,7 @@ export function useDeviceOrientation(): DeviceOrientationResult {
   const [permissionState, setPermissionState] =
     useState<PermissionState>("unsupported");
   const listenerActiveRef = useRef(false);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   /** Start listening to deviceorientation events. */
   const startListening = useCallback(() => {
@@ -100,9 +101,20 @@ export function useDeviceOrientation(): DeviceOrientationResult {
 
     // Store cleanup reference on the window for unmount — using a module-level symbol
     // is cleaner, but closure capture works fine here.
-    return () => {
+    const cleanup = () => {
       window.removeEventListener("deviceorientation", handleOrientation);
       listenerActiveRef.current = false;
+    };
+    cleanupRef.current = cleanup;
+    return cleanup;
+  }, []);
+
+  // Ensure the deviceorientation listener is always removed on unmount, even
+  // when startListening() was invoked bare from requestPermission() (whose
+  // return value is discarded) rather than from the mount effect above.
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.();
     };
   }, []);
 

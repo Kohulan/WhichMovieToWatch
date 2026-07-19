@@ -14,6 +14,11 @@ const DISNEY_PLUS = 337;
 
 const PROVIDERS = [NETFLIX, PRIME_VIDEO, DISNEY_PLUS].join("|");
 
+// In-flight request dedup: HomePage, DiscoverHeroCell, and RatingShowcaseCell
+// all mount this hook simultaneously and share the same cache key per region,
+// so a cold cache would otherwise fire one identical fetch per component.
+const inFlight = new Map<string, Promise<TMDBMovie[]>>();
+
 export function useTopStreaming() {
   const [movies, setMovies] = useState<TMDBMovie[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,25 +46,37 @@ export function useTopStreaming() {
       setError(null);
 
       try {
-        const response = await tmdbFetch<TMDBDiscoverResponse>(
-          "/discover/movie",
-          {
-            sort_by: "popularity.desc",
-            watch_region: region,
-            with_watch_providers: PROVIDERS,
-            with_watch_monetization_types: "flatrate",
-            "vote_count.gte": 100,
-            "vote_average.gte": 6,
-            include_adult: "false",
-            page: 1,
-          },
-        );
+        let promise = inFlight.get(cacheKey);
+        if (!promise) {
+          promise = (async () => {
+            const response = await tmdbFetch<TMDBDiscoverResponse>(
+              "/discover/movie",
+              {
+                sort_by: "popularity.desc",
+                watch_region: region,
+                with_watch_providers: PROVIDERS,
+                with_watch_monetization_types: "flatrate",
+                "vote_count.gte": 100,
+                "vote_average.gte": 6,
+                include_adult: "false",
+                page: 1,
+              },
+            );
 
+            const results = response.results.slice(0, 20);
+            await setCache(cacheKey, results, TTL.TRENDING);
+            return results;
+          })();
+          inFlight.set(cacheKey, promise);
+          promise.finally(() => {
+            inFlight.delete(cacheKey);
+          });
+        }
+
+        const results = await promise;
         if (cancelled) return;
 
-        const results = response.results.slice(0, 20);
         setMovies(results);
-        await setCache(cacheKey, results, TTL.TRENDING);
       } catch (err) {
         console.warn("[useTopStreaming] Failed to load:", err);
         if (!cancelled) {

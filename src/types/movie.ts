@@ -72,22 +72,7 @@ export interface WatchProvider {
   display_priority: number;
 }
 
-export interface EnrichedMovie extends TMDBMovieDetails {
-  omdb?: {
-    imdbRating: string;
-    rottenTomatoes: string;
-    metascore: string;
-  };
-}
-
 export interface TMDBDiscoverResponse {
-  page: number;
-  total_pages: number;
-  total_results: number;
-  results: TMDBMovie[];
-}
-
-export interface TMDBSearchResponse {
   page: number;
   total_pages: number;
   total_results: number;

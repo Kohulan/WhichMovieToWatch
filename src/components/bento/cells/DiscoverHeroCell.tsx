@@ -6,15 +6,17 @@
 // Fetches watch providers for the featured movie and shows which service it's on.
 
 import { useState, useEffect, useRef, useMemo } from "react";
-import { Link } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
 import { Play, Sparkles } from "lucide-react";
 import { useTopStreaming } from "@/hooks/useTopStreaming";
 import { useWatchProviders } from "@/hooks/useWatchProviders";
 import { useFeaturedStore } from "@/stores/featuredStore";
-import { MetalButton } from "@/components/ui/MetalButton";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
-import { tmdbBackdropSrcSet, backdropSizes } from "@/hooks/useResponsiveImage";
+import {
+  tmdbBackdropSrcSet,
+  backdropSizes,
+  tmdbImageUrl,
+} from "@/hooks/useResponsiveImage";
 
 // TMDB provider IDs for the three target services
 const STREAMING_IDS = new Set([8, 9, 337]); // Netflix, Prime Video, Disney+
@@ -25,7 +27,7 @@ export function DiscoverHeroCell() {
 
   const movie = movies[featuredIndex] ?? movies[0];
   const backdropUrl = movie?.backdrop_path
-    ? `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`
+    ? tmdbImageUrl(movie.backdrop_path, "w1280")
     : null;
 
   // Fetch providers for the currently featured movie
@@ -163,16 +165,16 @@ export function DiscoverHeroCell() {
           </AnimatePresence>
         </div>
 
-        <Link
-          to="/discover"
-          className="self-start"
-          onClick={(e) => e.stopPropagation()}
+        {/* Visual-only CTA — the whole tile is already the clickable control
+            (BentoCell role="button", aria-label="Discover a movie"). A real
+            <Link> here would nest an interactive inside an interactive. */}
+        <span
+          className="self-start inline-flex items-center gap-1.5 rounded-xl bg-accent-strong text-white font-semibold text-sm px-4 py-2 shadow-md"
+          aria-hidden="true"
         >
-          <MetalButton size="sm" variant="primary">
-            <Play className="w-4 h-4" aria-hidden="true" />
-            Start Discovering
-          </MetalButton>
-        </Link>
+          <Play className="w-4 h-4" aria-hidden="true" />
+          Start Discovering
+        </span>
       </div>
     </div>
   );

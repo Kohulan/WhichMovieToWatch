@@ -88,7 +88,7 @@ const clayShadow: Record<
 };
 
 const variantClasses: Record<MetalButtonVariant, string> = {
-  primary: "bg-accent text-white font-semibold",
+  primary: "bg-accent-strong text-white font-semibold",
   secondary: "bg-clay-surface text-clay-text font-semibold",
   ghost: "bg-clay-elevated/70 text-clay-text-muted font-medium",
 };

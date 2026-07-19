@@ -18,7 +18,6 @@ interface PreferencesState {
   setPreferredProvider: (provider: string | null) => void;
   setPreferredGenre: (genre: string | null) => void;
   setMyServices: (services: number[]) => void;
-  toggleMyService: (providerId: number) => void;
   completeOnboarding: () => void;
   recordLove: (genres: number[], decade: string, directorId?: number) => void;
   recordNotInterested: (
@@ -30,7 +29,6 @@ interface PreferencesState {
     preferredProvider: string | null;
     preferredGenre: string | null;
   }) => void;
-  resetTasteProfile: () => void;
 }
 
 const EMPTY_TASTE_PROFILE: TasteProfile = {
@@ -52,16 +50,6 @@ export const usePreferencesStore = create<PreferencesState>()(
       setPreferredProvider: (provider) => set({ preferredProvider: provider }),
       setPreferredGenre: (genre) => set({ preferredGenre: genre }),
       setMyServices: (services) => set({ myServices: services }),
-
-      toggleMyService: (providerId) =>
-        set((state) => {
-          const exists = state.myServices.includes(providerId);
-          return {
-            myServices: exists
-              ? state.myServices.filter((id) => id !== providerId)
-              : [...state.myServices, providerId],
-          };
-        }),
 
       completeOnboarding: () => set({ hasCompletedOnboarding: true }),
 
@@ -106,9 +94,6 @@ export const usePreferencesStore = create<PreferencesState>()(
           preferredProvider: data.preferredProvider,
           preferredGenre: data.preferredGenre,
         }),
-
-      resetTasteProfile: () =>
-        set({ tasteProfile: { ...EMPTY_TASTE_PROFILE } }),
     }),
     {
       name: "wmtw-preferences",

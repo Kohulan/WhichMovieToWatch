@@ -50,9 +50,20 @@ if (typeof document !== "undefined") {
 /**
  * Play the dial tick sound. If the audio pipeline isn't ready yet,
  * silently does nothing (no error thrown).
+ *
+ * Respects `prefers-reduced-motion: reduce` — users who ask for a calmer
+ * experience (often browsing quietly, e.g. at night) shouldn't get
+ * unexpected UI audio.
  */
 export function playTick(): void {
   if (!audioContext || !tickBuffer) return;
+
+  if (
+    typeof window !== "undefined" &&
+    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
+  ) {
+    return;
+  }
 
   // Resume context if it was suspended (e.g. tab backgrounded)
   if (audioContext.state === "suspended") {

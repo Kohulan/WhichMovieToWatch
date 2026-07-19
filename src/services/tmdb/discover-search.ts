@@ -1,4 +1,5 @@
 import { tmdbFetch } from "@/services/tmdb/client";
+import { getCached, setCache, TTL } from "@/services/cache/cache-manager";
 import { useSearchStore } from "@/stores/searchStore";
 import type { TMDBDiscoverResponse } from "@/types/movie";
 
@@ -12,6 +13,49 @@ interface RunDiscoverSearchOptions {
   region: string;
   page: number;
   isStale: () => boolean;
+}
+
+const CURRENT_YEAR = new Date().getFullYear();
+
+/**
+ * Build a deterministic cache key from discover search params, mirroring
+ * browse.ts's buildCacheKey shape. Distinct "discover-" prefix so it never
+ * collides with browse.ts's "browse-" keys or search.ts's "search-" keys.
+ */
+function buildCacheKey(
+  advancedFilters: AdvancedFilters,
+  sortBy: string,
+  page: number,
+  region: string,
+): string {
+  const filterParts = [
+    advancedFilters.genres.length > 0
+      ? `g${[...advancedFilters.genres].sort((a, b) => a - b).join(".")}`
+      : "",
+    advancedFilters.yearRange[0] !== 1900 ||
+    advancedFilters.yearRange[1] !== CURRENT_YEAR
+      ? `y${advancedFilters.yearRange[0]}-${advancedFilters.yearRange[1]}`
+      : "",
+    advancedFilters.ratingRange[0] !== 0 ||
+    advancedFilters.ratingRange[1] !== 10
+      ? `r${advancedFilters.ratingRange[0]}-${advancedFilters.ratingRange[1]}`
+      : "",
+    advancedFilters.runtimeRange[0] !== 0 ||
+    advancedFilters.runtimeRange[1] !== 300
+      ? `rt${advancedFilters.runtimeRange[0]}-${advancedFilters.runtimeRange[1]}`
+      : "",
+    advancedFilters.language ? `l${advancedFilters.language}` : "",
+    advancedFilters.providerId ? `p${advancedFilters.providerId}` : "",
+  ]
+    .filter(Boolean)
+    .join("-");
+
+  // CRITICAL: with_watch_providers ALWAYS paired with watch_region (see the
+  // guard below) — fold region into the key ONLY when providerId is set, so
+  // identical filters without a provider aren't fragmented by region.
+  const regionPart = advancedFilters.providerId ? `-${region}` : "";
+
+  return `discover-${sortBy}${regionPart}${filterParts ? `-${filterParts}` : ""}-p${page}`;
 }
 
 export async function runDiscoverSearch({
@@ -71,10 +115,16 @@ export async function runDiscoverSearch({
       params.watch_region = region;
     }
 
-    const response = await tmdbFetch<TMDBDiscoverResponse>(
-      "/discover/movie",
-      params,
-    );
+    const cacheKey = buildCacheKey(advancedFilters, sortBy, page, region);
+    const cached = await getCached<TMDBDiscoverResponse>(cacheKey);
+    let response = cached.value && !cached.isStale ? cached.value : undefined;
+    if (!response) {
+      response = await tmdbFetch<TMDBDiscoverResponse>(
+        "/discover/movie",
+        params,
+      );
+      await setCache(cacheKey, response, TTL.SEARCH_RESULTS);
+    }
     if (isStale()) return;
 
     if (page === 1) {

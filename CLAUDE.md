@@ -26,7 +26,7 @@ API keys: create `.env.local` with `VITE_TMDB_API_KEY=…` and `VITE_OMDB_API_KE
 - Routes: `/` (bento home), `/discover`, `/movie/:slug`, `/browse`, `/trending`, `/what-to-watch-tonight`, `/movies/genre/:genreSlug`, `/streaming/:providerSlug`, `/dinner-time`, `/free-movies`, `/privacy` (+ `/showcase` dev-only).
 - `src/services/tmdb/` — TMDB API client (`tmdbFetch`) + endpoint modules; `src/services/cache/cache-manager.ts` — IndexedDB cache with TTLs.
 - `src/stores/` — Zustand stores (browse, discovery, region, theme, preferences…). Persisted state lives in localStorage/IndexedDB; no backend, no accounts.
-- `src/seo/seo-content.json` — single source of truth for all SEO routes (titles, descriptions, intros). `src/seo/meta.ts` is the typed accessor; `<Seo>` (`src/components/seo/Seo.tsx`) sets head tags via React 19 metadata hoisting.
+- `src/seo/seo-content.json` — single source of truth for all SEO routes (titles, descriptions, intros). `src/seo/meta.ts` is the typed accessor for lazy pages; it inlines the whole JSON, so eager modules (HomePage, `<Seo>`) must import from `src/seo/site.ts` instead, which gets just the site block + home route via the `virtual:seo-eager` plugin in vite.config.ts. `<Seo>` (`src/components/seo/Seo.tsx`) sets head tags via React 19 metadata hoisting.
 - `tools/` — dependency-free Node prerender pipeline (`tools/prerender.mjs` + `tools/lib/*.mjs`, tested with `node --test`). Runs after `vite build` in CI; writes per-route HTML with JSON-LD + static content, `sitemap.xml`, `robots.txt`. Shared modules (`slug.mjs`, `jsonld.mjs`) are imported by BOTH the app and the pipeline — keep them dependency-free.
 - PWA: vite-plugin-pwa (generateSW, registerType autoUpdate — SW updates activate immediately; never reintroduce "prompt", it pins users to stale builds); navigations are NetworkFirst with /offline.html fallback (navigateFallback must stay explicitly null — the plugin defaults it to index.html); the Spline chunk is never precached.
 
@@ -36,7 +36,7 @@ API keys: create `.env.local` with `VITE_TMDB_API_KEY=…` and `VITE_OMDB_API_KE
 - Every route must keep a real path URL (no hash routing) and a unique `<Seo>` block.
 - Internal navigation uses `<Link>` (real anchors) — never bare `onClick={navigate}` for primary nav.
 - Movie URLs: `/movie/<kebab-title>-<tmdbId>`; the ID is parsed from the trailing segment.
-- New indexable routes must be added to `src/seo/seo-content.json` (the prerender script, sitemap, footer nav, and React router all derive from it).
+- New indexable routes must be added to `src/seo/seo-content.json` (the prerender script, sitemap, and React router all derive from it). Note: the SiteFooter link graph was removed at the user's request (2026-07-18) — genre/provider hub pages are now discoverable only via sitemap.xml; do not re-add the footer without asking.
 - `public/404.html` + the boot script in `index.html` implement the GitHub Pages SPA fallback and legacy `/#/…` redirects.
 - tools/lib/html.mjs uses function-based replacers everywhere dynamic text enters String.replace — $ sequences in movie titles corrupt output otherwise; keep it that way.
 

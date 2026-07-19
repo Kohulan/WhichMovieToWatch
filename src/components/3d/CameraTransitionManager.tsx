@@ -39,7 +39,10 @@ const ROUTE_CAMERA_MAP: Record<string, string> = {
  */
 export default function CameraTransitionManager() {
   const location = useLocation();
-  const { currentCameraState, triggerCameraTransition } = useScene3dStore();
+  const currentCameraState = useScene3dStore((s) => s.currentCameraState);
+  const triggerCameraTransition = useScene3dStore(
+    (s) => s.triggerCameraTransition,
+  );
 
   useEffect(() => {
     const targetState = ROUTE_CAMERA_MAP[location.pathname] ?? "home-view";

@@ -252,8 +252,3 @@ export const COUNTRY_NAMES: Record<string, string> = {
 export function getCountryName(code: string): string {
   return COUNTRY_NAMES[code.toUpperCase()] || code;
 }
-
-/** Get all country codes sorted alphabetically */
-export function getAllCountryCodes(): string[] {
-  return Object.keys(COUNTRY_NAMES).sort();
-}

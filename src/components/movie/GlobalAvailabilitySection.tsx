@@ -1,59 +1,85 @@
 // Netflix global availability — shows all countries where a movie is on Netflix
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { fetchAllMovieProviders } from "@/services/tmdb/providers";
 import { getCountryName } from "@/lib/country-names";
 import { useReloadKey } from "@/hooks/useReloadKey";
 import { RetryError } from "@/components/shared/RetryError";
+import type { WatchProviderCountry } from "@/types/movie";
 
 const NETFLIX_PROVIDER_ID = 8;
 
 interface GlobalAvailabilitySectionProps {
   movieId: number;
+  /**
+   * All-region watch/providers data already embedded on the movie details
+   * response (append_to_response — see useWatchProviders.ts's embedded-first
+   * pattern). When present and non-empty, availability is derived
+   * synchronously instead of re-fetching via fetchAllMovieProviders.
+   */
+  embeddedProviders?: Record<string, WatchProviderCountry>;
+}
+
+function deriveNetflixCountries(
+  allProviders: Record<string, WatchProviderCountry>,
+): Array<{ code: string; name: string }> {
+  const netflixCountries: Array<{ code: string; name: string }> = [];
+  for (const [code, data] of Object.entries(allProviders)) {
+    if (data.flatrate?.some((p) => p.provider_id === NETFLIX_PROVIDER_ID)) {
+      netflixCountries.push({ code, name: getCountryName(code) });
+    }
+  }
+  netflixCountries.sort((a, b) => a.name.localeCompare(b.name));
+  return netflixCountries;
 }
 
 export function GlobalAvailabilitySection({
   movieId,
+  embeddedProviders,
 }: GlobalAvailabilitySectionProps) {
-  const [countries, setCountries] = useState<
+  const hasEmbedded = !!(
+    embeddedProviders && Object.keys(embeddedProviders).length > 0
+  );
+
+  const [fetchedCountries, setFetchedCountries] = useState<
     Array<{ code: string; name: string }>
   >([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [isFetchLoading, setIsFetchLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [reloadKey, retry] = useReloadKey();
 
+  // Embedded-first path: derive synchronously, no loading state, no effect.
+  const embeddedCountries = useMemo(() => {
+    if (!hasEmbedded) return null;
+    return deriveNetflixCountries(embeddedProviders!);
+  }, [embeddedProviders, hasEmbedded]);
+
+  // Fallback fetch path — only runs when embedded data is missing/empty.
+  // Retry/reload wiring stays bound to this path only.
   useEffect(() => {
+    if (hasEmbedded) return;
+
     let cancelled = false;
 
     async function load() {
-      setIsLoading(true);
-      setError(null);
+      setIsFetchLoading(true);
+      setFetchError(null);
       try {
         const allProviders = await fetchAllMovieProviders(movieId);
         if (cancelled) return;
 
-        const netflixCountries: Array<{ code: string; name: string }> = [];
-        for (const [code, data] of Object.entries(allProviders)) {
-          if (
-            data.flatrate?.some((p) => p.provider_id === NETFLIX_PROVIDER_ID)
-          ) {
-            netflixCountries.push({ code, name: getCountryName(code) });
-          }
-        }
-
-        netflixCountries.sort((a, b) => a.name.localeCompare(b.name));
-        setCountries(netflixCountries);
+        setFetchedCountries(deriveNetflixCountries(allProviders));
       } catch (err) {
         if (!cancelled) {
-          setCountries([]);
-          setError(
+          setFetchedCountries([]);
+          setFetchError(
             err instanceof Error
               ? err.message
               : "Failed to load Netflix availability",
           );
         }
       } finally {
-        if (!cancelled) setIsLoading(false);
+        if (!cancelled) setIsFetchLoading(false);
       }
     }
 
@@ -61,7 +87,11 @@ export function GlobalAvailabilitySection({
     return () => {
       cancelled = true;
     };
-  }, [movieId, reloadKey]);
+  }, [movieId, reloadKey, hasEmbedded]);
+
+  const countries = hasEmbedded ? embeddedCountries! : fetchedCountries;
+  const isLoading = hasEmbedded ? false : isFetchLoading;
+  const error = hasEmbedded ? null : fetchError;
 
   if (isLoading) {
     return (

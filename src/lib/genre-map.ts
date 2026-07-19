@@ -30,14 +30,6 @@ export const GENRE_MAP: Record<number, string> = {
   37: "Western",
 } as const;
 
-/** Reverse lookup: lowercase genre name to TMDB genre ID */
-const REVERSE_MAP: Record<string, number> = Object.fromEntries(
-  Object.entries(GENRE_MAP).map(([id, name]) => [
-    name.toLowerCase(),
-    Number(id),
-  ]),
-);
-
 /**
  * Get genre name by TMDB genre ID.
  * @returns The genre name, or undefined if not found.
@@ -46,20 +38,17 @@ export function getGenreName(id: number): string | undefined {
   return GENRE_MAP[id];
 }
 
-/**
- * Get TMDB genre ID by genre name (case-insensitive).
- * @returns The genre ID, or undefined if not found.
- */
-export function getGenreId(name: string): number | undefined {
-  return REVERSE_MAP[name.toLowerCase()];
-}
+/** Precomputed, alphabetically sorted genre list — GENRE_MAP is static and never mutates. */
+const ALL_GENRES: Array<{ id: number; name: string }> = Object.entries(
+  GENRE_MAP,
+)
+  .map(([id, name]) => ({ id: Number(id), name }))
+  .sort((a, b) => a.name.localeCompare(b.name));
 
 /**
  * Get all genres as a sorted array of { id, name } objects.
  * Sorted alphabetically by name.
  */
 export function getAllGenres(): Array<{ id: number; name: string }> {
-  return Object.entries(GENRE_MAP)
-    .map(([id, name]) => ({ id: Number(id), name }))
-    .sort((a, b) => a.name.localeCompare(b.name));
+  return ALL_GENRES;
 }

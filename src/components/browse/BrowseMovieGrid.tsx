@@ -5,6 +5,7 @@ import { getPosterUrl } from "@/services/tmdb/client";
 import { getMoviePosterLayoutId } from "@/lib/layout-ids";
 import { moviePath } from "@/lib/movie-url";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
+import { ratingColorClass, getMovieYear } from "@/lib/rating-color";
 import { MetalButton } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
 import {
@@ -25,13 +26,6 @@ interface BrowseMovieGridProps {
   totalResults: number;
   providerName: string | null;
   onClearFilters: () => void;
-}
-
-function getRatingColor(voteAverage: number): string {
-  const pct = Math.round(voteAverage * 10);
-  if (pct >= 70) return "bg-green-500/90 text-white";
-  if (pct >= 50) return "bg-yellow-500/90 text-white";
-  return "bg-red-500/90 text-white";
 }
 
 export function BrowseMovieGrid({
@@ -92,11 +86,9 @@ export function BrowseMovieGrid({
       >
         {results.map((movie) => {
           const posterUrl = getPosterUrl(movie.poster_path, "w342");
-          const year = movie.release_date
-            ? new Date(movie.release_date).getFullYear()
-            : null;
+          const year = getMovieYear(movie.release_date);
           const ratingPct = Math.round(movie.vote_average * 10);
-          const ratingColor = getRatingColor(movie.vote_average);
+          const ratingColor = ratingColorClass(movie.vote_average);
 
           return (
             <StaggerItem key={movie.id} direction="up">
