@@ -29,7 +29,6 @@ interface SearchState {
   error: string | null;
   sortBy: string;
   advancedFilters: AdvancedFilters;
-  searchCache: Map<string, TMDBMovie[]>;
 
   setQuery: (query: string) => void;
   setResults: (
@@ -47,10 +46,6 @@ interface SearchState {
   // Advanced filter actions
   setAdvancedFilters: (filters: Partial<AdvancedFilters>) => void;
   resetAdvancedFilters: () => void;
-
-  // Search cache actions
-  getCachedResults: (key: string) => TMDBMovie[] | undefined;
-  setCachedResults: (key: string, results: TMDBMovie[]) => void;
 }
 
 export const useSearchStore = create<SearchState>()((set, get) => ({
@@ -63,7 +58,6 @@ export const useSearchStore = create<SearchState>()((set, get) => ({
   error: null,
   sortBy: "popularity.desc",
   advancedFilters: { ...DEFAULT_ADVANCED_FILTERS },
-  searchCache: new Map<string, TMDBMovie[]>(),
 
   setQuery: (query) => set({ query }),
   setResults: (results, totalResults, totalPages, currentPage) =>
@@ -95,13 +89,4 @@ export const useSearchStore = create<SearchState>()((set, get) => ({
 
   resetAdvancedFilters: () =>
     set({ advancedFilters: { ...DEFAULT_ADVANCED_FILTERS } }),
-
-  getCachedResults: (key) => get().searchCache.get(key),
-
-  setCachedResults: (key, results) =>
-    set((state) => {
-      const newCache = new Map(state.searchCache);
-      newCache.set(key, results);
-      return { searchCache: newCache };
-    }),
 }));

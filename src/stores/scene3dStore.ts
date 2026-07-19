@@ -23,7 +23,6 @@ import type { Capability } from "@/hooks/use3DCapability";
  *   setSceneLoaded          — called by SplineScene once scene canvas is ready
  *   setSceneError           — called by SplineScene on load failure
  *   setSplineApp            — stores Spline Application ref for camera control (Plans 07-03/07-04)
- *   setCameraState          — updates currentCameraState tracker
  *   triggerCameraTransition — fires a Spline camera state transition if splineApp is available
  */
 
@@ -41,7 +40,6 @@ interface Scene3dState {
   setSceneLoaded: (loaded: boolean) => void;
   setSceneError: (error: boolean) => void;
   setSplineApp: (app: Application | null) => void;
-  setCameraState: (state: string) => void;
   triggerCameraTransition: (targetState: string) => void;
 }
 
@@ -58,7 +56,6 @@ export const useScene3dStore = create<Scene3dState>()((set, get) => ({
   setSceneLoaded: (sceneLoaded) => set({ sceneLoaded }),
   setSceneError: (sceneError) => set({ sceneError }),
   setSplineApp: (splineApp) => set({ splineApp, cameraAvailable: null }),
-  setCameraState: (currentCameraState) => set({ currentCameraState }),
   triggerCameraTransition: (targetState) => {
     const { splineApp, cameraAvailable } = get();
 

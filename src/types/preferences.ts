@@ -6,14 +6,3 @@ export interface TasteProfile {
   directors: Record<number, number>;
   lastUpdated: number;
 }
-
-export type TasteSignal = "love" | "not-interested";
-
-export interface MovieInteraction {
-  movieId: number;
-  signal: TasteSignal;
-  genres: number[];
-  decade: string;
-  directorId: number | undefined;
-  timestamp: number;
-}

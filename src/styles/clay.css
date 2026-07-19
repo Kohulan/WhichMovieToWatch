@@ -28,19 +28,6 @@
   background-size: 200px 200px;
 }
 
-/* Reduced texture for small elements (badges, etc.) */
-.clay-texture-subtle::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  mix-blend-mode: overlay;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-}
-
 /* --- Clay Shadow Presets ---
    Bold, chunky 3D clay shadows. Not subtle neumorphism.
    Uses --clay-shadow and --clay-highlight CSS variables for
@@ -130,20 +117,6 @@
     );
 }
 
-/* --- Deep Clay Shadow ---
-   Enhanced floating card shadow for light mode.
-   Stronger ambient shadow + subtle inner recess for physical depth.
-   (From Kosma panel reference)
-   ------------------------------------------------------------ */
-
-.clay-shadow-deep {
-  box-shadow:
-    16px 16px 32px var(--clay-shadow),
-    0 20px 40px rgba(0, 0, 0, 0.12),
-    inset -6px -6px 12px rgba(0, 0, 0, 0.1),
-    inset 0 8px 16px var(--clay-highlight);
-}
-
 /* ── Mobile Performance: single-shadow fallbacks (80% less GPU work) ── */
 @media (pointer: coarse) {
   .clay-shadow-sm {
@@ -154,9 +127,6 @@
   }
   .clay-shadow-lg {
     box-shadow: 6px 6px 16px var(--clay-shadow);
-  }
-  .clay-shadow-deep {
-    box-shadow: 8px 8px 20px var(--clay-shadow);
   }
   .clay-shadow-inset {
     box-shadow: inset 2px 2px 6px var(--clay-shadow);

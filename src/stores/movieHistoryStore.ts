@@ -16,9 +16,6 @@ interface MovieHistoryState {
   markWatched: (movieId: number) => void;
   markLoved: (movieId: number) => void;
   markNotInterested: (movieId: number) => void;
-  removeWatched: (movieId: number) => void;
-  removeLoved: (movieId: number) => void;
-  removeNotInterested: (movieId: number) => void;
   markDinnerLike: (movieId: number) => void;
   markDinnerDislike: (movieId: number) => void;
   importLegacy: (data: {
@@ -82,23 +79,6 @@ export const useMovieHistoryStore = create<MovieHistoryState>()(
             ? state
             : { notInterestedMovies: [...state.notInterestedMovies, movieId] },
         ),
-
-      removeWatched: (movieId) =>
-        set((state) => ({
-          watchedMovies: state.watchedMovies.filter((id) => id !== movieId),
-        })),
-
-      removeLoved: (movieId) =>
-        set((state) => ({
-          lovedMovies: state.lovedMovies.filter((id) => id !== movieId),
-        })),
-
-      removeNotInterested: (movieId) =>
-        set((state) => ({
-          notInterestedMovies: state.notInterestedMovies.filter(
-            (id) => id !== movieId,
-          ),
-        })),
 
       markDinnerLike: (movieId) =>
         set((state) =>

@@ -29,18 +29,11 @@
 }
 
 /* ============================================================
-   SEMANTIC Z-INDEX SCALE
-   One ordered ladder so layers stack predictably and no component
-   reaches for an arbitrary 999/9999. Reference via z-[var(--z-*)].
+   RESERVED Z-INDEX VALUES
+   Reference via z-[var(--z-*)].
    ============================================================ */
 :root {
-  --z-content: 1;
-  --z-nav: 40;
-  --z-modal-backdrop: 45;
-  --z-modal: 50;
   --z-overlay-prompt: 60; /* transient prompts (e.g. gyroscope enable) */
-  --z-toast: 80;
-  --z-tooltip: 90;
   --z-splash: 100; /* boot splash + skip link — above everything */
 }
 
