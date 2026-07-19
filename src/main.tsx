@@ -8,6 +8,8 @@ import "@fontsource-variable/jetbrains-mono";
 import "./styles/app.css";
 import App from "./App";
 import { HomePage } from "./pages/HomePage";
+import { evictExpired } from "./services/cache/cache-manager";
+import { getSessionFlag, setSessionFlag } from "./lib/session-flags";
 
 const DiscoverPage = lazy(() =>
   import("./pages/DiscoverPage").then((m) => ({ default: m.DiscoverPage })),
@@ -34,9 +36,9 @@ const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 if (
   typeof window !== "undefined" &&
   import.meta.env.PROD &&
-  !window.sessionStorage.getItem("__wmtw_console_seen__")
+  !getSessionFlag("__wmtw_console_seen__")
 ) {
-  window.sessionStorage.setItem("__wmtw_console_seen__", "1");
+  setSessionFlag("__wmtw_console_seen__");
   // eslint-disable-next-line no-console
   console.log(
     "%cWhich Movie To Watch%c\nReact 19, Vite, custom Clay+Metal design system.\nSource: github.com/Kohulan/WhichMovieToWatch",
@@ -86,6 +88,18 @@ if ("caches" in window) {
       }
     })
     .catch(() => {});
+}
+
+// Evict expired cache entries once the browser is idle. Fire-and-forget
+// housekeeping deferred off the critical path (matches the idle-callback-
+// with-setTimeout-fallback pattern used elsewhere in src, e.g. SplineScene)
+// so it never competes with first paint / first interaction.
+if ("requestIdleCallback" in window) {
+  requestIdleCallback(() => evictExpired().catch(() => {}), {
+    timeout: 4000,
+  });
+} else {
+  setTimeout(() => evictExpired().catch(() => {}), 1500);
 }
 
 /**

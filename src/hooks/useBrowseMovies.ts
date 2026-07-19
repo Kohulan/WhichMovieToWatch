@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { browseMovies } from "@/services/tmdb/browse";
 import { useBrowseStore } from "@/stores/browseStore";
 import { useRegionStore } from "@/stores/regionStore";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 
 export function useBrowseMovies() {
   const selectedProviderId = useBrowseStore((s) => s.selectedProviderId);
@@ -15,6 +16,11 @@ export function useBrowseMovies() {
   const error = useBrowseStore((s) => s.error);
   const sortBy = useBrowseStore((s) => s.sortBy);
   const filters = useBrowseStore((s) => s.filters);
+
+  // Debounced so dragging the DualRangeSlider thumbs (a state update per
+  // tick) doesn't fire a network request per tick — only once the drag
+  // settles. loadMore reads fresh store state directly and is unaffected.
+  const debouncedFilters = useDebouncedValue(filters, 350);
 
   const region = useRegionStore((s) => s.effectiveRegion)();
 
@@ -39,7 +45,7 @@ export function useBrowseMovies() {
           region,
           page: 1,
           sortBy,
-          filters,
+          filters: debouncedFilters,
         },
         controller.signal,
       );
@@ -68,7 +74,7 @@ export function useBrowseMovies() {
         useBrowseStore.getState().setLoading(false);
       }
     }
-  }, [selectedProviderId, region, sortBy, filters]);
+  }, [selectedProviderId, region, sortBy, debouncedFilters]);
 
   const loadMore = useCallback(async () => {
     const store = useBrowseStore.getState();

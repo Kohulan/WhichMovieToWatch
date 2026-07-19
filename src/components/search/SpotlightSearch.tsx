@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { useSearchMovies } from "@/hooks/useSearchMovies";
 import { useSearchStore } from "@/stores/searchStore";
 import { useRegionStore } from "@/stores/regionStore";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { runDiscoverSearch as runDiscoverSearchService } from "@/services/tmdb/discover-search";
 import { SpotlightInput } from "./SpotlightInput";
 import { SpotlightResults } from "./SpotlightResults";
@@ -58,6 +59,12 @@ export function SpotlightSearch({
   const [activePresetId, setActivePresetId] = useState<string | null>(null);
   const [currentQuery, setCurrentQuery] = useState("");
   const region = useRegionStore((s) => s.effectiveRegion)();
+
+  // Debounced so dragging the DualRangeSlider thumbs in AdvancedFilters (a
+  // state update per tick) doesn't fire a discover request per tick — only
+  // gates WHEN the auto-run effect below fires. handleSearch/handleLoadMore
+  // keep reading the live advancedFilters directly.
+  const debouncedAdvancedFilters = useDebouncedValue(advancedFilters, 350);
 
   // A11Y-01: Capture the element that triggered the modal open, so we can
   // return focus to it when the modal closes.
@@ -122,11 +129,19 @@ export function SpotlightSearch({
     }
   }, [isOpen, reset, resetAdvancedFilters]);
 
-  // Run discover search when advanced filters change and filters are non-default
+  // Run discover search when advanced filters change and filters are non-default.
+  // Gated on debouncedAdvancedFilters so dragging a range slider coalesces
+  // into a single request 350ms after the drag settles, instead of firing
+  // one per tick. runDiscoverSearch (below) still reads live advancedFilters
+  // via closure — by the time this effect fires, dragging has stopped, so
+  // the live value has already settled to match the debounced one.
   useEffect(() => {
     if (!isOpen) return;
 
-    const filtersActive = hasNonDefaultFilters(advancedFilters, sortBy);
+    const filtersActive = hasNonDefaultFilters(
+      debouncedAdvancedFilters,
+      sortBy,
+    );
     if (!filtersActive) {
       if (currentQuery) {
         search(currentQuery);
@@ -138,7 +153,7 @@ export function SpotlightSearch({
 
     runDiscoverSearch(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [advancedFilters, sortBy, isOpen]);
+  }, [debouncedAdvancedFilters, sortBy, isOpen]);
 
   function runDiscoverSearch(page: number) {
     const requestId = ++discoverRequestIdRef.current;

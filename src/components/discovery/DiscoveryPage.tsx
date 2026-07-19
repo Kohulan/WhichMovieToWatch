@@ -453,7 +453,10 @@ export function DiscoveryPage() {
 
               {/* Streaming providers (DISP-05) — show global availability when navigating from Netflix search */}
               {globalProviders ? (
-                <GlobalAvailabilitySection movieId={currentMovie.id} />
+                <GlobalAvailabilitySection
+                  movieId={currentMovie.id}
+                  embeddedProviders={currentMovie["watch/providers"]?.results}
+                />
               ) : (
                 <ProviderSection
                   providers={providers}
