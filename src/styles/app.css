@@ -28,6 +28,36 @@
   outline-offset: 2px;
 }
 
+/* ============================================================
+   SEMANTIC Z-INDEX SCALE
+   One ordered ladder so layers stack predictably and no component
+   reaches for an arbitrary 999/9999. Reference via z-[var(--z-*)].
+   ============================================================ */
+:root {
+  --z-content: 1;
+  --z-nav: 40;
+  --z-modal-backdrop: 45;
+  --z-modal: 50;
+  --z-overlay-prompt: 60; /* transient prompts (e.g. gyroscope enable) */
+  --z-toast: 80;
+  --z-tooltip: 90;
+  --z-splash: 100; /* boot splash + skip link — above everything */
+}
+
+/* ============================================================
+   PERF-LITE MODE (low-GPU devices, tier 0-1)
+   backdrop-filter is a heavy per-frame paint that tanks FPS on
+   weak GPUs. Drop it there — the surfaces underneath are already
+   semi-opaque, so they still read as panels, just without the blur.
+   Toggled on <html> by App.tsx via the existing GPU-tier signal.
+   ============================================================ */
+:root.perf-lite *,
+:root.perf-lite *::before,
+:root.perf-lite *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 @theme inline {
   /* Colors — mapped to CSS variables, overridden per-theme */
   --color-clay-base: var(--clay-base);
@@ -54,6 +84,9 @@
   --color-metal-dark: var(--metal-dark);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  /* Darker accent for solid fills carrying white text (buttons), so the label
+     meets WCAG AA 4.5:1 — the base --accent is too light for white text. */
+  --color-accent-strong: var(--accent-strong);
 
   /* Border radius */
   --radius-clay: 1.5rem;
@@ -72,6 +105,19 @@
   /* Fonts */
   --font-heading: "JetBrains Mono Variable", "JetBrains Mono", monospace;
   --font-body: "JetBrains Mono Variable", "JetBrains Mono", monospace;
+  /* Prose: a readable system sans for genuine long-form reading (privacy
+     policy, legal copy). Monospace carries the UI/data brand everywhere else;
+     mono is tiring for sustained paragraphs. Zero network cost (system stack). */
+  --font-prose:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+
+  /* Semantic rating-score colors (single source of truth for the good/mid/bad
+     vote-average badges shared across every result grid). Tunable in one place
+     instead of duplicated bg-green/yellow/red-500 across four components. */
+  --color-score-good: oklch(0.72 0.19 150);
+  --color-score-mid: oklch(0.79 0.17 85);
+  --color-score-bad: oklch(0.63 0.24 27);
 }
 
 /* ============================================================
@@ -102,6 +148,7 @@
   --metal-dark: oklch(0.5 0.06 65);
   --accent: oklch(0.67 0.22 38);
   --accent-hover: oklch(0.62 0.24 38);
+  --accent-strong: oklch(0.48 0.2 38);
 }
 
 .dark.theme-warm-orange {
@@ -119,6 +166,7 @@
   --metal-dark: oklch(0.32 0.05 65);
   --accent: oklch(0.7 0.22 38);
   --accent-hover: oklch(0.75 0.2 38);
+  --accent-strong: oklch(0.48 0.2 38);
 }
 
 /* --- Gold — Warm luxury, rich gold accent, brass metal --- */
@@ -138,6 +186,7 @@
   --metal-dark: oklch(0.52 0.08 70);
   --accent: oklch(0.68 0.14 80);
   --accent-hover: oklch(0.63 0.16 80);
+  --accent-strong: oklch(0.47 0.11 80);
 }
 
 .dark.theme-gold {
@@ -155,6 +204,7 @@
   --metal-dark: oklch(0.3 0.06 70);
   --accent: oklch(0.74 0.14 80);
   --accent-hover: oklch(0.79 0.12 80);
+  --accent-strong: oklch(0.5 0.12 80);
 }
 
 /* --- Clean White — Minimal, neutral, crisp --- */
@@ -174,6 +224,7 @@
   --metal-dark: oklch(0.58 0.006 250);
   --accent: oklch(0.45 0.01 250);
   --accent-hover: oklch(0.38 0.012 250);
+  --accent-strong: oklch(0.4 0.012 250);
 }
 
 .dark.theme-clean-white {
@@ -191,6 +242,7 @@
   --metal-dark: oklch(0.28 0.005 250);
   --accent: oklch(0.88 0.003 250);
   --accent-hover: oklch(0.95 0.002 250);
+  --accent-strong: oklch(0.44 0.008 250);
 }
 
 /* ── Paint containment for grid cards (reduces layout recalculation scope) ── */

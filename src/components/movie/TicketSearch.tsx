@@ -65,7 +65,7 @@ export function TicketSearch({ movieTitle, releaseYear }: TicketSearchProps) {
 
         <motion.button
           type="submit"
-          className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-accent text-white text-sm font-semibold cursor-pointer"
+          className="flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl bg-accent-strong text-white text-sm font-semibold cursor-pointer"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           style={{

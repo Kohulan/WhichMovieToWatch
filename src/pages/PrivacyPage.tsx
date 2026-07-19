@@ -23,16 +23,12 @@ export default function PrivacyPage() {
           <span>Back to home</span>
         </Link>
 
-        {/* Main content card */}
-        <div className="bg-clay-elevated rounded-3xl shadow-clay-lg border border-white/[0.08] p-6 sm:p-10">
+        {/* Main content card — long-form legal reading uses the prose (sans)
+            face for legibility; the rest of the app stays monospace. */}
+        <div className="bg-clay-elevated rounded-3xl shadow-clay-lg border border-white/[0.08] p-6 sm:p-10 font-prose">
           {/* Header */}
           <div className="mb-8 text-center">
-            <h1
-              className="text-3xl sm:text-4xl font-heading text-clay-text mb-2"
-              style={{
-                fontFamily: "'Righteous', var(--font-heading, sans-serif)",
-              }}
-            >
+            <h1 className="text-3xl sm:text-4xl font-semibold text-clay-text mb-2">
               Privacy Policy
             </h1>
             <p className="text-sm text-clay-text-muted">
@@ -93,7 +89,7 @@ export default function PrivacyPage() {
                   href="https://www.themoviedb.org/privacy-policy"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-accent hover:underline"
+                  className="text-clay-text underline decoration-accent decoration-2 underline-offset-2 hover:decoration-clay-text"
                 >
                   TMDB's privacy policy
                 </a>
@@ -129,7 +125,7 @@ export default function PrivacyPage() {
                 href="https://simpleanalytics.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent hover:underline"
+                className="text-clay-text underline decoration-accent decoration-2 underline-offset-2 hover:decoration-clay-text"
               >
                 Simple Analytics
               </a>{" "}
@@ -147,7 +143,7 @@ export default function PrivacyPage() {
                 href="https://simpleanalytics.com/privacy"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent hover:underline"
+                className="text-clay-text underline decoration-accent decoration-2 underline-offset-2 hover:decoration-clay-text"
               >
                 simpleanalytics.com/privacy
               </a>
@@ -248,7 +244,7 @@ export default function PrivacyPage() {
                 href="https://github.com/Kohulan/WhichMovieToWatch"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent hover:underline"
+                className="text-clay-text underline decoration-accent decoration-2 underline-offset-2 hover:decoration-clay-text"
               >
                 GitHub repository
               </a>

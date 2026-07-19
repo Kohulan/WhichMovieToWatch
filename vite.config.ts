@@ -187,6 +187,13 @@ export default defineConfig({
           if (id.includes("node_modules/@splinetool")) {
             return "spline-vendor";
           }
+          // Everything else from node_modules (zustand, idb, lucide-react,
+          // @fontsource, detect-gpu deps, etc.) → one stable vendor chunk.
+          // Keeps rarely-changing third-party code out of the app index chunk,
+          // so app edits don't bust the vendor cache and vice versa.
+          if (id.includes("node_modules")) {
+            return "vendor";
+          }
         },
       },
     },

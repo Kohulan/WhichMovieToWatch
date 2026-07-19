@@ -9,6 +9,7 @@ import {
 } from "@/components/animation/StaggerContainer";
 import { useNetflixAvailability } from "@/hooks/useNetflixAvailability";
 import { getCountryName } from "@/lib/country-names";
+import { ratingColorClass } from "@/lib/rating-color";
 import type { TMDBMovie } from "@/types/movie";
 
 interface NetflixResultsProps {
@@ -18,13 +19,6 @@ interface NetflixResultsProps {
   isLoading: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
-}
-
-function getRatingColor(voteAverage: number): string {
-  const pct = Math.round(voteAverage * 10);
-  if (pct >= 70) return "bg-green-500/80 text-white";
-  if (pct >= 50) return "bg-yellow-500/80 text-white";
-  return "bg-red-500/80 text-white";
 }
 
 function sortWithExactMatchFirst(
@@ -62,7 +56,7 @@ function NetflixCard({
     ? new Date(movie.release_date).getFullYear()
     : null;
   const ratingPct = Math.round(movie.vote_average * 10);
-  const ratingColor = getRatingColor(movie.vote_average);
+  const ratingColor = ratingColorClass(movie.vote_average);
   const hasNetflix = countries.length > 0;
   const visibleCountries = countries.slice(0, MAX_VISIBLE_COUNTRIES);
   const overflow = countries.length - MAX_VISIBLE_COUNTRIES;
@@ -187,11 +181,28 @@ export function NetflixResults({
   }
 
   if (!isLoading && results.length === 0) {
+    // Empty query is the resting state, not a failure — greet with a prompt
+    // instead of the zero-results copy the user hasn't earned yet.
+    const hasQuery = query.trim().length > 0;
     return (
       <div className="flex flex-col items-center gap-3 py-16 px-4 text-center">
-        <p className="text-clay-text-muted text-sm">
-          No movies found. Try adjusting your search or filters.
-        </p>
+        {hasQuery ? (
+          <p className="text-clay-text-muted text-sm">
+            No movies found. Try adjusting your search or filters.
+          </p>
+        ) : (
+          <>
+            <span
+              className="text-brand-netflix font-bold text-3xl leading-none"
+              aria-hidden="true"
+            >
+              N
+            </span>
+            <p className="text-clay-text-muted text-sm">
+              Type a title to search what's on Netflix worldwide.
+            </p>
+          </>
+        )}
       </div>
     );
   }

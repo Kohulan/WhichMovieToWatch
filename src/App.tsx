@@ -10,6 +10,7 @@ import { InstallBanner } from "@/components/pwa/InstallBanner";
 import { MotionProvider } from "@/components/animation/MotionProvider";
 import { Scene3DProvider } from "@/components/3d/Scene3DProvider";
 import { getSessionFlag, setSessionFlag } from "@/lib/session-flags";
+import { useGpuTier } from "@/hooks/useGpuTier";
 
 const SPLASH_SEEN_KEY = "wmtw:splash-seen";
 
@@ -22,6 +23,15 @@ function App() {
 
   // Run legacy localStorage migration on mount (Plan 02-02)
   useMigration();
+
+  // Low-GPU devices (tier 0-1): drop expensive backdrop-filter paints via a
+  // root class the stylesheet keys off. Reuses the same detection that gates
+  // the 3D scene, so there's no extra cost. See .perf-lite in app.css.
+  const { tier, loading: gpuLoading } = useGpuTier();
+  useEffect(() => {
+    if (gpuLoading) return;
+    document.documentElement.classList.toggle("perf-lite", tier <= 1);
+  }, [tier, gpuLoading]);
 
   // Simple Analytics — cookieless, GDPR-compliant page view tracking (Plan 08-04, PRIV-02)
   // Manual script injection; auto mode tracks History API navigation (BrowserRouter).

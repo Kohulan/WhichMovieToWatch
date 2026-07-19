@@ -7,6 +7,7 @@ import {
   StaggerContainer,
   StaggerItem,
 } from "@/components/animation/StaggerContainer";
+import { ratingColorClass } from "@/lib/rating-color";
 import type { TMDBMovie } from "@/types/movie";
 
 interface SpotlightResultsProps {
@@ -16,13 +17,6 @@ interface SpotlightResultsProps {
   isLoading: boolean;
   hasMore: boolean;
   onLoadMore: () => void;
-}
-
-function getRatingColor(voteAverage: number): string {
-  const pct = Math.round(voteAverage * 10);
-  if (pct >= 70) return "bg-green-500/80 text-white";
-  if (pct >= 50) return "bg-yellow-500/80 text-white";
-  return "bg-red-500/80 text-white";
 }
 
 /** Sort exact title matches to the top, preserve TMDB order for the rest */
@@ -66,10 +60,15 @@ export function SpotlightResults({
   }
 
   if (!isLoading && results.length === 0) {
+    // Empty query is the resting state, not a failure — greet with a prompt
+    // instead of the zero-results copy the user hasn't earned yet.
+    const hasQuery = query.trim().length > 0;
     return (
       <div className="flex flex-col items-center gap-3 py-16 px-4 text-center">
         <p className="text-clay-text-muted text-sm">
-          No movies found. Try adjusting your search or filters.
+          {hasQuery
+            ? "No movies found. Try adjusting your search or filters."
+            : "Type a title, or pick a filter to start browsing."}
         </p>
       </div>
     );
@@ -89,7 +88,7 @@ export function SpotlightResults({
             ? new Date(movie.release_date).getFullYear()
             : null;
           const ratingPct = Math.round(movie.vote_average * 10);
-          const ratingColor = getRatingColor(movie.vote_average);
+          const ratingColor = ratingColorClass(movie.vote_average);
 
           return (
             <StaggerItem key={movie.id}>

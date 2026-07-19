@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import type { ImgHTMLAttributes } from "react";
+import { useState } from "react";
+import type { ImgHTMLAttributes, SyntheticEvent } from "react";
 import { getProviderLogoUrl } from "@/lib/provider-registry";
 
 interface ProviderLogoProps {
@@ -26,6 +27,24 @@ export function ProviderLogo({
   className,
   onError,
 }: ProviderLogoProps) {
+  const [failed, setFailed] = useState(false);
+
+  // A failed logo fetch otherwise shows the browser's broken-image glyph.
+  // Swap to a neutral clay tile that keeps the same footprint (no layout
+  // shift) while still forwarding onError to any consumer that wants it.
+  if (failed) {
+    return (
+      <div
+        aria-hidden="true"
+        style={{ width: size, height: size }}
+        className={
+          className ??
+          "w-full h-full rounded-[inherit] bg-clay-base border border-clay-border"
+        }
+      />
+    );
+  }
+
   const baseProps = {
     src: getProviderLogoUrl(logoPath),
     alt: "",
@@ -34,7 +53,10 @@ export function ProviderLogo({
     loading: "lazy" as const,
     decoding: "async" as const,
     className: className ?? "w-full h-full object-cover",
-    onError,
+    onError: (e: SyntheticEvent<HTMLImageElement>) => {
+      setFailed(true);
+      onError?.(e);
+    },
   };
 
   return layoutId ? (

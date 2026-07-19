@@ -17,6 +17,11 @@ export const DINNER_TIME_SERVICES = {
 // Widened to accept any TMDB provider ID (not just the 3 featured services)
 export type DinnerTimeServiceId = number;
 
+// Watchdog: if a discovery round hasn't resolved within this window (slow
+// network, a candidate detail fetch that hangs), abort and surface the
+// retryable error state instead of leaving the skeleton spinning forever.
+const WATCHDOG_MS = 15000;
+
 // Family-friendly genre IDs: Family(10751), Animation(16), Adventure(12), Comedy(35)
 const FAMILY_GENRES = "10751|16|12|35";
 const FAMILY_GENRE_IDS = new Set([10751, 16, 12, 35]);
@@ -108,6 +113,12 @@ export function useDinnerTime(
       setIsLoading(true);
       setError(null);
 
+      // Combine the caller's abort signal with a watchdog timeout. If the
+      // watchdog fires first, we treat it as a timeout (retryable error);
+      // if the caller aborts (unmount / service switch), we stay silent.
+      const timeoutSignal = AbortSignal.timeout(WATCHDOG_MS);
+      const fetchSignal = AbortSignal.any([signal, timeoutSignal]);
+
       const maxRetries = 3;
 
       const discoverParams = {
@@ -124,7 +135,7 @@ export function useDinnerTime(
 
       try {
         for (let attempt = 0; attempt < maxRetries; attempt++) {
-          signal.throwIfAborted();
+          fetchSignal.throwIfAborted();
 
           const randomPage = Math.floor(Math.random() * 5) + 1;
 
@@ -132,7 +143,7 @@ export function useDinnerTime(
             "/discover/movie",
             { ...discoverParams, page: randomPage },
             3,
-            signal,
+            fetchSignal,
           );
 
           const excludeSet = getExcludeSet();
@@ -146,7 +157,7 @@ export function useDinnerTime(
               "/discover/movie",
               { ...discoverParams, page: 1 },
               3,
-              signal,
+              fetchSignal,
             );
             candidates = fallback.results;
           }
@@ -164,7 +175,7 @@ export function useDinnerTime(
           const candidateIds = shuffled.map((c) => c.id);
 
           // Fetch details in parallel — return first family-friendly match
-          const found = await findFamilyFriendlyMovie(candidateIds, signal);
+          const found = await findFamilyFriendlyMovie(candidateIds, fetchSignal);
           if (found) {
             trackShown(found.id);
             setMovie(found);
@@ -179,8 +190,21 @@ export function useDinnerTime(
         );
         setMovie(null);
       } catch (err) {
-        // Don't update state if the request was intentionally aborted
-        if (err instanceof DOMException && err.name === "AbortError") return;
+        const aborted =
+          (err instanceof DOMException && err.name === "AbortError") ||
+          (err instanceof DOMException && err.name === "TimeoutError");
+        if (aborted) {
+          // The watchdog fired (timeoutSignal) rather than the caller aborting
+          // (unmount / service switch). Surface a retryable timeout message;
+          // a genuine caller abort stays silent (a new fetch is taking over).
+          if (timeoutSignal.aborted && !signal.aborted) {
+            setError(
+              "This is taking longer than usual. Check your connection and try again.",
+            );
+            setMovie(null);
+          }
+          return;
+        }
         setError(
           err instanceof Error
             ? err.message
@@ -188,7 +212,9 @@ export function useDinnerTime(
         );
         setMovie(null);
       } finally {
-        // Only clear loading if this fetch wasn't aborted (a new one is already running)
+        // Only clear loading if the caller's signal wasn't aborted (a new fetch
+        // is already running). A watchdog timeout leaves signal un-aborted, so
+        // loading correctly clears and the error state renders.
         if (!signal.aborted) {
           setIsLoading(false);
         }

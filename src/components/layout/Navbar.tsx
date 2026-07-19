@@ -87,12 +87,15 @@ export function Navbar() {
         to={to}
         end={end}
         className={[
-          "relative flex items-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg cursor-pointer",
+          // min-h/min-w 44px keeps the icon-only mobile tabs a real touch
+          // target; sm:min-w-0 lets the labeled desktop tabs size to content.
+          "relative flex items-center justify-center gap-1 px-2 sm:px-2.5 py-1.5 rounded-lg cursor-pointer",
+          "min-h-11 min-w-11 sm:min-h-0 sm:min-w-0",
           "text-[11px] font-medium tracking-wide",
           "outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-1 focus-visible:ring-offset-clay-base/50",
           "transition-colors duration-200",
           isActive
-            ? "text-accent"
+            ? "text-clay-text"
             : "text-clay-text-muted hover:text-clay-text",
         ].join(" ")}
         aria-label={label}
@@ -193,7 +196,8 @@ export function Navbar() {
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.95 }}
             className="
-              inline-flex items-center gap-1
+              inline-flex items-center justify-center gap-1
+              min-h-11 sm:min-h-0
               px-2 sm:px-2.5 py-1 rounded-full cursor-pointer
               text-white text-2xs font-bold tracking-wider uppercase
               bg-brand-netflix hover:bg-brand-netflix-dark

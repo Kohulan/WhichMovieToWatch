@@ -110,30 +110,46 @@ export function DinnerTimeBentoHero({
                 aria-hidden="true"
               />
               <div className="relative z-10 p-5 flex items-center justify-between h-full gap-4">
-                {/* Left side: label + logos stacked */}
+                {/* Left side: label + logos stacked. The logos are real buttons
+                    (not decoration) — same selection affordance as the primary
+                    selector above, so nothing here looks tappable but dead. */}
                 <div className="flex flex-col gap-3">
                   <p className="text-white/70 text-xs font-medium uppercase tracking-wider drop-shadow-sm">
-                    Choose your service below
+                    Tap to switch service
                   </p>
-                  <div className="flex items-center gap-3 flex-wrap">
+                  <div
+                    className="flex items-center gap-3 flex-wrap"
+                    role="group"
+                    aria-label="Switch streaming service"
+                  >
                     {HERO_SERVICES.map((serviceId) => {
                       const config = getServiceConfig(serviceId);
                       const logoUrl = getServiceLogoUrl(serviceId);
+                      const isActive = currentService === serviceId;
                       return (
-                        <div
+                        <button
                           key={serviceId}
-                          className="flex flex-col items-center gap-1.5"
-                          aria-label={config.name}
+                          type="button"
+                          onClick={() => setService(serviceId)}
+                          aria-pressed={isActive}
+                          aria-label={`Switch to ${config.name}`}
+                          className={`
+                            flex flex-col items-center gap-1.5 rounded-xl p-1
+                            outline-none transition-opacity duration-200
+                            focus-visible:ring-2 focus-visible:ring-white/60
+                            ${isActive ? "opacity-100" : "opacity-60 hover:opacity-90"}
+                          `}
                         >
                           {logoUrl ? (
                             <img
                               src={logoUrl}
-                              alt={config.name}
-                              className="w-10 h-10 rounded-xl object-cover shadow-md"
+                              alt=""
+                              aria-hidden="true"
+                              className={`w-10 h-10 rounded-xl object-cover shadow-md transition-shadow ${isActive ? "ring-2 ring-white/70" : ""}`}
                             />
                           ) : (
                             <div
-                              className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md"
+                              className={`w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md ${isActive ? "ring-2 ring-white/70" : ""}`}
                               style={{ backgroundColor: config.color }}
                             >
                               {config.name[0]}
@@ -142,7 +158,7 @@ export function DinnerTimeBentoHero({
                           <span className="text-white/80 text-xs leading-tight text-center drop-shadow-sm">
                             {config.name}
                           </span>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>

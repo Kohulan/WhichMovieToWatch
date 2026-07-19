@@ -100,7 +100,10 @@ export function MovieHero({
 
       {/* Info column */}
       <div className="flex flex-col justify-center min-w-0">
-        <h1 className="font-heading font-semibold text-2xl md:text-3xl text-clay-text leading-tight">
+        {/* Halo in the page's own base color: invisible when the hero sits on a
+            plain surface, a guaranteed scrim when it sits over a per-movie
+            backdrop (adapts to light/dark since --clay-base flips per theme). */}
+        <h1 className="font-heading font-semibold text-2xl md:text-3xl text-clay-text leading-tight [text-shadow:0_1px_2px_var(--clay-base),0_2px_16px_var(--clay-base)]">
           {movie.title}
         </h1>
 

@@ -2,6 +2,7 @@ import { Link } from "react-router";
 import { getPosterUrl } from "@/services/tmdb/client";
 import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { moviePath } from "@/lib/movie-url";
+import { ratingColorClass } from "@/lib/rating-color";
 import type { TMDBMovie } from "@/types/movie";
 
 interface MoviePosterCardProps {
@@ -14,10 +15,7 @@ export function MoviePosterCard({ movie, search = "" }: MoviePosterCardProps) {
   const posterUrl = getPosterUrl(movie.poster_path, "w185");
   const year = movie.release_date ? movie.release_date.slice(0, 4) : null;
   const ratingPercent = Math.round(movie.vote_average * 10);
-
-  let ratingColor = "bg-red-500/80 text-white";
-  if (ratingPercent >= 70) ratingColor = "bg-green-500/80 text-white";
-  else if (ratingPercent >= 50) ratingColor = "bg-yellow-500/80 text-white";
+  const ratingColor = ratingColorClass(movie.vote_average);
 
   return (
     <Link

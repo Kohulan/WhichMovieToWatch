@@ -96,13 +96,23 @@ if ("caches" in window) {
 function PageSuspenseFallback() {
   return (
     <div
-      className="flex items-center justify-center gap-3 min-h-[60vh] px-4 text-clay-text-muted text-sm"
+      className="flex flex-col items-center justify-center gap-4 min-h-[60vh] px-4 text-clay-text-muted"
       role="status"
       aria-live="polite"
       aria-label="Loading page"
     >
-      <span className="inline-block w-2 h-2 rounded-full bg-accent animate-pulse" />
-      <span>Loading…</span>
+      {/* Three staggered dots read as an intentional loading state rather than
+          a stray pixel dwarfed by the ambient background wordmark. */}
+      <span className="flex items-center gap-2" aria-hidden="true">
+        {[0, 1, 2].map((i) => (
+          <span
+            key={i}
+            className="inline-block w-2.5 h-2.5 rounded-full bg-accent animate-pulse"
+            style={{ animationDelay: `${i * 160}ms` }}
+          />
+        ))}
+      </span>
+      <span className="text-sm font-medium">Loading…</span>
     </div>
   );
 }

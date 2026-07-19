@@ -96,7 +96,7 @@ export function GyroscopeProvider() {
         position: "fixed",
         bottom: "88px", // above TabBar (~72px) + margin
         right: "16px",
-        zIndex: 200,
+        zIndex: "var(--z-overlay-prompt)",
         // Clay card styles (inline to avoid Tailwind purge issues in dynamic component)
         background: "color-mix(in oklch, var(--clay-base) 95%, transparent)",
         borderRadius: "16px",
@@ -113,9 +113,9 @@ export function GyroscopeProvider() {
         WebkitBackdropFilter: "blur(12px)",
         // Pointer events enabled — this is an interactive prompt, not decorative
         pointerEvents: "auto",
-        // Subtle entry animation via CSS
+        // Subtle entry animation via CSS — ease-out (no overshoot/bounce)
         animation:
-          "gyro-prompt-slide-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
+          "gyro-prompt-slide-in 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards",
       }}
       role="dialog"
       aria-label="Enable gyroscope for immersive tilt"

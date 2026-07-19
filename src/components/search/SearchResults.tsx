@@ -3,6 +3,7 @@ import { tmdbPosterSrcSet, posterSizes } from "@/hooks/useResponsiveImage";
 import { ClaySkeletonCard } from "@/components/ui";
 import { MetalButton } from "@/components/ui";
 import { LoadingQuotes } from "@/components/animation/LoadingQuotes";
+import { ratingColorClass } from "@/lib/rating-color";
 import type { TMDBMovie } from "@/types/movie";
 
 interface SearchResultsProps {
@@ -29,13 +30,6 @@ export function SearchResults({
   hasMore,
   onLoadMore,
 }: SearchResultsProps) {
-  function getRatingColor(voteAverage: number): string {
-    const pct = Math.round(voteAverage * 10);
-    if (pct >= 70) return "bg-green-500/80 text-white";
-    if (pct >= 50) return "bg-yellow-500/80 text-white";
-    return "bg-red-500/80 text-white";
-  }
-
   // Loading state — movie-themed quotes with film-reel spinner (ANIM-06)
   if (isLoading && results.length === 0) {
     return (
@@ -70,7 +64,7 @@ export function SearchResults({
             ? new Date(movie.release_date).getFullYear()
             : null;
           const ratingPct = Math.round(movie.vote_average * 10);
-          const ratingColor = getRatingColor(movie.vote_average);
+          const ratingColor = ratingColorClass(movie.vote_average);
 
           return (
             <li key={movie.id} role="listitem" className="cv-auto">

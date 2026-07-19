@@ -135,11 +135,8 @@ export function ServiceRotaryDial({
   return (
     <div
       className="inline-flex flex-col items-center gap-2"
-      role="listbox"
-      aria-label="Select streaming service"
-      aria-activedescendant={`service-${currentService}`}
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
+      role="group"
+      aria-label="Streaming service selector"
     >
       {/* Knob with glow ring */}
       <div className="relative" style={{ width: 80, height: 80 }}>
@@ -157,12 +154,16 @@ export function ServiceRotaryDial({
         <motion.div
           ref={knobRef}
           onClick={handleClick}
+          onKeyDown={handleKeyDown}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
+          role="button"
+          tabIndex={0}
           animate={{ rotate: cumulativeAngle.current }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="absolute inset-2 metal-knob-enhanced metal-shadow rounded-full cursor-pointer flex items-center justify-center touch-none"
-          aria-label={`Current service: ${config.name}. Click to switch.`}
+          className="absolute inset-2 metal-knob-enhanced metal-shadow rounded-full cursor-pointer flex items-center justify-center touch-none outline-none focus-visible:ring-2 focus-visible:ring-accent"
+          aria-label={`Current service: ${config.name}. Activate or turn to switch.`}
+          title="Turn or click to switch service"
         >
           {/* Indicator notch */}
           <div
@@ -198,19 +199,6 @@ export function ServiceRotaryDial({
           {config.name}
         </motion.span>
       </AnimatePresence>
-
-      {/* Screen-reader-only options */}
-      {SERVICES.map((serviceId) => (
-        <div
-          key={serviceId}
-          id={`service-${serviceId}`}
-          role="option"
-          aria-selected={serviceId === currentService}
-          className="sr-only"
-        >
-          {getServiceConfig(serviceId).name}
-        </div>
-      ))}
     </div>
   );
 }
