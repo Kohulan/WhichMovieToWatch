@@ -62,47 +62,56 @@ export async function fetchProvidersForRegion(
     );
 }
 
+// The /watch/providers endpoint returns ALL regions in one payload, so a
+// single per-movie cache entry serves every region — the old per-region
+// cache keys meant a region change (e.g. IPinfo detection landing after the
+// first fetch) re-downloaded the identical URL. Region is picked on read.
 export async function fetchMovieProviders(
   movieId: number,
   region: string,
 ): Promise<WatchProviderCountry | null> {
-  // Cache key includes region per Pitfall 4
-  const cacheKey = `providers-movie-${movieId}-${region}`;
-
-  const cached = await getCached<WatchProviderCountry | null>(cacheKey);
-  if (cached.value !== null && !cached.isStale) {
-    return cached.value;
-  }
-
-  const response = await tmdbFetch<TMDBMovieProviderResponse>(
-    `/movie/${movieId}/watch/providers`,
-  );
-
-  const countryData = response.results[region] || null;
-
-  await setCache(cacheKey, countryData, TTL.PROVIDER_LIST);
-
-  return countryData;
+  const all = await fetchAllMovieProviders(movieId);
+  return all[region] || null;
 }
+
+// Concurrent mounts (e.g. a remounting hero cell) can request the same
+// movie's providers before the first response lands in the IndexedDB cache —
+// dedupe identical in-flight requests, same pattern as trending.ts.
+const inFlightAllProviders = new Map<
+  number,
+  Promise<Record<string, WatchProviderCountry>>
+>();
 
 export async function fetchAllMovieProviders(
   movieId: number,
 ): Promise<Record<string, WatchProviderCountry>> {
-  const cacheKey = `providers-movie-${movieId}-all`;
+  const pending = inFlightAllProviders.get(movieId);
+  if (pending) return pending;
 
-  const cached =
-    await getCached<Record<string, WatchProviderCountry>>(cacheKey);
-  if (cached.value && !cached.isStale) {
-    return cached.value;
+  const request = (async () => {
+    const cacheKey = `providers-movie-${movieId}-all`;
+
+    const cached =
+      await getCached<Record<string, WatchProviderCountry>>(cacheKey);
+    if (cached.value && !cached.isStale) {
+      return cached.value;
+    }
+
+    const response = await tmdbFetch<TMDBMovieProviderResponse>(
+      `/movie/${movieId}/watch/providers`,
+    );
+
+    await setCache(cacheKey, response.results, TTL.PROVIDER_LIST);
+
+    return response.results;
+  })();
+
+  inFlightAllProviders.set(movieId, request);
+  try {
+    return await request;
+  } finally {
+    inFlightAllProviders.delete(movieId);
   }
-
-  const response = await tmdbFetch<TMDBMovieProviderResponse>(
-    `/movie/${movieId}/watch/providers`,
-  );
-
-  await setCache(cacheKey, response.results, TTL.PROVIDER_LIST);
-
-  return response.results;
 }
 
 export async function fetchAvailableRegions(): Promise<TMDBRegionResult[]> {
