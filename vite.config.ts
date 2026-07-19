@@ -31,19 +31,62 @@ function seoEagerContent(): Plugin {
   };
 }
 
+// Injects <link rel="preload" as="font"> for the JetBrains Mono "latin"
+// subset — the subset backing nearly all visible text on every route. The
+// font is otherwise only discovered after the vendor CSS downloads and
+// parses, costing a sequential round trip before text can swap off the
+// fallback font. The filename is content-hashed, so it's resolved from the
+// emitted bundle at build time (transformIndexHtml receives it in ctx).
+// The match must not catch the separate latin-ext subset. Prerendered
+// per-route HTML inherits the tag since tools/prerender.mjs rewrites the
+// built dist/index.html in place.
+function fontPreload(): Plugin {
+  return {
+    name: "font-preload",
+    transformIndexHtml: {
+      order: "post",
+      handler(_html, ctx) {
+        if (!ctx.bundle) return; // dev server — no hashed assets to resolve
+        const latin = Object.keys(ctx.bundle).find(
+          (f) =>
+            f.includes("jetbrains-mono-latin-wght-normal") &&
+            f.endsWith(".woff2"),
+        );
+        if (!latin) return;
+        return [
+          {
+            tag: "link",
+            attrs: {
+              rel: "preload",
+              as: "font",
+              type: "font/woff2",
+              // Required even for same-origin font preloads, or the browser
+              // re-fetches the font a second time in CORS mode.
+              crossorigin: true,
+              href: `/${latin}`,
+            },
+            injectTo: "head",
+          },
+        ];
+      },
+    },
+  };
+}
+
 export default defineConfig({
   plugins: [
     seoEagerContent(),
+    fontPreload(),
     react(),
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
       injectRegister: "auto",
-      includeAssets: [
-        "offline.html",
-        "favicon_io/*.png",
-        "favicon_io/favicon.ico",
-      ],
+      // No includeAssets, no manifest-icon auto-precache: public/ files
+      // (offline.html, favicon_io/*) are copied to dist/ by Vite and already
+      // matched by workbox.globPatterns below — the extra mechanisms only
+      // produced duplicate precache manifest entries.
+      includeManifestIcons: false,
       manifest: {
         name: "Which Movie To Watch",
         short_name: "MovieWatch",
@@ -87,7 +130,7 @@ export default defineConfig({
         // revision hash never changes on later deploys since this file's
         // bytes (pre-prerender) are identical every time. Navigations are
         // already served fresh via the NetworkFirst pages-cache rule below,
-        // with offline.html (precached separately via includeAssets) as the
+        // with offline.html (precached via globPatterns) as the
         // last-resort fallback.
         globIgnores: [
           "**/spline-vendor-*.js",
@@ -189,6 +232,14 @@ export default defineConfig({
     },
   },
   build: {
+    // Fonts must never be base64-inlined: the ~2 kB cyrillic-ext subset sat
+    // under the default 4096-byte inline threshold and got embedded in the
+    // eager vendor CSS, defeating its unicode-range on-demand fetch (every
+    // visitor paid for it whether or not they ever saw Cyrillic text).
+    // `undefined` falls through to Vite's size-based default for all other
+    // asset types.
+    assetsInlineLimit: (filePath) =>
+      filePath.endsWith(".woff2") ? false : undefined,
     rollupOptions: {
       output: {
         manualChunks: (id) => {
