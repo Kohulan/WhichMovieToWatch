@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { SlidersHorizontal, AlertCircle } from "lucide-react";
+import { SlidersHorizontal, AlertCircle, Dices, X } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { useNavigate } from "react-router";
 import { useBrowseStore } from "@/stores/browseStore";
 import { useBrowseMovies } from "@/hooks/useBrowseMovies";
 import { useRegionProviders } from "@/hooks/useWatchProviders";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { useScrolled } from "@/hooks/useScrolled";
+import { useHaptics } from "@/hooks/useHaptics";
 import { hasNonDefaultFilters } from "@/services/tmdb/browse";
+import { getGenreName } from "@/lib/genre-map";
+import { moviePath } from "@/lib/movie-url";
+import { showToast } from "@/components/shared/Toast";
 import { MetalDropdown } from "@/components/ui";
 import { BrowseMovieGrid } from "@/components/browse/BrowseMovieGrid";
 import { BrowseFilterSidebar } from "@/components/browse/BrowseFilterSidebar";
@@ -33,6 +38,8 @@ const EXIT_TRANSITION = {
 };
 
 export default function BrowsePage() {
+  const navigate = useNavigate();
+  const { trigger: triggerHaptics } = useHaptics();
   const [filterOpen, setFilterOpen] = useState(false);
   const scrolled = useScrolled(8);
 
@@ -42,6 +49,7 @@ export default function BrowsePage() {
   const filters = useBrowseStore((s) => s.filters);
   const setProvider = useBrowseStore((s) => s.setProvider);
   const setSortBy = useBrowseStore((s) => s.setSortBy);
+  const setFilters = useBrowseStore((s) => s.setFilters);
   const resetFilters = useBrowseStore((s) => s.resetFilters);
 
   const { results, isLoading, error, hasMore, totalResults, loadMore, browse } =
@@ -74,6 +82,22 @@ export default function BrowsePage() {
     [setProvider],
   );
   const handleFilterClose = useCallback(() => setFilterOpen(false), []);
+
+  const handleLuckyPick = useCallback(() => {
+    if (results.length === 0) return;
+    const randomMovie = results[Math.floor(Math.random() * results.length)];
+    triggerHaptics("success");
+    showToast(`🎲 Surprise Pick: ${randomMovie.title}`, "success");
+    navigate(moviePath(randomMovie));
+  }, [results, triggerHaptics, navigate]);
+
+  const activeFilterCount = useMemo(() => {
+    let count = filters.genres.length;
+    if (filters.ratingRange[0] !== 0 || filters.ratingRange[1] !== 10) count++;
+    if (filters.runtimeRange[0] !== 0 || filters.runtimeRange[1] !== 300) count++;
+    if (filters.language) count++;
+    return count;
+  }, [filters]);
 
   const filtersActive = hasNonDefaultFilters(filters);
   const isEmpty = selectedProviderId === null;
@@ -118,87 +142,191 @@ export default function BrowsePage() {
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: EXIT_TRANSITION }}
-            className="pt-3"
+            className="pt-1"
             aria-label={
               selectedProvider
                 ? `${selectedProvider.provider_name} catalog`
                 : "Movie catalog"
             }
           >
-            {/* Box-shadow strengthens once scrolled so the bar reads as a
-                floating panel only when it's actually floating. */}
-            <div
-              className="
-                sticky top-14 z-30
-                -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3
-                bg-clay-base/92 sm:bg-clay-base/70 backdrop-blur-xl
-                border-b border-white/[0.08]
-                transition-shadow duration-300
-              "
-              style={{
-                boxShadow: scrolled
-                  ? "0 8px 24px -12px rgba(0,0,0,0.32)"
-                  : "0 0 0 transparent",
-              }}
-            >
-              <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                {selectedProvider && (
-                  <BrowseProviderChip
-                    provider={selectedProvider}
-                    onClear={handleClearProvider}
-                  />
-                )}
-
-                {totalResults > 0 && (
-                  <p className="hidden md:block text-clay-text-muted text-xs tabular-nums whitespace-nowrap flex-shrink-0">
-                    {totalResults.toLocaleString()}{" "}
-                    {totalResults === 1 ? "movie" : "movies"}
-                  </p>
-                )}
-
-                <div className="ml-auto flex items-center gap-2 sm:gap-3 flex-shrink-0">
-                  <div className="w-[150px] sm:w-[180px]">
-                    <MetalDropdown
-                      label=""
-                      options={SORT_OPTIONS}
-                      value={sortBy}
-                      onChange={setSortBy}
+            {/* Command Island Header — frosted glass floating console */}
+            <div className="sticky top-14 z-30 py-2 sm:py-2.5">
+              <div
+                className="
+                  rounded-2xl sm:rounded-3xl p-1.5 sm:p-2
+                  bg-clay-base/90 sm:bg-clay-base/80
+                  backdrop-blur-2xl
+                  border border-black/[0.06] dark:border-white/[0.08]
+                  transition-all duration-300
+                "
+                style={{
+                  boxShadow: scrolled
+                    ? "0 14px 34px -10px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.2)"
+                    : "0 4px 20px -4px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.1)",
+                }}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  {selectedProvider && (
+                    <BrowseProviderChip
+                      provider={selectedProvider}
+                      onClear={handleClearProvider}
                     />
-                  </div>
+                  )}
 
-                  <motion.button
-                    type="button"
-                    onClick={() => setFilterOpen(true)}
-                    aria-label={
-                      filtersActive
-                        ? "Open filters (filters active)"
-                        : "Open filters"
-                    }
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="
-                      relative flex-shrink-0 p-2.5 rounded-xl cursor-pointer
-                      bg-clay-surface clay-shadow-sm
-                      text-clay-text-muted hover:text-clay-text
-                      transition-colors duration-200
-                      outline-none focus-visible:ring-2 focus-visible:ring-accent
-                      border border-white/[0.08]
-                    "
-                  >
-                    <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
-                    {filtersActive && (
-                      <span
-                        className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent ring-2 ring-clay-surface"
-                        aria-hidden="true"
+                  {totalResults > 0 && (
+                    <div className="hidden sm:inline-flex items-center gap-1.5 px-3 h-10 rounded-2xl bg-black/[0.03] dark:bg-white/[0.04] text-clay-text-muted text-xs font-medium tabular-nums flex-shrink-0">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+                      <span>{totalResults.toLocaleString()} {totalResults === 1 ? "movie" : "movies"}</span>
+                    </div>
+                  )}
+
+                  <div className="ml-auto flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                    {/* Surprise Lucky Pick with interactive spinning dice */}
+                    <motion.button
+                      type="button"
+                      onClick={handleLuckyPick}
+                      disabled={results.length === 0}
+                      title="Pick a random movie from this list"
+                      aria-label="Pick a random movie from this list"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="
+                        relative flex-shrink-0 h-10 px-3.5 rounded-2xl cursor-pointer
+                        hidden sm:inline-flex items-center gap-2
+                        bg-accent/10 hover:bg-accent/20 active:bg-accent/25
+                        text-accent font-semibold text-xs sm:text-sm
+                        border border-accent/25 hover:border-accent/40
+                        transition-all duration-200
+                        outline-none focus-visible:ring-2 focus-visible:ring-accent
+                      "
+                    >
+                      <motion.div
+                        whileHover={{ rotate: 180 }}
+                        transition={{ duration: 0.35, ease: "easeOut" }}
+                        className="flex-shrink-0"
+                      >
+                        <Dices className="w-4 h-4 text-accent" />
+                      </motion.div>
+                      <span>Surprise</span>
+                    </motion.button>
+
+                    <div className="w-[140px] sm:w-[165px] flex-shrink-0">
+                      <MetalDropdown
+                        label=""
+                        options={SORT_OPTIONS}
+                        value={sortBy}
+                        onChange={setSortBy}
                       />
-                    )}
-                  </motion.button>
+                    </div>
+
+                    <motion.button
+                      type="button"
+                      onClick={() => setFilterOpen(true)}
+                      aria-label={
+                        filtersActive
+                          ? `Open filters (${activeFilterCount} active)`
+                          : "Open filters"
+                      }
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`
+                        relative flex-shrink-0 h-10 rounded-2xl cursor-pointer
+                        flex items-center justify-center gap-1.5 px-3
+                        transition-all duration-200
+                        outline-none focus-visible:ring-2 focus-visible:ring-accent
+                        ${
+                          filtersActive
+                            ? "bg-accent text-white shadow-md shadow-accent/25 border border-accent"
+                            : "bg-black/[0.03] dark:bg-white/[0.04] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] text-clay-text-muted hover:text-clay-text border border-black/[0.06] dark:border-white/[0.08] hover:border-accent/40"
+                        }
+                      `}
+                    >
+                      <SlidersHorizontal className="w-4 h-4" aria-hidden="true" />
+                      {filtersActive && (
+                        <span className="text-xs font-bold px-1 py-0.2 rounded-full bg-white/25 tabular-nums">
+                          {activeFilterCount}
+                        </span>
+                      )}
+                    </motion.button>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {totalResults > 0 && (
-              <p className="md:hidden text-clay-text-muted text-xs mt-3 tabular-nums">
+            {/* Active Filter Removable Pills */}
+            {filtersActive && (
+              <div className="flex items-center gap-1.5 flex-wrap pt-3 px-1">
+                <span className="text-2xs text-clay-text-muted uppercase tracking-wider font-semibold mr-0.5">
+                  Filters:
+                </span>
+                {filters.genres.map((gId) => (
+                  <button
+                    key={gId}
+                    type="button"
+                    onClick={() => {
+                      triggerHaptics("light");
+                      setFilters({ genres: filters.genres.filter((id) => id !== gId) });
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25 transition-colors cursor-pointer"
+                  >
+                    <span>{getGenreName(gId)}</span>
+                    <X className="w-3 h-3" />
+                  </button>
+                ))}
+                {(filters.ratingRange[0] !== 0 || filters.ratingRange[1] !== 10) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptics("light");
+                      setFilters({ ratingRange: [0, 10] });
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25 transition-colors cursor-pointer"
+                  >
+                    <span>★ {filters.ratingRange[0]}–{filters.ratingRange[1]}</span>
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {(filters.runtimeRange[0] !== 0 || filters.runtimeRange[1] !== 300) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptics("light");
+                      setFilters({ runtimeRange: [0, 300] });
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25 transition-colors cursor-pointer"
+                  >
+                    <span>{filters.runtimeRange[0]}–{filters.runtimeRange[1]}m</span>
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                {filters.language && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptics("light");
+                      setFilters({ language: null });
+                    }}
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25 transition-colors cursor-pointer"
+                  >
+                    <span>Lang: {filters.language}</span>
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    triggerHaptics("light");
+                    resetFilters();
+                  }}
+                  className="text-2xs text-clay-text-muted hover:text-accent underline ml-1 cursor-pointer font-medium"
+                >
+                  Clear All
+                </button>
+              </div>
+            )}
+
+            {totalResults > 0 && !filtersActive && (
+              <p className="sm:hidden text-clay-text-muted text-xs mt-1.5 tabular-nums">
                 {totalResults.toLocaleString()}{" "}
                 {totalResults === 1 ? "movie" : "movies"}
               </p>
@@ -232,7 +360,7 @@ export default function BrowsePage() {
             )}
 
             {!error && (
-              <div className="mt-5">
+              <div className="mt-3">
                 <BrowseMovieGrid
                   results={results}
                   isLoading={isLoading}

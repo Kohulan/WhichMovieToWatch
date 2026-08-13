@@ -18,9 +18,21 @@ export function useTheme() {
     }
   }, [setMode]);
 
+  const isInitialMount = useRef(true);
+
   // Apply CSS classes to <html> whenever mode or preset changes
   useEffect(() => {
     const root = document.documentElement;
+
+    // Only enable smooth transition on user-initiated changes, not initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+    } else {
+      root.classList.add("theme-transitioning");
+    }
+    const timer = setTimeout(() => {
+      root.classList.remove("theme-transitioning");
+    }, 550);
 
     if (mode === "dark") {
       root.classList.add("dark");
@@ -32,6 +44,8 @@ export function useTheme() {
       root.classList.remove(`theme-${p}`);
     }
     root.classList.add(`theme-${preset}`);
+
+    return () => clearTimeout(timer);
   }, [mode, preset]);
 
   // Listen for system preference changes (only if user hasn't manually toggled)

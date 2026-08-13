@@ -285,7 +285,7 @@ export function AppShell() {
           {/* Blob 1 — top-right large warm glow */}
           <motion.div
             key={`blob-1-${preset}`}
-            className="absolute top-[-20%] right-[-10%] w-[80%] h-[70%] rounded-full bg-accent/[0.14] blur-[60px] sm:blur-[100px]"
+            className="absolute top-[-20%] right-[-10%] w-[60%] h-[70%] rounded-full bg-accent/[0.07] blur-[60px] sm:blur-[100px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
@@ -294,7 +294,7 @@ export function AppShell() {
           {/* Blob 2 — bottom-left mid glow */}
           <motion.div
             key={`blob-2-${preset}`}
-            className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/[0.06] blur-[40px] sm:blur-[80px]"
+            className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full bg-accent/[0.04] blur-[40px] sm:blur-[80px]"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}

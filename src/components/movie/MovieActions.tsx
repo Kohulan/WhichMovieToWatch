@@ -11,6 +11,7 @@ import {
 import { useMovieHistoryStore } from "@/stores/movieHistoryStore";
 import { usePreferencesStore } from "@/stores/preferencesStore";
 import { showToast } from "@/components/shared/Toast";
+import { useHaptics } from "@/hooks/useHaptics";
 
 // Milestone copy for the Love and Watched lists. First entry is the
 // first-time message; subsequent entries fire when the count crosses
@@ -64,6 +65,7 @@ export function MovieActions({
   const markNotInterested = useMovieHistoryStore((s) => s.markNotInterested);
   const recordLove = usePreferencesStore((s) => s.recordLove);
   const recordNotInterested = usePreferencesStore((s) => s.recordNotInterested);
+  const { trigger: triggerHaptics } = useHaptics();
 
   // Track which action button is animating — null when idle
   const [animatingAction, setAnimatingAction] = useState<
@@ -75,6 +77,7 @@ export function MovieActions({
   const disabled = isLoading || animatingAction !== null;
 
   function handleLove() {
+    triggerHaptics("success");
     const genreIds = movieGenres.map((g) => g.id);
     // Compute decade from release year (e.g. "2023" → "2020s")
     const decade = releaseYear ? `${releaseYear.slice(0, 3)}0s` : "unknown";
@@ -92,6 +95,7 @@ export function MovieActions({
   }
 
   function handleWatched() {
+    triggerHaptics("medium");
     // Play checkmark draw animation before firing the action
     setAnimatingAction("watched");
     setTimeout(() => {
@@ -104,6 +108,7 @@ export function MovieActions({
   }
 
   function handleNotInterested() {
+    triggerHaptics("light");
     const genreIds = movieGenres.map((g) => g.id);
     const decade = releaseYear ? `${releaseYear.slice(0, 3)}0s` : "unknown";
 
@@ -119,6 +124,7 @@ export function MovieActions({
   }
 
   function handleNext() {
+    triggerHaptics("light");
     onNext();
   }
 

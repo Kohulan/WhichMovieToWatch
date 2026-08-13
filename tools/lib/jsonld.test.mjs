@@ -6,6 +6,7 @@ import {
   itemListJsonLd,
   movieJsonLd,
   breadcrumbJsonLd,
+  videoObjectJsonLd,
 } from "./jsonld.mjs";
 
 const site = {
@@ -47,7 +48,7 @@ test("itemListJsonLd links each movie page by slug", () => {
   );
 });
 
-test("movieJsonLd includes aggregateRating and image", () => {
+test("movieJsonLd includes aggregateRating, trailer, and image", () => {
   const ld = movieJsonLd(
     {
       id: 27205,
@@ -62,6 +63,11 @@ test("movieJsonLd includes aggregateRating and image", () => {
         crew: [{ name: "Christopher Nolan", job: "Director" }],
         cast: [],
       },
+      videos: {
+        results: [
+          { site: "YouTube", type: "Trailer", key: "YoHD9XEInc0" },
+        ],
+      },
     },
     site.origin,
   );
@@ -72,6 +78,8 @@ test("movieJsonLd includes aggregateRating and image", () => {
   assert.ok(ld.image.includes("image.tmdb.org"));
   assert.equal(ld.director[0].name, "Christopher Nolan");
   assert.equal(ld.datePublished, "2010-07-15");
+  assert.equal(ld.trailer["@type"], "VideoObject");
+  assert.equal(ld.trailer.contentUrl, "https://www.youtube.com/watch?v=YoHD9XEInc0");
 });
 
 test("movieJsonLd omits aggregateRating when votes are zero", () => {
@@ -88,6 +96,20 @@ test("movieJsonLd omits aggregateRating when votes are zero", () => {
     site.origin,
   );
   assert.equal(ld.aggregateRating, undefined);
+  assert.equal(ld.trailer, undefined);
+});
+
+test("videoObjectJsonLd", () => {
+  const ld = videoObjectJsonLd(
+    { title: "Dune", overview: "Spice.", release_date: "2021-10-22" },
+    { key: "n9xhJrPXop4" },
+    site.origin,
+  );
+  assert.equal(ld["@type"], "VideoObject");
+  assert.equal(ld.name, "Dune — Official Trailer");
+  assert.equal(ld.contentUrl, "https://www.youtube.com/watch?v=n9xhJrPXop4");
+  assert.equal(ld.embedUrl, "https://www.youtube.com/embed/n9xhJrPXop4");
+  assert.ok(ld.thumbnailUrl[0].includes("n9xhJrPXop4"));
 });
 
 test("breadcrumbJsonLd", () => {

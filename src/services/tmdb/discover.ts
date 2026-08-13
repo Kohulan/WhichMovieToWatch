@@ -9,6 +9,9 @@ export interface DiscoverFilters {
   minRating: number;
   minVoteCount: number;
   region: string;
+  maxRuntime?: number | null;
+  minRuntime?: number | null;
+  mood?: "mind-bending" | "feel-good" | "adrenaline" | "tear-jerker" | null;
 }
 
 export interface DiscoverOptions {
@@ -22,6 +25,13 @@ interface RelaxationOverrides {
   genreId?: null;
   providerIds?: [];
 }
+
+const MOOD_GENRES: Record<string, string> = {
+  "mind-bending": "878,9648", // Sci-Fi + Mystery
+  "feel-good": "35,10751",    // Comedy + Family
+  "adrenaline": "28,53",      // Action + Thriller
+  "tear-jerker": "18,10749",  // Drama + Romance
+};
 
 // Progressive filter relaxation steps (5 steps per research doc):
 // Step 0: Original filters unchanged
@@ -77,7 +87,17 @@ async function fetchDiscoverPage(
     page: 1,
   };
 
-  if (relaxed.genreId) {
+  if (relaxed.maxRuntime) {
+    params["with_runtime.lte"] = relaxed.maxRuntime;
+  }
+  if (relaxed.minRuntime) {
+    params["with_runtime.gte"] = relaxed.minRuntime;
+  }
+
+  // If mood is selected, merge or prioritize mood genres
+  if (relaxed.mood && MOOD_GENRES[relaxed.mood]) {
+    params.with_genres = MOOD_GENRES[relaxed.mood];
+  } else if (relaxed.genreId) {
     params.with_genres = relaxed.genreId;
   }
 
