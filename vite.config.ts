@@ -116,6 +116,29 @@ export default defineConfig({
             purpose: "maskable",
           },
         ],
+        shortcuts: [
+          {
+            name: "Surprise Me",
+            short_name: "Discover",
+            description: "Find a random personalized movie recommendation",
+            url: "/discover",
+            icons: [{ src: "favicon_io/android-chrome-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Dinner Time",
+            short_name: "Dinner",
+            description: "Quick family-friendly movies on your streaming services",
+            url: "/dinner-time",
+            icons: [{ src: "favicon_io/android-chrome-192x192.png", sizes: "192x192" }],
+          },
+          {
+            name: "Trending Now",
+            short_name: "Trending",
+            description: "Popular movies in theaters and on streaming",
+            url: "/trending",
+            icons: [{ src: "favicon_io/android-chrome-192x192.png", sizes: "192x192" }],
+          },
+        ],
       },
       workbox: {
         // Exclude spline-vendor chunk from precaching — it's a 4+ MB lazy-loaded

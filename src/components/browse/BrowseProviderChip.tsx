@@ -22,49 +22,53 @@ export function BrowseProviderChip({
   const layoutId = getProviderLayoutId(provider_id);
 
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.01 }}
       className="
-        inline-flex items-center gap-2 pl-1.5 pr-1 py-1
-        rounded-full bg-clay-surface clay-shadow-sm
-        border border-white/[0.08]
-        max-w-full min-w-0
+        inline-flex items-center gap-2.5 pl-2.5 pr-2 h-10
+        rounded-2xl bg-black/[0.03] dark:bg-white/[0.05]
+        border border-black/[0.06] dark:border-white/[0.1]
+        hover:border-accent/40
+        transition-colors duration-200
+        max-w-full min-w-0 flex-shrink-0
       "
     >
       {logo_path ? (
         <ProviderLogo
           logoPath={logo_path}
-          size={28}
+          size={24}
           layoutId={layoutId}
-          className="w-7 h-7 rounded-full object-cover flex-shrink-0"
+          className="w-6 h-6 rounded-full object-cover flex-shrink-0 shadow-xs ring-1 ring-black/5 dark:ring-white/10"
         />
       ) : (
         <motion.span
           layoutId={layoutId}
-          className="w-7 h-7 rounded-full bg-clay-base flex items-center justify-center text-clay-text-muted text-2xs font-semibold flex-shrink-0"
+          className="w-6 h-6 rounded-full bg-clay-base border border-black/5 dark:border-white/10 flex items-center justify-center text-clay-text-muted text-2xs font-semibold flex-shrink-0"
           aria-hidden="true"
         >
           {provider_name.slice(0, 2)}
         </motion.span>
       )}
-      <span className="text-clay-text font-semibold text-sm truncate min-w-0">
+      <span className="text-clay-text font-semibold text-xs sm:text-sm tracking-tight truncate min-w-0">
         {provider_name}
       </span>
       <motion.button
         type="button"
         onClick={onClear}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ rotate: 90, scale: 1.15 }}
+        whileTap={{ scale: 0.85 }}
         aria-label={`Change platform (currently ${provider_name})`}
         className="
-          ml-0.5 inline-flex items-center justify-center w-7 h-7 rounded-full
-          text-clay-text-muted hover:text-clay-text
-          hover:bg-white/[0.08]
+          inline-flex items-center justify-center w-5 h-5 rounded-full
+          text-clay-text-muted hover:text-accent
+          hover:bg-accent/15
           transition-colors duration-150
-          cursor-pointer flex-shrink-0
-          outline-none focus-visible:ring-2 focus-visible:ring-accent/50
+          cursor-pointer flex-shrink-0 ml-0.5
+          outline-none focus-visible:ring-2 focus-visible:ring-accent
         "
       >
         <X className="w-3.5 h-3.5" aria-hidden="true" />
       </motion.button>
-    </div>
+    </motion.div>
   );
 }

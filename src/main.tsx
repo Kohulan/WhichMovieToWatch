@@ -10,6 +10,10 @@ import App from "./App";
 import { HomePage } from "./pages/HomePage";
 import { evictExpired } from "./services/cache/cache-manager";
 import { getSessionFlag, setSessionFlag } from "./lib/session-flags";
+import { initSpeculationRules } from "./lib/speculation-rules";
+
+// Initialize speculation rules for sub-50ms instant speculative route transitions
+initSpeculationRules();
 
 const DiscoverPage = lazy(() =>
   import("./pages/DiscoverPage").then((m) => ({ default: m.DiscoverPage })),

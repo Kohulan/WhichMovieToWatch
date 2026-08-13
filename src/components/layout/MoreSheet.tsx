@@ -1,8 +1,11 @@
 import { useEffect, useId } from "react";
 import { NavLink, useLocation } from "react-router";
 import { motion, AnimatePresence } from "motion/react";
-import { TrendingUp, Film, Tv, X, Coffee, Github } from "lucide-react";
+import { TrendingUp, Film, Tv, X, Coffee, Github, Download, Upload } from "lucide-react";
+import { toast } from "sonner";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useHaptics } from "@/hooks/useHaptics";
+import { downloadProfileBackup, importProfileData } from "@/lib/profile-sync";
 import { ThemeToggle } from "../ui/ThemeToggle";
 import { RotaryDial } from "../ui/RotaryDial";
 import { RegionPicker } from "./RegionPicker";
@@ -29,6 +32,7 @@ export function MoreSheet({
   const location = useLocation();
   const titleId = useId();
   const panelRef = useFocusTrap<HTMLDivElement>(open);
+  const { trigger: triggerHaptics } = useHaptics();
 
   // Close on route change
   useEffect(() => {
@@ -163,6 +167,54 @@ export function MoreSheet({
                     <ThemeToggle />
                     <RotaryDial />
                   </div>
+                </div>
+              </div>
+
+              {/* Data & Backup */}
+              <div className="border-t border-white/[0.08] my-4" />
+              <div className="space-y-3">
+                <p className="text-2xs uppercase tracking-wider text-clay-text-muted px-3">
+                  Data & Backup
+                </p>
+                <div className="px-3 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerHaptics("medium");
+                      downloadProfileBackup();
+                      toast.success("Profile backup downloaded!");
+                    }}
+                    className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-xs font-medium text-clay-text transition-colors border border-white/10"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    Export
+                  </button>
+                  <label className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-xs font-medium text-clay-text transition-colors border border-white/10 cursor-pointer">
+                    <Upload className="w-3.5 h-3.5" />
+                    Import
+                    <input
+                      type="file"
+                      accept=".json"
+                      className="sr-only"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = (evt) => {
+                          const res = importProfileData(evt.target?.result as string);
+                          if (res.success) {
+                            triggerHaptics("success");
+                            toast.success("Profile imported successfully!");
+                            onClose();
+                          } else {
+                            triggerHaptics("warning");
+                            toast.error(res.error || "Failed to import profile");
+                          }
+                        };
+                        reader.readAsText(file);
+                      }}
+                    />
+                  </label>
                 </div>
               </div>
             </div>

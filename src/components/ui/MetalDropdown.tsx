@@ -165,14 +165,14 @@ export function MetalDropdown({
   const listboxId = `${id}-listbox`;
 
   return (
-    <div className={`flex flex-col gap-2 ${className}`} ref={containerRef}>
+    <div className={`relative ${className}`} ref={containerRef}>
       {label && (
-        <label htmlFor={id} className="font-body text-sm text-clay-text">
+        <label htmlFor={id} className="block mb-1.5 font-body text-sm text-clay-text">
           {label}
         </label>
       )}
 
-      {/* Trigger — metal surface */}
+      {/* Trigger — sleek claymorphic / glass surface matching app controls */}
       <button
         id={id}
         type="button"
@@ -183,21 +183,24 @@ export function MetalDropdown({
         onClick={() => setOpen((prev) => !prev)}
         onKeyDown={handleTriggerKeyDown}
         className="
-          metal-gradient metal-shadow metal-text metal-brushed
           relative overflow-hidden
           flex items-center justify-between gap-2
-          w-full px-4 py-2.5 rounded-lg
-          font-body text-sm cursor-pointer
+          w-full h-10 px-3.5 rounded-2xl
+          bg-black/[0.03] dark:bg-white/[0.05] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] active:scale-[0.98]
+          border border-black/[0.06] dark:border-white/[0.1] hover:border-accent/40
+          text-clay-text font-medium text-xs sm:text-sm cursor-pointer
+          transition-all duration-200
+          outline-none focus-visible:ring-2 focus-visible:ring-accent
           select-none
         "
       >
         <span
-          className={`relative z-10 min-w-0 truncate whitespace-nowrap text-left ${selectedOption ? "" : "opacity-60"}`}
+          className={`relative z-10 min-w-0 truncate whitespace-nowrap text-left ${selectedOption ? "" : "text-clay-text-muted"}`}
         >
           {displayLabel}
         </span>
         <motion.span
-          className="relative z-10 flex-shrink-0"
+          className="relative z-10 flex-shrink-0 text-clay-text-muted"
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
         >
@@ -222,10 +225,11 @@ export function MetalDropdown({
               exit="exit"
               style={{ transformOrigin: "top center" }}
               className="
-                absolute z-50 top-1 left-0 right-0
-                bg-clay-elevated rounded-clay clay-texture
-                py-1 overflow-hidden
-                max-h-60 overflow-y-auto
+                absolute z-50 top-2 left-0 right-0
+                bg-clay-surface/95 backdrop-blur-2xl rounded-2xl
+                border border-black/[0.08] dark:border-white/10 shadow-2xl
+                p-1.5 overflow-hidden
+                max-h-60 overflow-y-auto scrollbar-hide
               "
               onAnimationComplete={() => {
                 if (open && listRef.current) {
@@ -233,24 +237,40 @@ export function MetalDropdown({
                 }
               }}
             >
-              {options.map((option, idx) => (
-                <motion.li
-                  key={option.value}
-                  variants={itemVariants}
-                  role="option"
-                  aria-selected={option.value === value}
-                  onClick={() => selectOption(option.value)}
-                  onMouseEnter={() => setFocusedIndex(idx)}
-                  className={`
-                    px-4 py-2.5 font-body text-sm cursor-pointer
-                    select-none transition-colors duration-100
-                    ${option.value === value ? "text-accent font-semibold bg-clay-surface/50" : "text-clay-text"}
-                    ${idx === focusedIndex ? "bg-clay-surface" : "hover:bg-clay-surface"}
-                  `}
-                >
-                  {option.label}
-                </motion.li>
-              ))}
+              {options.map((option, idx) => {
+                const isSelected = option.value === value;
+                const isFocused = idx === focusedIndex;
+
+                return (
+                  <motion.li
+                    key={option.value}
+                    variants={itemVariants}
+                    role="option"
+                    aria-selected={isSelected}
+                    onClick={() => selectOption(option.value)}
+                    onMouseEnter={() => setFocusedIndex(idx)}
+                    className={`
+                      px-3 py-2 rounded-xl text-xs sm:text-sm cursor-pointer
+                      select-none transition-all duration-150 flex items-center justify-between
+                      ${
+                        isSelected
+                          ? "text-accent font-semibold bg-accent/15"
+                          : "text-clay-text hover:text-clay-text"
+                      }
+                      ${
+                        isFocused && !isSelected
+                          ? "bg-black/[0.04] dark:bg-white/[0.06]"
+                          : ""
+                      }
+                    `}
+                  >
+                    <span className="truncate">{option.label}</span>
+                    {isSelected && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent ml-2 flex-shrink-0" />
+                    )}
+                  </motion.li>
+                );
+              })}
             </motion.ul>
           )}
         </AnimatePresence>

@@ -202,3 +202,16 @@ docs/
 
 # prerender build cache
 tools/.tmdb-snapshot.json
+
+# Local tooling & analysis
+graphify-out/
+*.code-workspace
+
+# AI Agent & local skill directories
+.agents/
+.claude/
+.codex/
+.github/agents/
+.github/hooks/
+.github/skills/
+.impeccable/

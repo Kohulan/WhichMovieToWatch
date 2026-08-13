@@ -6,6 +6,9 @@ interface DiscoveryFilters {
   providerIds: number[];
   minRating: number;
   minVoteCount: number;
+  maxRuntime?: number | null;
+  minRuntime?: number | null;
+  mood?: "mind-bending" | "feel-good" | "adrenaline" | "tear-jerker" | null;
 }
 
 interface DiscoveryState {
@@ -28,6 +31,9 @@ const DEFAULT_FILTERS: DiscoveryFilters = {
   providerIds: [],
   minRating: 6.0,
   minVoteCount: 500,
+  maxRuntime: null,
+  minRuntime: null,
+  mood: null,
 };
 
 export const useDiscoveryStore = create<DiscoveryState>()((set) => ({

@@ -42,6 +42,22 @@ export function itemListJsonLd({ movies, pageUrl, origin }) {
   };
 }
 
+export function videoObjectJsonLd(movie, video, origin) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: `${movie.title} — Official Trailer`,
+    description: movie.overview || `Official trailer for ${movie.title}`,
+    thumbnailUrl: [
+      `https://img.youtube.com/vi/${video.key}/hqdefault.jpg`,
+      `https://img.youtube.com/vi/${video.key}/maxresdefault.jpg`,
+    ],
+    uploadDate: movie.release_date || new Date().toISOString().slice(0, 10),
+    contentUrl: `https://www.youtube.com/watch?v=${video.key}`,
+    embedUrl: `https://www.youtube.com/embed/${video.key}`,
+  };
+}
+
 export function movieJsonLd(movie, origin) {
   const directors = (movie.credits?.crew ?? [])
     .filter((c) => c.job === "Director")
@@ -49,6 +65,10 @@ export function movieJsonLd(movie, origin) {
   const actors = (movie.credits?.cast ?? [])
     .slice(0, 5)
     .map((c) => ({ "@type": "Person", name: c.name }));
+
+  const trailer = movie.videos?.results?.find(
+    (v) => v.site === "YouTube" && (v.type === "Trailer" || v.type === "Teaser"),
+  );
 
   const ld = {
     "@context": "https://schema.org",
@@ -63,6 +83,7 @@ export function movieJsonLd(movie, origin) {
     ...(movie.genres?.length ? { genre: movie.genres.map((g) => g.name) } : {}),
     ...(directors.length ? { director: directors } : {}),
     ...(actors.length ? { actor: actors } : {}),
+    ...(trailer ? { trailer: videoObjectJsonLd(movie, trailer, origin) } : {}),
   };
 
   if (movie.vote_count > 0) {

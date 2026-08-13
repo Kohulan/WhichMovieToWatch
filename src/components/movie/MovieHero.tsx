@@ -22,6 +22,8 @@ interface MovieHeroProps {
    * (browse grid, similar-movies thumbnails) morphs into this hero on tap.
    */
   movieId?: number;
+  /** Whether this is a high-priority above-the-fold image for LCP optimization (default: true) */
+  priority?: boolean;
 }
 
 /** Extract 4-digit year from release_date (e.g. "2023-05-15" → "2023") */
@@ -42,6 +44,7 @@ export function MovieHero({
   posterFooter,
   children,
   movieId,
+  priority = true,
 }: MovieHeroProps) {
   const [posterError, setPosterError] = useState(false);
 
@@ -66,7 +69,8 @@ export function MovieHero({
             srcSet={tmdbPosterSrcSet(movie.poster_path)}
             sizes={heroPosterSizes}
             alt={`${movie.title} poster`}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
             decoding="async"
             onError={() => setPosterError(true)}
             className="w-48 md:w-[280px] aspect-[2/3] rounded-2xl overflow-hidden shadow-2xl shadow-black/30 object-cover mx-auto md:mx-0 border border-white/10"

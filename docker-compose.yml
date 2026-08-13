@@ -1,0 +1,11 @@
+services:
+  whichmovietowatch:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: whichmovietowatch-app
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    env_file:
+      - .env

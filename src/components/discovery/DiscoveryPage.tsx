@@ -46,6 +46,10 @@ import { Seo, routeSeoProps } from "@/components/seo/Seo";
 import { getRouteMeta, SITE } from "@/seo/meta";
 import { movieJsonLd } from "@/../tools/lib/jsonld.mjs";
 import { moviePath } from "@/lib/movie-url";
+import { MoodFilterBar } from "./MoodFilterBar";
+import { WatchlistRouletteModal } from "./WatchlistRouletteModal";
+import { CouplesDecideModal } from "./CouplesDecideModal";
+import { Dices, Users } from "lucide-react";
 import type { TMDBMovieDetails } from "@/types/movie";
 
 /**
@@ -63,6 +67,8 @@ export function DiscoveryPage() {
   const [globalProviders, setGlobalProviders] = useState(false);
   const [showTickets, setShowTickets] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [rouletteOpen, setRouletteOpen] = useState(false);
+  const [couplesOpen, setCouplesOpen] = useState(false);
 
   const {
     discover,
@@ -434,6 +440,9 @@ export function DiscoveryPage() {
                 </div>
               }
             >
+              {/* Time Budget & Mood Matrix Filter Bar */}
+              <MoodFilterBar onFilterChange={() => discover()} />
+
               {/* Action buttons — immediately below title/overview (DISP-06) */}
               <MovieActions
                 movieId={currentMovie.id}
@@ -443,6 +452,26 @@ export function DiscoveryPage() {
                 onLove={handleLove}
                 isLoading={showLoading}
               />
+
+              {/* Quick Decision Helpers: Watchlist Roulette & Couples Quick-Decide */}
+              <div className="flex gap-2 pt-1 pb-2">
+                <button
+                  type="button"
+                  onClick={() => setRouletteOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.09] text-clay-text text-xs font-medium border border-white/10 transition-colors cursor-pointer"
+                >
+                  <Dices className="w-3.5 h-3.5 text-accent" />
+                  Spin Saved
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCouplesOpen(true)}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.09] text-clay-text text-xs font-medium border border-white/10 transition-colors cursor-pointer"
+                >
+                  <Users className="w-3.5 h-3.5 text-accent" />
+                  Couples Match
+                </button>
+              </div>
 
               {/* Rating badges (DISP-02) */}
               <RatingBadges
@@ -580,6 +609,31 @@ export function DiscoveryPage() {
             </div>
           </ScrollReveal>
         )}
+
+      {/* Watchlist Roulette Modal */}
+      <WatchlistRouletteModal
+        open={rouletteOpen}
+        onClose={() => setRouletteOpen(false)}
+        onSelectMovie={(movie) => {
+          setCurrentMovie(movie);
+          if (isCanonicalMoviePath) {
+            navigate(moviePath(movie));
+          }
+        }}
+      />
+
+      {/* Couples Quick-Decide Modal */}
+      <CouplesDecideModal
+        open={couplesOpen}
+        onClose={() => setCouplesOpen(false)}
+        candidateMovies={currentMovie ? [currentMovie, ...similarMovies] : similarMovies}
+        onSelectMovie={(movie) => {
+          setCurrentMovie(movie);
+          if (isCanonicalMoviePath) {
+            navigate(moviePath(movie));
+          }
+        }}
+      />
     </div>
   );
 }

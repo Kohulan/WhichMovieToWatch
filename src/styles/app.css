@@ -29,6 +29,21 @@
 }
 
 /* ============================================================
+   SMOOTH THEME TRANSITIONS
+   When toggling dark ↔ light, the .theme-transitioning class is
+   added to <html> for 500ms. During that window, all elements
+   smoothly interpolate their color properties. Outside that
+   window, no global transitions are active — avoiding interference
+   with scroll, motion libraries, and paint performance.
+   ============================================================ */
+.theme-transitioning,
+.theme-transitioning *,
+.theme-transitioning *::before,
+.theme-transitioning *::after {
+  transition: color 500ms ease, background-color 500ms ease, border-color 500ms ease, box-shadow 500ms ease, fill 500ms ease, stroke 500ms ease !important;
+}
+
+/* ============================================================
    RESERVED Z-INDEX VALUES
    Reference via z-[var(--z-*)].
    ============================================================ */
