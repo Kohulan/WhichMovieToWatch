@@ -1,5 +1,52 @@
 # Changelog
 
+## [2.4.0](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.3.1...v2.4.0) (2026-08-13)
+
+
+### Features
+
+* enhance UI aesthetics, align browse toolbar, replace smileys with lucide icons, and harden security headers ([792c630](https://github.com/Kohulan/WhichMovieToWatch/commit/792c6304e2928ba9cc00b1bed7323b158ed1fd05))
+* **seo:** /movie/:slug route with slug-aware deep links; dev-gate showcase ([8503744](https://github.com/Kohulan/WhichMovieToWatch/commit/850374457c0f5ebd71b63441cef6fdef1e289a58))
+* **seo:** build-time TMDB fetcher with fail-soft snapshot ([ce8d63f](https://github.com/Kohulan/WhichMovieToWatch/commit/ce8d63fd54105c7b7c48ef3c1e4d726ec77e0249))
+* **seo:** content config for 35 SEO routes + typed accessor ([4ebeb6f](https://github.com/Kohulan/WhichMovieToWatch/commit/4ebeb6f18eb5451a090c94dc7f6dbc0408aee39a))
+* **seo:** crawlable link graph - Link navigation + SiteFooter hub links ([d025758](https://github.com/Kohulan/WhichMovieToWatch/commit/d025758ae97d247506dd33e7745d01bf33ceee71))
+* **seo:** migrate to createBrowserRouter with legacy-hash redirect + GH Pages 404 fallback ([add80c4](https://github.com/Kohulan/WhichMovieToWatch/commit/add80c469d6e99136fea21a20d5391dc3c019eb2))
+* **seo:** prerender HTML transform + static body renderers ([9710391](https://github.com/Kohulan/WhichMovieToWatch/commit/9710391128013b0629ae87952c360e4f6308b9d1))
+* **seo:** prerender orchestrator — 35 hub pages, 250 movie pages, sitemap, robots ([73885e4](https://github.com/Kohulan/WhichMovieToWatch/commit/73885e473bcf293f0d63ed04b05313dc84483cc7))
+* **seo:** Seo component, shared JSON-LD builders, per-route meta on all pages ([50df0ac](https://github.com/Kohulan/WhichMovieToWatch/commit/50df0ac0de1b770182f346855b42c4dfe7b0010c))
+* **seo:** shared movie slug module + node:test harness ([2fde59e](https://github.com/Kohulan/WhichMovieToWatch/commit/2fde59e8950c0baac6c4b27c30593a97da2942f1))
+* **seo:** sitemap and robots builders ([cb59669](https://github.com/Kohulan/WhichMovieToWatch/commit/cb59669e90b34ece3ddf9669f7cfb799bd4dc45c))
+* **seo:** tonight/genre/provider hub pages with ItemList JSON-LD ([56fa135](https://github.com/Kohulan/WhichMovieToWatch/commit/56fa13589955bacbb7f3cc19ddd9b16c430a064f))
+
+
+### Bug Fixes
+
+* **browse:** reset scroll on launcher/results swap ([1651dd2](https://github.com/Kohulan/WhichMovieToWatch/commit/1651dd281b0f77ef3a0163372142d9462d0954e9))
+* **deps:** bump dependencies to patch Dependabot security advisories ([6411ae5](https://github.com/Kohulan/WhichMovieToWatch/commit/6411ae51504cad9b0e39b0e2c4027059767bfe94))
+* **pwa:** auto-activate service worker updates - no more force-refresh ([206fa33](https://github.com/Kohulan/WhichMovieToWatch/commit/206fa3381a215e99d076dde63dab6b9bf11699b1))
+* **pwa:** boot watchdog auto-recovers from any broken service-worker state ([c2c444d](https://github.com/Kohulan/WhichMovieToWatch/commit/c2c444dd020d41a649826ccdf612825135d56b12))
+* **pwa:** NetworkFirst navigations with offline fallback for multi-page prerendered site ([7aad0b7](https://github.com/Kohulan/WhichMovieToWatch/commit/7aad0b75e8a208c272e74bc953914c14bc2c98b0))
+* **seo:** address all nine code-review findings ([789a267](https://github.com/Kohulan/WhichMovieToWatch/commit/789a267f9eaa64b9f9017498093aa9be861a43d1))
+* **seo:** canonical share URLs, unfreeze SW precache of index.html, real-build smoke test ([5557ab4](https://github.com/Kohulan/WhichMovieToWatch/commit/5557ab44e75b7b8531c5e1b16180ca487478a2e5))
+* **seo:** de-template genre/provider intros ([fc30827](https://github.com/Kohulan/WhichMovieToWatch/commit/fc30827e588ffabe7b4548fc88b20ce83434e2e4))
+* **seo:** escape $-patterns in HTML replacements; escape poster src ([b7d1ee6](https://github.com/Kohulan/WhichMovieToWatch/commit/b7d1ee6dffbe596ec769d01d29b100433b8defbb))
+* **seo:** keep canonical /movie URLs stable; restore unconditional discover mount ([b457d81](https://github.com/Kohulan/WhichMovieToWatch/commit/b457d817f4bb50ef97bc405811707e17a987bed1))
+* **seo:** strip .html suffix on boot so literal prerendered URLs hydrate correctly ([4c50e76](https://github.com/Kohulan/WhichMovieToWatch/commit/4c50e768503aca971be8a1c6dd490a3b41712ae6))
+* **seo:** unpin canonical movie page on similar-click and settings-save ([2eedcf2](https://github.com/Kohulan/WhichMovieToWatch/commit/2eedcf21e7e797e96c6010089551cc5d02a3295b))
+* **ui:** let bento tile clicks reach the Link through the hover overlay ([7ef8c7d](https://github.com/Kohulan/WhichMovieToWatch/commit/7ef8c7dc168cc15e067255f08890b25965973061))
+* **ux,a11y,perf:** resolve impeccable critique + audit findings ([007fa56](https://github.com/Kohulan/WhichMovieToWatch/commit/007fa5667641b4f6635f6e6f861b2247d616d671))
+
+
+### Performance Improvements
+
+* **assets,pwa:** shrink logo 92%, preload latin font, fix precache waste ([ebce969](https://github.com/Kohulan/WhichMovieToWatch/commit/ebce969ca39f4bf639c28c6119831409fe5ca777))
+* **browse:** de-blur movie cards, single-row toolbar, launcher hierarchy ([76cce27](https://github.com/Kohulan/WhichMovieToWatch/commit/76cce27eee3a160dbc167d88e4b8a36a0aca2883))
+* **bundle:** halve the eager index chunk via SEO split + lazy overlays ([9a20dfa](https://github.com/Kohulan/WhichMovieToWatch/commit/9a20dfa7da3451c16dbba5b5fe8dff3396b3c23a))
+* **data:** dedupe fetches, cache discover-search, contain cache errors, debounce sliders ([edaa8bf](https://github.com/Kohulan/WhichMovieToWatch/commit/edaa8bffe86e3d34bee8513890a41fcbb87d7b7d))
+* **data:** one providers cache entry per movie, region picked on read ([a13c02e](https://github.com/Kohulan/WhichMovieToWatch/commit/a13c02e8371604993ba783c52491174f7c2b4784))
+* **react:** memoize static computations, fix listener leak and stale-fetch race ([6a64ee6](https://github.com/Kohulan/WhichMovieToWatch/commit/6a64ee639b47498525ebf6dd3c2a3a7e14ef973d))
+* **seo:** splash once per session, idle-deferred Spline, preconnects, slim splash logo ([37ac591](https://github.com/Kohulan/WhichMovieToWatch/commit/37ac59104d6e2f1704381817de59d15ffbac14fe))
+
 ## [2.3.1](https://github.com/Kohulan/WhichMovieToWatch/compare/v2.3.0...v2.3.1) (2026-06-17)
 
 
